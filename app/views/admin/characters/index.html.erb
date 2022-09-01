@@ -1,0 +1,26 @@
+<h1>ADMIN - Characters</h1>
+<table>
+  <tr>
+    <th>Internal ID</th>
+    <th>Lodestone ID</th>
+    <th>Owner ID</th>
+    <th>Avatar</th>
+    <th>Character Name</th>
+    <th>Home World</th>
+    <th>Verified</th>
+    <th>Actions</th>
+  </tr>
+  <% @characters.each do |character| %>
+    <tr>
+      <td><%= character.id %></td>
+      <td><%= character.lodestone_id %></td>
+      <td><%= link_to character.user_id, admin_user_path(character.user_id) %></td>
+      <td><%= image_tag character.avatar_url %></td>
+      <td><%= link_to character.character_name, character %></td>
+      <td><%= character.home_world %></td>
+      <td><%= character.verified? ? "Yes" : "No" %></td>
+      <td><%= button_to 'Delete', character, method: :delete, form: {
+        data: { turbo_confirm: "Are you sure you want to delete #{character.character_name}?"}}%></td>
+    </tr>
+  <% end %>
+</table>

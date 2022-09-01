@@ -1,0 +1,17 @@
+<h1>ADMIN - Users</h1>
+<table>
+  <tr>
+    <th>User ID</th>
+    <th>Email</th>
+    <th>Characters</th>
+    <th>Verified Character?</th>
+  </tr>
+  <% @users.each do |user| %>
+    <tr>
+      <td><%= user.id %></td>
+      <td><%= user.email %></td>
+      <td><%= user.characters.count %></td>
+      <td><%= user.characters.any? { |c| c.verified? } ? "Yes" : "No" %></td>
+    </tr>
+  <% end %>
+</table>
