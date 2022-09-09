@@ -30,6 +30,27 @@ module Lodestone
     meta
   end
 
+  def search_for_lodestone_id(character_name, home_world)
+    doc = character_search_results(character_name, home_world)
+
+    found_ids = []
+
+    doc.css('.ldst_window > .entry').each do |entry|
+      found_id = entry.at_css('a.entry__link').attributes['href'].value.split('/')[-1]
+      found_name = entry.at_css('a.entry__link > .entry__box--world > .entry__name').text
+      found_world = entry.at_css('a.entry__link > .entry__box--world > .entry__world').text.gsub(/\s\[\w+\]/, '')
+
+      next unless found_name == character_name && found_world == home_world
+
+      found_ids << found_id
+    end
+
+    raise "Could not find any matching characters for #{character_name}@#{home_world}!" if found_ids.empty?
+    raise "Found #{found_ids.size} exact matches for #{character_name}@#{home_world}?!" if found_ids.size > 1
+
+    found_ids[0]
+  end
+
   private
 
   def profile(character_id)
@@ -45,6 +66,19 @@ module Lodestone
       avatar: doc.at_css('.frame__chara__face > img').attributes['src'].value,
       last_parsed: Time.now
     }
+  end
+
+  def character_search_results(character_name, home_world)
+    url = [ROOT_URL, 'character', "?q=#{character_name}&worldname=#{home_world}"].compact.join('/')
+
+    begin
+      Nokogiri::HTML.parse(RestClient.get(url, user_agent: DESKTOP_USER_AGENT, params: {
+        q: character_name,
+        worldname: home_world
+      }))
+    rescue RestClient::NotFound
+      # ignore 404s still
+    end
   end
 
   def character_document(character_id: nil, params: {})

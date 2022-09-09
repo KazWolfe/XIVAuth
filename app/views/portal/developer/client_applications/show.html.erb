@@ -1,0 +1,35 @@
+<h1>Application: <%= @application.name %></h1>
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row">Client ID</th>
+      <td><code><%= @application.uid %></code></td>
+    </tr>
+    <tr>
+      <th scope="row">Client Secret</th>
+      <td>
+        <code><%= @application.secret %></code>
+        <button type="button" class="btn btn-danger">Regenerate</button>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Redirect URIs</th>
+      <td>
+        <pre><%= @application.redirect_uri %></pre><br>
+        <small>In addition, all <code>localhost</code> URLs will work for authentication.</small>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Authorized Scopes</th>
+      <td>
+        <code><%= @application.scopes %></code><br>
+        <small>To request additional scopes, please contact one of the XIVAuth developers.</small>
+      </td>
+    </tr>
+    <tr>
+      <th scope="Row">Public App</th>
+      <td><%= @application.public ? "Yes" : "No" %></td>
+    </tr>
+  </tbody>
+</table>

@@ -14,7 +14,7 @@
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Developer</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item disabled">Request Developer Access</a></li>
-              <li><a class="dropdown-item">Applications</a></li>
+              <li><%= link_to "Applications", developer_client_applications_path, :class => 'dropdown-item' %></li>
             </ul>
           </li>
           <li class="nav-item dropdown">

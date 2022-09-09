@@ -2,60 +2,55 @@
 
 class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
   def change
-    create_table :oauth_client_applications do |t|
-      t.string  :name,    null: false
+    create_table :oauth_client_applications, id: :uuid do |t|
+      t.string  :name, null: false
 
       # maaaaagic
-      t.bigint :owner_id, null: true
+      t.uuid   :owner_id,   null: true
       t.string :owner_type, null: true
 
-      t.string  :uid, index: { unique: true }, null: false
-      t.string  :secret, null: false
+      t.string  :uid,       index: { unique: true }, null: false
+      t.string  :secret,    null: false
 
-      # Remove `null: false` if you are planning to use grant flows
-      # that doesn't require redirect URI to be used during authorization
-      # like Client Credentials flow or Resource Owner Password.
       t.text    :redirect_uri
-      t.string  :scopes,       null: false, default: ''
-      t.boolean :confidential, null: false, default: true
+      t.string  :scopes,          null: false, default: ''
+      t.boolean :confidential,    null: false, default: true
 
       # Set if the application is publicly accessible or not. If not, use is restricted
       # to only invited users or team members.
-      t.boolean :public,       null: false, default: true
+      t.boolean :public, null: false, default: true
 
       t.string :icon_url
+      t.boolean :verified, default: false
 
-      t.timestamps             null: false
+      t.timestamps null: false
 
       t.index [:owner_id, :owner_type], unique: false
     end
 
-    create_table :oauth_access_grants do |t|
-      t.references :resource_owner,  null: false
-      t.references :application,     null: false
+    create_table :oauth_access_grants, id: :uuid do |t|
+      t.references :resource_owner,
+                   null: false, foreign_key: { to_table: :users }, type: :uuid
+      t.references :application,
+                   null: false, foreign_key: { to_table: :oauth_client_applications }, type: :uuid
 
       t.string   :token, index: { unique: true }, null: false
 
-      t.integer  :expires_in,        null: false
-      t.text     :redirect_uri,      null: false
+      t.integer  :expires_in, null: false
+      t.text     :redirect_uri, null: false
 
-      t.datetime :created_at,        null: false
+      t.datetime :created_at, null: false
       t.datetime :revoked_at
-      t.string   :scopes,            null: false, default: ''
+      t.string   :scopes, null: false, default: ''
+
+      t.uuid :permissible_id
     end
 
-    add_foreign_key(
-      :oauth_access_grants,
-      :oauth_client_applications,
-      column: :application_id
-    )
-
-    create_table :oauth_access_tokens do |t|
-      t.references :resource_owner, index: true
-
-      # Remove `null: false` if you are planning to use Password
-      # Credentials Grant flow that doesn't require an application.
-      t.references :application,    null: false
+    create_table :oauth_access_tokens, id: :uuid do |t|
+      t.references :resource_owner,
+                   foreign_key: { to_table: :users }, index: true, type: :uuid
+      t.references :application,
+                   foreign_key: { to_table: :oauth_client_applications }, null: false, type: :uuid
 
       # If you use a custom token generator you may need to change this column
       # from string to text, so that it accepts tokens larger than 255
@@ -70,6 +65,8 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
       t.datetime :revoked_at
       t.datetime :created_at, null: false
       t.string   :scopes
+      t.uuid     :permissible_id
+
 
       # The authorization server MAY issue a new refresh token, in which case
       # *the client MUST discard the old refresh token* and replace it with the
@@ -87,14 +84,9 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
       t.string   :previous_refresh_token, null: false, default: ""
     end
 
-    add_foreign_key(
-      :oauth_access_tokens,
-      :oauth_client_applications,
-      column: :application_id
-    )
-
-    # Uncomment below to ensure a valid reference to the resource owner's table
-    add_foreign_key :oauth_access_grants, :users, column: :resource_owner_id
-    add_foreign_key :oauth_access_tokens, :users, column: :resource_owner_id
+    create_table :oauth_openid_requests do |t|
+      t.references :access_grant, null: false, index: true, on_delete: :cascade
+      t.string :nonce, null: false
+    end
   end
 end

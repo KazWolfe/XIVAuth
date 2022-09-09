@@ -6,14 +6,14 @@ XIVAuth is a service designed to make authenticating characters in Final Fantasy
 
 * OAuth Provider allows other sites to leverage XIVAuth for signin
   * Three modes: Single Character, User, Multi-Character - dev-selectable
-    * Single Character: Default mode, info for *only* the authenticated character is returned, no user data.
+    * Single Character (`character`): Default mode, info for *only* the authenticated character is returned, no user data.
       * Useful for apps that want to authenticate against a specific character for something.
       * Can only be used with verified characters.
-    * User: Info for *only* the authenticate a specific user.
+    * User (`user` or `openid`): Info for *only* the authenticate a specific user.
       * Useful for apps that want to authenticate against a player, esp. for deduplication.
       * WILL expose if user has verified characters, but not how many.
       * Can be used if user doesn't have verified characters.
-    * Multi-Character: Hybrid of above. Returns user + one or more associated characters.
+    * Multi-Character (`character:all`): Hybrid of above. Returns user + one or more associated characters.
       * User decides which character to share (one, some, all).
       * Receiving app will not know what user selects.
       * Receiving app *can* request single-character response.
@@ -58,6 +58,37 @@ Possible room for improvement is the fact that the plugin server can merely prox
 While the nonce blocks replay (the response must be to the request), a rogue plugin server can pass the attestation 
 forward for its own nefarious purposes (e.g. a plugin server logging on to another server). Plus, oauth itself still 
 has this issue to some degree, where rogue proxies are possible.
+
+Attestation tokens are customizable - the client requesting the token may return whatever subset of information it wants
+to return, but this is left strictly to the client to manage. For example, if Dalamud were to request a verified JWT for
+a specific character, Dalamud would have to specify that *only* information about the specific character is permitted.
+An attestation token can only ever carry information about a single character and a single user at any given time; no
+multi-character tokens may be generated or used through this system. 
+
+### Scopes
+
+The following scopes are available:
+
+* `character`: Base scope for character access. Will only allow the user to log in with a specific character, and a character must be selected.
+  * `character:all`: Scope to access some/all (verified) characters. User will be given the option to select which characters to grant. Can return zero characters if the user elects to not share any.
+  * `character:manage`: Allow adding/removing characters, and seeing unverified characters. Applies to *all* characters.
+* `user`: Base scope for read-only user access. Will return base profile information, including username and if the user has any verified characters.
+  * `openid`: Alias to `user`. Does not grant additional permissions.
+  * `user:email`: Allows reading the user's email address. *Can be declined by user.*
+* `jwt`: Allows generating JWTs for the user, generally for delegated authentication (see Attestation).
+* `refresh`: Requests a refresh token for persistent authentication.
+
+An application created by a user can choose *only* between the `character` and the `user` scope. Applications that 
+require multiple or other scopes will need approval from a project maintainer. Scopes will *never* cross the user
+boundary. The `character:manage` and `jwt` scopes will require extra scrutiny and are generally reserved for key
+projects such as Dalamud or XL that perform deeper integration into XIVAuth and its services.
+
+If a service requires at least one character to be selected *and* allows more to be selected as well, it should use the
+scope declaration `character character:all`. 
+
+Refresh tokens will only be issued to applications that require programmatic access to XIVAuth itself or mutating data.
+Due to the general nature of XIVAuth's services, this really only applies to applications with the scope 
+`character_all`, `character:manage`, or `jwt`. Access to the `refresh` scope must be approved manually.
 
 ## Sidebar
 

@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_31_014904) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_01_220509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "characters", force: :cascade do |t|
+  create_table "characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "lodestone_id", null: false
-    t.bigint "user_id", null: false
+    t.uuid "user_id", null: false
+    t.bigint "content_id"
     t.string "character_name"
     t.string "home_datacenter"
     t.string "home_world"
@@ -25,34 +26,37 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_31_014904) do
     t.datetime "verified_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["content_id"], name: "index_characters_on_content_id"
     t.index ["lodestone_id", "user_id"], name: "index_characters_on_lodestone_id_and_user_id", unique: true
     t.index ["lodestone_id"], name: "index_characters_on_lodestone_id"
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
-  create_table "oauth_access_grants", force: :cascade do |t|
-    t.bigint "resource_owner_id", null: false
-    t.bigint "application_id", null: false
+  create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "resource_owner_id", null: false
+    t.uuid "application_id", null: false
     t.string "token", null: false
     t.integer "expires_in", null: false
     t.text "redirect_uri", null: false
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "scopes", default: "", null: false
+    t.uuid "permissible_id"
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
-  create_table "oauth_access_tokens", force: :cascade do |t|
-    t.bigint "resource_owner_id"
-    t.bigint "application_id", null: false
+  create_table "oauth_access_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "resource_owner_id"
+    t.uuid "application_id", null: false
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
     t.datetime "revoked_at"
     t.datetime "created_at", null: false
     t.string "scopes"
+    t.uuid "permissible_id"
     t.string "previous_refresh_token", default: "", null: false
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
@@ -60,15 +64,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_31_014904) do
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
   end
 
-  create_table "oauth_client_applications", force: :cascade do |t|
+  create_table "oauth_client_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
-    t.bigint "owner_id"
+    t.uuid "owner_id"
     t.string "owner_type"
     t.string "uid", null: false
     t.string "secret", null: false
     t.text "redirect_uri"
     t.string "scopes", default: "", null: false
     t.boolean "confidential", default: true, null: false
+    t.boolean "public", default: true, null: false
     t.string "icon_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -76,25 +81,36 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_31_014904) do
     t.index ["uid"], name: "index_oauth_client_applications_on_uid", unique: true
   end
 
-  create_table "team_memberships", id: false, force: :cascade do |t|
-    t.bigint "team_id", null: false
-    t.bigint "user_id", null: false
+  create_table "oauth_permissibles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "policy_id", null: false
+    t.boolean "deny", default: false
+    t.uuid "resource_id", null: false
+    t.string "resource_type", null: false
+    t.datetime "created_at", null: false
+    t.index ["policy_id"], name: "index_oauth_permissibles_on_policy_id"
+    t.index ["resource_type", "resource_id"], name: "index_oauth_permissibles_on_resource_type_and_resource_id"
+  end
+
+  create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "team_id", null: false
+    t.uuid "user_id", null: false
     t.string "role", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["team_id", "user_id"], name: "index_team_memberships_on_team_id_and_user_id", unique: true
     t.index ["team_id"], name: "index_team_memberships_on_team_id"
     t.index ["user_id"], name: "index_team_memberships_on_user_id"
   end
 
-  create_table "teams", force: :cascade do |t|
+  create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
-    t.bigint "owner_id", null: false
+    t.uuid "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["owner_id"], name: "index_teams_on_owner_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "username", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false

@@ -60,6 +60,7 @@ gem 'omniauth-github', '~> 2.0.0'
 
 # Authentication and providers (outbound)
 gem 'doorkeeper'
+gem 'doorkeeper-openid_connect'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -22,7 +22,7 @@ services:
     build: .
     env_file: .env
     volumes:
-      - .:/app
+      - .:/app:cached
     ports:
       - "3000:3000"
     depends_on:

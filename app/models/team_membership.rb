@@ -1,6 +1,6 @@
 class TeamMembership < ApplicationRecord
-  belongs_to :user
-  belongs_to :team
+  belongs_to :user, touch: true
+  belongs_to :team, touch: true
 
   enum role: {
     owner: "owner",

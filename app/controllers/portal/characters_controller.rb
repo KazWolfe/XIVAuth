@@ -44,7 +44,6 @@ class Portal::CharactersController < ApplicationController
     @character = Character.find(params[:id])
     authorize! :verify, @character
 
-
   end
 
   def enqueue_verify

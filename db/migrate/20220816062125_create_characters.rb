@@ -1,10 +1,13 @@
 class CreateCharacters < ActiveRecord::Migration[7.0]
   def change
-    create_table :characters do |t|
-      # Not actually unique, we will allow multiple users.rb to try to claim the same character.
+    create_table :characters, id: :uuid do |t|
+      # Not actually unique, we will allow multiple users to try to claim the same character.
       t.integer :lodestone_id, index: { unique: false }, null: false
 
-      t.references :user, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: true, type: :uuid
+
+      # For in-game logins, we can additionally track by content ID. This does *not* replace lodestone id!
+      t.bigint :content_id, index: { unique: false }
 
       # These aren't authoritative - the only value we realistically care about for logic should be the Lodestone ID.
       # However, querying the Lodestone is a bit expensive, so we'd rather store it locally for reference and update it

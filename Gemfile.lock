@@ -68,11 +68,13 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
+    aes_key_wrap (1.1.0)
     amazing_print (1.4.0)
     ast (2.4.2)
     autoprefixer-rails (10.4.7.0)
       execjs (~> 2)
     bcrypt (3.1.18)
+    bindata (2.4.10)
     bindex (0.8.1)
     bootsnap (1.13.0)
       msgpack (~> 1.2)
@@ -113,6 +115,9 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     doorkeeper (5.5.4)
       railties (>= 5)
+    doorkeeper-openid_connect (1.8.2)
+      doorkeeper (>= 5.5, < 5.7)
+      json-jwt (>= 1.11.0)
     erubi (1.11.0)
     execjs (2.8.1)
     factory_bot (6.2.1)
@@ -133,6 +138,7 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
+    httpclient (2.8.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     importmap-rails (1.1.5)
@@ -145,6 +151,11 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     json (2.6.2)
+    json-jwt (1.15.3)
+      activesupport (>= 4.2)
+      aes_key_wrap
+      bindata
+      httpclient
     jwt (2.5.0)
     loofah (2.18.0)
       crass (~> 1.0.2)
@@ -382,6 +393,7 @@ DEPENDENCIES
   devise
   devise_zxcvbn
   doorkeeper
+  doorkeeper-openid_connect
   factory_bot_rails
   faker
   importmap-rails

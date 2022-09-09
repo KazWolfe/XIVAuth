@@ -19,7 +19,7 @@ Doorkeeper.configure do
     # Put your admin authentication logic here.
     # Example implementation:
     if current_user
-      head :forbidden unless current_user.id == 1
+      head :forbidden unless current_user.email == "dev@eorzea.id"
     else
       redirect_to sign_in_url
     end
@@ -30,9 +30,9 @@ Doorkeeper.configure do
   #
   # Be default Doorkeeper ActiveRecord ORM uses it's own classes:
   #
-  access_token_class "Oauth::AccessToken"
-  access_grant_class "Oauth::AccessGrant"
-  application_class "Oauth::ClientApplication"
+  access_token_class 'Oauth::AccessToken'
+  access_grant_class 'Oauth::AccessGrant'
+  application_class  'Oauth::ClientApplication'
   #
   # Don't forget to include Doorkeeper ORM mixins into your custom models:
   #
@@ -211,7 +211,9 @@ Doorkeeper.configure do
   # `grant_type` - the grant type of the request (see Doorkeeper::Oauth)
   # `scopes` - the requested scopes (see Doorkeeper::Oauth::Scopes)
   #
-  # use_refresh_token
+  use_refresh_token do |context|
+    context.scopes.include?('refresh')
+  end
 
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter confirmation: true (default: false) if you want to enforce ownership of
@@ -225,8 +227,11 @@ Doorkeeper.configure do
   # For more information go to
   # https://doorkeeper.gitbook.io/guides/ruby-on-rails/scopes
   #
-  # default_scopes  :public
-  # optional_scopes :write, :update
+  # default_scopes  :character
+  optional_scopes :character, 'character:all', 'character:manage',
+                  :user, :openid, 'user:email',
+                  :jwt,
+                  :refresh
 
   # Allows to restrict only certain scopes for grant_type.
   # By default, all the scopes will be available for all the grant types.
@@ -267,9 +272,7 @@ Doorkeeper.configure do
   # #call can be used in order to allow conditional checks (to allow non-SSL
   # redirects to localhost for example).
   #
-  # force_ssl_in_redirect_uri !Rails.env.development?
-  #
-  # force_ssl_in_redirect_uri { |uri| uri.host != 'localhost' }
+  force_ssl_in_redirect_uri { |uri| uri.host != 'localhost' }
 
   # Specify what redirect URI's you want to block during Application creation.
   # Any redirect URI is allowed by default.
@@ -342,7 +345,7 @@ Doorkeeper.configure do
   #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.2
   #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.3
   #
-  # grant_flows %w[authorization_code client_credentials]
+  grant_flows %w[authorization_code implicit_oidc]
 
   # Allows to customize Oauth grant flows that +each+ application support.
   # You can configure a custom block (or use a class respond to `#call`) that must

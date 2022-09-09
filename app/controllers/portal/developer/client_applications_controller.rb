@@ -1,13 +1,17 @@
-class Portal::Developer::ClientApplicationController  < Doorkeeper::ApplicationsController
+class Portal::Developer::ClientApplicationsController < ApplicationController
   before_action :authenticate_user!
 
   def index
     @applications = Oauth::ClientApplication.accessible_by(current_ability)
+    
+    @applications
   end
 
   def show
     @application = Oauth::ClientApplication.find(params[:id])
-    authorize! :show, @character
+    authorize! :show, @application
+    
+    @application
   end
 
   def new
