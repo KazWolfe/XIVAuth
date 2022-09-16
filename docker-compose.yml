@@ -28,6 +28,17 @@ services:
     depends_on:
       - postgres
       - redis
+
+  worker:
+    image: kazwolfe/xivauth:latest
+    build: .
+    env_file: .env
+    command: ["bundle", "exec", "sidekiq"]
+    volumes:
+      - .:/app:cached
+    depends_on:
+      - postgres
+      - redis
       
 volumes:
   postgres-data:

@@ -6,5 +6,5 @@ class Team < ApplicationRecord
 
   after_touch :reload
 
-  has_many :oauth_client_applications, class_name: 'Oauth::ClientApplication', as: :owner
+  has_many :oauth_client_applications, class_name: 'OAuth::ClientApplication', as: :owner
 end

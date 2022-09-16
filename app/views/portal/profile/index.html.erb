@@ -1,6 +1,6 @@
 <h1>Your Profile</h1>
 
-<p>Hi there <%= current_user.username %>!</p>
+<p>Hi there <%= current_user.name %>!</p>
 <div class="row gx-5">
   <div class="col-6">
     <h3>Profile</h3>
@@ -8,6 +8,10 @@
       <div class="mb-3">
         <label for="user_username" class="form-label">Username</label>
         <%= form.text_field :username, class: "form-control" %>
+        <div class="form-text">
+          Your username will show in the XIVAuth UI, may be provided to some apps, and will show to users of apps that
+          you create. Usernames are unique across XIVAuth.
+        </div>
       </div>
       <div class="mb-3">
         <label for="user_email" class="form-label">Email Address</label>
@@ -23,6 +27,13 @@
       <summary>Two-Factor Authentication Settings</summary>
       Two Factor Authentication
     </details>
+    <h3>Social Identities</h3>
+    <p>The following social identities are known:</p>
+    <ul>
+      <% @user.social_identities.each do |si| %>
+        <li><%= si.provider %>: <%= si.external_id %></li>
+      <% end %>
+    </ul>
   </div>
 </div>
 

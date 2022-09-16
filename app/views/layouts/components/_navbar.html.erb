@@ -1,6 +1,9 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
   <div class="container">
     <%= link_to "XIVAuth", root_path, :class => "navbar-brand" %>
+    <% if Rails.env != "production" %>
+      <span class="navbar-brand text-warning"><%= Rails.env.titleize %></span>
+    <% end %>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -13,17 +16,30 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Developer</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item disabled">Request Developer Access</a></li>
-              <li><%= link_to "Applications", developer_client_applications_path, :class => 'dropdown-item' %></li>
+              <% if !current_user.developer? %>
+                <li><a class="dropdown-item disabled">Request Developer Access</a></li>
+              <% else %>
+                <li><%= link_to "Applications", developer_applications_path, :class => 'dropdown-item' %></li>
+              <% end %>
+              <% if current_user.developer? || current_user.team_memberships.count > 0 %>
+                <li><a class="dropdown-item disabled">Teams</a></li>
+              <% end %>
             </ul>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
-            <ul class="dropdown-menu">
-              <li><%= link_to "Users", admin_users_path, :class => 'dropdown-item' %></li>
-              <li><%= link_to "Characters", admin_characters_path, :class => 'dropdown-item' %></li>
-            </ul>
-          </li>
+          <% if current_user.admin? %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+              <ul class="dropdown-menu">
+                <li><%= link_to "Users", admin_users_path, :class => 'dropdown-item' %></li>
+                <li><%= link_to "Characters", admin_characters_path, :class => 'dropdown-item' %></li>
+                <li><%= link_to "Applications", admin_applications_path, :class => 'dropdown-item' %></li>
+                <li>
+                  <hr class="dropdown-divider"/>
+                </li>
+                <li><%= link_to "Sidekiq", "/admin/sidekiq", :class => 'dropdown-item' %></li>
+              </ul>
+            </li>
+          <% end %>
         <% end %>
       </ul>
       <ul class="navbar-nav">
@@ -39,7 +55,9 @@
               <li>
                 <%= link_to "Profile", profile_path, :class => 'dropdown-item' %>
               </li>
-              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <hr class="dropdown-divider"/>
+              </li>
               <li>
                 <%= link_to "Sign Out", destroy_user_session_path,
                             data: { turbo_method: :delete },

@@ -9,15 +9,18 @@
     <tr>
       <th scope="row">Client Secret</th>
       <td>
-        <code><%= @application.secret %></code>
-        <button type="button" class="btn btn-danger">Regenerate</button>
+        <% secret = flash[:application_secret].presence || @application.plaintext_secret %>
+        <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
+          <code><%= secret %></code>
+          <small>Warning: This is the only time this secret will be shown. Please ensure it is saved now.</small>
+        <% end %>
+        <button type="button" class="btn btn-danger">Regenerate [ToDo]</button>
       </td>
     </tr>
     <tr>
       <th scope="row">Redirect URIs</th>
       <td>
         <pre><%= @application.redirect_uri %></pre><br>
-        <small>In addition, all <code>localhost</code> URLs will work for authentication.</small>
       </td>
     </tr>
     <tr>
@@ -33,3 +36,9 @@
     </tr>
   </tbody>
 </table>
+
+<div class="btn-toolbar">
+  <button type="button" class="btn btn-primary me-2">Something</button>
+  <button type="button" class="btn btn-secondary me-2">Another Thing</button>
+  <button type="button" class="btn btn-danger float-end">Delete</button>
+</div>

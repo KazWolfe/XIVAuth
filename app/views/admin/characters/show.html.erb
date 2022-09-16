@@ -1,0 +1,95 @@
+<div class="row">
+  <div class="col-md-6">
+    <h3>Basic Character Info</h3>
+    <table class="table table-borderless">
+      <tbody>
+      <tr>
+        <th scope="row">Character ID</th>
+        <td><code><%= @character.id %></code></td>
+      </tr>
+      <tr>
+        <th scope="row">Lodestone ID</th>
+        <td><a href="https://na.finalfantasyxiv.com/lodestone/character/<%= @character.lodestone_id %>/"><%= @character.lodestone_id %></a></td>
+      </tr>
+      <tr>
+        <th scope="row">Character Name</th>
+        <td>
+          <%= pretty_character_name @character %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Owning User</th>
+        <td>
+          <%= link_to_pretty_user @character.user %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Content ID</th>
+        <td>
+          <% if @character.content_id.present? %>
+            <code><%= @character.content_id %></code>
+          <% else %>
+            Not Registered
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Verification Date</th>
+        <td><%= @character.verified_at || "Not verified!" %></td>
+      </tr>
+      <tr>
+        <th scope="row">Last Lodestone Sync</th>
+        <td><%= @character.last_lodestone_update || "No sync!" %></td>
+      </tr>
+      <tr>
+        <th scope="row">Creation Date</th>
+        <td><%= @character.created_at %></td>
+      </tr>
+      <tr>
+        <th scope="row">Last Edit Date</th>
+        <td><%= @character.updated_at %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-md-6">
+    <h3>Data Integrity</h3>
+
+    <div class="button-toolbar pb-4">
+      <% if @character.verified? %>
+        <button class="btn btn-warning"><i class="bi bi-patch-minus"></i> Unverify</button>
+      <% else %>
+        <button class="btn btn-warning"><i class="bi bi-patch-plus"></i> Force Verify</button>
+      <% end %>
+      <button class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+      <button class="btn btn-primary"><i class="bi bi-arrow-repeat"></i> Lodestone Sync</button>
+    </div>
+
+    <h4>Other Registrations</h4>
+    <% if @same_lodestone.count > 0 %>
+      <table class="table caption-top">
+        <thead>
+          <tr>
+            <th scope="col">Character</th>
+            <th scope="col">User</th>
+            <th scope="col">Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @same_lodestone.each do |chara| %>
+            <tr>
+              <td>
+                <%= link_to_pretty_character chara, true, true %>
+              </td>
+              <td><%= link_to_pretty_user chara.user %></td>
+              <td><%= chara.created_at %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No other registrations found for this character.</p>
+    <% end %>
+  </div>
+</div>

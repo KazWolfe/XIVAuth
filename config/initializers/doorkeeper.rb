@@ -30,9 +30,9 @@ Doorkeeper.configure do
   #
   # Be default Doorkeeper ActiveRecord ORM uses it's own classes:
   #
-  access_token_class 'Oauth::AccessToken'
-  access_grant_class 'Oauth::AccessGrant'
-  application_class  'Oauth::ClientApplication'
+  access_token_class 'OAuth::AccessToken'
+  access_grant_class 'OAuth::AccessGrant'
+  application_class  'OAuth::ClientApplication'
   #
   # Don't forget to include Doorkeeper ORM mixins into your custom models:
   #
@@ -159,48 +159,9 @@ Doorkeeper.configure do
   #
   # revoke_previous_client_credentials_token
 
-  # Hash access and refresh tokens before persisting them.
-  # This will disable the possibility to use +reuse_access_token+
-  # since plain values can no longer be retrieved.
-  #
-  # Note: If you are already a user of doorkeeper and have existing tokens
-  # in your installation, they will be invalid without adding 'fallback: :plain'.
-  #
-  # hash_token_secrets
-  # By default, token secrets will be hashed using the
-  # +Doorkeeper::Hashing::SHA256+ strategy.
-  #
-  # If you wish to use another hashing implementation, you can override
-  # this strategy as follows:
-  #
-  # hash_token_secrets using: '::Doorkeeper::Hashing::MyCustomHashImpl'
-  #
-  # Keep in mind that changing the hashing function will invalidate all existing
-  # secrets, if there are any.
-
-  # Hash application secrets before persisting them.
-  #
-  # hash_application_secrets
-  #
-  # By default, applications will be hashed
-  # with the +Doorkeeper::SecretStoring::SHA256+ strategy.
-  #
-  # If you wish to use bcrypt for application secret hashing, uncomment
-  # this line instead:
-  #
-  # hash_application_secrets using: '::Doorkeeper::SecretStoring::BCrypt'
-
-  # When the above option is enabled, and a hashed token or secret is not found,
-  # you can allow to fall back to another strategy. For users.rb upgrading
-  # doorkeeper and wishing to enable hashing, you will probably want to enable
-  # the fallback to plain tokens.
-  #
-  # This will ensure that old access tokens and secrets
-  # will remain valid even if the hashing above is enabled.
-  #
-  # This can be done by adding 'fallback: plain', e.g. :
-  #
-  # hash_application_secrets using: '::Doorkeeper::SecretStoring::BCrypt', fallback: :plain
+  # Hash secrets before storing them to disk in an attempt to pretend to care about security
+  hash_token_secrets
+  hash_application_secrets using: '::Doorkeeper::SecretStoring::BCrypt'
 
   # Issue access tokens with refresh token (disabled by default), you may also
   # pass a block which accepts `context` to customize when to give a refresh

@@ -1,0 +1,29 @@
+<h1>ADMIN - Registered Client Applications</h1>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="row">App ID</th>
+    <th scope="row">App Name</th>
+    <th scope="row">Owner</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @applications.each do |app| %>
+    <tr>
+      <td><code><%= link_to app.id, admin_application_path(app) %></code></td>
+      <td><%= app.name %></td>
+      <td>
+        <% if app.owner_type == 'Team' %>
+          <i class="bi bi-people"></i> <% app.owner.name %>
+        <% elsif app.owner_type == 'User' %>
+          <i class="bi bi-person"></i> <% app.owner.name %>
+          <%= link_to_pretty_user app.owner %>
+        <% else %>
+          <% app.owner %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

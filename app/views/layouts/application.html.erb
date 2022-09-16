@@ -7,22 +7,27 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= javascript_importmap_tags %>
-
-
   </head>
 
   <body>
     <%= render 'layouts/components/navbar' %>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+
+    <%= turbo_frame_tag "remote_modal", target: "_top" %>
 
     <div class="container">
+      <% if Rails.env != "production" %>
+        <div class="alert alert-warning" role="alert" style="margin-top: 20px">
+          <i class="bi bi-exclamation-triangle"></i> <strong>This is a preview environment!</strong>
+          While this environment is probably usable for testing and preview purposes, it should not be used for any
+          live applications, users, or data at this time. Accounts and applications registered on this server can
+          disappear at any time.
+          <br><br>
+          Additionally, certain security features may be disabled for testing purposes. <em>Do not store confidential
+          data on this environment or assume that credentials are secure.</em>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
-
-  <!-- deferred JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
   </body>
 </html>

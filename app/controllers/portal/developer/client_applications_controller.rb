@@ -2,46 +2,71 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @applications = Oauth::ClientApplication.accessible_by(current_ability)
+    @applications = OAuth::ClientApplication.accessible_by(current_ability)
     
     @applications
   end
 
   def show
-    @application = Oauth::ClientApplication.find(params[:id])
+    @application = OAuth::ClientApplication.find(params[:id])
     authorize! :show, @application
     
     @application
   end
 
   def new
-    @application = Oauth::ClientApplication.new
+    @application = OAuth::ClientApplication.new
   end
 
   def create
-    @application = Oauth::ClientApplication.new(application_params)
+    # Only allow our permitted micro-scopes at app creation.
+    unless %w[character user].include? sanitized_params[:scopes].to_s
+      Rails.logger.warn("Attempt to create an application with extra scopes blocked")
+      render :new, status: :forbidden and return
+    end
+
+    @application = OAuth::ClientApplication.new(sanitized_params)
     @application.owner = current_user
 
-    if @application.save
-      redirect_to oauth_application_url(@application)
+    if @application.save!
+      flash[:application_secret] = @application.plaintext_secret
+      redirect_to developer_application_path(@application)
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
   def update
-    @application = Oauth::ClientApplication.find(params[:id])
+    @application = OAuth::ClientApplication.find(params[:id])
     authorize! :update, @character
+
+    @application.update(sanitized_params)
+
+    if @application.save!
+      redirect_to developer_application_path(@application)
+    else
+      render status: :unprocessable_entity
+    end
   end
 
   def destroy
-    @application = Oauth::ClientApplication.find(params[:id])
-    authorize! :destroy, @character
+    @application = OAuth::ClientApplication.find(params[:id])
+    authorize! :destroy, @application
+
+    if @application.verified?
+      Rails.logger.warn('Attempted to delete a verified application!')
+      render status: :forbidden and return
+    end
+
+    @application.destroy!
+
+    redirect_to developer_applications_path, status: :see_other
   end
 
   protected
+
   def sanitized_params
-    params.require(:client_application)
-          .permit(:name, :redirect_uri, :scopes, :confidential, :icon_url)
+    params.require(:oauth_client_application)
+          .permit(:name, :redirect_uri, :scopes, :icon_url)
   end
 end

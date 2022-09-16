@@ -38,7 +38,5 @@ class Character < ApplicationRecord
     self.verify! if do_verify && !self.verified? && character_meta[:verified]
 
     self.last_lodestone_update = character_meta[:last_parsed]
-    
-    self.save!
   end
 end

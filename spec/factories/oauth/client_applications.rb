@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :oauth_client_application, class: 'Oauth::ClientApplication' do
+  factory :oauth_client_application, class: 'OAuth::ClientApplication' do
     association :owner, factory: :user
 
     name { 'My Sample Application' }
@@ -7,7 +7,7 @@ FactoryBot.define do
     scopes { 'character user' }
   end
 
-  factory :random_oauth_client_application, class: 'Oauth::ClientApplication' do
+  factory :random_oauth_client_application, class: 'OAuth::ClientApplication' do
     association :owner, factory: :random_user
 
     name { Faker::App.name }

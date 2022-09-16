@@ -10,8 +10,8 @@ class Ability
     can [:read, :update, :verify, :destroy], Character, user: user
     can [:read, :update, :destroy], User, id: user.id
 
-    can [:use], Oauth::ClientApplication, public: true
-    can [:use, :manage], Oauth::ClientApplication, owner: user
+    can [:use], OAuth::ClientApplication, public: true
+    can [:use, :manage], OAuth::ClientApplication, owner: user
 
   end
 end

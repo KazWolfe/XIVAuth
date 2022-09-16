@@ -1,5 +1,5 @@
 <h1>Client Applications</h1>
-<a class="btn btn-primary" href="<%= new_developer_client_application_path %>" role="button">New Application</a>
+<a class="btn btn-primary" href="<%= new_developer_application_path %>" role="button">New Application</a>
 <table class="table">
   <thead>
   <tr>
@@ -10,7 +10,7 @@
   </thead>
   <% @applications.each do |application| %>
     <tr>
-      <td><%= link_to application.name, developer_client_application_path(application) %></td>
+      <td><%= link_to application.name, developer_application_path(application) %></td>
       <td><%= application.owner == current_user ? "You" : application.owner.name %></td>
       <td>
         No actions.

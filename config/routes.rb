@@ -2,8 +2,15 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   use_doorkeeper_openid_connect
-  use_doorkeeper
-  devise_for :users
+
+  use_doorkeeper do
+    controllers authorizations: 'oauth/authorizations',
+                tokens: 'oauth/tokens'
+  end
+
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'users/omniauth_callbacks'
+  }
 
   scope :module => "portal" do
     # User management
@@ -13,19 +20,26 @@ Rails.application.routes.draw do
     patch "/profile", to: "profile#update"
 
     # Character management
-    resources :characters
-    get "/characters/:id/verify", to: 'characters#verify'
-    post "/characters/:id/verify", to: 'characters#enqueue_verify'
-    
+    resources :characters do
+      get 'verify', on: :member
+      post 'verify', on: :member
+    end
+
     # Developer
     namespace :developer do
-      resources :client_applications
+      resources :applications, controller: 'client_applications'
     end
   end
 
-  namespace :admin do
-    resources :users
-    resources :characters
+  # Admin routes
+  authenticate :user, ->(u) { u.admin? } do
+    namespace :admin do
+      resources :users
+      resources :characters
+      resources :applications, controller: 'client_applications'
+    end
+
+    mount Sidekiq::Web => '/admin/sidekiq'
   end
 
   namespace :api do
@@ -35,7 +49,4 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root 'marketing#index'
-
-  # Other interfaces
-  mount Sidekiq::Web => '/admin/sidekiq'
 end

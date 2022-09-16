@@ -149,3 +149,12 @@ en:
           home: 'Home'
       application:
         title: 'Oauth authorization required'
+
+    scopes:
+      character: 'Access a selected verified character'
+      character:all: 'Access all verified characters'
+      character:manage: 'View and manage all characters'
+      user: 'Access basic user information'
+      user:email: 'Access sensitive user information, including email address'
+      jwt: 'Generate access tokens for other applications to use'
+      refresh: 'Maintain persistent access to XIVAuth services'

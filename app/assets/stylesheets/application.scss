@@ -1,1 +1,39 @@
 @import "bootstrap";
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.6/css/selectize.bootstrap5.min.css");
+
+/* -- brand colors -- */
+$brand-color-discord-bg:#7289DA;
+$brand-color-github-bg:#333333;
+$brand-color-steam-bg:#4E697D;
+
+.btn-social-discord {
+  color: #ffffff;
+  background-color: $brand-color-discord-bg;
+}
+
+.btn-social-discord:hover {
+  color: $brand-color-discord-bg;
+}
+
+.btn-social-github {
+  color: #ffffff;
+  background-color: $brand-color-github-bg;
+}
+
+.btn-social-github:hover {
+  color: $brand-color-github-bg;
+}
+
+.btn-social-steam {
+  color: #ffffff;
+  background-color: $brand-color-steam-bg;
+}
+
+.btn-social-steam:hover {
+  color: $brand-color-steam-bg;
+}
+
+.button_to {
+  display: inline-block;
+}

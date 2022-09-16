@@ -1,0 +1,8 @@
+<%- if devise_mapping.omniauthable? %>
+  <%- resource_class.omniauth_providers.each do |provider| %>
+    <%= button_to omniauth_authorize_path(resource_name, provider),
+                  class: "me-1 btn btn-social-#{provider}", method: :post, "data-turbo": false do %>
+      <i class="bi bi-<%= provider %>"></i> Sign in with <%= OmniAuth::Utils.camelize(provider) %>
+    <% end %>
+  <% end %>
+<% end %>

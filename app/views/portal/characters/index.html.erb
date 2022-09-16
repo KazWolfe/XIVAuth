@@ -1,28 +1,29 @@
 <h1>Characters</h1>
-<a class="btn btn-primary" href="<%= new_character_path %>" role="button">New Character</a>
-<table class="table">
-  <thead>
-  <tr>
-    <th scope="col" width="96">Avatar</th>
-    <th scope="col">Character</th>
-    <th scope="col">Verified</th>
-    <th scope="col">Actions</th>
-  </tr>
-  </thead>
+<%= link_to "New Character", new_character_path, class: "btn btn-primary mb-4", data: { turbo_frame: "remote_modal" } %>
+<div class="row rol-cols-1 row-cols-md-3 g-4">
   <% @characters.each do |character| %>
-    <tr>
-      <td><%= image_tag character.avatar_url, class: "rounded" %></td>
-      <td><%= link_to character.character_name, character %> @ <%= character.home_world %>
-        <br><%= character.lodestone_id %></td>
-      <td><%= character.verified? ? "Yes" : "No" %></td>
-      <td>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <%= image_tag character.avatar_url, class: "rounded float-start me-4" %>
+        <h5 class="card-title">
+          <%= link_to character.character_name, character_path(character) %>
+          <% if character.verified? %> <i class="bi bi-patch-check-fill text-success" title="Verified Character"></i> <% end %>
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted"><%= character.home_world %> (<%= character.home_datacenter %>)</h6>
+        <p class="card-text">
+          Lodestone ID #<%= link_to_lodestone character.lodestone_id, character %>
+        </p>
+      </div>
+      <div class="card-footer">
         <% unless character.verified? %>
-          <a class="btn btn-success" href="#" role="button">Verify</a>
+          <%= link_to 'Verify', "#{character_path(character)}/verify", class: "btn btn-success", role: "button"  %>
         <% end %>
         <%= button_to 'Delete', character, method: :delete, form: {
-          data: { turbo_confirm: "Are you sure you want to delete #{character.character_name}?" } },
+          data: { turbo_confirm: "Are you sure you want to delete #{character.character_name}?" }, class: "float-end" },
                       class: "btn btn-outline-danger" %>
-      </td>
-    </tr>
+      </div>
+    </div>
+  </div>
   <% end %>
-</table>
+</div>

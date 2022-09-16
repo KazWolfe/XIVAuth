@@ -1,0 +1,7 @@
+<h1>Character: <%= @character.character_name %></h1>
+<p>Go away, I haven't finished making this page yet.</p>
+
+<button class="btn btn-primary"><i class="bi bi-arrow-repeat"></i> Request Lodestone Refresh</button>
+<% unless @character.verified? %>
+  <%= link_to 'Verify Character', "#{character_path(@character)}/verify", class: "btn btn-success", role: "button"  %>
+<% end %>

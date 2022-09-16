@@ -3,7 +3,7 @@ class Portal::CharactersController < ApplicationController
   respond_to :html, :json
 
   def index
-    @characters = current_user.characters
+    @characters = current_user.characters.order(:verified_at)
 
     respond_with(@characters)
   end
@@ -22,8 +22,7 @@ class Portal::CharactersController < ApplicationController
   def create
     lodestone_id = helpers.extract_id(params[:character][:lodestone_url])
     if lodestone_id.nil?
-      render :new, status: :unprocessable_entity
-      return
+      render :new, status: :unprocessable_entity and return
     end
 
     @character = Character.new(
@@ -44,13 +43,16 @@ class Portal::CharactersController < ApplicationController
     @character = Character.find(params[:id])
     authorize! :verify, @character
 
+    respond_with @character
   end
 
   def enqueue_verify
     @character = Character.find(params[:id])
     authorize! :verify, @character
 
-    VerifyCharacterJob.perform_later @character
+    Character::VerifyCharacterJob.perform_later @character
+
+    respond_with @character
   end
 
   def destroy

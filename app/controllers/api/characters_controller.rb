@@ -1,12 +1,12 @@
 class Api::CharactersController < ApiController
   before_action -> { doorkeeper_authorize! :character, 'character:all', 'character:manage' }
-  before_action only: [:create, :update] do
+  before_action only: [:create, :update, :show] do
     doorkeeper_authorize! 'character:manage'
   end
 
   def index
     @characters = current_user.characters
-    @characters = @characters.verified unless show_unverified?
+    @characters = @characters.verified.where(id: permissible_character_ids) unless show_unverified?
 
     respond_with(@characters.map { |c| filtered_character(c) })
   end
@@ -42,7 +42,7 @@ class Api::CharactersController < ApiController
   def update
     params.require(:user).permit(:content_id)
 
-    @character = Character.find(params[:id])
+    @character = Character.find_by(lodestone_id: params[:id])
     authorize! :update, @character
 
     respond_with filtered_character(@character)
@@ -69,5 +69,9 @@ class Api::CharactersController < ApiController
 
   def show_unverified?
     doorkeeper_token[:scopes].include?('character:manage')
+  end
+
+  def permissible_character_ids
+    doorkeeper_token.oauth_permissibles.where(resource_type: 'Character').pluck(:resource_id)
   end
 end

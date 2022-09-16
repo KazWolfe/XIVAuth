@@ -1,0 +1,59 @@
+<h1>Create Application</h1>
+
+<div class="row">
+  <div class="col-md-8">
+    <%= form_with url: developer_applications_path, model: @application do |form| %>
+      <div class="mb-3">
+        <%= form.label :name, "Application Name" %>
+        <%= form.text_field :name, class: "form-control" %>
+      </div>
+      <div class="mb-3">
+        <%= form.label :redirect_uri, "Redirect URIs" %>
+        <%= form.text_area :redirect_uri, class: "form-control" %>
+        <div id="redirectUriHelp" class="form-text">
+          Separate each Redirect URI your application will use with a newline.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label>Authentication Mode</label>
+        <div class="form-check">
+          <%= form.radio_button :scopes, "character", class: "form-check-input", checked: true %>
+          <%= form.label :scopes_character, "Log in with a character", class: "form-check-label" %>
+        </div>
+        <div class="form-check">
+          <%= form.radio_button :scopes, "user", class: "form-check-input" %>
+          <%= form.label :scopes_user, "Log in with the user", class: "form-check-label" %>
+        </div>
+        <div class="form-text">
+          Choose carefully! This setting may not be changed without dev intervention.
+          <br>
+          If you require PKCE or custom scopes (including <code>characters:all</code> or <code>user:email</code>), please
+          contact an XIVAuth Developer.
+        </div>
+      </div>
+      <%= form.submit "Create App!", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+  <div class="col-md-4">
+    <h4>Request Preview</h4>
+    <div class="highlight request-preview">
+          <pre><code>
+GET /api/characters
+Authorization: Bearer [OAUTH2_TOKEN_HERE]
+
+[
+  {
+    lodestone_id: 1234567,
+    character_name: "Finalfantasy FFXIV",
+    home_world: "Balmung",
+    home_datacenter: "Crystal",
+    avatar_url: https://na.finalfantasyxiv.com/...,
+    verified: true,
+    last_update: "2022-12-31T00:00:00Z"
+  }
+]
+    </code></pre>
+    </div>
+  </div>
+</div>
+

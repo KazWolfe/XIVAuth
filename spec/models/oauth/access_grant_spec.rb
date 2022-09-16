@@ -1,5 +1,5 @@
 require 'rails_helper'
 
-RSpec.describe Oauth::AccessGrant, type: :model do
+RSpec.describe OAuth::AccessGrant, type: :model do
   pending "add some examples to (or delete) #{__FILE__}"
 end

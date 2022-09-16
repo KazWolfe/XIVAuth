@@ -14,7 +14,7 @@
     <tr>
       <td><%= character.id %></td>
       <td><%= character.lodestone_id %></td>
-      <td><%= link_to character.user_id, admin_user_path(character.user_id) %></td>
+      <td><%= link_to_pretty_user character.user %></td>
       <td><%= image_tag character.avatar_url %></td>
       <td><%= link_to character.character_name, character %></td>
       <td><%= character.home_world %></td>

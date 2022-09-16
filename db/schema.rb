@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_01_220509) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,10 +75,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_01_220509) do
     t.boolean "confidential", default: true, null: false
     t.boolean "public", default: true, null: false
     t.string "icon_url"
+    t.boolean "verified", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_client_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_client_applications_on_uid", unique: true
+  end
+
+  create_table "oauth_openid_requests", force: :cascade do |t|
+    t.bigint "access_grant_id", null: false
+    t.string "nonce", null: false
+    t.index ["access_grant_id"], name: "index_oauth_openid_requests_on_access_grant_id"
   end
 
   create_table "oauth_permissibles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -89,6 +96,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_01_220509) do
     t.datetime "created_at", null: false
     t.index ["policy_id"], name: "index_oauth_permissibles_on_policy_id"
     t.index ["resource_type", "resource_id"], name: "index_oauth_permissibles_on_resource_type_and_resource_id"
+  end
+
+  create_table "social_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.string "provider", null: false
+    t.string "external_id", null: false
+    t.string "external_email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_social_identities_on_external_id", unique: true
+    t.index ["provider", "external_id"], name: "index_social_identities_on_provider_and_external_id", unique: true
+    t.index ["provider"], name: "index_social_identities_on_provider"
+    t.index ["user_id"], name: "index_social_identities_on_user_id"
   end
 
   create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -117,6 +137,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_01_220509) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
@@ -133,5 +158,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_01_220509) do
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "social_identities", "users"
   add_foreign_key "teams", "users", column: "owner_id"
 end

@@ -3,9 +3,8 @@
 class DeviseCreateUsers < ActiveRecord::Migration[7.0]
   def change
     create_table :users, id: :uuid do |t|
-      # Just a field to display on user sign-in as a friendly name. Doesn't actually
-      # matter for anything we care about.
-      t.string :username,           null: false, default: ""
+      # Information to uniquely identify a user, broadly speaking.
+      t.string :username,           null: false, unique: true
 
       ## Database authenticatable
       t.string :email,              null: false, default: ""
@@ -31,18 +30,11 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.0]
       t.datetime :confirmation_sent_at
       t.string   :unconfirmed_email # Only if using reconfirmable
 
-      ## Lockable
-      # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
-      # t.string   :unlock_token # Only if unlock strategy is :email or :both
-      # t.datetime :locked_at
-
-
       t.timestamps null: false
-    end
 
-    add_index :users, :email,                unique: true
-    add_index :users, :reset_password_token, unique: true
-    add_index :users, :confirmation_token,   unique: true
-    # add_index :users.rb, :unlock_token,         unique: true
+      t.index :email, unique: true
+      t.index :reset_password_token, unique: true
+      t.index :confirmation_token, unique: true
+    end
   end
 end
