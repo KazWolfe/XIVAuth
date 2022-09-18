@@ -1,29 +1,24 @@
-<div class="alert alert-info">
-  <strong>Danger, Kaz!</strong> This is going to be a real modal one day. I promise.
-</div>
+<% lodestone_profile_url = 'https://na.finalfantasyxiv.com/lodestone/my/setting/profile/' %>
 
-<div class="modal show force-visible" id="verify-character" style="position: static; display: block;">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="verifyLabel">Verify Character</h5>
-      </div>
-      <div class="modal-body">
-        <p>
-          To verify your character, visit your <a href="https://na.finalfantasyxiv.com/lodestone/my/setting/profile/">Lodestone profile</a>
-          and place the following verification code <em>exactly as it appears below</em> into your character profile.
-        </p>
-        <pre style="text-align: center"><code><%= @character.verification_key %></code></pre>
-        <p>
-          After saving, come back here and click the button below to continue onwards to the rest of the verification process.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <%= link_to "Cancel", characters_path, class: "text-decoration-none text-secondary me-auto" %>
-        <%= form_with url: "#{character_path(@character)}/verify", method: :post do |form| %>
-          <%= form.submit "Okay, it's there!", class: "btn btn-primary", "data-turbo": false %>
-        <% end %>
-      </div>
-    </div>
+<%= render 'layouts/components/remote_modal', title: 'Verify Character' do %>
+  <div class="modal-header">
+    <h5 class="modal-title" id="verifyLabel">Verify Character</h5>
   </div>
-</div>
+  <div class="modal-body">
+    <p>
+      To verify your character, visit your <%= link_to "Lodestone profile", lodestone_profile_url %> and place the
+      following verification code <em>exactly as it appears below</em> into the character profile.
+    </p>
+    <pre style="text-align: center"><code><%= @character.verification_key %></code></pre>
+    <p>
+      After saving, come back here and click the button below to continue onwards to the rest of the verification
+      process.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn me-auto" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+    <%= form_with url: "#{character_path(@character)}/verify", method: :post do |form| %>
+      <%= form.submit "Okay, it's there!", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+<% end %>

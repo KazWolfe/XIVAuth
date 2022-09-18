@@ -20,7 +20,8 @@
         </div>
         <div class="card-footer">
           <% unless character.verified? %>
-            <%= link_to "#{character_path(character)}/verify", class: "btn btn-success", role: "button" do %>
+            <%= link_to "#{character_path(character)}/verify", data: { turbo_frame: "remote_modal" },
+                        class: "btn btn-success", role: "button" do %>
               <i class="bi bi-person-check-fill"></i> Verify
             <% end %>
           <% end %>

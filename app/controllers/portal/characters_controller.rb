@@ -5,8 +5,6 @@ class Portal::CharactersController < ApplicationController
   def index
     @characters = current_user.characters.unscope(:order).order('verified_at DESC NULLS LAST, created_at ASC')
     @block_new_character = helpers.user_at_character_allowance(current_user)
-
-    respond_with(@characters)
   end
 
   def show
@@ -59,8 +57,6 @@ class Portal::CharactersController < ApplicationController
   def verify
     @character = Character.find(params[:id])
     authorize! :verify, @character
-
-    respond_with @character
   end
 
   def enqueue_verify
@@ -69,7 +65,7 @@ class Portal::CharactersController < ApplicationController
 
     Character::VerifyCharacterJob.perform_later @character
 
-    respond_with @character
+    render turbo_stream: turbo_stream.update('remote_modal-content', template: 'portal/characters/enqueue_verify')
   end
 
   def destroy

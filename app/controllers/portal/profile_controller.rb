@@ -34,7 +34,7 @@ class Portal::ProfileController < ApplicationController
       redirect_to profile_path
     else
       current_user.clean_up_passwords
-      render turbo_stream: turbo_stream.replace('remote_modal', template: 'portal/profile/password_modal'),
+      render turbo_stream: turbo_stream.update('remote_modal-content', partial: 'portal/profile/partials/password_form'),
              status: :unprocessable_entity
     end
   end
