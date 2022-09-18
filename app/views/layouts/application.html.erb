@@ -19,12 +19,13 @@
       <% if Rails.env != "production" %>
         <div class="alert alert-warning" role="alert" style="margin-top: 20px">
           <i class="bi bi-exclamation-triangle"></i> <strong>This is a preview environment!</strong>
-          While this environment is probably usable for testing and preview purposes, it should not be used for any
-          live applications, users, or data at this time. Accounts and applications registered on this server can
-          disappear at any time.
+          While this environment is probably usable for testing and preview purposes, it should <em>absolutely</em> not
+          be used for any live applications, users, or data at this time. XIVAuth is far from complete and the version
+          currently present is littered with bugs, security holes, bad UI decisions, and general stupid mistakes made
+          by someone completely and utterly unqualified to write something so serious. This is a month's worth of work
+          (seriously!).
           <br><br>
-          Additionally, certain security features may be disabled for testing purposes. <em>Do not store confidential
-          data on this environment or assume that credentials are secure.</em>
+          <em>Data on this instance is liable to be reset at any time, including application secrets.</em>
         </div>
       <% end %>
       <%= yield %>
