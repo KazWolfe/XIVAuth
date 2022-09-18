@@ -39,5 +39,10 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 #
 # preload_app!
 
+# SemanticLogger helper
+on_worker_boot do
+  SemanticLogger.reopen
+end
+
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
