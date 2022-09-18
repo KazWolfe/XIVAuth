@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     # Character management
     resources :characters, except: [:show] do
       get 'verify', on: :member
-      post 'verify', on: :member
+      post 'verify', on: :member, to: 'characters#enqueue_verify'
     end
 
     # Developer
