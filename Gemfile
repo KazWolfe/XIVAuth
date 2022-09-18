@@ -9,6 +9,9 @@ gem 'puma', '~> 5.0'
 gem 'rails', '~> 7.0.3', '>= 7.0.3.1'
 gem 'sprockets-rails'  # asset pipeline
 
+# Heroku?
+gem 'rexml', "~> 3.2.5"
+
 # Frontend-ish
 gem 'importmap-rails'
 gem 'jbuilder'

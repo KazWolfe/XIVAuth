@@ -428,6 +428,7 @@ DEPENDENCIES
   rails_semantic_logger
   redis (~> 4.0)
   rest-client
+  rexml (~> 3.2.5)
   rspec-rails
   rubocop
   sassc-rails
