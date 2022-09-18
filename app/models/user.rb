@@ -28,7 +28,8 @@ class User < ApplicationRecord
   end
   
   def admin?
-    email == 'dev@eorzea.id'
+    # this is TERRIBLE.
+    confirmed? && (email == 'dev@eorzea.id' || username == "KazWolfe")
   end
   
   def developer?
