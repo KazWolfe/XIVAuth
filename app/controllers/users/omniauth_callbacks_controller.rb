@@ -1,4 +1,4 @@
-class Users::OmniauthCallbacksController < ApplicationController
+class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Huge credit to
   # https://www.cyrusstoller.com/2019/09/17/supporting-multiple-omniauth-providers-with-devise
 
