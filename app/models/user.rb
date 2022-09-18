@@ -12,11 +12,13 @@ class User < ApplicationRecord
 
   devise :database_authenticatable, :registerable, :confirmable, :omniauthable,
          :recoverable, :rememberable, :trackable, :validatable, :zxcvbnable,
-         omniauth_providers: [:discord, :github, :steam]
-
+         omniauth_providers: [:discord, :github]
+  
   def pairwise_id(client_id)
-    digest = OpenSSL::Digest.new('sha256')
-    hmac = OpenSSL::HMAC.digest(digest, 'secret', "#{self.id}###{client_id}")
+    hmac = OpenSSL::HMAC.digest(
+      OpenSSL::Digest.new('sha256'),
+      Rails.application.key_generator.generate_key('pairwise_key'),
+      "#{self.id}###{client_id}")
 
     Base64.urlsafe_encode64(hmac, padding: false)
   end
@@ -35,7 +37,11 @@ class User < ApplicationRecord
 
   def self.from_omniauth(auth)
     ident = SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
-    return ident.user if ident
+    if ident
+      ident.last_used_at = DateTime.now
+      ident.save!
+      return ident.user
+    end
 
     email = auth['info']['email']
     existing = find_for_database_authentication(email: email.downcase)

@@ -1,4 +1,4 @@
-class CreateOauthPermissibles < ActiveRecord::Migration[7.0]
+class CreateOAuthPermissibles < ActiveRecord::Migration[7.0]
   def change
     create_table :oauth_permissibles, id: :uuid do |t|
       t.uuid :policy_id, null: false, index: { unique: false }

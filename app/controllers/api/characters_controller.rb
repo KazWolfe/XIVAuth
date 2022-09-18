@@ -1,21 +1,21 @@
 class Api::CharactersController < ApiController
   before_action -> { doorkeeper_authorize! :character, 'character:all', 'character:manage' }
-  before_action only: [:create, :update, :show] do
+  before_action only: [:create, :update] do
     doorkeeper_authorize! 'character:manage'
   end
 
   def index
-    @characters = current_user.characters
-    @characters = @characters.verified.where(id: permissible_character_ids) unless show_unverified?
+    characters = authorized_characters
+    characters = characters.first(1) unless show_all_characters?
 
-    respond_with(@characters.map { |c| filtered_character(c) })
+    respond_with(characters.map { |c| filtered_character(c) })
   end
 
   def show
-    @character = Character.find_by(lodestone_id: params[:id], user_id: current_user.id)
-    authorize! :show, @character
+    @character = authorized_characters.find_by(lodestone_id: params[:id])
+    respond_with(nil, status: :not_found) and return unless @character.present?
 
-    respond_with(status: :not_found) unless @character.verified? || show_unverified?
+    authorize! :show, @character
 
     respond_with filtered_character(@character)
   end
@@ -43,6 +43,8 @@ class Api::CharactersController < ApiController
     params.require(:user).permit(:content_id)
 
     @character = Character.find_by(lodestone_id: params[:id])
+    respond_with(nil, status: :not_found) and return unless @character.present?
+
     authorize! :update, @character
 
     respond_with filtered_character(@character)
@@ -61,17 +63,32 @@ class Api::CharactersController < ApiController
 
     # There's an implicit block here for character:manage, as only verified characters will normally pass through here
     # unless the access token in question already can see unverified characters
-    resp[:verification_key] = character.verification_key unless
-      character.verified? || !can?(:verify, character)
+    resp[:verification_key] = character.verification_key unless character.verified? || !can?(:verify, character)
 
     resp
   end
 
-  def show_unverified?
-    doorkeeper_token[:scopes].include?('character:manage')
-  end
+  def authorized_characters
+    # Resolution path is to evaluate all denies, then all allows (if they exist).
+    # Deny and allow records -> only allows that aren't also denied
+    # Deny only -> all characters not listed in deny
+    # Allow only -> only allows
 
-  def permissible_character_ids
-    doorkeeper_token.oauth_permissibles.where(resource_type: 'Character').pluck(:resource_id)
+    characters = current_user.characters
+    return characters if doorkeeper_token.scopes.include?('character:manage')
+
+    permissibles = doorkeeper_token.oauth_permissibles.where(resource_type: 'Character')
+
+    explicit_allow_ids = permissibles.where(deny: false).pluck(:resource_id)
+    explicit_deny_ids = permissibles.where(deny: true).pluck(:resource_id)
+
+    characters = characters.verified.where.not(id: explicit_deny_ids)
+    characters = characters.where(id: explicit_allow_ids) if explicit_allow_ids.present?
+
+    characters
+  end
+  
+  def show_all_characters?
+    (doorkeeper_token.scopes & %w[character:manage character:all]).count.positive?
   end
 end

@@ -3,10 +3,6 @@ class CreateTeams < ActiveRecord::Migration[7.0]
     create_table :teams, id: :uuid do |t|
       t.string :name, null: false
 
-      # Each Team can have a single owner that is above the "rules" of the standard user mapping.
-      t.references :owner,
-                   null: false, index: true, foreign_key: { to_table: :users }, type: :uuid
-
       t.timestamps
     end
 

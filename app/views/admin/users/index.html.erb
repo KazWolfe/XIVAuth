@@ -2,7 +2,6 @@
 <table class="table">
   <thead>
   <tr>
-    <th class="col" width="360">User ID</th>
     <th class="col">Username</th>
     <th class="col">Characters</th>
     <th class="col">Verified Character?</th>
@@ -11,8 +10,18 @@
   <tbody>
   <% @users.each do |user| %>
     <tr>
-      <td><%= link_to user.id, admin_user_path(user) %></td>
-      <td><%= user.name %></td>
+      <td>
+        <%= link_to_pretty_user user  %>
+        <% if user.developer? %>
+          <i class="bi bi-code-slash" title="Developer Access"></i>
+        <% end %>
+        <% if user.social_identities.count.positive? %>
+          <i class="bi bi-globe2" title="External IdP"></i>
+        <% end %>
+        <% unless user.confirmed? %>
+          <i class="bi bi-envelope-exclamation-fill text-warning" title="Email Unverified"></i>
+        <% end %>
+      </td>
       <td><%= user.characters.count %></td>
       <td><%= user.characters.any? { |c| c.verified? } ? "Yes" : "No" %></td>
     </tr>

@@ -1,7 +1,17 @@
-<h2>Log in</h2>
+<div class="row justify-content-center">
+  <div class="col-lg-4">
+    <h2>Log in to XIVAuth</h2>
 
-<div class="row">
-  <div class="col-md-6">
+    <div class="d-grid gap-2">
+      <%= render "users/shared/social" %>
+    </div>
+
+    <div class="row text-secondary pt-2">
+      <div class="col"><hr/></div>
+      <div class="col-auto">or</div>
+      <div class="col"><hr/></div>
+    </div>
+
     <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
       <div class="form-group">
         <%= f.label :email %><br />
@@ -22,15 +32,13 @@
         </div>
       <% end %>
 
-      <div class="form-group">
-        <%= f.submit "Log in", class: "btn btn-primary" %>
+      <div class="form-group d-grid d-md-flex gap-2 mt-2">
+        <%= f.submit "Log in", class: "btn btn-primary col-md-8" %>
+        <%= link_to "Sign up", new_registration_path(resource_name), class: "btn btn-secondary col" %>
       </div>
     <% end %>
 
-    <%= render "devise/shared/links" %>
-  </div>
-  <div class="col-md-6">
-    <%= render "devise/shared/social" %>
+    <%= render "users/shared/links" %>
   </div>
 </div>
 

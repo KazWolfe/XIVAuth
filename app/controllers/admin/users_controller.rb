@@ -1,6 +1,6 @@
 class Admin::UsersController < AdminController
   def index
-    @users = User.accessible_by(current_ability)
+    @users = User.accessible_by(current_ability).order(created_at: :desc)
   end
 
   def show

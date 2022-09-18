@@ -14,9 +14,12 @@
       <tr>
         <th scope="row">Roles</th>
         <td>
-          <% if @user.admin? %><span class="badge bg-danger"><i class="bi bi-lightning-fill"></i> ADMIN</span><% end %>
-          <% if @user.developer? %><span class="badge bg-primary"><i class="bi bi-code-slash"></i> Developer</span><% end %>
-          <% if false %><span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Banned</span><% end %>
+          <% if @user.admin? %><span class="badge bg-danger"><i class="bi bi-lightning-fill"></i> ADMIN</span>
+          <% end %>
+          <% if @user.developer? %><span class="badge bg-primary"><i class="bi bi-code-slash"></i> Developer</span>
+          <% end %>
+          <% if false %><span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Banned</span>
+          <% end %>
         </td>
       </tr>
       <tr>
@@ -28,6 +31,12 @@
           <% end %>
         </td>
       </tr>
+      <% if @user.pending_reconfirmation? %>
+        <th scope="row">Pending Email</th>
+        <td>
+          <%= @user.unconfirmed_email %>
+        </td>
+      <% end %>
       <tr>
         <th scope="row">Creation Date</th>
         <td><%= @user.created_at %></td>
@@ -44,7 +53,9 @@
     <h3>Security</h3>
 
     <div class="button-toolbar pb-4">
-      <button class="btn btn-primary"><i class="bi bi-envelope-plus"></i> Skip Email Confirmation</button>
+      <% if @user.pending_reconfirmation? || !@user.confirmed? %>
+        <button class="btn btn-primary"><i class="bi bi-envelope-plus"></i> Skip Email Confirmation</button>
+      <% end %>
       <button class="btn btn-primary"><i class="bi bi-envelope"></i> Send Password Reset</button>
       <button class="btn btn-primary" disabled><i class="bi bi-unlock"></i> Remove MFA</button>
     </div>
@@ -55,7 +66,7 @@
       <tr>
         <th scope="col">IdP</th>
         <th scope="col">External ID</th>
-        <th scope="col">Linked At</th>
+        <th scope="col">Linked</th>
         <th scope="col">Last Used</th>
         <th scope="col">Actions</th>
       </tr>
@@ -65,8 +76,8 @@
         <tr>
           <th scope="row"><i class="bi bi-<%= ident.provider %>"></i> <%= ident.provider.titleize %></th>
           <td><%= ident.external_id %></td>
-          <td><%= ident.created_at %></td>
-          <td>ToDo</td>
+          <td><%= dotiw_hover ident.created_at %></td>
+          <td><%= dotiw_hover ident.last_used_at %></td>
           <td>
             <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
           </td>

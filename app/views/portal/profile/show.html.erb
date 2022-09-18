@@ -1,0 +1,68 @@
+<h1>Your Profile</h1>
+
+<p>Hi there <%= current_user.name %>!</p>
+<div class="row gx-5">
+  <div class="col-6">
+    <h3>Profile</h3>
+    <%= form_with model: @user, url: profile_path do |form| %>
+      <div class="mb-3">
+        <label for="user_username" class="form-label">Username</label>
+        <%= form.text_field :username, class: "form-control" %>
+        <div class="form-text">
+          Your username will show in the XIVAuth UI, may be provided to some apps, and will show to users of apps that
+          you create. Usernames are unique across XIVAuth.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="user_email" class="form-label">Email Address</label>
+        <%= form.text_field :email, class: "form-control" %>
+        <% if @user.pending_reconfirmation? %>
+          <div class="alert alert-info mt-2">
+            A confirmation email has been sent to <code><%= @user.unconfirmed_email %></code>. Check your inbox to
+            complete the requested email change. Or, cancel this change.
+          </div>
+        <% end %>
+      </div>
+      <%= form.submit class: "btn btn-primary" %>
+    <% end %>
+  </div>
+  <div class="col-6">
+    <h3>Security</h3>
+    <%= link_to "Change Password", "#{profile_path}/password", class: "btn btn-outline-danger", data: { turbo_frame: "remote_modal" } %>
+    <p></p>
+    <h4>Two-Factor Authentication</h4>
+    <p>[ToDo] Feature disabled...</p>
+    <h4>External Identities</h4>
+    <% if @external_identities.count.positive? %>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Provider</th>
+          <th scope="col">External ID</th>
+          <th scope="col">Added</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @external_identities.each do |si| %>
+          <tr>
+            <th scope="row"><i class="bi bi-<%= si.provider %>"></i> <%= si.provider.titleize %></th>
+            <td><%= si.external_id %></td>
+            <td><%= dotiw_hover si.created_at %></td>
+            <td>
+              <%= button_to "#{profile_path}/social_identity/#{si.id}", method: :delete, form: {
+                data: { turbo_confirm: "Are you sure you want to delete the link to #{si.provider.titleize}?" } },
+                            class: "btn btn-outline-danger" do %>
+                <i class="bi bi-trash"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No external identities registered to this user. Log in with one tied to your email address!</p>
+    <% end %>
+  </div>
+</div>
+

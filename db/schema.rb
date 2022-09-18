@@ -103,6 +103,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
     t.string "provider", null: false
     t.string "external_id", null: false
     t.string "external_email"
+    t.datetime "last_used_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["external_id"], name: "index_social_identities_on_external_id", unique: true
@@ -124,14 +125,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
 
   create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
-    t.uuid "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["owner_id"], name: "index_teams_on_owner_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "username", default: "", null: false
+    t.string "username", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -159,5 +158,4 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
   add_foreign_key "oauth_access_tokens", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "social_identities", "users"
-  add_foreign_key "teams", "users", column: "owner_id"
 end

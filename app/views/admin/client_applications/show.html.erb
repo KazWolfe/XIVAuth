@@ -11,10 +11,7 @@
       <tr>
         <th scope="row">App Name</th>
         <td>
-          <%= @application.name %>
-          <% if @application.verified? %>
-            <i class="bi bi-patch-check-fill text-success" title="Verified App"></i>
-          <% end %>
+          <%= verifiable_text(@application.name, @application.verified?, title: "Verified Application") %>
         </td>
       </tr>
       <tr>

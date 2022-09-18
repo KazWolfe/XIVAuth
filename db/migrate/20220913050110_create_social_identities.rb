@@ -6,6 +6,8 @@ class CreateSocialIdentities < ActiveRecord::Migration[7.0]
       t.string :provider, index: { unique: false }, null: false
       t.string :external_id, index: { unique: true }, null: false
       t.string :external_email, null: true
+      
+      t.timestamp :last_used_at, null: true
 
       t.timestamps
 

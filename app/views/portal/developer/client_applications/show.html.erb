@@ -1,7 +1,12 @@
 <h1>Application: <%= @application.name %></h1>
 
-<table class="table">
-  <tbody>
+<%= form_with model: @application, url: developer_application_path(@application) do |form| %>
+  <table class="table">
+    <tbody>
+    <tr>
+      <th scope="row">Application Name</th>
+      <td><%= form.text_field :name, required: true, class:'form-control', value: @application.name %></td>
+    </tr>
     <tr>
       <th scope="row">Client ID</th>
       <td><code><%= @application.uid %></code></td>
@@ -11,16 +16,21 @@
       <td>
         <% secret = flash[:application_secret].presence || @application.plaintext_secret %>
         <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
-          <code><%= secret %></code>
+          <code><%= secret %></code><br>
           <small>Warning: This is the only time this secret will be shown. Please ensure it is saved now.</small>
+          <br>
         <% end %>
-        <button type="button" class="btn btn-danger">Regenerate [ToDo]</button>
+        <%= button_to 'Regenerate Secret', developer_application_path(@application), method: :put,
+                      form: { class: "inline" },
+                      name: "command", value: "regenerate", class: "btn btn-danger" %>
       </td>
     </tr>
     <tr>
       <th scope="row">Redirect URIs</th>
       <td>
-        <pre><%= @application.redirect_uri %></pre><br>
+        <%= form.text_area(:redirect_uri, required: true, value: @application.redirect_uri,
+                           class:'form-control font-monospace') %>
+        <div class="form-text">Separate allowed redirect URIs with newlines.</div>
       </td>
     </tr>
     <tr>
@@ -34,11 +44,14 @@
       <th scope="Row">Public App</th>
       <td><%= @application.public ? "Yes" : "No" %></td>
     </tr>
-  </tbody>
-</table>
-
-<div class="btn-toolbar">
-  <button type="button" class="btn btn-primary me-2">Something</button>
-  <button type="button" class="btn btn-secondary me-2">Another Thing</button>
-  <button type="button" class="btn btn-danger float-end">Delete</button>
-</div>
+    </tbody>
+  </table>
+  <div class="btn-toolbar">
+    <%= form.submit "Save App", class: "btn btn-primary me-2" %>
+    <% unless @application.verified? %>
+      <%= button_to 'Delete', developer_application_path(@application), method: :delete, form: {
+        data: { turbo_confirm: "Are you sure you want to delete #{@application.name}? THIS CANNOT BE UNDONE!" } },
+                    class: "btn btn-outline-danger" %>
+    <% end %>
+  </div>
+<% end %>

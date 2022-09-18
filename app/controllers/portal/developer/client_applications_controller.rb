@@ -2,16 +2,13 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @applications = OAuth::ClientApplication.accessible_by(current_ability)
-    
-    @applications
+    # @applications = OAuth::ClientApplication.accessible_by(current_ability)
+    @applications = current_user.oauth_client_applications.order(:created_at)
   end
 
   def show
     @application = OAuth::ClientApplication.find(params[:id])
     authorize! :show, @application
-    
-    @application
   end
 
   def new
@@ -21,7 +18,7 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
   def create
     # Only allow our permitted micro-scopes at app creation.
     unless %w[character user].include? sanitized_params[:scopes].to_s
-      Rails.logger.warn("Attempt to create an application with extra scopes blocked")
+      Rails.logger.warn('Attempt to create an application with extra scopes blocked')
       render :new, status: :forbidden and return
     end
 
@@ -38,9 +35,14 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
 
   def update
     @application = OAuth::ClientApplication.find(params[:id])
-    authorize! :update, @character
+    authorize! :update, @application
 
-    @application.update(sanitized_params)
+    if params[:command] == 'regenerate'
+      regenerate_secret(@application)
+      redirect_to developer_application_path(@application) and return
+    end
+
+    @application.update(sanitized_params(allow_scopes: false))
 
     if @application.save!
       redirect_to developer_application_path(@application)
@@ -65,8 +67,18 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
 
   protected
 
-  def sanitized_params
+  def regenerate_secret(application)
+    application.renew_secret
+
+    application.save!
+    flash[:application_secret] = application.plaintext_secret
+  end
+
+  def sanitized_params(allow_scopes: true)
+    permitted_fields = [:name, :redirect_uri, :icon_url]
+    permitted_fields << :scopes if allow_scopes
+
     params.require(:oauth_client_application)
-          .permit(:name, :redirect_uri, :scopes, :icon_url)
+          .permit(permitted_fields)
   end
 end

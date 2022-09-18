@@ -1,29 +1,57 @@
 <h1>Characters</h1>
-<%= link_to "New Character", new_character_path, class: "btn btn-primary mb-4", data: { turbo_frame: "remote_modal" } %>
+<% if user_at_character_allowance(current_user) %>
+  <p class="text-danger">Maximum number of unverified characters reached.</p>
+<% else %>
+  <%= link_to "New Character", new_character_path, class: "btn btn-primary mb-4", data: { turbo_frame: "remote_modal" } %>
+<% end %>
 <div class="row rol-cols-1 row-cols-md-3 g-4">
   <% @characters.each do |character| %>
-  <div class="col">
-    <div class="card">
-      <div class="card-body">
-        <%= image_tag character.avatar_url, class: "rounded float-start me-4" %>
-        <h5 class="card-title">
-          <%= link_to character.character_name, character_path(character) %>
-          <% if character.verified? %> <i class="bi bi-patch-check-fill text-success" title="Verified Character"></i> <% end %>
-        </h5>
-        <h6 class="card-subtitle mb-2 text-muted"><%= character.home_world %> (<%= character.home_datacenter %>)</h6>
-        <p class="card-text">
-          Lodestone ID #<%= link_to_lodestone character.lodestone_id, character %>
-        </p>
-      </div>
-      <div class="card-footer">
-        <% unless character.verified? %>
-          <%= link_to 'Verify', "#{character_path(character)}/verify", class: "btn btn-success", role: "button"  %>
-        <% end %>
-        <%= button_to 'Delete', character, method: :delete, form: {
-          data: { turbo_confirm: "Are you sure you want to delete #{character.character_name}?" }, class: "float-end" },
-                      class: "btn btn-outline-danger" %>
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <%= image_tag character.avatar_url, class: "rounded float-start me-4" %>
+          <h5 class="card-title">
+            <%= verifiable_text character.character_name, character.verified? %>
+          </h5>
+          <h6 class="card-subtitle mb-2 text-muted"><%= character.home_world %> (<%= character.home_datacenter %>)</h6>
+          <p class="card-text">
+            Lodestone ID #<%= link_to_lodestone character.lodestone_id, character %>
+          </p>
+        </div>
+        <div class="card-footer">
+          <% unless character.verified? %>
+            <%= link_to "#{character_path(character)}/verify", class: "btn btn-success", role: "button" do %>
+              <i class="bi bi-person-check-fill"></i> Verify
+            <% end %>
+          <% end %>
+          <button class="btn float-end" type="button" id="actions-<%= character.id %>}" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots"></i></button>
+          <ul class="dropdown-menu" aria-labelledby="actions-<%= character.id %>}">
+            <% unless character.verified? %>
+              <li>
+                <%= link_to "#{character_path(character)}/verify", class: "dropdown-item", role: "button" do %>
+                  <i class="bi bi-person-check-fill"></i> Verify Character
+                <% end %>
+              </li>
+            <% end %>
+            <% if character.last_lodestone_update < 24.hours.ago %>
+              <li>
+                <%= button_to character, method: :put, name: 'command', value: 'sync',
+                              class: "dropdown-item" do %>
+                  <i class="bi bi-arrow-repeat"></i> Request Lodestone Sync
+                <% end %>
+              </li>
+            <% end %>
+            <li>
+              <%= button_to character, method: :delete, form: {
+                data: { turbo_confirm: "Are you sure you want to delete #{character.character_name}?" } },
+                            class: "text-danger dropdown-item" do %>
+                <i class="bi bi-trash"></i> Delete Character
+              <% end %>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
   <% end %>
 </div>

@@ -1,26 +1,23 @@
 <h1>ADMIN - Characters</h1>
-<table>
-  <tr>
-    <th>Internal ID</th>
-    <th>Lodestone ID</th>
-    <th>Owner ID</th>
-    <th>Avatar</th>
-    <th>Character Name</th>
-    <th>Home World</th>
-    <th>Verified</th>
-    <th>Actions</th>
-  </tr>
+<table class="table">
+  <thead>
+    <tr>
+      <th></th>
+      <th scope="col">Character</th>
+      <th scope="col">Lodestone ID</th>
+      <th scope="col">Owner</th>
+      <th scope="col">Home World</th>
+    </tr>
+  </thead>
+  <tbody>
   <% @characters.each do |character| %>
     <tr>
-      <td><%= character.id %></td>
+      <td><%= image_tag character.avatar_url, class: "rounded", size: 28 %></td>
+      <td><%= link_to_pretty_character character, true, true %></td>
       <td><%= character.lodestone_id %></td>
       <td><%= link_to_pretty_user character.user %></td>
-      <td><%= image_tag character.avatar_url %></td>
-      <td><%= link_to character.character_name, character %></td>
-      <td><%= character.home_world %></td>
-      <td><%= character.verified? ? "Yes" : "No" %></td>
-      <td><%= button_to 'Delete', character, method: :delete, form: {
-        data: { turbo_confirm: "Are you sure you want to delete #{character.character_name}?"}}%></td>
+      <td><%= character.home_world %> (<%= character.home_datacenter %>)</td>
     </tr>
   <% end %>
+  </tbody>
 </table>

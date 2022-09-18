@@ -14,3 +14,4 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 # Other libraries and deps
 pin "jquery", to: "https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.js", preload: true
 pin "selectize", to: "https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.6/js/selectize.min.js"
+pin "zxcvbn", to: "https://ga.jspm.io/npm:zxcvbn@4.4.2/lib/main.js"

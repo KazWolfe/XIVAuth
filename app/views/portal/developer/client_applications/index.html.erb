@@ -10,7 +10,10 @@
   </thead>
   <% @applications.each do |application| %>
     <tr>
-      <td><%= link_to application.name, developer_application_path(application) %></td>
+      <td>
+        <%= link_to application.name, developer_application_path(application) %>
+        <%= verified_mark(application.verified) %>
+      </td>
       <td><%= application.owner == current_user ? "You" : application.owner.name %></td>
       <td>
         No actions.

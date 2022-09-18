@@ -13,15 +13,6 @@ devuser = User.create!(
 
 OAuth::ClientApplication.create(
   owner: devuser,
-  name: 'XIVAuth Full Privilege App',
-  redirect_uri: 'http://localhost:3030/oauth/redirect',
-  scopes: 'refresh character:manage user',
-  uid: '2E-ttyhWBuLLOk00oo0HUaPUtdbyBpbp23jFKpxBPto',
-  secret: 'BozYQ8gqo-Lcg-DNliKet2JGCI4RbdweHvbQKAfC7ow'
-)
-
-OAuth::ClientApplication.create(
-  owner: devuser,
   name: 'XIVAuth User/AllChar App',
   redirect_uri: 'http://localhost:3030/oauth/redirect',
   scopes: 'user user:email character character:all character:manage jwt refresh',

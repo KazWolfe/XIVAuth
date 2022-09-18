@@ -67,6 +67,7 @@
     <orderEntry type="library" scope="PROVIDED" name="doorkeeper (v5.6.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="doorkeeper-openid_connect (v1.8.2, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erubi (v1.11.0, XIVAuth Compose SDK) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="et-orbi (v1.2.7, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="execjs (v2.8.1, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="factory_bot (v6.2.1, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="factory_bot_rails (v6.2.0, XIVAuth Compose SDK) [gem]" level="application" />
@@ -74,6 +75,7 @@
     <orderEntry type="library" scope="PROVIDED" name="faraday (v2.5.2, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday-net_http (v3.0.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ffi (v1.15.5, XIVAuth Compose SDK) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="fugit (v1.7.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="globalid (v1.0.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="hashie (v5.0.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="http-accept (v1.7.0, XIVAuth Compose SDK) [gem]" level="application" />
@@ -119,8 +121,11 @@
     <orderEntry type="library" scope="PROVIDED" name="parser (v3.1.2.1, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="pg (v1.4.3, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="popper_js (v2.11.5, XIVAuth Compose SDK) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="postmark (v1.22.1, XIVAuth Compose SDK) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="postmark-rails (v0.22.1, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="public_suffix (v5.0.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="puma (v5.6.5, XIVAuth Compose SDK) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="raabro (v1.4.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="racc (v1.6.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack (v2.2.4, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack-mini-profiler (v3.0.0, XIVAuth Compose SDK) [gem]" level="application" />
@@ -155,6 +160,7 @@
     <orderEntry type="library" scope="PROVIDED" name="selenium-webdriver (v4.4.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="semantic_logger (v4.11.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sidekiq (v6.5.6, XIVAuth Compose SDK) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sidekiq-cron (v1.7.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="snaky_hash (v2.0.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sprockets (v4.1.1, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sprockets-rails (v3.4.2, XIVAuth Compose SDK) [gem]" level="application" />
@@ -186,156 +192,76 @@
   <component name="RailsGeneratorsCache">
     <option name="generators">
       <list>
-        <option value="active_record:application_record" />
-        <option value="active_record:devise" />
-        <option value="active_record:multi_db" />
-        <option value="application_record" />
-        <option value="benchmark" />
-        <option value="cancan:ability" />
-        <option value="channel" />
+        <option value="active_record:migration" />
+        <option value="active_record:model" />
+        <option value="active_record:observer" />
+        <option value="active_record:session_migration" />
         <option value="controller" />
-        <option value="devise" />
-        <option value="devise:controllers" />
-        <option value="devise:install" />
-        <option value="devise:views" />
-        <option value="doorkeeper:application_owner" />
-        <option value="doorkeeper:confidential_applications" />
-        <option value="doorkeeper:enable_polymorphic_resource_owner" />
-        <option value="doorkeeper:install" />
-        <option value="doorkeeper:migration" />
-        <option value="doorkeeper:openid_connect:install" />
-        <option value="doorkeeper:openid_connect:migration" />
-        <option value="doorkeeper:pkce" />
-        <option value="doorkeeper:previous_refresh_token" />
-        <option value="doorkeeper:views" />
-        <option value="factory_bot:model" />
+        <option value="erb:controller" />
+        <option value="erb:mailer" />
+        <option value="erb:scaffold" />
         <option value="generator" />
         <option value="helper" />
         <option value="integration_test" />
-        <option value="jbuilder" />
-        <option value="job" />
-        <option value="mailbox" />
         <option value="mailer" />
+        <option value="metal" />
         <option value="migration" />
         <option value="model" />
-        <option value="mongoid:devise" />
-        <option value="rack_profiler:install" />
+        <option value="model_subclass" />
+        <option value="observer" />
+        <option value="performance_test" />
+        <option value="plugin" />
         <option value="resource" />
-        <option value="responders:install" />
-        <option value="responders_controller" />
-        <option value="rspec:channel" />
-        <option value="rspec:controller" />
-        <option value="rspec:feature" />
-        <option value="rspec:generator" />
-        <option value="rspec:helper" />
-        <option value="rspec:install" />
-        <option value="rspec:integration" />
-        <option value="rspec:job" />
-        <option value="rspec:mailbox" />
-        <option value="rspec:mailer" />
-        <option value="rspec:model" />
-        <option value="rspec:request" />
-        <option value="rspec:scaffold" />
-        <option value="rspec:system" />
-        <option value="rspec:view" />
         <option value="scaffold" />
         <option value="scaffold_controller" />
-        <option value="scss:assets" />
-        <option value="scss:scaffold" />
-        <option value="sidekiq:job" />
-        <option value="stimulus" />
-        <option value="system_test" />
-        <option value="task" />
-        <option value="test_unit:channel" />
+        <option value="session_migration" />
+        <option value="stylesheets" />
         <option value="test_unit:controller" />
-        <option value="test_unit:generator" />
         <option value="test_unit:helper" />
-        <option value="test_unit:install" />
         <option value="test_unit:integration" />
-        <option value="test_unit:job" />
-        <option value="test_unit:mailbox" />
         <option value="test_unit:mailer" />
         <option value="test_unit:model" />
+        <option value="test_unit:observer" />
+        <option value="test_unit:performance" />
         <option value="test_unit:plugin" />
         <option value="test_unit:scaffold" />
-        <option value="test_unit:system" />
       </list>
     </option>
     <option name="myGenerators">
       <list>
-        <option value="active_record:application_record" />
-        <option value="active_record:devise" />
-        <option value="active_record:multi_db" />
-        <option value="application_record" />
-        <option value="benchmark" />
-        <option value="cancan:ability" />
-        <option value="channel" />
+        <option value="active_record:migration" />
+        <option value="active_record:model" />
+        <option value="active_record:observer" />
+        <option value="active_record:session_migration" />
         <option value="controller" />
-        <option value="devise" />
-        <option value="devise:controllers" />
-        <option value="devise:install" />
-        <option value="devise:views" />
-        <option value="doorkeeper:application_owner" />
-        <option value="doorkeeper:confidential_applications" />
-        <option value="doorkeeper:enable_polymorphic_resource_owner" />
-        <option value="doorkeeper:install" />
-        <option value="doorkeeper:migration" />
-        <option value="doorkeeper:openid_connect:install" />
-        <option value="doorkeeper:openid_connect:migration" />
-        <option value="doorkeeper:pkce" />
-        <option value="doorkeeper:previous_refresh_token" />
-        <option value="doorkeeper:views" />
-        <option value="factory_bot:model" />
+        <option value="erb:controller" />
+        <option value="erb:mailer" />
+        <option value="erb:scaffold" />
         <option value="generator" />
         <option value="helper" />
         <option value="integration_test" />
-        <option value="jbuilder" />
-        <option value="job" />
-        <option value="mailbox" />
         <option value="mailer" />
+        <option value="metal" />
         <option value="migration" />
         <option value="model" />
-        <option value="mongoid:devise" />
-        <option value="rack_profiler:install" />
+        <option value="model_subclass" />
+        <option value="observer" />
+        <option value="performance_test" />
+        <option value="plugin" />
         <option value="resource" />
-        <option value="responders:install" />
-        <option value="responders_controller" />
-        <option value="rspec:channel" />
-        <option value="rspec:controller" />
-        <option value="rspec:feature" />
-        <option value="rspec:generator" />
-        <option value="rspec:helper" />
-        <option value="rspec:install" />
-        <option value="rspec:integration" />
-        <option value="rspec:job" />
-        <option value="rspec:mailbox" />
-        <option value="rspec:mailer" />
-        <option value="rspec:model" />
-        <option value="rspec:request" />
-        <option value="rspec:scaffold" />
-        <option value="rspec:system" />
-        <option value="rspec:view" />
         <option value="scaffold" />
         <option value="scaffold_controller" />
-        <option value="scss:assets" />
-        <option value="scss:scaffold" />
-        <option value="sidekiq:job" />
-        <option value="stimulus" />
-        <option value="system_test" />
-        <option value="task" />
-        <option value="test_unit:channel" />
+        <option value="session_migration" />
+        <option value="stylesheets" />
         <option value="test_unit:controller" />
-        <option value="test_unit:generator" />
         <option value="test_unit:helper" />
-        <option value="test_unit:install" />
         <option value="test_unit:integration" />
-        <option value="test_unit:job" />
-        <option value="test_unit:mailbox" />
         <option value="test_unit:mailer" />
         <option value="test_unit:model" />
+        <option value="test_unit:observer" />
+        <option value="test_unit:performance" />
         <option value="test_unit:plugin" />
         <option value="test_unit:scaffold" />
-        <option value="test_unit:system" />
       </list>
     </option>
   </component>
@@ -539,6 +465,7 @@
             <subtasks>
               <RakeTaskImpl description="Run the code examples in spec/helpers" fullCommand="spec:helpers" id="helpers" />
               <RakeTaskImpl description="Run the code examples in spec/jobs" fullCommand="spec:jobs" id="jobs" />
+              <RakeTaskImpl description="Run the code examples in spec/mailers" fullCommand="spec:mailers" id="mailers" />
               <RakeTaskImpl description="Run the code examples in spec/models" fullCommand="spec:models" id="models" />
               <RakeTaskImpl description="Run the code examples in spec/requests" fullCommand="spec:requests" id="requests" />
               <RakeTaskImpl description="Run the code examples in spec/views" fullCommand="spec:views" id="views" />

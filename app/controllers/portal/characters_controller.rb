@@ -3,7 +3,8 @@ class Portal::CharactersController < ApplicationController
   respond_to :html, :json
 
   def index
-    @characters = current_user.characters.order(:verified_at)
+    @characters = current_user.characters.unscope(:order).order('verified_at DESC NULLS LAST, created_at ASC')
+    @block_new_character = helpers.user_at_character_allowance(current_user)
 
     respond_with(@characters)
   end
@@ -25,6 +26,11 @@ class Portal::CharactersController < ApplicationController
       render :new, status: :unprocessable_entity and return
     end
 
+    if helpers.user_at_character_allowance(current_user)
+      Rails.logger.warn 'User was at character allowance, blocking creation of new character', current_user
+      render :new, status: :forbidden
+    end
+
     @character = Character.new(
       :lodestone_id => lodestone_id,
       :user_id => current_user.id
@@ -37,6 +43,17 @@ class Portal::CharactersController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def update
+    @character = Character.find(params[:id])
+    authorize! :update, @character
+
+    if params[:command] == 'sync'
+      Character::SyncLodestoneJob.perform_later @character
+    end
+
+    redirect_to characters_path
   end
 
   def verify

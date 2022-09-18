@@ -3,15 +3,8 @@ FROM ruby:3.1-alpine
 WORKDIR /app
 
 RUN apk add --update --no-cache \
-    build-base \
-    git \
-    postgresql-dev \
-    postgresql-client \
-    imagemagick \
-    nodejs-current \
-    yarn \
-    tzdata \
-    file
+      build-base git postgresql-dev postgresql-client imagemagick nodejs-current yarn tzdata file && \
+    gem install bundler
 
 COPY Gemfile /app/Gemfile
 COPY Gemfile.lock /app/Gemfile.lock

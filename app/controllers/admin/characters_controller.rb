@@ -19,4 +19,31 @@ class Admin::CharactersController < ApplicationController
     Rails.logger.info "Destroying character #{@character.id} by administrative request", @character
     @character.destroy!
   end
+
+  def update
+    @character = Character.find(params[:id])
+
+    case params[:command]
+    when 'sync'
+      Character::SyncLodestoneJob.perform_later @character
+      redirect_to admin_character_path(@character) and return
+    when 'unverify'
+      @character.verified_at = nil
+    when 'verify'
+      command_safe_verify(@character)
+    else
+      return
+    end
+
+    @character.save!
+    redirect_to admin_character_path(@character)
+  end
+
+  private
+
+  def command_safe_verify(character)
+    return 'Character already verified!' if Character.any_verified?(character.lodestone_id)
+
+    character.verify!
+  end
 end
