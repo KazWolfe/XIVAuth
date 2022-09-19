@@ -53,7 +53,10 @@ gem 'devise_zxcvbn'
 gem 'omniauth-discord'
 gem 'omniauth-github', '~> 2.0.0'
 gem 'omniauth-steam'
+
+# Internal security
 gem 'omniauth-rails_csrf_protection'
+gem 'recaptcha', '~> 5.12.3'
 
 # Authentication and providers (outbound)
 gem 'doorkeeper'

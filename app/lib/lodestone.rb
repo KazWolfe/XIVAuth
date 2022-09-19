@@ -7,7 +7,16 @@ module Lodestone
     'Chrome/104.0.0.0 Safari/537.36'
   MOBILE_USER_AGENT = 'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) ' \
     'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36'.freeze
-  
+
+  class CharacterNotFoundError < StandardError
+
+    attr_reader :character_id
+
+    def initialize(character_id)
+      super('A character with the specified ID was not found on the Lodestone')
+      @character_id = character_id
+    end
+  end
 
   extend self
 
@@ -54,7 +63,11 @@ module Lodestone
   private
 
   def profile(character_id)
-    doc = character_document(character_id: character_id)
+    begin
+      doc = character_document(character_id: character_id)
+    rescue RestClient::NotFound
+      raise Lodestone::CharacterNotFoundError, character_id
+    end
 
     {
       id: character_id,
@@ -71,24 +84,16 @@ module Lodestone
   def character_search_results(character_name, home_world)
     url = [ROOT_URL, 'character', "?q=#{character_name}&worldname=#{home_world}"].compact.join('/')
 
-    begin
-      Nokogiri::HTML.parse(RestClient.get(url, user_agent: DESKTOP_USER_AGENT, params: {
-        q: character_name,
-        worldname: home_world
-      }))
-    rescue RestClient::NotFound
-      # ignore 404s still
-    end
+    Nokogiri::HTML.parse(RestClient.get(url, user_agent: DESKTOP_USER_AGENT, params: {
+      q: character_name,
+      worldname: home_world
+    }))
   end
 
   def character_document(character_id: nil, params: {})
     url = [ROOT_URL, 'character', character_id].compact.join('/')
 
-    begin
-      Nokogiri::HTML.parse(RestClient.get(url, user_agent: MOBILE_USER_AGENT, params: params))
-    rescue RestClient::NotFound
-      # Ignore 404s on missing collections
-    end
+    Nokogiri::HTML.parse(RestClient.get(url, user_agent: MOBILE_USER_AGENT, params: params))
   end
 
   def element_id(element)

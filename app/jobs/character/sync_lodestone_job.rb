@@ -1,5 +1,5 @@
 class Character::SyncLodestoneJob < ApplicationJob
-  queue_as :default
+  queue_as :lodestone_jobs
 
   def perform(*characters)
     characters.each do |character|

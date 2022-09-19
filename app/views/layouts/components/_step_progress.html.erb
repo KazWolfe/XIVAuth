@@ -1,0 +1,31 @@
+<%
+  current_step = 2
+  total_steps = 3
+  progress_percentage = ((current_step.to_f / (total_steps - 1)) * 100).to_i
+%>
+
+<div class="accordion">
+  <div class="step-indicator">
+    <div class="progress">
+      <div class="progress-bar" role="progressbar"
+           style="width: <%= progress_percentage %>%"
+           aria-valuenow="<%= progress_percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <% total_steps.times do |s| %>
+      <div class="step">
+        <% step_class = if s < current_step
+                          "step-button-complete"
+                        elsif s == current_step
+                          "step-button-active"
+                        else
+                          ""
+                        end
+        %>
+        <span class="step-button <%= step_class %>"><%= s + 1 %></span>
+        <div class="step-name">
+          Step <%= s + 1 %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

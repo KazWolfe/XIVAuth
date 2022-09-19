@@ -13,33 +13,36 @@ class Portal::CharactersController < ApplicationController
 
     respond_with(@character)
   end
-  
+
   def new
     @character = Character.new
   end
-  
+
   def create
     lodestone_id = helpers.extract_id(params[:character][:lodestone_url])
-    if lodestone_id.nil?
-      render :new, status: :unprocessable_entity and return
-    end
+    render_new_form_again(status: :unprocessable_entity) and return unless lodestone_id.present?
 
     if helpers.user_at_character_allowance(current_user)
       Rails.logger.warn 'User was at character allowance, blocking creation of new character', current_user
-      render :new, status: :forbidden
+      redirect_to characters_path
     end
 
-    @character = Character.new(
-      :lodestone_id => lodestone_id,
-      :user_id => current_user.id
-    )
+    @character = Character.new(lodestone_id: lodestone_id, user_id: current_user.id)
 
-    @character.retrieve_from_lodestone!
+    begin
+      @character.retrieve_from_lodestone!
+    rescue Lodestone::CharacterNotFoundError => e
+      Rails.logger.warn 'Could not find character requested by user on Lodestone', e
+      flash.now[:error] = 'The character you specified could not be found on the Lodestone. ' +
+        'Please double-check your ID or URL.'
+
+      render_new_form_again(status: :not_found) and return
+    end
 
     if @character.save!
       redirect_to characters_path, status: :created
     else
-      render :new, status: :unprocessable_entity
+      render_new_form_again(status: :unprocessable_entity)
     end
   end
 
@@ -74,5 +77,13 @@ class Portal::CharactersController < ApplicationController
     @character.destroy
 
     redirect_to characters_path, status: :see_other
+  end
+
+  protected
+
+  def render_new_form_again(status: :unprocessable_entity)
+    render status: status,
+           turbo_stream: turbo_stream.update('remote_modal-content',
+                                             partial: 'portal/characters/partials/new_character_form')
   end
 end

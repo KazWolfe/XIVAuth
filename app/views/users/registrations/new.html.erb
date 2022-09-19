@@ -3,10 +3,9 @@
     <h2>Sign Up for XIVAuth</h2>
   </div>
   <div class="col-md-4">
-
-
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), data: { turbo: false }) do |f| %>
       <%= render "users/shared/error_messages", resource: resource %>
+      <%= flash[:recaptcha_error] %>
 
       <div class="form-group field">
         <%= f.label :username %><br />
@@ -36,8 +35,8 @@
 
       <p>By signing up to XIVAuth, you agree to our Terms of Service and Privacy Policy (lol).</p>
 
-      <div class="form-group d-grid d-md-flex gap-2 mt-2">
-        <%= f.submit "Sign up", class: "btn btn-primary col-md-8" %>
+      <div class="form-group d-grid d-md-flex mt-2">
+        <%= invisible_recaptcha_tags ui: :button, text: 'Sign up', class: 'btn btn-primary col-md-8 me-2' %>
         <%= link_to "Log in", new_session_path(resource_name), class: "btn btn-secondary col" %>
       </div>
     <% end %>

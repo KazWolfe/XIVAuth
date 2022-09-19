@@ -1,5 +1,5 @@
 class Character::CleanupStaleCharactersJob < ApplicationJob
-  queue_as :default
+  queue_as :cronjobs
 
   def perform(*)
     do_cleanup

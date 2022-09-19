@@ -1,0 +1,55 @@
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+
+  .progress {
+    height: 5px;
+    width: 90%;
+
+    position: absolute;
+    z-index: 5;
+
+    margin-left: 24px;
+    margin-bottom: 24px;
+  }
+
+  .step {
+    z-index: 10;
+    text-align: center;
+
+    .step-button {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+
+      text-align: center;
+      padding-top: 0.15rem;
+
+      background-color: var(--bs-body-bg);
+
+      border: 1px solid var(--bs-secondary);
+      border-radius: 50%;
+
+      &.step-button-active {
+        color: var(--bs-body-bg);
+        background-color: var(--bs-primary);
+        border: none;
+      }
+
+      &.step-button-complete {
+        color: var(--bs-body-bg);
+        background-color: var(--bs-success);
+        border: none;
+      }
+
+      &.step-button-failed {
+        color: var(--bs-body-bg);
+        background-color: var(--bs-danger);
+        border: none;
+      }
+    }
+  }
+}

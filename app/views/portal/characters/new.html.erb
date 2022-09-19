@@ -1,15 +1,3 @@
 <%= render 'layouts/components/remote_modal', title: 'Add Character' do %>
-  <%= form_with model: @character do |form| %>
-    <div class="modal-header">
-      <h5 class="modal-title" id="verifyLabel">Add Character</h5>
-    </div>
-    <div class="modal-body">
-      <label for="character_lodestone_url" class="form-label">Lodestone URL or ID</label>
-      <%= form.text_field :lodestone_url, class: "form-control" %>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn me-auto" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-      <%= form.submit class: "btn btn-primary" %>
-    </div>
-  <% end %>
+  <%= render 'portal/characters/partials/new_character_form' %>
 <% end %>

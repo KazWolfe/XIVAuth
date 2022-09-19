@@ -1,5 +1,5 @@
 class OAuth::CleanupStaleRecordsJob < ApplicationJob
-  queue_as :default
+  queue_as :cronjobs
 
   def perform(*)
     clean_access_grants

@@ -139,6 +139,7 @@
     <orderEntry type="library" scope="PROVIDED" name="railties (v7.0.4, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rainbow (v3.1.1, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rake (v13.0.6, XIVAuth Compose SDK) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="recaptcha (v5.12.3, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="redis (v4.8.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.5.0, XIVAuth Compose SDK) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="reline (v0.3.1, XIVAuth Compose SDK) [gem]" level="application" />
@@ -580,6 +581,11 @@
           </RakeTaskImpl>
           <RakeTaskImpl description="" fullCommand="default" id="default" />
           <RakeTaskImpl description="" fullCommand="environment" id="environment" />
+          <RakeTaskImpl id="heroku">
+            <subtasks>
+              <RakeTaskImpl description="" fullCommand="heroku:release" id="release" />
+            </subtasks>
+          </RakeTaskImpl>
           <RakeTaskImpl id="railties">
             <subtasks>
               <RakeTaskImpl id="install">

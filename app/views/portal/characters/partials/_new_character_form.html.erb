@@ -1,0 +1,16 @@
+<%= form_with model: @character do |form| %>
+  <div class="modal-header">
+    <h5 class="modal-title" id="verifyLabel">Add Character</h5>
+  </div>
+  <div class="modal-body">
+    <%= render 'layouts/components/flashes' %>
+    <div class="form-group">
+      <label for="character_lodestone_url" class="form-label">Lodestone URL or ID</label>
+      <%= form.text_field :lodestone_url, class: "form-control" %>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn me-auto" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+    <%= form.submit "Create Character", class: "btn btn-primary" %>
+  </div>
+<% end %>

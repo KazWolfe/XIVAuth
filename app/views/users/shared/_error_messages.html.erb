@@ -1,3 +1,17 @@
+<% if flash[:notice].present? %>
+  <div class="alert alert-info" role="alert">
+    <i class="bi bi-info-circle-fill"></i>
+    <span class="flash-text"><%= flash[:notice] %></span>
+  </div>
+<% end %>
+
+<% if flash[:alert].present? %>
+  <div class="alert alert-warning" role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span class="flash-text"><%= flash[:alert] %></span>
+  </div>
+<% end %>
+
 <% if resource.errors.any? %>
   <div id="error_explanation">
     <h2>

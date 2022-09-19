@@ -1,7 +1,7 @@
 class Character::VerifyCharacterJob < ApplicationJob
   class VerificationFailedError < StandardError; end
 
-  queue_as :character_verifications
+  queue_as :lodestone_jobs
   retry_on Character::VerifyCharacterJob::VerificationFailedError, wait: 2.minutes, attempts: 5
 
   def perform(*characters)
