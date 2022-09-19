@@ -7,6 +7,7 @@ ruby '3.1.2'
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 gem 'rails', '~> 7.0.3', '>= 7.0.3.1'
+gem 'redis', '~> 4.0'
 gem 'sprockets-rails'  # asset pipeline
 
 # Heroku?
@@ -24,7 +25,6 @@ gem 'bootstrap', '~> 5.2.0'
 # gem "font-awesome-sass", "~> 6.2.0"
 
 # Workers
-gem 'redis', '~> 4.0'
 gem 'sidekiq', '~> 6.5.6'
 gem 'sidekiq-cron', '~> 1.7.0'
 

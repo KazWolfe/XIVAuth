@@ -1,36 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>XIVAuth</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>XIVAuth</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-  </head>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
 
-  <body>
-    <%= render 'layouts/components/navbar' %>
+<body>
+<%= render 'layouts/components/navbar' %>
 
-    <%= turbo_frame_tag "remote_modal", target: "_top" %>
+<%= turbo_frame_tag "remote_modal", target: "_top" %>
 
-    <div class="container">
-      <% if true %>
-        <div class="alert alert-warning" role="alert" style="margin-top: 20px">
-          <i class="bi bi-exclamation-triangle"></i> <strong>This is a preview environment!</strong>
-          While this environment is probably usable for testing and preview purposes, it should <em>absolutely</em> not
-          be used for any live applications, users, or data at this time. XIVAuth is far from complete and the version
-          currently present is littered with bugs, security holes, bad UI decisions, and general stupid mistakes made
-          by someone completely and utterly unqualified to write something so serious. This is a month's worth of work
-          (seriously!).
-          <br><br>
-          <em>Data on this instance is liable to be reset at any time, including application secrets.</em>
-        </div>
-      <% end %>
-      <%= yield %>
+<div class="container">
+  <% if true %>
+    <div class="alert alert-warning" role="alert" style="margin-top: 20px">
+      <i class="bi bi-exclamation-triangle"></i> <strong>This is a preview environment!</strong>
+      While this environment is probably usable for testing and preview purposes, it should <em>absolutely</em> not
+      be used for any live applications, users, or data at this time. XIVAuth is far from complete and the version
+      currently present is littered with bugs, security holes, bad UI decisions, and general stupid mistakes made
+      by someone completely and utterly unqualified to write something so serious. This is a month's worth of work
+      (seriously!).
+      <br><br>
+      <em>Data on this instance is liable to be reset at any time, including application secrets.</em>
     </div>
-
-  <%= console %>
-  </body>
+  <% end %>
+  <%= yield %>
+</div>
+</body>
 </html>
