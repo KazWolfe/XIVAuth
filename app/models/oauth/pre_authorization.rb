@@ -9,8 +9,11 @@ class OAuth::PreAuthorization < Doorkeeper::OAuth::PreAuthorization
 
     # Verify character-related scopes
     if @resource_owner.respond_to?('characters')
-      return false if scopes.include?('character') && !@resource_owner.characters.verified.count.positive?
-      return false if scope == 'character:all' && !@resource_owner.characters.verified.count.positive?
+      if scopes.include?('character') || scope == 'character:all'
+        # Hack to display a more specific error, this'll still end validation early,
+        # but with a different and more descriptive message.
+        @error = :no_verified_characters unless @resource_owner.characters.verified.count.positive?
+      end
     end
 
     true

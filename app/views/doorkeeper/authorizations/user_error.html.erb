@@ -5,8 +5,8 @@
 <main role="main">
   <%= form_tag oauth_authorization_path, method: :post, id: "oauth-decision" do %>
     <p>XIVAuth could not log you in to <strong><%= @pre_auth.client.name %></strong> because of a problem.</p>
-
     <p><%= @pre_auth.error_response.body[:error_description] %></p>
+    <p>You will be redirected to the application that requested you log in.</p>
 
     <%= hidden_field_tag :client_id, @pre_auth.client.uid %>
     <%= hidden_field_tag :redirect_uri, @pre_auth.redirect_uri %>
@@ -17,7 +17,8 @@
     <%= hidden_field_tag :code_challenge, @pre_auth.code_challenge %>
     <%= hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method %>
 
-    <%= button_tag "Rats.", class: "btn btn-danger btn-lg btn-block",
+    <%= button_tag %w[Rats. Darn. Bleh. Ow. *sigh* Meh. Grrr. Seriously?].sample,
+                   class: "btn btn-danger btn-lg btn-block",
                    name: "disposition", value: "deny" %>
   <% end %>
 </main>

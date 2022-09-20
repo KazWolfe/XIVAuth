@@ -1,4 +1,7 @@
 class OAuth::AuthorizationsController < Doorkeeper::AuthorizationsController
+  USER_FAULT_ERRORS = [:no_verified_characters].freeze
+  
+=begin
   def new
     if pre_auth.scopes.include?('character') && !current_user.characters.verified.count.positive?
       # We actually have this at a lower level as well but this creates a nicer message for the user.
@@ -8,6 +11,7 @@ class OAuth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
     super
   end
+=end
 
   def create
     # Because we need everything to be condensed to a single form (HTML...), we're going to implement a bit of a dirty
@@ -21,6 +25,13 @@ class OAuth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   def destroy
     Rails.logger.info 'denied'
+    super
+  end
+
+  private def render_error
+    # user-caused errors get treated a bit differently
+    render :user_error and return if USER_FAULT_ERRORS.include? pre_auth.error
+    
     super
   end
 
