@@ -1,2 +1,0 @@
-module OAuth::AuthorizationsHelper
-end
