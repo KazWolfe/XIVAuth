@@ -39,3 +39,18 @@ $brand-color-steam-bg:#4E697D;
 .button_to.inline {
   display: inline-block;
 }
+
+
+th.col-min {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.min-width-250 {
+  min-width: 250px;
+}
+
+img.ffxiv-avatar {
+  width: 48px;
+  height: 48px;
+}

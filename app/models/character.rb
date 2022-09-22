@@ -43,6 +43,14 @@ class Character < ApplicationRecord
     self.last_lodestone_update = character_meta[:last_parsed]
   end
 
+  def as_json(options = nil)
+    {
+      id:, lodestone_id:, character_name:, home_datacenter:, home_world:, avatar_url:, 
+      verified: verified?, verification_key:,
+      last_lodestone_update:, created_at:, updated_at:
+    }
+  end
+
   def self.any_verified?(lodestone_id)
     Character.where(lodestone_id:).where.not(verified_at: nil).count.positive?
   end

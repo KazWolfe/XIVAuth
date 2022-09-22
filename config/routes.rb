@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     patch '/profile/password', to: 'profile#update_password'
 
     # Character management
-    resources :characters, except: [:show] do
+    resources :characters do
       get 'verify', on: :member
       post 'verify', on: :member, to: 'characters#enqueue_verify'
     end

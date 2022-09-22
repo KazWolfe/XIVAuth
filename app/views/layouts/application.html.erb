@@ -12,21 +12,21 @@
 
 <body>
 <%= render 'layouts/components/navbar' %>
-
 <%= turbo_frame_tag "remote_modal", target: "_top" %>
 
 <div class="container">
   <% if true %>
     <div class="alert alert-warning" role="alert" style="margin-top: 20px">
       <i class="bi bi-exclamation-triangle"></i> <strong>This is a preview environment!</strong>
-      While this environment is probably usable for testing and preview purposes, it should not be used outside of 
-      testing for now. XIVAuth is far from complete and things may change at any time for any number of reasons. The 
-      current instance will have bugs, security holes, bad UI decisions, and all sorts of other nasties that will 
+      While this environment is probably usable for testing and preview purposes, it should not be used outside of
+      testing for now. XIVAuth is far from complete and things may change at any time for any number of reasons. The
+      current instance will have bugs, security holes, bad UI decisions, and all sorts of other nasties that will
       eventually be resolved (hopefully), but... it's not quite there yet.
       <br><br>
       <em>Data on this instance is liable to be reset at any time, including application secrets.</em>
     </div>
   <% end %>
+
   <%= yield %>
 </div>
 </body>

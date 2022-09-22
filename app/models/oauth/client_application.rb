@@ -4,6 +4,14 @@ class OAuth::ClientApplication < ActiveRecord::Base
 
   validates :name, presence: true
   validates :redirect_uri, presence: true
-  
+
   belongs_to :owner, polymorphic: true
+
+  before_destroy :destroy_safety_checks
+
+  private
+
+  def destroy_safety_checks
+    raise ActiveRecord::RecordNotDestroyed, 'Cannot delete a verified application!' if verified?
+  end
 end

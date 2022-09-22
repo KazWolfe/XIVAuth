@@ -1,10 +1,17 @@
 require 'rails_helper'
 
-RSpec.describe "Characters", type: :request do
+RSpec.describe "Portal::Characters", type: :request do
   describe "GET /index without authentication" do
     it "redirects to login" do
       get characters_path
       expect(response).to redirect_to(new_user_session_path)
+    end
+  end
+
+  describe "GET /index.json without authentication" do
+    it "generates a 401" do
+      get characters_path, as: :json
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -38,6 +45,15 @@ RSpec.describe "Characters", type: :request do
 
       get characters_path
       expect(response.body).to_not include(another_character.character_name)
+    end
+
+    it "should hide the create character button after a certain number of characters" do
+      5.times do
+        FactoryBot.create(:random_character, user: @user)
+      end
+
+      get characters_path
+      expect(response.body).to_not include new_character_patha
     end
 
     xit "should not list other users' characters (even as admin)" do

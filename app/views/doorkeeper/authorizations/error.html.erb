@@ -1,7 +1,19 @@
 <div class="border-bottom mb-4">
-  <h1><%= t('doorkeeper.authorizations.error.title') %></h1>
+  <h2><%= t('doorkeeper.authorizations.error.title') %></h2>
 </div>
 
 <main role="main">
-  <pre><%= @pre_auth.error_response.body[:error_description] %></pre>
+  <% app_name = @pre_auth.client.present? ? @pre_auth.client.name : 'the requested application' %>
+  <p>
+    XIVAuth could not log you in to <%= app_name %> because of a problem. An error message has been provided below.
+  </p>
+  <p class="font-monospace text-danger"><%= @pre_auth.error_response.body[:error_description] %></p>
+  <p>
+    If you are a user trying to access an application, please contact the developer of <%= app_name %> for help fixing
+    the problem. If you are an application developer, please ensure that your OAuth2 client is properly configured.
+  </p>
+  <details>
+    <summary>Technical Information</summary>
+    <pre><%= JSON.pretty_generate(@pre_auth.error_response.body) %></pre>
+  </details>
 </main>

@@ -102,7 +102,6 @@ en:
         invalid_scope: 'The requested scope is invalid, unknown, or malformed.'
         invalid_code_challenge_method: 'The code challenge method must be plain or S256.'
         scope_invalid_for_resource_owner: 'The requested scope is not applicable for the current resource owner.'
-        no_verified_characters: 'You do not have any verified characters on your account. Please verify a character and try again.'
         server_error: 'The authorization server encountered an unexpected condition which prevented it from fulfilling the request.'
         temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.'
 
