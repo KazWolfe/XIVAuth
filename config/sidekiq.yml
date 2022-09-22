@@ -1,3 +1,4 @@
 :queues:
   - default
-  - character_verifications
+  - cronjobs
+  - lodestone_jobs
