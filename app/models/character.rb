@@ -16,25 +16,32 @@ class Character < ApplicationRecord
   end
 
   def verify!(clobber: false, notify: false)
+    other_verified_character = Character.verified_for_lodestone(self.lodestone_id)
 
-    if (vfc = Character.verified_for_lodestone(self.lodestone_id)).present?
-      raise StandardError('Character was verified elsewhere and clobber was not requested') unless clobber
+    Character.transaction do
+      if other_verified_character.present?
+        raise StandardError('Character was verified elsewhere and clobber was not requested') unless clobber
 
-      Rails.logger.info "Removing verification from character #{vfc.id} as another verification was requested"
-      vfc.verified_at = nil
-      vfc.save!
+        Rails.logger.info "Removing verification from character #{other_verified_character.id} as another " \
+                          "verification was requested"
+        other_verified_character.verified_at = nil
+        other_verified_character.save!
+      end
 
-      # TODO: send security alert email
+      self.verified_at = DateTime.now
+      self.save!
     end
 
-    self.verified_at = DateTime.now
-    self.save!
+    if other_verified_character.present? && notify
+      CharacterMailer.with(character: other_verified_character)
+                     .security_character_verified_elsewhere.deliver_later
+    end
   end
 
-  def user_unique_id
+  def entangled_id
     hmac = OpenSSL::HMAC.digest(
       OpenSSL::Digest.new('sha256'),
-      Rails.application.key_generator.generate_key('chara_user_unique_key'),
+      Rails.application.key_generator.generate_key('Character::entanglement_key'),
       "#{self.id}###{self.user.id}"
     )
 
@@ -44,8 +51,8 @@ class Character < ApplicationRecord
   def verification_key
     hmac = OpenSSL::HMAC.digest(
       OpenSSL::Digest.new('sha256'),
-      Rails.application.key_generator.generate_key('character_verification_key'),
-      "#{self.lodestone_id}###{self.user_id}"
+      Rails.application.key_generator.generate_key('Character::verification_key'),
+      "#{self.lodestone_id}###{self.user.id}"
     )
 
     "XIVAUTH:#{Base32.encode(hmac).truncate(24, omission: '')}"

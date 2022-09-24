@@ -60,7 +60,7 @@ class Api::CharactersController < ApiController
 
   def filtered_character(character)
     resp = {
-      id: character.user_unique_id,
+      id: character.entangled_id,
       lodestone_id: character.lodestone_id,
       character_name: character.character_name,
       home_world: character.home_world,
