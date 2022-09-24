@@ -8,11 +8,11 @@ class Api::UserController < ApiController
 
   def build_user_obj(user)
     resp = {
-      id: user.pairwise_id(doorkeeper_token[:application_id]),
+      id: user.pairwise_id(doorkeeper_token.application.pairwise_key),
       username: user.username      # usernames are not trackable information? mmmm...
     }
 
-    if doorkeeper_token[:scopes].include?('user:email')
+    if doorkeeper_token.scopes.include?('user:email')
       resp[:persistent_id] = user.id
       resp[:email] = user.email
       resp[:email_verified] = user.confirmed_at.present?

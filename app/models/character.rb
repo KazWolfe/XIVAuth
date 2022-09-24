@@ -15,9 +15,30 @@ class Character < ApplicationRecord
     self.verified_at.present?
   end
 
-  def verify!
+  def verify!(clobber: false, notify: false)
+
+    if (vfc = Character.verified_for_lodestone(self.lodestone_id)).present?
+      raise StandardError('Character was verified elsewhere and clobber was not requested') unless clobber
+
+      Rails.logger.info "Removing verification from character #{vfc.id} as another verification was requested"
+      vfc.verified_at = nil
+      vfc.save!
+
+      # TODO: send security alert email
+    end
+
     self.verified_at = DateTime.now
     self.save!
+  end
+
+  def user_unique_id
+    hmac = OpenSSL::HMAC.digest(
+      OpenSSL::Digest.new('sha256'),
+      Rails.application.key_generator.generate_key('chara_user_unique_key'),
+      "#{self.id}###{self.user.id}"
+    )
+
+    Base64.urlsafe_encode64(hmac, padding: false)
   end
 
   def verification_key
@@ -45,7 +66,7 @@ class Character < ApplicationRecord
 
   def as_json(options = nil)
     {
-      id:, lodestone_id:, character_name:, home_datacenter:, home_world:, avatar_url:, 
+      id:, lodestone_id:, character_name:, home_datacenter:, home_world:, avatar_url:,
       verified: verified?, verification_key:,
       last_lodestone_update:, created_at:, updated_at:
     }

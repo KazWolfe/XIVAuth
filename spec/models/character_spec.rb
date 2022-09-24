@@ -50,7 +50,7 @@ RSpec.describe Character, type: :model do
     end
   end
 
-  context 'a single lodestone_id on multiple users.rb' do
+  context 'a single lodestone_id on multiple users' do
     before do
       @character_a = FactoryBot.create(:random_character, lodestone_id: 12345678)
       @character_b = FactoryBot.create(:random_character, lodestone_id: 12345678)
@@ -61,7 +61,7 @@ RSpec.describe Character, type: :model do
       expect(@character_b).to be_valid
     end
 
-    it 'generates different verification codes for different users.rb' do
+    it 'generates different verification codes for different users' do
       # NOTE: May actually fail due to *math shenanigans*, but this is going to be such a rare failure
       # that I'm not particularly concerned if it does.
 
@@ -69,6 +69,29 @@ RSpec.describe Character, type: :model do
       key_b = @character_b.verification_key
 
       expect(key_b).to_not eq(key_a)
+    end
+  end
+
+  context 'a verified character' do
+    before do
+      @character = FactoryBot.create(:random_character, verified_at: DateTime.now)
+    end
+
+    it 'returns true when verified? is called' do
+      expect(@character.verified?).to eq(true)
+    end
+
+    it 'will become unverified if another verification for the same lodestone_id is requested' do
+      another_character = FactoryBot.create(:random_character, lodestone_id: @character.lodestone_id)
+
+      expect(another_character.verified?).to eq(false)
+      expect(@character.verified?).to eq(true)
+
+      another_character.verify!
+      @character.reload  # force a refresh of the character as it should be mutated now
+
+      expect(another_character.verified?).to eq(true)
+      expect(@character.verified?).to eq(false)
     end
   end
 end

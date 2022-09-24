@@ -34,6 +34,7 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
 
     @application = OAuth::ClientApplication.new(sanitized_params)
     @application.owner = current_user
+    @application.grant_flows = [:authorization_code]
 
     if @application.save!
       flash[:application_secret] = @application.plaintext_secret
@@ -58,7 +59,7 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
       redirect_to developer_application_path(@application) and return
     end
 
-    @application.update(sanitized_params(allow_scopes: false))
+    @application.update(sanitized_params(create: false))
 
     if @application.save
       respond_to do |format|
@@ -99,9 +100,9 @@ class Portal::Developer::ClientApplicationsController < ApplicationController
     flash[:application_secret] = application.plaintext_secret
   end
 
-  def sanitized_params(allow_scopes: true)
+  def sanitized_params(create: true)
     permitted_fields = %i[name redirect_uri icon_url]
-    permitted_fields << :scopes if allow_scopes
+    permitted_fields += %i[scopes confidential] if create
 
     params.require(:oauth_client_application).permit(permitted_fields)
   end

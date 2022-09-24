@@ -306,7 +306,7 @@ Doorkeeper.configure do
   #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.2
   #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.3
   #
-  grant_flows %w[authorization_code implicit_oidc]
+  grant_flows %w[authorization_code implicit_oidc device_code]
 
   # Allows to customize Oauth grant flows that +each+ application support.
   # You can configure a custom block (or use a class respond to `#call`) that must
@@ -332,12 +332,9 @@ Doorkeeper.configure do
   # @param allow_grant_flow_for_client [Proc] Block or any object respond to #call
   # @return [Boolean] `true` if allow or `false` if forbid the request
   #
-  # allow_grant_flow_for_client do |grant_flow, client|
-  #   # `grant_flows` is an Array column with grant
-  #   # flows that application supports
-  #
-  #   client.grant_flows.include?(grant_flow)
-  # end
+  allow_grant_flow_for_client do |grant_flow, client|
+    client.grant_flows.include?(grant_flow)
+  end
 
   # If you need arbitrary Resource Owner-Client authorization you can enable this option
   # and implement the check your need. Config option must respond to #call and return

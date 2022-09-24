@@ -5,7 +5,7 @@
     <tbody>
     <tr>
       <th scope="row">Application Name</th>
-      <td><%= form.text_field :name, required: true, class:'form-control', value: @application.name %></td>
+      <td><%= form.text_field :name, required: true, class: 'form-control', value: @application.name %></td>
     </tr>
     <tr>
       <th scope="row">Client ID</th>
@@ -29,23 +29,30 @@
       <th scope="row">Redirect URIs</th>
       <td>
         <%= form.text_area(:redirect_uri, required: true, value: @application.redirect_uri,
-                           class:'form-control font-monospace') %>
+                           class: 'form-control font-monospace') %>
         <div class="form-text">Separate allowed redirect URIs with newlines.</div>
       </td>
     </tr>
     <tr>
       <th scope="row">Authorized Scopes</th>
-      <td>
-        <code><%= @application.scopes %></code><br>
-        <small>To request additional scopes, please contact one of the XIVAuth developers.</small>
-      </td>
+      <td><code><%= @application.scopes %></code></td>
     </tr>
+    <tr>
+      <th scope="row">Authorized Grant Flows</th>
+      <td><code><%= @application.grant_flows.join(' ') %></code></td>
+    </tr>
+    <!-- Sneaky, aren't you? Eventually you'll be able to restrict apps to a certain team or a subset of users.
     <tr>
       <th scope="Row">Public App</th>
       <td><%= @application.public ? "Yes" : "No" %></td>
-    </tr>
+    </tr> -->
     </tbody>
   </table>
+  <div>
+    <p>
+      To change read-only settings or request additional authorizations, please contact an XIVAuth developer.
+    </p>
+  </div>
   <div class="btn-toolbar">
     <%= form.submit "Save App", class: "btn btn-primary me-2" %>
     <% unless @application.verified? %>

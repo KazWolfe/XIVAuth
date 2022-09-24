@@ -1,8 +1,7 @@
 class Api::CharactersController < ApiController
-  before_action -> { doorkeeper_authorize! :character, 'character:all', 'character:manage' }
-  before_action only: [:create, :update] do
-    doorkeeper_authorize! 'character:manage'
-  end
+  before_action -> { doorkeeper_authorize! :character, 'character:all', 'character:manage', 'character:jwt' }
+  before_action(only: [:jwt]) { doorkeeper_authorize! 'character:jwt' }
+  before_action(only: [:create, :update, :jwt]) { doorkeeper_authorize! 'character:manage' }
 
   def index
     characters = authorized_characters
@@ -50,8 +49,18 @@ class Api::CharactersController < ApiController
     respond_with filtered_character(@character)
   end
 
+  def jwt
+    @character = authorized_characters.find_by(lodestone_id: params[:id])
+    respond_with(nil, status: :not_found) and return unless @character.present?
+
+    authorize! :show, @character
+  end
+
+  protected
+
   def filtered_character(character)
     resp = {
+      id: character.user_unique_id,
       lodestone_id: character.lodestone_id,
       character_name: character.character_name,
       home_world: character.home_world,
@@ -87,7 +96,7 @@ class Api::CharactersController < ApiController
 
     characters
   end
-  
+
   def show_all_characters?
     (doorkeeper_token.scopes & %w[character:manage character:all]).count.positive?
   end

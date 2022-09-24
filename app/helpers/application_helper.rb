@@ -1,7 +1,5 @@
 module ApplicationHelper
-  def link_to_lodestone(text, character, region = 'na')
-    link_to text, "https://#{region}.finalfantasyxiv.com/lodestone/character/#{character.lodestone_id}/"
-  end
+
 
   def verified_mark(verified, filled: true, title: '')
     html_class = "bi-patch-check#{'-fill' if filled}"

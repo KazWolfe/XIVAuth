@@ -54,8 +54,8 @@
     <table class="table table-borderless">
       <tbody>
       <tr>
-        <th scope="row">Application Type</th>
-        <td><%= @application.confidential ? "Authorization Code" : "Auth Code w/ PKCE" %></td>
+        <th scope="row">Confidential App</th>
+        <td><%= @application.confidential %></td>
       </tr>
       <tr>
         <th scope="row">OAuth Client ID</th>
@@ -63,6 +63,14 @@
           <code><%= @application.uid %></code>
         </td>
       </tr>
+      <% if @application.pairwise_key != @application.id %>
+        <tr>
+          <th scope="row">Pairwise Key</th>
+          <td>
+            <code><%= @application.pairwise_key %></code>
+          </td>
+        </tr>
+      <% end %>
       <% secret = flash[:application_secret].presence || @application.plaintext_secret %>
       <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
         <tr>
@@ -75,6 +83,10 @@
       <tr>
         <th scope="row">Approved Scopes</th>
         <td><code><%= @application.scopes %></code></td>
+      </tr>
+      <tr>
+        <th scope="row">Approved Grant Flows</th>
+        <td><code><%= @application.grant_flows.join(' ') %></code></td>
       </tr>
       <tr>
         <th scope="row">Redirect URIs</th>

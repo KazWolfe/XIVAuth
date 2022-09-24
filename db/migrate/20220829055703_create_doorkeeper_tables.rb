@@ -5,20 +5,20 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
     create_table :oauth_client_applications, id: :uuid do |t|
       t.string  :name, null: false
 
-      # maaaaagic
       t.uuid   :owner_id,   null: true
       t.string :owner_type, null: true
 
-      t.string  :uid,       index: { unique: true }, null: false
-      t.string  :secret,    null: false
+      t.string  :uid,          index: { unique: true }, null: false
+      t.string  :secret,       null: false
+      t.string  :pairwise_key, null: true
 
       t.text    :redirect_uri
-      t.string  :scopes,          null: false, default: ''
-      t.boolean :confidential,    null: false, default: true
+      t.string  :scopes,        null: false, default: ''
+      t.string  :grant_flows,   array: true, default: []
+      t.boolean :confidential,  null: false, default: true
 
-      # Set if the application is publicly accessible or not. If not, use is restricted
-      # to only invited users or team members.
-      t.boolean :public, null: false, default: true
+      # Is this application restricted to certain users or available to everyone?
+      t.boolean :private, null: false, default: false
 
       t.string :icon_url
       t.boolean :verified, default: false

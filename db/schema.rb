@@ -70,10 +70,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
     t.string "owner_type"
     t.string "uid", null: false
     t.string "secret", null: false
+    t.string "pairwise_key"
     t.text "redirect_uri"
     t.string "scopes", default: "", null: false
+    t.string "grant_flows", default: [], array: true
     t.boolean "confidential", default: true, null: false
-    t.boolean "public", default: true, null: false
+    t.boolean "private", default: false, null: false
     t.string "icon_url"
     t.boolean "verified", default: false
     t.datetime "created_at", null: false

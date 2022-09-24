@@ -26,10 +26,14 @@
         </div>
         <div class="form-text">
           Choose carefully! This setting may not be changed without dev intervention.
-          <br>
-          If you require PKCE or custom scopes (including <code>characters:all</code> or <code>user:email</code>), please
-          contact an XIVAuth Developer.
         </div>
+      </div>
+      <div class="mb-3">
+        <p>
+          Other options are available depending on your application's use case. Please contact an XIVAuth developer if
+          you require custom scopes (including <code>characters:all</code> or <code>user:email</code>),
+          non-confidential apps, or grant flows like Device Code.
+        </p>
       </div>
       <%= form.submit "Create App!", class: "btn btn-primary" %>
     <% end %>

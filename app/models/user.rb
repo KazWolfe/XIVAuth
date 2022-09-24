@@ -18,18 +18,19 @@ class User < ApplicationRecord
     hmac = OpenSSL::HMAC.digest(
       OpenSSL::Digest.new('sha256'),
       Rails.application.key_generator.generate_key('pairwise_key'),
-      "#{self.id}###{client_id}")
+      "#{self.id}###{client_id}"
+    )
 
     Base64.urlsafe_encode64(hmac, padding: false)
   end
 
   def name
-    "#{username}"
+    username
   end
   
   def admin?
     # this is TERRIBLE.
-    confirmed? && (email == 'dev@eorzea.id' || username == "KazWolfe")
+    confirmed? && (email == 'dev@eorzea.id' || username == 'KazWolfe')
   end
   
   def developer?
