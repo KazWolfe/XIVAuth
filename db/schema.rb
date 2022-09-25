@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_25_011934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
     t.datetime "updated_at", null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_client_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_client_applications_on_uid", unique: true
+  end
+
+  create_table "oauth_device_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "resource_owner_id"
+    t.uuid "application_id", null: false
+    t.string "device_code", null: false
+    t.string "user_code"
+    t.string "scopes", default: "", null: false
+    t.uuid "permissible_id"
+    t.boolean "denied"
+    t.integer "expires_in", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "last_polling_at", precision: nil
+    t.index ["application_id"], name: "index_oauth_device_grants_on_application_id"
+    t.index ["device_code"], name: "index_oauth_device_grants_on_device_code", unique: true
+    t.index ["resource_owner_id"], name: "index_oauth_device_grants_on_resource_owner_id"
+    t.index ["user_code"], name: "index_oauth_device_grants_on_user_code", unique: true
   end
 
   create_table "oauth_openid_requests", force: :cascade do |t|
@@ -159,5 +176,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_050110) do
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "oauth_device_grants", "oauth_client_applications", column: "application_id"
+  add_foreign_key "oauth_device_grants", "users", column: "resource_owner_id"
   add_foreign_key "social_identities", "users"
 end

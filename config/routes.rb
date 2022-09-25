@@ -10,6 +10,17 @@ Rails.application.routes.draw do
                 tokens: 'oauth/tokens'
   end
 
+  use_doorkeeper_device_authorization_grant do
+    skip_controllers :device_authorizations
+    controller device_codes: 'oauth/device_codes'
+  end
+
+  namespace :oauth do
+    resources :device, controller: 'device_authorizations', only: [:index, :create, :show, :destroy], param: :user_code do
+      post '/', on: :member, to: 'device_authorizations#update'
+    end
+  end
+
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
     omniauth_callbacks: 'users/omniauth_callbacks',

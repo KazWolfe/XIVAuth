@@ -1,0 +1,2 @@
+module OAuth::DeviceCodesHelper
+end

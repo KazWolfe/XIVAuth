@@ -68,6 +68,7 @@ gem 'recaptcha', '~> 5.12.3'
 # OAuth2 provider systems
 gem 'doorkeeper'
 gem 'doorkeeper-openid_connect'
+gem 'doorkeeper-device_authorization_grant', '1.0.1'   # need fixed version, we will be patching this!
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

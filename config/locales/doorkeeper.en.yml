@@ -17,6 +17,11 @@ en:
               forbidden_uri: 'is forbidden by the server.'
             scopes:
               not_match_configured: "doesn't match configured on the server."
+        oauth/device_grant:
+          attributes:
+            scopes:
+              not_match_configured: "doesn't match configured on the server."
+              invalid_scope: "are invalid for the specified application (are they approved?)"
 
   doorkeeper:
     applications:

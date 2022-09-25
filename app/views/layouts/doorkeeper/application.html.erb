@@ -11,12 +11,7 @@
 </head>
 <body>
 <div id="container">
-  <%- if flash[:notice].present? %>
-    <div class="alert alert-info">
-      <%= flash[:notice] %>
-    </div>
-  <% end -%>
-
+  <%= render 'layouts/components/flashes' %>
   <%= yield %>
 </div>
 </body>

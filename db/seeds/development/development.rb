@@ -16,7 +16,7 @@ OAuth::ClientApplication.create(
   name: 'XIVAuth User/AllChar App',
   redirect_uri: 'http://localhost:3030/oauth/redirect',
   scopes: 'user user:email character character:all character:manage jwt refresh',
-  grant_flows: 'authorization_code device_code',
+  grant_flows: %w[authorization_code device_code],
   uid: '7Ea0YN9n4Jh8bGXydexwaQiVfaVlRogmJ3Wi3CH6E8c',
   secret: 'uy6_MwmGWguFUqGmJZ1H-9TROP9eXQJlmux4orjDxQI'
 )

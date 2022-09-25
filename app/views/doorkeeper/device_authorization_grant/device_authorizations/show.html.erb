@@ -1,0 +1,31 @@
+<div class="border-bottom mb-4">
+  <h1>Authorizing <%= @device_grant.user_code %></h1>
+</div>
+
+<%= form_with(url: oauth_device_path(@device_grant)) do %>
+  <p>
+    <strong><%= @device_grant.application.name %></strong> wants to use your XIVAccount to log you in.
+  </p>
+  <% if @device_grant.scopes.count > 0 %>
+    <div id="oauth-scopes-block">
+      <p>By approving this request, this app will be able to do the following:</p>
+
+      <ul class="text-info oauth-permissions">
+        <% @device_grant.scopes.each do |scope| %>
+          <li>
+            <%= t scope, scope: [:doorkeeper, :scopes] %>
+          </li>
+        <% end %>
+      </ul>
+
+      <p>If you do not want to give <%= @device_grant.application.name %> the listed access, click Deny below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= button_tag t('doorkeeper.authorizations.buttons.deny'), class: "btn",
+                   name: "disposition", value: "deny" %>
+    <%= button_tag t('doorkeeper.authorizations.buttons.authorize'), class: "btn btn-success float-end",
+                   name: "disposition", value: "approve" %>
+  </div>
+<% end %>
