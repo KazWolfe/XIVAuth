@@ -20,6 +20,7 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
       # Is this application restricted to certain users or available to everyone?
       t.boolean :private, null: false, default: false
 
+      # Profile information (display and similar)
       t.string :icon_url
       t.boolean :verified, default: false
 

@@ -127,3 +127,68 @@ Due to the general nature of XIVAuth's services, this really only applies to app
     * Disable App
     * Revoke App Credentials (Security)
   * **Features**: Toggle Feature Flags
+
+## Progress List
+
+- User Management
+  - [x] Allow User Sign-Ups
+  - [x] Allow use of upstream OAuth providers for login
+    - [x] Support Discord
+    - [x] Support GitHub
+    - [ ] Support Steam
+    - [ ] Require authentication to add new provider to existing account (keyed on email)
+  - [x] Allow changing user passwords
+  - [ ] Support for TOTP authentication
+  - [ ] Support for U2F/FIDO2/WebAuthn authentication
+  - [ ] Role management (banned, developer, admin)
+- Character Management
+  - [x] Add Character by Lodestone ID
+  - [ ] Add Character by Name/Server
+  - [x] Generate Verification Codes for Character
+  - [x] Check Profiles for Verification Codes
+  - [ ] Guided walk-through for character addition (Lodestone link, verification steps)
+    - [ ] Auto-refreshing modal to test for verification status
+- Application Management
+  - [x] Allow creation of applications
+  - [x] Allow regeneration of `client_secret` by developer
+  - [ ] Apps can be restricted to certain users
+  - [x] Allow choosing from restricted scope list
+  - [ ] Apps can declare privileged scopes as "mandatory"
+  - [x] Multiple apps can share a single pairwise token
+    - [ ] Developers can self-configure pairwise token management (?)
+  - [ ] Developer metrics system to view authentication counts and other stats
+- Developer Teams
+  - [ ] Allow creation of teams which may own applications
+  - [ ] Team roles
+    - [ ] Owner - can add/remove team members. Restricted to one.
+    - [ ] Developer - can create/edit/delete apps, reset app credentials, etc.
+    - [ ] User - can use private apps owned by this team
+  - [ ] Allow teams to have child teams who inherit developers from parent
+- API/OAuth
+  - [x] Apps can query for verified character(s)
+    - [x] Characters have "entangled IDs" such that different users with the same character do not collide
+  - [x] Apps can query for user profile information
+    - [x] Apps receive pairwise user IDs to preserve user privacy (???)
+  - [x] Apps can receive extended user profile information with `user:email` scope
+  - [ ] Apps with certain scopes can create *unverified* characters and see information about them (XIVAuth-in-Dalamud)
+  - [ ] Users can block certain scopes like `user:email` during authorization, unless required by app
+  - [x] Users can select a single verified character for `character` scope
+  - [ ] Users can customize `character:all` scope
+    - [ ] Users can select to share some characters/all characters
+    - [ ] If additional scopes present, user can share no characters
+    - [ ] If `refresh` scope present, user can share all current+future characters, with exceptions
+  - [ ] Applications can use `{resource}:jwt` scopes to request attestations (either character ownership or user auth)
+    - [ ] API supports passing in a secondary `client_id` for pairwise key consistency (??)
+    - [ ] Applications can self-verify via RSA signature against known public key
+  - [ ] OAuth API supports `authorization_code` grant type for web services
+  - [ ] OAuth API supports `device_code` for desktop apps or Dalamud
+    - [ ] Alternatively, PKCE support exists and is flexible enough to cover plugin use cases?
+  - [ ] OpenID support
+- Admin Features/System Maintenance
+  - [ ] Allow granting restricted scopes to applications
+  - [ ] Allow support actions like password reset, MFA reset, character (un)verification
+  - [ ] Allow marking characters as "restricted" and blocking registration attempts for them (VIPs)
+  - [x] Sidekiq-backed cron system
+    - [ ] Update saved Lodestone profiles periodically
+    - [ ] Delete unverified characters after n days
+    - [ ] Delete expired oauth credentials after n days

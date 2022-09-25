@@ -19,7 +19,7 @@ Doorkeeper.configure do
     # Put your admin authentication logic here.
     # Example implementation:
     if current_user
-      head :forbidden unless current_user.email == "dev@eorzea.id"
+      head :forbidden unless current_user.admin?
     else
       redirect_to sign_in_url
     end

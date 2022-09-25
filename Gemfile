@@ -49,17 +49,23 @@ gem 'rails_semantic_logger'
 # Authentication and providers (inbound)
 gem 'cancancan'
 gem 'devise'
+
 gem 'devise_zxcvbn'
 gem 'omniauth-discord'
 gem 'omniauth-github', '~> 2.0.0'
 gem 'omniauth-steam'
+
+# Authn (MFA)
+gem 'devise-two-factor', '~> 5.0.0'
+gem "rqrcode", "~> 2.0"
+gem 'webauthn', '~> 2.5.2'
 
 # Internal security
 gem 'jwt', '~> 2.5.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'recaptcha', '~> 5.12.3'
 
-# Authentication and providers (outbound)
+# OAuth2 provider systems
 gem 'doorkeeper'
 gem 'doorkeeper-openid_connect'
 

@@ -17,7 +17,7 @@ class User < ApplicationRecord
   def pairwise_id(client_id)
     hmac = OpenSSL::HMAC.digest(
       OpenSSL::Digest.new('sha256'),
-      Rails.application.key_generator.generate_key('pairwise_key'),
+      Rails.application.key_generator.generate_key('User::PairwiseKey'),
       "#{self.id}###{client_id}"
     )
 

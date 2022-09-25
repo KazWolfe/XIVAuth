@@ -13,6 +13,8 @@ class OAuth::ClientApplication < ActiveRecord::Base
     super.present? ? super : self.id
   end
 
+  private
+
   def destroy_safety_checks
     raise ActiveRecord::RecordNotDestroyed, 'Cannot delete a verified application!' if verified?
   end
