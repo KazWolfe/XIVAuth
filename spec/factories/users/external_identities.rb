@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :social_identity do
+  factory :external_identity do
     
   end
 end

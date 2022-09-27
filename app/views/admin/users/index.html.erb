@@ -15,7 +15,7 @@
         <% if user.developer? %>
           <i class="bi bi-code-slash" title="Developer Access"></i>
         <% end %>
-        <% if user.social_identities.count.positive? %>
+        <% if user.external_identities.count.positive? %>
           <i class="bi bi-globe2" title="External IdP"></i>
         <% end %>
         <% unless user.confirmed? %>

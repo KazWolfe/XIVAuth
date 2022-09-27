@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_25_011934) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_27_051447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,20 +117,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_25_011934) do
     t.index ["resource_type", "resource_id"], name: "index_oauth_permissibles_on_resource_type_and_resource_id"
   end
 
-  create_table "social_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id"
-    t.string "provider", null: false
-    t.string "external_id", null: false
-    t.string "external_email"
-    t.datetime "last_used_at", precision: nil
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["external_id"], name: "index_social_identities_on_external_id", unique: true
-    t.index ["provider", "external_id"], name: "index_social_identities_on_provider_and_external_id", unique: true
-    t.index ["provider"], name: "index_social_identities_on_provider"
-    t.index ["user_id"], name: "index_social_identities_on_user_id"
-  end
-
   create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "team_id", null: false
     t.uuid "user_id", null: false
@@ -171,6 +157,33 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_25_011934) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "users_external_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.string "provider", null: false
+    t.string "external_id", null: false
+    t.string "external_email"
+    t.datetime "last_used_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_users_external_identities_on_external_id", unique: true
+    t.index ["provider", "external_id"], name: "index_users_external_identities_on_provider_and_external_id", unique: true
+    t.index ["provider"], name: "index_users_external_identities_on_provider"
+    t.index ["user_id"], name: "index_users_external_identities_on_user_id"
+  end
+
+  create_table "users_webauthn_credentials", force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "external_id", null: false
+    t.string "public_key", null: false
+    t.string "nickname", null: false
+    t.integer "sign_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_users_webauthn_credentials_on_external_id", unique: true
+    t.index ["nickname", "user_id"], name: "index_users_webauthn_credentials_on_nickname_and_user_id", unique: true
+    t.index ["user_id"], name: "index_users_webauthn_credentials_on_user_id"
+  end
+
   add_foreign_key "characters", "users"
   add_foreign_key "oauth_access_grants", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
@@ -178,5 +191,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_25_011934) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "oauth_device_grants", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_device_grants", "users", column: "resource_owner_id"
-  add_foreign_key "social_identities", "users"
+  add_foreign_key "users_external_identities", "users"
+  add_foreign_key "users_webauthn_credentials", "users"
 end

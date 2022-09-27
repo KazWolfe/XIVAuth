@@ -3,7 +3,7 @@ class Portal::ProfileController < ApplicationController
 
   def show
     @user = current_user
-    @external_identities = current_user.social_identities
+    @external_identities = current_user.external_identities
   end
 
   def update
@@ -39,9 +39,9 @@ class Portal::ProfileController < ApplicationController
     end
   end
 
-  def destroy_social_identity
-    social_identity = SocialIdentity.find(params[:id])
-    social_identity.destroy!
+  def destroy_external_identity
+    external_identity = Users::ExternalIdentity.find(params[:id])
+    external_identity.destroy!
 
     redirect_to profile_path
   end

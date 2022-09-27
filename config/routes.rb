@@ -35,7 +35,7 @@ Rails.application.routes.draw do
     post '/profile', to: 'profile#update'
     put '/profile', to: 'profile#update'
     patch '/profile', to: 'profile#update'
-    delete '/profile/social_identity/:id', to: 'profile#destroy_social_identity'
+    delete '/profile/external_identity/:id', to: 'profile#destroy_external_identity'
     get '/profile/password', to: 'profile#password_modal'
     patch '/profile/password', to: 'profile#update_password'
 

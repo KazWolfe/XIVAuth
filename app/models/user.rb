@@ -1,10 +1,12 @@
 class User < ApplicationRecord
-  has_many :social_identities, dependent: :destroy
+  has_many :external_identities, dependent: :destroy, class_name: 'Users::ExternalIdentity'
 
   has_many :characters
 
   has_many :team_memberships
   has_many :teams, through: :team_memberships
+
+  has_many :webauthn_credentials, dependent: :destroy
 
   after_touch :reload
 
@@ -67,7 +69,7 @@ class User < ApplicationRecord
   end
 
   def add_oauth_authorization(data)
-    social_identities.build({
+    external_identities.build({
                               provider: data['provider'],
                               external_id: data['uid'],
                               # external_email: data['info']['email']

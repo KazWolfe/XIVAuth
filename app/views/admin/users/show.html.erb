@@ -60,7 +60,7 @@
       <button class="btn btn-primary" disabled><i class="bi bi-unlock"></i> Remove MFA</button>
     </div>
 
-    <h4>Identity Providers</h4>
+    <h4>External Identities</h4>
     <table class="table">
       <thead>
       <tr>
@@ -72,7 +72,7 @@
       </tr>
       </thead>
       <tbody>
-      <% @user.social_identities.each do |ident| %>
+      <% @user.external_identities.each do |ident| %>
         <tr>
           <th scope="row"><i class="bi bi-<%= ident.provider %>"></i> <%= ident.provider.titleize %></th>
           <td><%= ident.external_id %></td>

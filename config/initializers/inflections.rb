@@ -14,4 +14,6 @@
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "RESTful"
   inflect.acronym "OAuth"
+  inflect.acronym "TOTP"
+
 end
