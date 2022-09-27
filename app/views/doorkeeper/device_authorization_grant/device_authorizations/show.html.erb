@@ -4,7 +4,7 @@
 
 <%= form_with(url: oauth_device_path(@device_grant)) do %>
   <p>
-    <strong><%= @device_grant.application.name %></strong> wants to use your XIVAccount to log you in.
+    <strong><%= @device_grant.application.name %></strong> wants to use your XIVAuth account to log you in.
   </p>
   <% if @device_grant.scopes.count > 0 %>
     <div id="oauth-scopes-block">
@@ -23,9 +23,9 @@
   <% end %>
 
   <div class="form-group">
-    <%= button_tag t('doorkeeper.authorizations.buttons.deny'), class: "btn",
+    <%= button_tag t('doorkeeper.authorizations.buttons.deny'), class: "btn btn-outline-danger me-6",
                    name: "disposition", value: "deny" %>
-    <%= button_tag t('doorkeeper.authorizations.buttons.authorize'), class: "btn btn-success float-end",
+    <%= button_tag t('doorkeeper.authorizations.buttons.authorize'), class: "btn btn-success",
                    name: "disposition", value: "approve" %>
   </div>
 <% end %>

@@ -12,12 +12,18 @@ class OAuth::DeviceAuthorizationsController < Doorkeeper::DeviceAuthorizationGra
     @device_grant = get_grant
     return unless @device_grant.present?
 
+    pf = preflight_checks
+    return pf if pf.present?
+
     redirect_to oauth_device_path(@device_grant)
   end
 
   def show
     @device_grant = get_grant
     return unless @device_grant.present?
+
+    pf = preflight_checks
+    return pf if pf.present?
 
     respond_to do |format|
       format.html
@@ -50,9 +56,8 @@ class OAuth::DeviceAuthorizationsController < Doorkeeper::DeviceAuthorizationGra
 
   def authorize
     # preflight checks
-    return authorization_error_response(:invalid_user_code) if @device_grant.nil?
-    return authorization_error_response(:expired_user_code) if @device_grant.expired?
-    return authorization_error_response(:denied_user_code) if @device_grant.denied
+    pf = preflight_checks
+    return pf if pf.present?
 
     device_grant_model.transaction do
       device_grant = device_grant_model.lock.find_by(user_code: user_code)
@@ -96,5 +101,14 @@ class OAuth::DeviceAuthorizationsController < Doorkeeper::DeviceAuthorizationGra
       format.html { redirect_to oauth_device_index_url, notice: notice }
       format.json { head :no_content }
     end
+  end
+
+  def preflight_checks
+    # preflight checks
+    return authorization_error_response(:invalid_user_code) if @device_grant.nil?
+    return authorization_error_response(:expired_user_code) if @device_grant.expired?
+    return authorization_error_response(:denied_user_code) if @device_grant.denied
+
+    return nil
   end
 end

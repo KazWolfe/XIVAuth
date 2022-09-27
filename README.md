@@ -138,6 +138,7 @@ Due to the general nature of XIVAuth's services, this really only applies to app
     - [ ] Support Steam
     - [ ] Require authentication to add new provider to existing account (keyed on email)
   - [x] Allow changing user passwords
+  - [ ] Show Audit Log of Actions Taken
   - [ ] Support for TOTP authentication
   - [ ] Support for U2F/FIDO2/WebAuthn authentication
   - [ ] Role management (banned, developer, admin)
@@ -181,8 +182,8 @@ Due to the general nature of XIVAuth's services, this really only applies to app
     - [ ] API supports passing in a secondary `client_id` for pairwise key consistency (??)
     - [ ] Applications can self-verify via RSA signature against known public key
   - [ ] OAuth API supports `authorization_code` grant type for web services
-  - [ ] OAuth API supports `device_code` for desktop apps or Dalamud
-    - [ ] Alternatively, PKCE support exists and is flexible enough to cover plugin use cases?
+  - [x] OAuth API supports `device_code` for desktop apps or Dalamud
+    - [ ] Device Code supports scope restrictions
   - [ ] OpenID support
 - Admin Features/System Maintenance
   - [ ] Allow granting restricted scopes to applications
