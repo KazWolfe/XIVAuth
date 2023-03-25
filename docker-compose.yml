@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  app:
+    image: kazwolfe/xivauth:latest
+    build:
+      context: .
+    env_file: .env
+    volumes:
+      - .:/app:cached
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
