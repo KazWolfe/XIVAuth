@@ -1,3 +1,9 @@
 <h1>Hello, Rails!</h1>
 <p>This is <code>Marketing#index</code>, reporting for duty!</p>
 <p>The time is currently <%= @current_time %>.</p>
+
+<% if user_signed_in? %>
+  <p>Hello there, <%= current_user.email %>! <%= link_to "Sign Out", destroy_user_session_path, data: { "turbo-method": :delete } %></p>
+<% else %>
+  <p><%= link_to "Sign In", new_user_session_path %></p>
+<% end %>
