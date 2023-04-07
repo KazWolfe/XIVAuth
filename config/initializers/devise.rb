@@ -273,6 +273,7 @@ Devise.setup do |config|
   # up on your models and hooks.
   config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user'
   config.omniauth :discord, 'APP_ID', 'APP_SECRET', scope: 'identity'
+  config.omniauth :steam, 'MY_API_KEY'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

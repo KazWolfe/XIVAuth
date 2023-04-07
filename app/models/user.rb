@@ -4,6 +4,5 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :confirmable, :trackable,
          :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: %i[discord github]
-  
+         :omniauthable, omniauth_providers: %i[discord github steam]
 end

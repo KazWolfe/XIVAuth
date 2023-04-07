@@ -58,6 +58,7 @@ gem 'omniauth', '~> 1.9'
 # Inbound OAuth2
 gem 'omniauth-discord', '~> 1.0'
 gem 'omniauth-github', '~> 1.1'
+gem 'omniauth-steam', '~> 1.0'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
