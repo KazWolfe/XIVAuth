@@ -54,6 +54,7 @@ gem "bootsnap", require: false
 # Authentication / Authorization
 gem 'devise', '~> 4.9'
 gem 'omniauth', '~> 1.9'
+gem 'cancancan', '~> 3.5'
 
 # OAuth2 Providers
 gem 'omniauth-discord', '~> 1.0'
