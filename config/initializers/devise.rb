@@ -274,7 +274,7 @@ Devise.setup do |config|
   config.omniauth :github,
                   client_id: Rails.application.credentials[:oauth][:github][:client_id],
                   client_secret: Rails.application.credentials[:oauth][:github][:client_secret],
-                  scope: 'user'
+                  scope: 'user:email'
   config.omniauth :discord,
                   client_id: Rails.application.credentials[:oauth][:discord][:client_id],
                   client_secret: Rails.application.credentials[:oauth][:discord][:client_secret],
