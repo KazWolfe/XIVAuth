@@ -51,13 +51,14 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-# Authentication
+# Authentication / Authorization
 gem 'devise', '~> 4.9'
 gem 'omniauth', '~> 1.9'
 
-# Inbound OAuth2
+# OAuth2 Providers
 gem 'omniauth-discord', '~> 1.0'
 gem 'omniauth-github', '~> 1.1'
+gem 'omniauth-patreon', '~> 1.0'
 gem 'omniauth-steam', '~> 1.0'
 
 # HTTP Requests

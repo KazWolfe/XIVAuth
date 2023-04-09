@@ -1,30 +1,35 @@
 # frozen_string_literal: true
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  # You should configure your model like this:
-  # devise :omniauthable, omniauth_providers: [:twitter]
+  def discord
+    common
+  end
 
-  # You should also create an action method in this controller like this:
-  # def twitter
-  # end
+  def github
+    common
+  end
 
-  # More info at:
-  # https://github.com/heartcombo/devise#omniauth
+  def steam
+    common
+  end
 
-  # GET|POST /resource/auth/twitter
-  # def passthru
-  #   super
-  # end
+  private
 
-  # GET|POST /users/auth/twitter/callback
-  # def failure
-  #   super
-  # end
+  def common
+    @user = User.from_omniauth(auth_data)
 
-  # protected
+    if @user.persisted?
+      set_flash_message(:notice, :success, kind: auth_data['provider'].camelize) if is_navigational_format?
+      sign_in_and_redirect @user, event: :authentication
+    else
+      session['devise.oauth.data'] = auth_data.except(:extra)
 
-  # The path used when OmniAuth fails
-  # def after_omniauth_failure_path_for(scope)
-  #   super(scope)
-  # end
+      msg = @user.errors.full_messages.join("\n")
+      redirect_to new_user_registration_url, alert: msg
+    end
+  end
+
+  def auth_data
+    request.env['omniauth.auth']
+  end
 end
