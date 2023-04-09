@@ -1,0 +1,43 @@
+<% character = character_registration.character %>
+
+<div class="card" id="<%= dom_id character_registration %>">
+  <div class="card-body">
+    <div class="d-flex flex-row align-items-center">
+      <img src="<%= image_url character.avatar_url %>" class="rounded m-2">
+      <div class="ps-2">
+        <h5 class="card-title"><%= character.name %></h5>
+        <p class="card-subtitle"><%= character.home_with_datacenter %></p>
+        <p class="mb-0">Lodestone ID <%= link_to "#{character.lodestone_id}", character.lodestone_url, class: "text-reset" %></p>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="btn-toolbar float-end" role="toolbar" aria-label="Character Actions">
+      <% unless character_registration.verified? %>
+        <%= link_to character_registration_verify_path(character_registration), class: "btn btn-success me-2" do %>
+          <i class="bi bi-patch-check"></i> Verify
+        <% end %>
+      <% end %>
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="actionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-gear-fill"></i>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="actionsDropdown">
+          <li>
+            <a class="dropdown-item"><i class="bi bi-arrow-clockwise"></i> Refresh Character</a>
+          </li>
+          <% if character_registration.verified? %>
+            <%= button_to character_registration_verify_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
+              <i class="bi bi-patch-minus"></i> Unverify Character
+            <% end %>
+          <% end %>
+          <li>
+            <%= link_to character_registration, method: :delete, data: { "turbo-method": :delete }, class: "dropdown-item text-danger" do %>
+              <i class="bi bi-trash"></i> Delete Character
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
