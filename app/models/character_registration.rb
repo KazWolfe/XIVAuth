@@ -4,6 +4,8 @@ class CharacterRegistration < ApplicationRecord
   belongs_to :user
   belongs_to :character, class_name: 'FFXIV::Character'
 
+  scope :verified, -> { where('verified_at IS NOT NULL') }
+
   def verified?
     verified_at.present?
   end

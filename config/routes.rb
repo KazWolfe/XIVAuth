@@ -8,6 +8,17 @@ Rails.application.routes.draw do
     delete 'verify', to: 'character_registration_verification#destroy'
   end
 
+  namespace 'api' do
+    namespace 'v1' do
+      resources :user
+      resources :characters
+    end
+  end
+
+  use_doorkeeper do
+    controllers applications: 'developer/oauth_apps'
+  end
+
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
     omniauth_callbacks: 'users/omniauth_callbacks',

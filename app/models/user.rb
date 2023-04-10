@@ -9,4 +9,6 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: %i[discord github steam]
 
   has_many :social_identities, dependent: :destroy
+  
+  has_many :character_registrations, dependent: :destroy
 end
