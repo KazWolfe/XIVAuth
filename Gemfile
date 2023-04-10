@@ -52,15 +52,18 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 # Authentication / Authorization
+gem 'cancancan', '~> 3.5'
 gem 'devise', '~> 4.9'
 gem 'omniauth', '~> 1.9'
-gem 'cancancan', '~> 3.5'
 
 # OAuth2 Providers
 gem 'omniauth-discord', '~> 1.0'
 gem 'omniauth-github', '~> 1.1'
 gem 'omniauth-patreon', '~> 1.0'
 gem 'omniauth-steam', '~> 1.0'
+
+# Outbound OAuth2
+gem 'doorkeeper', '~> 5.6'
 
 # HTTP Requests
 gem 'faraday', '~> 2.7'

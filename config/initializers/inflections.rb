@@ -11,4 +11,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.uncountable %w[fish sheep]
 
   inflect.acronym 'FFXIV'
+  inflect.acronym 'OAuth'
 end
