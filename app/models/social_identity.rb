@@ -4,6 +4,10 @@ class SocialIdentity < ApplicationRecord
 
   alias_attribute :uid, :external_id
 
+  def friendly_name
+    name || nickname || email || external_id
+  end
+
   # @param [OmniAuth::AuthHash] auth The AuthHash from OmniAuth
   def merge_auth_hash(auth, save_email: false)
     self.name = auth['info']['name']

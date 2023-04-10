@@ -36,6 +36,26 @@
   </div>
 <% end %>
 
+<h3>Social Identities</h3>
+<table>
+  <thead>
+  <tr>
+    <th scope="col">Provider</th>
+    <th scope="col">Name</th>
+    <th scope="col">External ID</th>
+    <th scope="col">Actions</th>
+  </tr>
+  </thead>
+  <% resource.social_identities.each do |identity| %>
+  <tr>
+    <td><%= identity.provider %></td>
+    <td><%= identity.friendly_name %></td>
+    <td><%= identity.external_id %></td>
+    <td>(delete)</td>
+  </tr>
+  <% end %>
+</table>
+
 <h3>Cancel my account</h3>
 
 <div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
