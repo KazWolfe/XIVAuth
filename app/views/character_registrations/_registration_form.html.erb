@@ -1,0 +1,24 @@
+<%= form_with(model: character_registration) do |form| %>
+  <% if character_registration.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(character_registration.errors.count, "error") %> prohibited this character_registration from
+        being saved:</h2>
+
+      <ul>
+        <% character_registration.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-floating mb-3">
+    <%= form.text_field :lodestone_url, class: "form-control", placeholder: "id" %>
+    <%= form.label :lodestone_url, "Lodestone ID or URL" %>
+  </div>
+
+  <div>
+    <%= form.submit "Add Character", class: "btn btn-primary" %>
+    <%= link_to "Cancel", character_registrations_path, class: "btn btn-secondary-outline" %>
+  </div>
+<% end %>

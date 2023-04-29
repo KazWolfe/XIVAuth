@@ -1,6 +1,6 @@
 json.extract! social_identity, :provider, :external_id, :name, :nickname
 
-if doorkeeper_token[:scopes].include?('user:email')
+if @doorkeeper_token.scopes.exists?('user:email')
   json.extract! social_identity, :email
 end
 

@@ -86,7 +86,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_09_213155) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "social_identities", force: :cascade do |t|
+  create_table "social_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.string "provider", null: false
     t.string "external_id", null: false

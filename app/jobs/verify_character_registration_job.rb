@@ -14,13 +14,13 @@ class VerifyCharacterRegistrationJob < ApplicationJob
       return
     end
 
-    lodestone_data = LodestoneManager::CharacterFetcher.call(character.lodestone_id)
+    lodestone_data = FFXIV::LodestoneProfile.new(character.lodestone_id)
 
     # We're here, might as well save the character data we just fetched. Waste not!
     character.refresh_from_lodestone(lodestone_data)
     character.save!
 
-    unless lodestone_data[:bio].upcase.include? registration.verification_key
+    unless lodestone_data.bio.upcase.include? registration.verification_key
       raise VerifyCharacterRegistrationJob::VerificationKeyMissingError,
             "Verification failed for #{registration.id} - key was not found."
     end

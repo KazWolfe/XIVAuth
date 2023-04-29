@@ -279,7 +279,7 @@ Devise.setup do |config|
                   client_id: Rails.application.credentials[:oauth][:discord][:client_id],
                   client_secret: Rails.application.credentials[:oauth][:discord][:client_secret],
                   scope: 'identify email'
-  config.omniauth :steam, 'MY_API_KEY'
+  # config.omniauth :steam, Rails.application.credentials[:oauth][:steam][:token]
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

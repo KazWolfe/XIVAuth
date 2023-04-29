@@ -4,7 +4,9 @@ class CharacterRegistration < ApplicationRecord
   belongs_to :user
   belongs_to :character, class_name: 'FFXIV::Character'
 
-  scope :verified, -> { where('verified_at IS NOT NULL') }
+  validates :character_id, uniqueness: { scope: :user_id }
+
+  scope :verified, -> { where.not(verified_at: nil) }
 
   def verified?
     verified_at.present?
@@ -15,12 +17,23 @@ class CharacterRegistration < ApplicationRecord
   end
 
   def verification_key
-    # TODO: Load secret from environment, don't use lodestone_id as it's not reusable
+    # TODO: Load secret from environment, don't use lodestone_id as it's not reusable (other models in future)
     digest = OpenSSL::Digest.new('sha256')
     hmac = OpenSSL::HMAC.digest(digest, 'secret', "#{character.lodestone_id}###{user.id}")
     hmac_s = Base32.encode(hmac).truncate(24, omission: '')
 
     "XIVAUTH:#{hmac_s}"
+  end
+
+  def entangled_id(higher_order_id: nil)
+    entanglement_key = "#{character.lodestone_id}###{user.id}"
+    entanglement_key += "###{higher_order_id}" if higher_order_id.present?
+
+    # TODO: Think of a better strategy for this
+    digest = OpenSSL::Digest.new('sha1')
+    hmac = OpenSSL::HMAC.digest(digest, 'NotQuantumEntanglement', entanglement_key)
+
+    Base64.urlsafe_encode64(hmac, padding: false)
   end
 
   private

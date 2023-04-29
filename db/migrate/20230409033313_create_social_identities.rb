@@ -1,6 +1,6 @@
 class CreateSocialIdentities < ActiveRecord::Migration[7.0]
   def change
-    create_table :social_identities do |t|
+    create_table :social_identities, id: :uuid do |t|
       t.references :user, type: :uuid, null: true
 
       t.string :provider, null: false

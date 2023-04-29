@@ -4,7 +4,7 @@
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="field">
-    <%= f.label :email %><br />
+    <%= f.label :email %><br/>
     <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
   </div>
 
@@ -13,21 +13,21 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
+    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br/>
     <%= f.password_field :password, autocomplete: "new-password" %>
     <% if @minimum_password_length %>
-      <br />
+      <br/>
       <em><%= @minimum_password_length %> characters minimum</em>
     <% end %>
   </div>
 
   <div class="field">
-    <%= f.label :password_confirmation %><br />
+    <%= f.label :password_confirmation %><br/>
     <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
   </div>
 
   <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
+    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br/>
     <%= f.password_field :current_password, autocomplete: "current-password" %>
   </div>
 
@@ -37,6 +37,22 @@
 <% end %>
 
 <h3>Social Identities</h3>
+<%- if devise_mapping.omniauthable? %>
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-person-add"></i> Add Social Identity
+    </button>
+    <ul class="dropdown-menu">
+      <%- resource_class.omniauth_providers.each do |provider| %>
+        <li>
+          <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
+            <i class="bi bi-<%= provider %>"></i> Add <%= OmniAuth::Utils.camelize(provider) %> account
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 <table>
   <thead>
   <tr>
@@ -47,12 +63,16 @@
   </tr>
   </thead>
   <% resource.social_identities.each do |identity| %>
-  <tr>
-    <td><%= identity.provider %></td>
-    <td><%= identity.friendly_name %></td>
-    <td><%= identity.external_id %></td>
-    <td>(delete)</td>
-  </tr>
+    <tr>
+      <td><%= identity.provider %></td>
+      <td><%= identity.friendly_name %></td>
+      <td><%= identity.external_id %></td>
+      <td>
+        <%= button_to social_identity_path(identity), method: :delete, class: "btn btn-danger" do %>
+          <i class="bi bi-trash"></i>
+        <% end %>
+      </td>
+    </tr>
   <% end %>
 </table>
 

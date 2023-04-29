@@ -25,6 +25,7 @@ module OmniauthAuthenticable
   class_methods do
     def from_omniauth(auth)
       # ONLY USE THIS FOR AUTHENTICATION.
+      raise 'from_omniauth called while a user was logged in! THIS IS A SECURITY CONCERN!' if current_user.present?
 
       social_identity = SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
       if social_identity.present?

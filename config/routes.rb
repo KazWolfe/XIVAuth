@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
   root 'marketing#index'
 
-  resources :characters, controller: :character_registrations, as: :character_registrations,
-            only: %i[index show new create destroy] do
+  resources :characters, controller: :character_registrations, as: :character_registrations, except: [:update] do
     get 'verify', to: 'character_registration_verification#index'
     post 'verify', to: 'character_registration_verification#create'
     delete 'verify', to: 'character_registration_verification#destroy'
@@ -11,7 +10,10 @@ Rails.application.routes.draw do
   namespace 'api' do
     namespace 'v1' do
       resources :user
-      resources :characters
+      resources :characters, param: :lodestone_id do
+        post 'verify', to: 'characters#verify'
+        delete 'verify', to: 'characters#unverify'
+      end
     end
   end
 
@@ -27,4 +29,8 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     unlocks: 'users/unlocks'
   }
+
+  devise_scope :user do
+    resources :social_identities, path: '/user/identities', controller: 'users/social_identities', only: [:destroy]
+  end
 end

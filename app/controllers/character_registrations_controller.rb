@@ -21,10 +21,8 @@ class CharacterRegistrationsController < ApplicationController
     respond_to do |format|
       if @character_registration.save
         format.html { redirect_to character_registrations_path, notice: "Character registration was successfully created." }
-        format.json { render :show, status: :created, location: @character_registration }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @character_registration.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -36,10 +34,8 @@ class CharacterRegistrationsController < ApplicationController
     respond_to do |format|
       if @character_registration.update(character_registration_params)
         format.html { redirect_to character_registrations_path, notice: "Character registration was successfully updated." }
-        format.json { render :show, status: :ok, location: @character_registration }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @character_registration.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -52,7 +48,6 @@ class CharacterRegistrationsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to character_registrations_path, notice: "Character registration was successfully destroyed." }
-      format.json { head :no_content }
     end
   end
 

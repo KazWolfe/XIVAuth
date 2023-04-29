@@ -214,7 +214,9 @@ Doorkeeper.configure do
   # `grant_type` - the grant type of the request (see Doorkeeper::OAuth)
   # `scopes` - the requested scopes (see Doorkeeper::OAuth::Scopes)
   #
-  # use_refresh_token
+  use_refresh_token do |context|
+    context.scopes.exists? 'refresh'
+  end
 
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter confirmation: true (default: false) if you want to enforce ownership of
@@ -246,7 +248,7 @@ Doorkeeper.configure do
   # not in configuration, i.e. +default_scopes+ or +optional_scopes+.
   # (disabled by default)
   #
-  # enforce_configured_scopes
+  enforce_configured_scopes
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -387,9 +389,9 @@ Doorkeeper.configure do
   #
   # Be default all Resource Owners are authorized to any Client (application).
   #
-  # authorize_resource_owner_for_client do |client, resource_owner|
-  #   resource_owner.admin? || client.owners_allowlist.include?(resource_owner)
-  # end
+  authorize_resource_owner_for_client do |client, resource_owner|
+    Ability.new(resource_owner).can? :use, client
+  end
 
   # Allows additional data fields to be sent while granting access to an application,
   # and for this additional data to be included in subsequently generated access tokens.
