@@ -1,12 +1,13 @@
 class User < ApplicationRecord
-  has_many :external_identities, dependent: :destroy, class_name: 'Users::ExternalIdentity'
+  has_many :external_identities, dependent: :destroy
 
   has_many :characters
 
   has_many :team_memberships
   has_many :teams, through: :team_memberships
 
-  has_many :webauthn_credentials, dependent: :destroy
+  has_many :webauthn_credentials, class_name: 'Users::WebauthnCredential', dependent: :destroy
+  has_one :totp_credential, class_name: 'Users::TOTPCredential', dependent: :destroy
 
   after_touch :reload
 
@@ -37,6 +38,10 @@ class User < ApplicationRecord
   
   def developer?
     true
+  end
+
+  def requires_mfa?
+    self.webauthn_credentials.count.positive? || self.totp_credential.present?
   end
 
   def self.from_omniauth(auth)

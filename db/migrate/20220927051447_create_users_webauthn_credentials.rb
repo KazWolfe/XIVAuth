@@ -1,6 +1,6 @@
 class CreateUsersWebauthnCredentials < ActiveRecord::Migration[7.0]
   def change
-    create_table :users_webauthn_credentials do |t|
+    create_table :users_webauthn_credentials, id: :uuid do |t|
       t.references :user, null: false, foreign_key: true, type: :uuid
 
       t.string  :external_id, null: false, index: { unique: true }

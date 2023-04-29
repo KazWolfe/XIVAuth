@@ -20,9 +20,3 @@ OAuth::ClientApplication.create(
   uid: '7Ea0YN9n4Jh8bGXydexwaQiVfaVlRogmJ3Wi3CH6E8c',
   secret: 'uy6_MwmGWguFUqGmJZ1H-9TROP9eXQJlmux4orjDxQI'
 )
-
-# some fake users/characters
-3.times do
-  FactoryBot.create(:random_character)
-  next
-end

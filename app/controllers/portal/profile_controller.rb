@@ -38,11 +38,4 @@ class Portal::ProfileController < ApplicationController
              status: :unprocessable_entity
     end
   end
-
-  def destroy_external_identity
-    external_identity = Users::ExternalIdentity.find(params[:id])
-    external_identity.destroy!
-
-    redirect_to profile_path
-  end
 end

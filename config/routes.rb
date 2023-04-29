@@ -31,13 +31,17 @@ Rails.application.routes.draw do
 
   scope module: :portal do
     # User management
-    get '/profile', to: 'profile#show'
-    post '/profile', to: 'profile#update'
-    put '/profile', to: 'profile#update'
-    patch '/profile', to: 'profile#update'
-    delete '/profile/external_identity/:id', to: 'profile#destroy_external_identity'
-    get '/profile/password', to: 'profile#password_modal'
-    patch '/profile/password', to: 'profile#update_password'
+    resource :profile, only: [:index, :show, :update] do
+      scope module: :profile do
+        resources :external_identities, only: [:destroy]
+        resources :webauthn_credentials, only: [:create, :destroy] do
+          post '/challenge', on: :collection, action: 'webauthn_credentials#challenge'
+        end
+      end
+
+      get '/password', to: 'profile#password_modal'
+      patch '/password', to: 'profile#update_password'
+    end
 
     # Character management
     resources :characters do
@@ -50,6 +54,8 @@ Rails.application.routes.draw do
       resources :applications, controller: 'client_applications'
     end
   end
+
+  resolve("Profile") { [:profile] }
 
   # Admin routes
   authenticate :user, ->(u) { u.admin? } do

@@ -12,8 +12,14 @@
 
 # These inflection rules are supported but not enabled by default:
 ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.acronym "RESTful"
-  inflect.acronym "OAuth"
-  inflect.acronym "TOTP"
+  inflect.acronym 'RESTful'
+  inflect.acronym 'OAuth'
+  inflect.acronym 'TOTP'
+  inflect.acronym 'MFA'
+  inflect.acronym 'FFXIV'
+  inflect.acronym 'XIV'
+  inflect.acronym 'XIVAPI'
 
+  # Cheating...
+  inflect.irregular 'profile', 'profile'
 end

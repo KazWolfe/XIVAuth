@@ -20,6 +20,10 @@ module Lodestone
 
   extend self
 
+  def lodestone_url(character_id, region = 'na')
+    "https://#{region}.finalfantasyxiv.com/character/#{character_id}"
+  end
+
   def character(character_id)
     character_meta = profile(character_id)
     Rails.logger.info("Fetched character ID #{character_id} from Lodestone", character_meta)
@@ -39,6 +43,11 @@ module Lodestone
     meta
   end
 
+  # Attempt to find a player on the Lodestone by character name and home world.
+  # 
+  # This method makes a few assumptions that may prove fatal:
+  # 1) The user will provide their exact character name and home world
+  # 2) The Lodestone will return an exact match on the first page.
   def search_for_lodestone_id(character_name, home_world)
     doc = character_search_results(character_name, home_world)
 
@@ -48,7 +57,7 @@ module Lodestone
       found_id = entry.at_css('a.entry__link').attributes['href'].value.split('/')[-1]
       found_name = entry.at_css('a.entry__link > .entry__box--world > .entry__name').text
       found_world = entry.at_css('a.entry__link > .entry__box--world > .entry__world').text.gsub(/\s\[\w+\]/, '')
-
+      
       next unless found_name == character_name && found_world == home_world
 
       found_ids << found_id

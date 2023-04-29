@@ -34,8 +34,9 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
-# Outbound HTTP requests
-gem 'rest-client'
+# Outbound integrations
+gem 'rest-client', '~> 2.1.0'
+gem 'xivapi', git: 'https://github.com/xivapi/xivapi-ruby.git', tag: 'v0.3.3'
 
 # Mail Services
 gem 'postmark-rails'
@@ -49,7 +50,6 @@ gem 'rails_semantic_logger'
 # Authentication and providers (inbound)
 gem 'cancancan'
 gem 'devise'
-
 gem 'devise_zxcvbn'
 gem 'omniauth-discord'
 gem 'omniauth-github', '~> 2.0.0'
@@ -67,12 +67,12 @@ gem 'recaptcha', '~> 5.12.3'
 
 # OAuth2 provider systems
 gem 'doorkeeper'
-gem 'doorkeeper-openid_connect'
 gem 'doorkeeper-device_authorization_grant', '1.0.1'   # need fixed version, we will be patching this!
+gem 'doorkeeper-openid_connect'
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem 'debug', platforms: %i[mri mingw x64_mingw]
+  gem 'debase', '0.2.5beta2'
+  gem 'ruby-debug-ide'
 
   # Test harnesses
   gem 'factory_bot_rails'
