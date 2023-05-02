@@ -7,6 +7,10 @@ Rails.application.routes.draw do
     delete 'verify', to: 'character_registration_verification#destroy'
   end
 
+  namespace 'developer' do
+    resources :applications, controller: 'oauth_apps'
+  end
+
   namespace 'api' do
     namespace 'v1' do
       resources :user

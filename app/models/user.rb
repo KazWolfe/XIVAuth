@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   include OmniauthAuthenticable
+  include SystemRoleable
 
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable, and :omniauthable

@@ -1,0 +1,26 @@
+<%
+  # Leveraging the fact that we (probably) already have a modal open, so we can just update it with Turbo.
+  # TODO: Determine if this can backfire somehow (e.g. model isn't open?)
+  # TODO: Set up ActionCable to listen for an update to this character.
+%>
+<%= turbo_stream.update "remote_modal-content" do %>
+    <div class="modal-header">
+      <h5 class="modal-title" id="verifyLabel">Verify Character - Validating</h5>
+    </div>
+    <div class="modal-body">
+      <p>
+        Thanks! We'll go ahead and check for the verification key in your Lodestone profile. This process generally will
+        only take a few moments, so you can sit back and relax. Whenever Kaz learns how to write code, this pane will
+        update itself to show a proper status and/or handle errors more gracefully. Maybe you'll even get a checkmark
+        once verification succeeds!
+      </p>
+      <p>
+        Until that day comes though, feel free to click Done and refresh the main page. If your character was
+        successfully verified, a checkmark should appear and all should be good. If your character still isn't
+        verified after a few minutes, please reach out to Kaz so he can figure out what went wrong.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Got it.</button>
+    </div>
+<% end %>

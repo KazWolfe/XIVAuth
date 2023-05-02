@@ -1,0 +1,9 @@
+<%= turbo_frame_tag "remote_modal" do %>
+  <div class="modal fade" tabindex="-1" data-controller="remote-modal" data-action="turbo:before-render@document->remote-modal#hideBeforeRender">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" id="remote_modal-content">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+<% end %>

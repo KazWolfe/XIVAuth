@@ -4,7 +4,8 @@ class CharacterRegistrationVerificationController < ApplicationController
   def index
     respond_to do |format|
       if !@character_registration.verified?
-        format.html { render 'character_registration_verification/create' }
+        format.turbo_stream
+        format.html
       else
         format.html { redirect_to character_registrations_path, error: 'This character is already verified!' }
       end
@@ -18,6 +19,7 @@ class CharacterRegistrationVerificationController < ApplicationController
 
     respond_to do |format|
       if job
+        format.turbo_stream
         format.html { redirect_to character_registrations_path, notice: 'Registration job enqueued.' }
       else
         format.html { redirect_to character_registrations_path, error: 'Could not enqueue job?' }

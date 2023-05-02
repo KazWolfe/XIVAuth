@@ -1,2 +1,14 @@
-<h1>CharacterRegistrationVerification#index</h1>
-<p>Find me in app/views/character_registration_verification/index.html.erb</p>
+<div class="container">
+  <h2>Character Verification</h2>
+  <p>You are currently verifying <strong><%= @character.name %></strong>.</p>
+  <p>
+    Please visit this character's <%= link_to "Lodestone Page", @character.lodestone_url %> and add the following
+    text to the character's description.
+  </p>
+  <pre><code><%= @character_registration.verification_key %></code></pre>
+  <p>You may delete this key after verification has succeeded.</p>
+
+  <%= button_to character_registration_verify_path(@character_registration), class: "btn btn-primary" do %>
+    <i class="bi bi-person-check"></i> Begin Verification
+  <% end %>
+</div>

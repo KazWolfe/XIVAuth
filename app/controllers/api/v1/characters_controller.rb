@@ -1,4 +1,7 @@
 class Api::V1::CharactersController < Api::V1::ApiController
+  before_action -> { doorkeeper_authorize! :character, 'character:all', 'character:manage', 'character:jwt' }
+  before_action(only: [:create, :update]) { doorkeeper_authorize! 'character:manage' }
+
   before_action :load_authorized_characters
   before_action :set_character, except: %i[index create]
 

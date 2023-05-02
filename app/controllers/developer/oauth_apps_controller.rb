@@ -1,5 +1,6 @@
 class Developer::OAuthAppsController < Doorkeeper::ApplicationsController
   skip_before_action :authenticate_admin!
+  layout 'application'
 
   def index
     @applications = Doorkeeper.config.application_model.accessible_by(current_ability).ordered_by(:created_at)
@@ -37,6 +38,6 @@ class Developer::OAuthAppsController < Doorkeeper::ApplicationsController
 
   def application_params
     params.require(:doorkeeper_application)
-          .permit(:name, :redirect_uri, { scopes: [] }, :confidential)
+          .permit(:name, :redirect_uri, { scopes: [] }, :confidential, :public)
   end
 end

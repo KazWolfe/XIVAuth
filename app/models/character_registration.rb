@@ -4,7 +4,8 @@ class CharacterRegistration < ApplicationRecord
   belongs_to :user
   belongs_to :character, class_name: 'FFXIV::Character'
 
-  validates :character_id, uniqueness: { scope: :user_id }
+  validates :character_id, uniqueness: { scope: [:user_id] }
+  validates :character_id, uniqueness: true, if: :verified?
 
   scope :verified, -> { where.not(verified_at: nil) }
 
@@ -13,6 +14,9 @@ class CharacterRegistration < ApplicationRecord
   end
 
   def verify!
+    # FIXME: This needs to handle the edge case of *other* registrations also being verified somehow.
+    #        Clobber?
+
     self.verified_at = DateTime.now
   end
 
@@ -25,6 +29,8 @@ class CharacterRegistration < ApplicationRecord
     "XIVAUTH:#{hmac_s}"
   end
 
+  # Generates an "entangled ID", suitable for unique, consistent, and private identification of a single Character Registration.
+  # This ID should be used for any authentication systems that want to verify based on character ID while ensuring user guarantees.
   def entangled_id(higher_order_id: nil)
     entanglement_key = "#{character.lodestone_id}###{user.id}"
     entanglement_key += "###{higher_order_id}" if higher_order_id.present?

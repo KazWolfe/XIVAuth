@@ -1,0 +1,24 @@
+<%= turbo_stream.replace "remote_modal" do %>
+  <%= render 'layouts/components/remote_modal', title: 'Verify Character' do %>
+    <div class="modal-header">
+      <h5 class="modal-title" id="verifyLabel">Verify Character</h5>
+    </div>
+    <div class="modal-body">
+      <p>
+        To verify your character, visit your <%= link_to "Lodestone profile", @character.lodestone_url %> and place the
+        following verification code <em>exactly as it appears below</em> into the character profile.
+      </p>
+      <pre style="text-align: center"><code><%= @character_registration.verification_key %></code></pre>
+      <p>
+        After saving, come back here and click the button below to continue onwards to the rest of the verification
+        process.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn me-auto" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+      <%= form_with url: "#{character_registration_verify_path(@character_registration)}", method: :post do |form| %>
+        <%= form.submit "Okay, it's there!", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

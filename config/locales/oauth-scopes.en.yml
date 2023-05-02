@@ -1,0 +1,30 @@
+en:
+  xivauth:
+    oauth_scopes:
+      user:
+        friendly: Read User Information
+        description: Allows accessing base user information such as User ID and whether the user has any verified characters.
+      user:email:
+        friendly: Read User Email
+        description: Allows reading the user's email address.
+      user:social:
+        friendly: Read Linked Accounts
+        description: Allows getting a list of external accounts (e.g. Discord, GitHub) linked to the user.
+      user:manage:
+        friendly: Manage User Information
+        description: Allows modifying user information via API.
+      character:
+        friendly: Read a Selected Character
+        description: Allows reading a single user-selected character.
+      character:all:
+        friendly: Read Authorized Characters
+        description: Allows reading a list of authorized user-selected characters.
+      character:manage:
+        friendly: Manage Characters
+        description: Allows creating new characters and reading, editing, or deleting existing characters.
+      character:jwt:
+        friendly: Generate Character Claims
+        description: Allows generating a cryptographic claim for ownership of a character.
+      refresh:
+        friendly: Allow Persistent Access
+        description: Generates an OAuth refresh token, allowing the application to refresh information in the future.
