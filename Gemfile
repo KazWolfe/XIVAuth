@@ -51,27 +51,42 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+# Mail Services
+gem 'postmark-rails', '~> 0.22.1'
+
+# Workers
+gem 'sidekiq', '~> 7.1.0'
+gem 'sidekiq-cron', '~> 1.10.0'
+
 # Authentication / Authorization
 gem 'cancancan', '~> 3.5'
 gem 'devise', '~> 4.9'
-gem 'omniauth', '~> 1.9'
 
 # OAuth2 Providers
-gem 'omniauth-discord', '~> 1.0'
-gem 'omniauth-github', '~> 1.1'
-gem 'omniauth-patreon', '~> 1.0'
-gem 'omniauth-steam', '~> 1.0'
+gem 'omniauth-discord', '~> 1.1.0'
+gem 'omniauth-github', '~> 2.0.1'
+gem 'omniauth-steam', '~> 1.0.6'
 
 # Outbound OAuth2
-gem 'doorkeeper', '~> 5.6'
+gem 'doorkeeper', '~> 5.6.6'
+
+# Internal security
+gem 'jwt', '~> 2.5.0'
+gem 'omniauth-rails_csrf_protection', '~> 1.0.1'
+gem 'recaptcha', '~> 5.14.0'
 
 # HTTP Requests
 gem 'faraday', '~> 2.7'
+
+# Better logging
+gem 'rails_semantic_logger', '~> 4.12'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem 'rubocop', require: false
+
+  gem 'amazing_print'
 end
 
 group :development do

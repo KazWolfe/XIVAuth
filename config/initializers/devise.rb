@@ -272,14 +272,14 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   config.omniauth :github,
-                  client_id: Rails.application.credentials[:oauth][:github][:client_id],
-                  client_secret: Rails.application.credentials[:oauth][:github][:client_secret],
+                  client_id: Rails.application.credentials.dig(:oauth, :github, :client_id),
+                  client_secret: Rails.application.credentials.dig(:oauth, :github, :client_secret),
                   scope: 'user:email'
   config.omniauth :discord,
-                  client_id: Rails.application.credentials[:oauth][:discord][:client_id],
-                  client_secret: Rails.application.credentials[:oauth][:discord][:client_secret],
+                  client_id: Rails.application.credentials.dig(:oauth, :discord, :client_id),
+                  client_secret: Rails.application.credentials.dig(:oauth, :discord, :client_secret),
                   scope: 'identify email'
-  # config.omniauth :steam, Rails.application.credentials[:oauth][:steam][:token]
+  # config.omniauth :steam, Rails.application.credentials.dig(:oauth, :steam, :token)
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

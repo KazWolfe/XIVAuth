@@ -12,4 +12,8 @@ class User < ApplicationRecord
   has_many :social_identities, dependent: :destroy
   
   has_many :character_registrations, dependent: :destroy
+
+  def admin?
+    email == "dev@eorzea.id"
+  end
 end

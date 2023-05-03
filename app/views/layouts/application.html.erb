@@ -13,12 +13,12 @@
   <body>
     <%= render 'layouts/navbar' %>
 
-    <% # ToDo: move these elsewhere %>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <div class="container">
+      <%= render 'layouts/components/flashes' %>
+
+      <%= yield %>
+    </div>
 
     <%= turbo_frame_tag "remote_modal", target: "_top" %>
-
-    <%= yield %>
   </body>
 </html>

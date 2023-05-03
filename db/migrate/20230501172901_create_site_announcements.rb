@@ -1,6 +1,8 @@
 class CreateSiteAnnouncements < ActiveRecord::Migration[7.0]
   def change
-    create_table :site_announcements do |t|
+    create_table :site_announcements, id: :uuid do |t|
+      t.text :type  # success, info, notice, warning, danger
+
       t.text :title
       t.text :body
 

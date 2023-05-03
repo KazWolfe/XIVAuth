@@ -1,0 +1,13 @@
+<% flash_types = {
+  notice: { alert_class: 'alert-info', icon: 'bi-info-circle-fill' } ,
+  alert: { alert_class: 'alert-warning', icon: 'bi-exclamation-triangle-fill' },
+  error: { alert_class: 'alert-danger', icon: 'bi-exclamation-octagon-fill' }
+} %>
+
+<% flash.keys.each do |key| %>
+  <% next unless flash_types.include? key.to_sym %>
+  <div class="alert <%= flash_types[key.to_sym][:alert_class] %>" role="alert">
+    <i class="bi <%= flash_types[key.to_sym][:icon] %>"></i>
+    <span><%= flash[key] %></span>
+  </div>
+<% end %>

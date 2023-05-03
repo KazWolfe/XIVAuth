@@ -1,85 +1,83 @@
-<div class="container">
-  <h2>Edit <%= resource_name.to_s.humanize %></h2>
+<h2>Edit <%= resource_name.to_s.humanize %></h2>
 
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-    <%= render "devise/shared/error_messages", resource: resource %>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
 
-    <div class="field">
-      <%= f.label :email %><br/>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-    </div>
+  <div class="field">
+    <%= f.label :email %><br/>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+  </div>
 
-    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-      <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br/>
+    <%= f.password_field :password, autocomplete: "new-password" %>
+    <% if @minimum_password_length %>
+      <br/>
+      <em><%= @minimum_password_length %> characters minimum</em>
     <% end %>
+  </div>
 
-    <div class="field">
-      <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br/>
-      <%= f.password_field :password, autocomplete: "new-password" %>
-      <% if @minimum_password_length %>
-        <br/>
-        <em><%= @minimum_password_length %> characters minimum</em>
-      <% end %>
-    </div>
+  <div class="field">
+    <%= f.label :password_confirmation %><br/>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+  </div>
 
-    <div class="field">
-      <%= f.label :password_confirmation %><br/>
-      <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-    </div>
+  <div class="field">
+    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br/>
+    <%= f.password_field :current_password, autocomplete: "current-password" %>
+  </div>
 
-    <div class="field">
-      <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br/>
-      <%= f.password_field :current_password, autocomplete: "current-password" %>
-    </div>
+  <div class="actions">
+    <%= f.submit "Update" %>
+  </div>
+<% end %>
 
-    <div class="actions">
-      <%= f.submit "Update" %>
-    </div>
-  <% end %>
-
-  <h3>Social Identities</h3>
-  <%- if devise_mapping.omniauthable? %>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-person-add"></i> Add Social Identity
-      </button>
-      <ul class="dropdown-menu">
-        <%- resource_class.omniauth_providers.each do |provider| %>
-          <li>
-            <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
-              <i class="bi bi-<%= provider %>"></i> Add <%= OmniAuth::Utils.camelize(provider) %> account
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-  <table>
-    <thead>
-    <tr>
-      <th scope="col">Provider</th>
-      <th scope="col">Name</th>
-      <th scope="col">External ID</th>
-      <th scope="col">Actions</th>
-    </tr>
-    </thead>
-    <% resource.social_identities.each do |identity| %>
-      <tr>
-        <td><%= identity.provider %></td>
-        <td><%= identity.friendly_name %></td>
-        <td><%= identity.external_id %></td>
-        <td>
-          <%= button_to social_identity_path(identity), method: :delete, class: "btn btn-danger" do %>
-            <i class="bi bi-trash"></i>
+<h3>Social Identities</h3>
+<%- if devise_mapping.omniauthable? %>
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-person-add"></i> Add Social Identity
+    </button>
+    <ul class="dropdown-menu">
+      <%- resource_class.omniauth_providers.each do |provider| %>
+        <li>
+          <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
+            <i class="bi bi-<%= provider %>"></i> Add <%= OmniAuth::Utils.camelize(provider) %> account
           <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </table>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+<table>
+  <thead>
+  <tr>
+    <th scope="col">Provider</th>
+    <th scope="col">Name</th>
+    <th scope="col">External ID</th>
+    <th scope="col">Actions</th>
+  </tr>
+  </thead>
+  <% resource.social_identities.each do |identity| %>
+    <tr>
+      <td><%= identity.provider %></td>
+      <td><%= identity.friendly_name %></td>
+      <td><%= identity.external_id %></td>
+      <td>
+        <%= button_to social_identity_path(identity), method: :delete, class: "btn btn-danger" do %>
+          <i class="bi bi-trash"></i>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
 
-  <h3>Cancel my account</h3>
+<h3>Cancel my account</h3>
 
-  <div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
+<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
 
-  <%= link_to "Back", :back %>
-</div>
+<%= link_to "Back", :back %>

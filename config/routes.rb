@@ -1,3 +1,6 @@
+require 'sidekiq/web'
+require 'sidekiq/cron/web'
+
 Rails.application.routes.draw do
   root 'marketing#index'
 
@@ -19,6 +22,11 @@ Rails.application.routes.draw do
         delete 'verify', to: 'characters#unverify'
       end
     end
+  end
+
+  # Admin routes
+  authenticate :user, ->(u) { u.admin? } do
+    mount Sidekiq::Web => '/admin/sidekiq'
   end
 
   use_doorkeeper do
