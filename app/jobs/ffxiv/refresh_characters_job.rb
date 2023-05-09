@@ -1,6 +1,6 @@
-class RefreshCharactersJob < ApplicationJob
-  queue_as :default
-
+class FFXIV::RefreshCharactersJob < ApplicationJob
+  queue_as :ffxiv_lodestone_jobs
+  
   # @param [Array<FFXIV::Character>] characters A list of characters to update in this job run
   def perform(*characters)
     characters.each do |character|

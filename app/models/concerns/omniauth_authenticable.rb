@@ -24,9 +24,6 @@ module OmniauthAuthenticable
 
   class_methods do
     def from_omniauth(auth)
-      # ONLY USE THIS FOR AUTHENTICATION.
-      raise 'from_omniauth called while a user was logged in! THIS IS A SECURITY CONCERN!' if current_user.present?
-
       social_identity = SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
       if social_identity.present?
         social_identity.merge_auth_hash(auth)
@@ -34,8 +31,7 @@ module OmniauthAuthenticable
       end
 
       email = auth['info']['email']
-
-      throw StandardError('No email defined! Was it verified?') unless email.present?
+      raise 'No email defined! Was it verified?' unless email.present?
 
       existing_user = find_for_database_authentication(email: email.downcase)
       if existing_user
@@ -70,6 +66,5 @@ module OmniauthAuthenticable
 
       user
     end
-
   end
 end

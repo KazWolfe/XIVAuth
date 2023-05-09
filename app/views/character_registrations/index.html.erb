@@ -1,8 +1,10 @@
 <h1>My Characters</h1>
 
 <div class="btn-group mb-4" role="group" aria-label="Charater Management Actions">
-  <%= link_to new_character_registration_path, class: "btn btn-primary" do %>
-    <i class="bi bi-plus"></i> Create New Character
+  <% if can_add_characters? %>
+    <%= link_to new_character_registration_path, class: "btn btn-primary" do %>
+      <i class="bi bi-plus"></i> Create New Character
+    <% end %>
   <% end %>
 </div>
 

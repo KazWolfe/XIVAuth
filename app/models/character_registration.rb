@@ -4,10 +4,17 @@ class CharacterRegistration < ApplicationRecord
   belongs_to :user
   belongs_to :character, class_name: 'FFXIV::Character'
 
-  validates :character_id, uniqueness: { scope: [:user_id] }
-  validates :character_id, uniqueness: true, if: :verified?
+  validates :character_id, uniqueness: { scope: [:user_id], message: 'is already registered to you!' }
+  validates_uniqueness_of :character_id, if: :verified?, message: 'has already been verified.'
+
+  validates_associated :character, message: 'could not be found or is invalid.'
+
+  validate :owner_can_create
 
   scope :verified, -> { where.not(verified_at: nil) }
+  scope :unverified, -> { where(verified_at: nil) }
+
+  attr_accessor :character_key
 
   def verified?
     verified_at.present?
@@ -43,4 +50,10 @@ class CharacterRegistration < ApplicationRecord
   end
 
   private
+  
+  def owner_can_create
+    if user.character_registrations.unverified.count >= user.unverified_character_allowance
+      errors.add(:user, 'has too many unverified characters.')
+    end
+  end
 end

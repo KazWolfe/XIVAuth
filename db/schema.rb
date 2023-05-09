@@ -26,7 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_01_172901) do
   end
 
   create_table "ffxiv_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "lodestone_id", null: false
+    t.string "lodestone_id", null: false
     t.string "content_id"
     t.string "name", null: false
     t.string "home_world", null: false

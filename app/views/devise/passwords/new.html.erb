@@ -1,16 +1,24 @@
-<h2>Forgot your password?</h2>
+<div class="row justify-content-center">
+  <div class="col-lg-4">
+    <h2 class="mb-4">Reset Password</h2>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <p>We get it, passwords are hard to remember. Fortunately, we have a great solution: The Password Reset Form!</p>
+    <p>Enter your account's email below and, if you have an account with us, we will dispatch you an e-mail all speedy-like.</p>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="form-group field">
+        <%= f.label :email, class: "form-label"%><br/>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: eegg_random_npc_email %>
+      </div>
+
+      <div class="form-group d-grid d-md-flex mt-2">
+        <%= invisible_recaptcha_tags ui: :button, text: 'Send Reset Instructions', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+
   </div>
-
-  <div class="actions">
-    <%= f.submit "Send me reset password instructions" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

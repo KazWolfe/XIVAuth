@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::PasswordsController < Devise::PasswordsController
+  helper Users::SessionsHelper
+  
   # GET /resource/password/new
   # def new
   #   super
@@ -31,4 +33,15 @@ class Users::PasswordsController < Devise::PasswordsController
   # def after_sending_reset_password_instructions_path_for(resource_name)
   #   super(resource_name)
   # end
+
+  private
+
+  def check_captcha
+    return if verify_recaptcha
+
+    self.resource = resource_class.new
+
+    flash.discard(:recaptcha_error)
+    render :new, status: :unprocessable_entity
+  end
 end

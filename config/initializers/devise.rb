@@ -263,7 +263,7 @@ Devise.setup do |config|
   # should add them to the navigational formats lists.
   #
   # The "*/*" below is required to match Internet Explorer requests.
-  # config.navigational_formats = ['*/*', :html, :turbo_stream]
+  config.navigational_formats = ['*/*', :html, :turbo_stream]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
@@ -279,7 +279,7 @@ Devise.setup do |config|
                   client_id: Rails.application.credentials.dig(:oauth, :discord, :client_id),
                   client_secret: Rails.application.credentials.dig(:oauth, :discord, :client_secret),
                   scope: 'identify email'
-  # config.omniauth :steam, Rails.application.credentials.dig(:oauth, :steam, :token)
+  config.omniauth :steam, Rails.application.credentials.dig(:oauth, :steam, :token)
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

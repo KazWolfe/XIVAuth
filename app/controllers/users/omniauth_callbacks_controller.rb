@@ -1,28 +1,47 @@
 # frozen_string_literal: true
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  # FIXME: Possible security issue (?) - Steam doesn't give us CSRF back, so we have to deal with a bit of a headache.
+  skip_before_action :verify_authenticity_token, only: [:steam]
+
   def discord
+    @provider = :discord
+
     common
   end
 
   def github
+    @provider = :github
+
     common
   end
 
   def steam
+    @provider = :steam
+
     common
   end
 
   private
 
   def common
-    return sso_link if current_user.present?
+    return sso_bind_identity if user_signed_in?
 
     sso_signin
   end
 
   def sso_signin
-    @user = User.from_omniauth(auth_data)
+    raise 'sso_signin called while a user was logged in!' if user_signed_in?
+
+    begin
+      @user = User.from_omniauth(auth_data)
+    rescue
+      if @provider == :steam
+        redirect_to new_user_session_path, alert: 'Steam accounts must be linked before being used for sign in. ' +
+          'Please log in and link your Steam account.'
+        return
+      end
+    end
 
     if @user.persisted?
       set_flash_message(:notice, :success, kind: auth_data['provider'].camelize) if is_navigational_format?
@@ -35,7 +54,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
-  def sso_link
+  def sso_bind_identity
     identity = SocialIdentity.find_by(provider: auth_data[:provider], external_id: auth_data[:uid])
     if identity.present?
       if identity.user == current_user

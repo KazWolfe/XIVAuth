@@ -41,7 +41,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
   def verify
     authorize! :update, @character
 
-    if VerifyCharacterRegistrationJob.perform_later @character
+    if FFXIV::RefreshCharactersJobVerifyCharacterRegistrationJob.perform_later @character
       head status: :created
     else
       head status: :internal_server_error

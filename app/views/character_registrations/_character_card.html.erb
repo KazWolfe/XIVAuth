@@ -5,9 +5,15 @@
     <div class="d-flex flex-row align-items-center">
       <img src="<%= image_url character.avatar_url %>" class="rounded m-2">
       <div class="ps-2">
-        <h5 class="card-title"><%= character.name %></h5>
+        <h5 class="card-title">
+          <%= character.name %>
+          <% if character_registration.verified? %>
+            <i class="bi bi-patch-check-fill text-success" title="Verified since <%= character_registration.verified_at %>"></i>
+          <% end %>
+        </h5>
         <p class="card-subtitle"><%= character.home_with_datacenter %></p>
-        <p class="mb-0">Lodestone ID <%= link_to "#{character.lodestone_id}", character.lodestone_url, class: "text-reset" %></p>
+        <p class="mb-0">Lodestone
+          ID <%= link_to "#{character.lodestone_id}", character.lodestone_url, class: "text-reset" %></p>
       </div>
     </div>
   </div>
@@ -23,16 +29,18 @@
           <i class="bi bi-gear-fill"></i>
         </button>
         <ul class="dropdown-menu" aria-labelledby="actionsDropdown">
-          <li>
-            <a class="dropdown-item"><i class="bi bi-arrow-clockwise"></i> Refresh Character</a>
-          </li>
+          <% if character.stale? %>
+            <%= button_to character_registration_refresh_path(character_registration), class: 'dropdown-item' do %>
+              <i class="bi bi-arrow-clockwise"></i> Refresh Character
+            <% end %>
+          <% end %>
           <% if character_registration.verified? %>
             <%= button_to character_registration_verify_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
               <i class="bi bi-patch-minus"></i> Unverify Character
             <% end %>
           <% end %>
           <li>
-            <%= link_to character_registration, method: :delete, data: { "turbo-method": :delete }, class: "dropdown-item text-danger" do %>
+            <%= button_to character_registration_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
               <i class="bi bi-trash"></i> Delete Character
             <% end %>
           </li>

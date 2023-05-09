@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     get 'verify', to: 'character_registration_verification#index'
     post 'verify', to: 'character_registration_verification#create'
     delete 'verify', to: 'character_registration_verification#destroy'
+
+    post 'refresh', to: 'character_registrations#refresh'
   end
 
   namespace 'developer' do
@@ -29,9 +31,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/admin/sidekiq'
   end
 
-  use_doorkeeper do
-    controllers applications: 'developer/oauth_apps'
-  end
+  use_doorkeeper do; end
 
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',

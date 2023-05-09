@@ -4,8 +4,12 @@
 
 import { application } from "./application"
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
 
-import RemoteModalController from "./remote_modal_controller"
-application.register("remote-modal", RemoteModalController)
+import RemoteModalController from "./utilities/remote_modal_controller";
+application.register("remote-modal", RemoteModalController);
+
+import PasswordStrengthController from './devise/password_strength_controller';
+application.register('password-strength', PasswordStrengthController);
+
+import CopyCodeController from "./utilities/copy_code_controller";
+application.register('copy-code', CopyCodeController);

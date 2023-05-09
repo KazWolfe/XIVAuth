@@ -1,29 +1,54 @@
-<h2>Sign up</h2>
+<div class="row justify-content-center">
+  <div class="col-md-4">
+    <h2 class="mb-4">Sign Up for XIVAuth</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <%= flash[:recaptcha_error] %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+      <div class="form-group field">
+        <%= f.label :email, class: "form-label" %><br/>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', placeholder: "#{eegg_random_npc_email}" %>
+        <div class="form-text">
+          We hate marketing emails too. XIVAuth will only use your email for service notifications.
+        </div>
+      </div>
+
+      <div data-controller="password-strength">
+        <div class="form-group field">
+          <%= f.label :password, class: "form-label" %>
+          <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
+                               data: {
+                                 "action": 'input->password-strength#calc',
+                                 "password-strength-target": 'password'
+                               } %>
+
+          <div class="form-text text-secondary">
+            <meter value="0" max="4" class="password-strength-meter" data-password-strength-target="strength"></meter>
+            <span id="password-strength-warning" class="text-warning" data-password-strength-target="warning"></span><br />
+            <ul class="list-unstyled" data-password-strength-target="tips"></ul>
+          </div>
+        </div>
+
+
+        <div class="form-group field">
+          <%= f.label :password_confirmation %><br/>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",
+                               data: {
+                                 "action": "input->password-strength#onConfirm",
+                                 "password-strength-target": 'confirm'
+                               } %>
+        </div>
+      </div>
+
+      <p>By signing up to XIVAuth, you agree to our Terms of Service and Privacy Policy (lol).</p>
+
+      <div class="form-group d-grid d-md-flex mt-2">
+        <%= invisible_recaptcha_tags ui: :button, text: 'Sign up', class: 'btn btn-primary col-md-8 me-2' %>
+        <%= link_to "Log in", new_session_path(resource_name), class: "btn btn-secondary col" %>
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
   </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

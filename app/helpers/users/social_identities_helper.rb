@@ -1,0 +1,2 @@
+module Users::SocialIdentitiesHelper
+end

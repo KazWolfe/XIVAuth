@@ -1,20 +1,19 @@
 <%= form_with(model: character_registration) do |form| %>
-  <% if character_registration.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(character_registration.errors.count, "error") %> prohibited this character_registration from
-        being saved:</h2>
-
-      <ul>
-        <% character_registration.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <p>
+    To add a character, please paste in either the character's Lodestone ID or a link to the character to add.
+  </p>
 
   <div class="form-floating mb-3">
-    <%= form.text_field :lodestone_url, class: "form-control", placeholder: "id" %>
-    <%= form.label :lodestone_url, "Lodestone ID or URL" %>
+    <%= form.text_field :character_key,
+                        class: "form-control #{"is-invalid" if character_registration.errors.present?}",
+                        # pattern: CharacterRegistrationsHelper::LODESTONE_URL_REGEX,
+                        placeholder: "id" %>
+    <%= form.label :character_key, "Lodestone ID or URL" %>
+    <% if character_registration.errors.present? %>
+      <div class="invalid-feedback">
+        <%= character_registration.errors.full_messages.join("\n") %>
+      </div>
+    <% end %>
   </div>
 
   <div>

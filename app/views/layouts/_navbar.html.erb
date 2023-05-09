@@ -15,11 +15,25 @@
               Developer
             </a>
             <ul class="dropdown-menu" aria-labelledby="devDropdown">
-              <li><%= link_to "Applications", oauth_applications_path, class: 'dropdown-item' %></li>
-              <li><a class="dropdown-item disabled">Teams</a></li>
-              <li><a class="dropdown-item disabled">API Documentation</a></li>
+              <% if current_user.developer? %>
+                <li><%= link_to "Applications", developer_applications_path, class: 'dropdown-item' %></li>
+                <li><a class="dropdown-item disabled">Teams</a></li>
+                <li><a class="dropdown-item disabled">API Documentation</a></li>
+              <% else %>
+                <li><a class="dropdown-item disabled">Request Developer Access</a></li>
+              <% end %>
             </ul>
           </li>
+          <% if current_user.admin? %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="adminDropdown" role="button" data-bs-toggle="dropdown", aria-expanded="false">
+                Admin
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                <li><%= link_to "Sidekiq UI", "/admin/sidekiq", class: 'dropdown-item' %></li>
+              </ul>
+            </li>
+          <% end %>
         <% end %>
       </ul>
       <ul class="navbar-nav">
@@ -37,7 +51,9 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="profileDropdown">
               <li><%= link_to "Profile", edit_user_registration_path, class: 'dropdown-item' %></li>
-              <li><hr class="dropdown-divider"></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
               <li>
                 <%= link_to "Log Out", destroy_user_session_path, class: "dropdown-item", data: { "turbo-method": :delete } %>
               </li>

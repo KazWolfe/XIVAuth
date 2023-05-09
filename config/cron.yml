@@ -1,0 +1,9 @@
+cleanup_unverified_characters:
+  cron: 'every day at 2 am in America/Los_Angeles'
+  class: 'Character::CleanupStaleCharactersJob'
+  queue: 'cronjobs'
+
+cleanup_stale_oauth:
+  cron: 'every 6 hours'
+  class: 'OAuth::CleanupStaleRecordsJob'
+  queue: 'cronjobs'

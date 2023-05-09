@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "remote_modal" do %>
+  <%= render 'layouts/components/remote_modal', title: 'Add Character' do %>
+    <div class="modal-header">
+      <h5 class="modal-title">Add New Character</h5>
+    </div>
+    <div class="modal-body">
+      <%= render partial: 'character_registrations/registration_form',
+                 locals: { character_registration: @character_registration } %>
+    </div>
+  <% end %>
+<% end %>

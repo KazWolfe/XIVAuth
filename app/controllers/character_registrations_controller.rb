@@ -13,14 +13,18 @@ class CharacterRegistrationsController < ApplicationController
 
   # POST /character_registrations or /character_registrations.json
   def create
-    lodestone_id = helpers.extract_id(character_registration_params[:lodestone_url])
+    lodestone_id = helpers.extract_id(character_registration_params[:character_key])
     ffxiv_character = FFXIV::Character.for_lodestone_id(lodestone_id)
 
-    @character_registration = CharacterRegistration.new(character: ffxiv_character, user: current_user)
+    @character_registration = CharacterRegistration.new(
+      character: ffxiv_character,
+      user: current_user,
+      **character_registration_params
+    )
 
     respond_to do |format|
       if @character_registration.save
-        format.html { redirect_to character_registrations_path, notice: "Character registration was successfully created." }
+        format.html { redirect_to character_registrations_path, notice: 'Character registration was successfully created.' }
       else
         format.html { render :new, status: :unprocessable_entity }
       end
@@ -33,7 +37,7 @@ class CharacterRegistrationsController < ApplicationController
 
     respond_to do |format|
       if @character_registration.update(character_registration_params)
-        format.html { redirect_to character_registrations_path, notice: "Character registration was successfully updated." }
+        format.html { redirect_to character_registrations_path, notice: 'Character registration was successfully updated.' }
       else
         format.html { render :edit, status: :unprocessable_entity }
       end
@@ -47,7 +51,30 @@ class CharacterRegistrationsController < ApplicationController
     @character_registration.destroy
 
     respond_to do |format|
-      format.html { redirect_to character_registrations_path, notice: "Character registration was successfully destroyed." }
+      format.html { redirect_to character_registrations_path, notice: 'Character registration was successfully destroyed.' }
+    end
+  end
+
+  def refresh
+    @character_registration = CharacterRegistration.find(params[:character_registration_id])
+    authorize! :update, @character_registration
+
+    unless @character_registration.character.stale?
+      respond_to do |format|
+        format.html { redirect_to character_registrations_path, alert: 'Character is not yet stale!' }
+      end
+
+      return
+    end
+
+    if FFXIV::RefreshCharactersJob.perform_later @character_registration.character
+      respond_to do |format|
+        format.html { redirect_to character_registrations_path, notice: 'Character refresh was successfully enqueued.' }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to character_registrations_path, error: 'Character refresh could not be enqueued.' }
+      end
     end
   end
 
@@ -57,12 +84,19 @@ class CharacterRegistrationsController < ApplicationController
   def set_character_registration
     @character_registration = CharacterRegistration.find(params[:id])
     authorize! :show, @character_registration
-    
+
     @character = @character_registration.character
   end
 
   # Only allow a list of trusted parameters through.
   def character_registration_params
-    params.fetch(:character_registration, {})
+    params.require(:character_registration)
+          .permit(:character_key)
+  end
+
+  def render_new_form_again(status: :unprocessable_entity)
+    render status: status,
+           turbo_stream: turbo_stream.update('remote_modal-content',
+                                             partial: 'portal/characters/partials/new_character_form')
   end
 end

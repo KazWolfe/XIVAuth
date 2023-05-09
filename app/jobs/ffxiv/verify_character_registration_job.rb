@@ -1,7 +1,7 @@
-class VerifyCharacterRegistrationJob < ApplicationJob
+class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
   class VerificationKeyMissingError < StandardError; end
 
-  queue_as :default
+  queue_as :ffxiv_lodestone_jobs
 
   retry_on VerificationKeyMissingError, attempts: 3, wait: 2.minutes, jitter: 15.seconds
 
@@ -21,7 +21,7 @@ class VerifyCharacterRegistrationJob < ApplicationJob
     character.save!
 
     unless lodestone_data.bio.upcase.include? registration.verification_key
-      raise VerifyCharacterRegistrationJob::VerificationKeyMissingError,
+      raise FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError,
             "Verification failed for #{registration.id} - key was not found."
     end
 

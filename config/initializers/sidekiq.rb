@@ -1,9 +1,11 @@
-index = ENV.fetch('REDIS_DB_INDEX') { 12 }
+# frozen_string_literal: true
+
+index = ENV.fetch('SIDEKIQ_DB_INDEX', 12)
 
 Sidekiq.configure_server do |config|
   config.redis = {
     url: "#{ENV['REDIS_URL']}/#{index}",
-    password: ENV.fetch('REDIS_PASSWORD') { nil }
+    password: ENV.fetch('REDIS_PASSWORD', nil)
   }
 
   config.on(:startup) do
@@ -16,6 +18,6 @@ end
 Sidekiq.configure_client do |config|
   config.redis = {
     url: "#{ENV['REDIS_URL']}/#{index}",
-    password: ENV.fetch('REDIS_PASSWORD') { nil }
+    password: ENV.fetch('REDIS_PASSWORD', nil)
   }
 end

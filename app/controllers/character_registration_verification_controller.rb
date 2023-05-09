@@ -15,7 +15,7 @@ class CharacterRegistrationVerificationController < ApplicationController
   def create
     authorize! :update, @character_registration
     
-    job = VerifyCharacterRegistrationJob.perform_later @character_registration
+    job = FFXIV::VerifyCharacterRegistrationJob.perform_later @character_registration
 
     respond_to do |format|
       if job

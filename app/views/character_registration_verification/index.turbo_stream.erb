@@ -8,7 +8,14 @@
         To verify your character, visit your <%= link_to "Lodestone profile", @character.lodestone_url %> and place the
         following verification code <em>exactly as it appears below</em> into the character profile.
       </p>
-      <pre style="text-align: center"><code><%= @character_registration.verification_key %></code></pre>
+      <div class="input-group mb-3" data-controller="copy-code">
+        <input type="text" data-copy-code-target="source" readonly class="form-control text-center font-monospace"
+               value="<%= @character_registration.verification_key %>" aria-label="Verification code"
+               onclick="this.select();">
+        <button class="btn btn-outline-secondary" type="button" data-action="copy-code#copy" data-copy-code-target="button">
+          <i class="bi bi-clipboard"></i> Copy
+        </button>
+      </div>
       <p>
         After saving, come back here and click the button below to continue onwards to the rest of the verification
         process.
