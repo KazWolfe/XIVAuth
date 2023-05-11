@@ -5,7 +5,7 @@
 %>
 <%= turbo_stream.update "remote_modal-content" do %>
     <div class="modal-header">
-      <h5 class="modal-title" id="verifyLabel">Verify Character - Validating</h5>
+      <h5 class="modal-title" id="verifyLabel">Verify <%= @character.name %> - Validating</h5>
     </div>
     <div class="modal-body">
       <p>

@@ -1,6 +1,6 @@
 class Api::V1::CharactersController < Api::V1::ApiController
-  before_action -> { doorkeeper_authorize! :character, 'character:all', 'character:manage', 'character:jwt' }
-  before_action(only: [:create, :update]) { doorkeeper_authorize! 'character:manage' }
+  before_action -> { doorkeeper_authorize! 'character', 'character:all', 'character:manage', 'character:jwt' }
+  before_action(only: %i[create update]) { doorkeeper_authorize! 'character:manage' }
 
   before_action :load_authorized_characters
   before_action :set_character, except: %i[index create]
@@ -11,6 +11,9 @@ class Api::V1::CharactersController < Api::V1::ApiController
 
   def index
     @characters = @authorized_characters
+
+    sp = search_params
+    @characters = @characters.joins(:character).where(character: sp.to_hash) if sp.present?
   end
 
   def show; end
@@ -41,7 +44,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
   def verify
     authorize! :update, @character
 
-    if FFXIV::RefreshCharactersJobVerifyCharacterRegistrationJob.perform_later @character
+    if FFXIV::VerifyCharacterRegistrationJob.perform_later @character
       head status: :created
     else
       head status: :internal_server_error
@@ -64,7 +67,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
 
   def load_authorized_characters
     @authorized_characters = CharacterRegistration.accessible_by(current_ability)
-    @authorized_characters = @authorized_characters.verified unless doorkeeper_token[:scopes].include? 'character:manage'
+    @authorized_characters = @authorized_characters.verified unless character_manage?
 
     # TODO: scoping
   end
@@ -72,7 +75,18 @@ class Api::V1::CharactersController < Api::V1::ApiController
   def set_character
     @character = @authorized_characters
                    .joins(:character)
-                   .where(ffxiv_characters: { lodestone_id: params[:lodestone_id] })
+                   .where(character: { lodestone_id: params[:lodestone_id] })
                    .first
+  end
+
+  def search_params
+    allowlist = %i[name home_world data_center]
+    allowlist << :content_id if character_manage?
+
+    params.permit(allowlist)
+  end
+
+  def character_manage?
+    doorkeeper_token[:scopes].include? 'character:manage'
   end
 end
