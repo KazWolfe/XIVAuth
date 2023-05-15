@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   }
 
   devise_scope :user do
-    resources :social_identities, path: '/user/identities', controller: 'users/social_identities', only: [:destroy]
+    resources :social_identities, path: '/profile/identities', controller: 'users/social_identities', only: [:destroy]
+    resources :webauthn_credentials, path: '/profile/webauthn', controller: 'users/webauthn_credentials', only: [:new, :create, :destroy]
   end
 end

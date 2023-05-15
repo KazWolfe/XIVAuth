@@ -1,0 +1,20 @@
+<div class="row justify-content-center">
+  <div class="col-lg-4">
+    <h2 class="mb-4">MFA Required</h2>
+    <p>Your account is protected by multi-factor authentication.</p>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), method: :post) do |f| %>
+      <% if @user.webauthn_credentials.present? && @webauthn_challenge.present? %>
+        <div data-controller="webauthn">
+          <%= f.hidden_field :webauthn_challenge, disabled: true, value: @webauthn_challenge.to_json,
+                             data: { "webauthn-target": "challenge" } %>
+          <%= f.hidden_field :device_response, data: { "webauthn-target": "response" }, value: "" %>
+
+          <%= f.button class: "btn btn-primary", data: { action: "webauthn#authenticate" }, type: "button" do %>
+            <i class="bi bi-usb-drive"></i> Use Security Key
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

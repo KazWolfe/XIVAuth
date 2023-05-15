@@ -12,6 +12,8 @@ class User < ApplicationRecord
   has_many :social_identities, dependent: :destroy
   has_many :character_registrations, dependent: :destroy
 
+  has_many :webauthn_credentials, class_name: 'Users::WebauthnCredential', dependent: :destroy
+
   def admin?
     email == 'dev@eorzea.id'
   end
@@ -23,6 +25,10 @@ class User < ApplicationRecord
 
   def unverified_character_allowance
     5
+  end
+
+  def requires_mfa?
+    webauthn_credentials.any?
   end
 
   # Get a list of all social identity providers that this user can use. This is a superset of login providers and extra

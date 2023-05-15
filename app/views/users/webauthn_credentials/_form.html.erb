@@ -1,0 +1,22 @@
+<%= form_with(model: webauthn_credential, method: :post, url: webauthn_credentials_path,
+              data: { controller: "webauthn", action: 'webauthn#register' }) do |f| %>
+  <div class="form-floating mb-3">
+    <% nickname_errors = webauthn_credential.errors[:nickname] %>
+    <%= f.text_field :nickname,
+                     class: "form-control #{"is-invalid" if nickname_errors.present?}",
+                     placeholder: "nickname" %>
+    <%= f.label :character_key, "Security Key Nickname" %>
+    <% if nickname_errors.present? %>
+      <div class="invalid-feedback">
+        <%= nickname_errors.full_messages.join("\n") %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.hidden_field :challenge, value: @challenge.to_json, disabled: true, data: { "webauthn-target": 'challenge' } %>
+  <%= f.hidden_field :credential, data: { "webauthn-target": 'response' } %>
+
+  <div>
+    <%= f.submit "Register Security Key", class: "btn btn-primary" %>
+  </div>
+<% end %>

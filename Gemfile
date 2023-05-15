@@ -62,6 +62,11 @@ gem 'sidekiq-cron', '~> 1.10.0'
 gem 'cancancan', '~> 3.5'
 gem 'devise', '~> 4.9'
 
+# Authn (MFA)
+gem 'devise-two-factor', '~> 5.0.0'
+gem "rqrcode", "~> 2.1.2"
+gem 'webauthn', '~> 3.0.0'
+
 # OAuth2 Providers
 gem 'omniauth-discord', '~> 1.1.0'
 gem 'omniauth-github', '~> 2.0.1'

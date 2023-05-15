@@ -1,0 +1,54 @@
+# frozen_string_literal: true
+
+module Users::AuthenticatesWithMFA
+  extend ActiveSupport::Concern
+
+  def authenticate_with_mfa
+    user = self.resource = find_user
+
+    if user_params[:otp_attempt].present? && session[:otp_user_id]
+      authenticate_with_totp(user)
+    elsif user_params[:device_response].present? && session[:otp_user_id]
+      authenticate_with_webauthn(user)
+    elsif user && user.valid_password?(user_params[:password])
+      prompt_for_mfa(user)
+    end
+  end
+
+  def prompt_for_mfa(user)
+    @user = user
+
+    session[:otp_user_id] = user.id
+    
+    # webauthn
+    @webauthn_challenge = Users::Webauthn::AuthenticateService.build_challenge_for_user(user)
+    session[:webauthn_challenge] = @webauthn_challenge&.challenge
+
+    render 'devise/sessions/mfa'
+  end
+
+  private
+
+  def reset_mfa_attempt!
+    session.delete(:otp_user_id)
+    session.delete(:webauthn_challenge)
+  end
+
+  def authenticate_with_webauthn(user)
+    Users::Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:webauthn_challenge]).execute
+    handle_mfa_success(user)
+  rescue WebAuthn::Error => e
+    handle_mfa_failure(user, 'WebAuthn', message: e.message)
+  end
+
+  def handle_mfa_success(user)
+    reset_mfa_attempt!
+
+    sign_in(:user, user)
+  end
+
+  def handle_mfa_failure(user, method, message: nil)
+    flash[:alert] = "MFA authentication via #{method} failed: #{message}"
+    prompt_for_mfa(user)
+  end
+end

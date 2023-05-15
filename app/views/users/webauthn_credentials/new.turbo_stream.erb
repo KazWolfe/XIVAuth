@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "remote_modal" do %>
+  <%= render 'layouts/components/remote_modal', title: 'Add Security Key' do %>
+    <div class="modal-header">
+      <h5 class="modal-title">Add Security Key</h5>
+    </div>
+    <div class="modal-body">
+      <%= render partial: 'users/webauthn_credentials/form',
+                 locals: { webauthn_credential: @webauthn_credential } %>
+    </div>
+  <% end %>
+<% end %>

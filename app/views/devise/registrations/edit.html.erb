@@ -7,7 +7,7 @@
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="form-group field">
-        <%= f.label :email, class: "form-label"%><br/>
+        <%= f.label :email, class: "form-label" %><br/>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
       </div>
 
@@ -16,7 +16,7 @@
       <% end %>
 
       <div class="form-group field">
-        <%= f.label :password, class: "form-label"%> <i>(leave blank if you don't want to change it)</i><br/>
+        <%= f.label :password, class: "form-label" %> <i>(leave blank if you don't want to change it)</i><br/>
         <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
         <% if @minimum_password_length %>
           <br/>
@@ -30,7 +30,8 @@
       </div>
 
       <div class="form-group field">
-        <%= f.label :current_password, class: "form-label" %> <i>(we need your current password to confirm your changes)</i><br/>
+        <%= f.label :current_password, class: "form-label" %>
+        <i>(we need your current password to confirm your changes)</i><br/>
         <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control" %>
       </div>
 
@@ -80,6 +81,43 @@
       <% end %>
     </table>
   </div>
+
+  <div class="col-md-6 mb-4">
+    <h3>Multi-Factor Authentication</h3>
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-shield-lock"></i> Add Authenticator
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <%= button_to new_webauthn_credential_path, class: "dropdown-item", method: :get, data: { turbo_stream: "remote_modal" } do %>
+            <i class="bi bi-usb-drive"></i> Add Security Key
+          <% end %>
+        </li>
+      </ul>
+    </div>
+    <table class="table">
+      <thead>
+      <th scope="col">Authenticator Type</th>
+      <th scope="col">Nickname</th>
+      <th scope="col">Actions</th>
+      </thead>
+      <tbody>
+      <% resource.webauthn_credentials.each do |cred| %>
+        <tr>
+          <td>WebAuthn</td>
+          <td><%= cred.nickname %></td>
+          <td>
+            <%= button_to webauthn_credential_path(cred), method: :delete, class: "btn btn-danger" do %>
+              <i class="bi bi-trash"></i>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
   <div class="col-md-6 mb-4">
     <h3>Danger Zone</h3>
 

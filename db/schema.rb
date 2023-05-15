@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_01_172901) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_11_230834) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -132,7 +132,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_01_172901) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "users_webauthn_credentials", force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "external_id", null: false
+    t.string "public_key", null: false
+    t.string "nickname", null: false
+    t.integer "sign_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_users_webauthn_credentials_on_external_id", unique: true
+    t.index ["user_id", "nickname"], name: "index_users_webauthn_credentials_on_user_id_and_nickname", unique: true
+    t.index ["user_id"], name: "index_users_webauthn_credentials_on_user_id"
+  end
+
   add_foreign_key "character_registrations", "ffxiv_characters", column: "character_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "users_webauthn_credentials", "users"
 end
