@@ -15,16 +15,16 @@ module Users::AuthenticatesWithMFA
     end
   end
 
-  def prompt_for_mfa(user)
+  def prompt_for_mfa(user, status_code: :ok)
     @user = user
 
     session[:otp_user_id] = user.id
-    
+
     # webauthn
     @webauthn_challenge = Users::Webauthn::AuthenticateService.build_challenge_for_user(user)
     session[:webauthn_challenge] = @webauthn_challenge&.challenge
 
-    render 'devise/sessions/mfa'
+    render 'devise/sessions/mfa', status: status_code
   end
 
   private
@@ -41,6 +41,19 @@ module Users::AuthenticatesWithMFA
     handle_mfa_failure(user, 'WebAuthn', message: e.message)
   end
 
+  def authenticate_with_totp(user)
+    unless user.totp_credential&.otp_enabled
+      handle_mfa_failure(user, 'TOTP', message: 'TOTP is not configured!')
+      return
+    end
+
+    if user.totp_credential.validate_and_consume_otp!(user_params[:otp_attempt])
+      handle_mfa_success(user)
+    else
+      handle_mfa_failure(user, 'TOTP', message: 'TOTP was invalid or could not be verified.')
+    end
+  end
+
   def handle_mfa_success(user)
     reset_mfa_attempt!
 
@@ -48,7 +61,7 @@ module Users::AuthenticatesWithMFA
   end
 
   def handle_mfa_failure(user, method, message: nil)
-    flash[:alert] = "MFA authentication via #{method} failed: #{message}"
-    prompt_for_mfa(user)
+    flash.now[:alert] = "MFA authentication via #{method} failed: #{message}"
+    prompt_for_mfa(user, status_code: :unprocessable_entity)
   end
 end

@@ -1,0 +1,29 @@
+<div class="modal-header">
+  <h5 class="modal-title">Register TOTP Credential</h5>
+</div>
+<div class="modal-body">
+  <p>
+    Scan the below QR code using an authenticator app like Google Authenticator or Authy, then enter the currently
+    displayed code to enable two-factor authentication.
+  </p>
+  <p class="text-center">
+    <%= qr_code_svg(@totp_credential.otp_provisioning_uri) %>
+  </p>
+  <p class="small text-center">
+    Can't scan? Your OTP secret is: <br>
+    <code><%= @totp_credential.otp_secret %></code>
+  </p>
+  <%= form_with(model: @totp_credential, method: :post, url: totp_credentials_path) do |f| %>
+    <div class="mb-3">
+      <%= f.label :otp_attempt, "Current OTP Code", class: "form-label" %>
+      <%= f.text_field :otp_attempt, placeholder: "123456", class: "form-control #{"is-invalid" if @totp_credential.errors.present?}" %>
+      <% if @totp_credential.errors.present? %>
+        <div class="invalid-feedback">
+          <%= @totp_credential.errors.full_messages.join("\n") %>
+        </div>
+      <% end %>
+    </div>
+
+    <%= f.submit "Register Authenticator", class: "btn btn-primary" %>
+  <% end %>
+</div>

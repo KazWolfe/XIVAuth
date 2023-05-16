@@ -5,7 +5,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable, and :omniauthable
   devise :database_authenticatable, :registerable,
-         :confirmable, :trackable, :recoverable, 
+         :confirmable, :trackable, :recoverable,
          :rememberable, :validatable,
          :omniauthable, omniauth_providers: %i[discord github steam]
 
@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :character_registrations, dependent: :destroy
 
   has_many :webauthn_credentials, class_name: 'Users::WebauthnCredential', dependent: :destroy
+  has_one :totp_credential, class_name: 'Users::TotpCredential', dependent: :destroy
 
   def admin?
     email == 'dev@eorzea.id'
@@ -28,7 +29,7 @@ class User < ApplicationRecord
   end
 
   def requires_mfa?
-    webauthn_credentials.any?
+    webauthn_credentials.any? || totp_credential&.otp_enabled
   end
 
   # Get a list of all social identity providers that this user can use. This is a superset of login providers and extra

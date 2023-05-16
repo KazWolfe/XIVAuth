@@ -84,38 +84,39 @@
 
   <div class="col-md-6 mb-4">
     <h3>Multi-Factor Authentication</h3>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-shield-lock"></i> Add Authenticator
-      </button>
-      <ul class="dropdown-menu">
-        <li>
-          <%= button_to new_webauthn_credential_path, class: "dropdown-item", method: :get, data: { turbo_stream: "remote_modal" } do %>
-            <i class="bi bi-usb-drive"></i> Add Security Key
-          <% end %>
-        </li>
-      </ul>
-    </div>
-    <table class="table">
-      <thead>
-      <th scope="col">Authenticator Type</th>
-      <th scope="col">Nickname</th>
-      <th scope="col">Actions</th>
-      </thead>
-      <tbody>
-      <% resource.webauthn_credentials.each do |cred| %>
-        <tr>
-          <td>WebAuthn</td>
-          <td><%= cred.nickname %></td>
-          <td>
-            <%= button_to webauthn_credential_path(cred), method: :delete, class: "btn btn-danger" do %>
-              <i class="bi bi-trash"></i>
-            <% end %>
-          </td>
-        </tr>
+    <% if resource.totp_credential.present? %>
+      <%= button_to new_totp_credential_path, class: "btn btn-outline-danger", method: :get, data: { turbo_stream: "remote_modal" } do %>
+        <i class="bi bi-calculator"></i> Remove OTP Code
       <% end %>
-      </tbody>
-    </table>
+    <% else %>
+      <%= button_to new_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+        <i class="bi bi-calculator"></i> Add OTP Code
+      <% end %>
+    <% end %>
+    <%= button_to new_webauthn_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+      <i class="bi bi-usb-drive"></i> Add Security Key
+    <% end %>
+    <% if resource.webauthn_credentials.present? %>
+      <h5>Registered Security Keys</h5>
+      <table class="table">
+        <thead>
+        <th scope="col">Nickname</th>
+        <th scope="col">Actions</th>
+        </thead>
+        <tbody>
+        <% resource.webauthn_credentials.each do |cred| %>
+          <tr>
+            <td><%= cred.nickname %></td>
+            <td>
+              <%= button_to webauthn_credential_path(cred), method: :delete, class: "btn btn-danger" do %>
+                <i class="bi bi-trash"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% end %>
   </div>
 
   <div class="col-md-6 mb-4">
