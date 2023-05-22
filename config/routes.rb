@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   end
 
   namespace 'developer' do
-    resources :applications, controller: 'oauth_apps'
+    resources :applications, controller: 'client_apps'
   end
 
   namespace 'api' do

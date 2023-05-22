@@ -360,6 +360,7 @@ GEM
     zeitwerk (2.6.7)
 
 PLATFORMS
+  x86_64-linux
   x86_64-linux-musl
 
 DEPENDENCIES
@@ -387,6 +388,7 @@ DEPENDENCIES
   rails (~> 7.0.4, >= 7.0.4.3)
   rails_semantic_logger (~> 4.12)
   recaptcha (~> 5.14.0)
+  rexml (~> 3.2.5)
   rqrcode (~> 2.1.2)
   rubocop
   selenium-webdriver

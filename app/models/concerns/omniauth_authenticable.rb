@@ -54,6 +54,9 @@ module OmniauthAuthenticable
     private
 
     def create_new_user_from_oauth(auth, email)
+      flash[:alert] = "User registrations are disabled at this time."
+      return
+      
       attributes = {
         email: email,
         password: Devise.friendly_token

@@ -54,7 +54,7 @@ Doorkeeper.configure do
   #     destroy
   #   end
   # end
-  application_class 'OAuth::Application'
+  application_class 'OAuth::ClientApplication'
 
   # Enables polymorphic Resource Owner association for Access Tokens and Access Grants.
   # By default this option is disabled.

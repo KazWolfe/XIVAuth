@@ -2,7 +2,7 @@
 
 class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
   def change
-    create_table :oauth_applications, id: :uuid do |t|
+    create_table :oauth_client_applications, id: :uuid do |t|
       t.string  :name,    null: false
       t.string  :uid,     null: false, index: { unique: true }
       t.string  :secret,  null: false
@@ -21,7 +21,7 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
 
     create_table :oauth_access_grants, id: :uuid do |t|
       t.references :resource_owner,  type: :uuid, null: false, polymorphic: true
-      t.references :application,     type: :uuid, null: false, foreign_key: { to_table: :oauth_applications }
+      t.references :application,     type: :uuid, null: false, foreign_key: { to_table: :oauth_client_applications }
       t.string   :token,             null: false, index: { unique: true }
       t.integer  :expires_in,        null: false
       t.text     :redirect_uri,      null: false
@@ -35,7 +35,7 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[7.0]
 
       # Remove `null: false` if you are planning to use Password
       # Credentials Grant flow that doesn't require an application.
-      t.references :application,type: :uuid, null: false, foreign_key: { to_table: :oauth_applications }
+      t.references :application,type: :uuid, null: false, foreign_key: { to_table: :oauth_client_applications }
 
       # If you use a custom token generator you may need to change this column
       # from string to text, so that it accepts tokens larger than 255

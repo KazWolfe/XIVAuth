@@ -20,5 +20,10 @@ module App
     # config.eager_load_paths << Rails.root.join("extras")
     
     config.action_controller.include_all_helpers = false
+
+    # heroku compat for now
+    if ENV['APP_ENV'].present?
+      Rails.application.config.credentials.content_path = Rails.root.join("config/credentials/#{ENV['APP_ENV']}.yml.enc")
+    end
   end
 end

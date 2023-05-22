@@ -1,13 +1,8 @@
-class Developer::OAuthAppsController < Doorkeeper::ApplicationsController
-  # A lot of the code in this class duplicates that of Doorkeeper's own ApplicationsController. We're shunting things
-  # into a different namespace (/developer/applications) and may want to expand with more of our own logic later, so
-  # we'll just cheat and copy code.
-  
-  skip_before_action :authenticate_admin!
-  layout 'application'
+class Developer::ClientAppsController < ApplicationController
+  before_action :set_application, only: %i[show edit update destroy]
 
   def index
-    @applications = Doorkeeper.config.application_model.accessible_by(current_ability).ordered_by(:created_at)
+    @applications = OAuth::ClientApplication.accessible_by(current_ability).ordered_by(:created_at)
 
     respond_to do |format|
       format.html
@@ -23,11 +18,11 @@ class Developer::OAuthAppsController < Doorkeeper::ApplicationsController
   end
 
   def new
-    @application = Doorkeeper.config.application_model.new
+    @application = OAuth::ClientApplication.new
   end
 
   def create
-    @application = Doorkeeper.config.application_model.new(application_params)
+    @application = OAuth::ClientApplication.new(application_params)
     @application.owner = current_user
 
     if @application.save
@@ -35,7 +30,7 @@ class Developer::OAuthAppsController < Doorkeeper::ApplicationsController
       flash[:application_secret] = @application.plaintext_secret
 
       respond_to do |format|
-        format.html { redirect_to oauth_application_url(@application) }
+        format.html { redirect_to developer_application_path(@application) }
         format.json { render json: @application, as_owner: true }
       end
     else
@@ -86,8 +81,7 @@ class Developer::OAuthAppsController < Doorkeeper::ApplicationsController
   private
 
   def set_application
-    @application = Doorkeeper.config.application_model.find(params[:id])
-
+    @application = OAuth::ClientApplication.find(params[:id])
     authorize! :show, @application
   end
 

@@ -31,13 +31,15 @@ class Users::WebauthnCredentialsController < ApplicationController
         redirect_to edit_user_registration_path
       else
         respond_to do |format|
-          format.turbo_stream { render :new, status: :unprocessable_entity }
+          format.turbo_stream { render_new_form_again }
           format.html { render :new, status: :unprocessable_entity }
         end
       end
     rescue WebAuthn::Error => e
+      Rails.logger.error('Error while registering webauthn credential!', e)
+
       respond_to do |format|
-        format.turbo_stream { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render_new_form_again }
         format.html { render :new, status: :unprocessable_entity }
       end
     ensure
@@ -46,6 +48,11 @@ class Users::WebauthnCredentialsController < ApplicationController
   end
 
   private
+
+  def render_new_form_again(status: :unprocessable_entity)
+    render status: status,
+           turbo_stream: turbo_stream.update('remote_modal-content', partial: 'users/webauthn_credentials/modal')
+  end
 
   def create_params
     params.require(:users_webauthn_credential)

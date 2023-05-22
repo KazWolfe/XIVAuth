@@ -1,6 +1,6 @@
 require "test_helper"
 
-class OAuth::ApplicationTest < ActiveSupport::TestCase
+class OAuth::ClientApplicationTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

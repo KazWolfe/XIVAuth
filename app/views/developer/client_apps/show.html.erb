@@ -1,5 +1,5 @@
 <div class="border-bottom mb-4">
-  <h1><%= t('.title', name: @application.name) %></h1>
+  <h1>View <%= @application.name %></h1>
 </div>
 
 <div class="row">
@@ -56,7 +56,7 @@
   <div class="col-md-4">
     <h3><%= t('.actions') %></h3>
 
-    <p><%= link_to t('doorkeeper.applications.buttons.edit'), edit_oauth_application_path(@application), class: 'btn btn-primary' %></p>
+    <p><%= link_to t('doorkeeper.applications.buttons.edit'), edit_developer_application_path(@application), class: 'btn btn-primary' %></p>
 
     <p><%= render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger' %></p>
   </div>
