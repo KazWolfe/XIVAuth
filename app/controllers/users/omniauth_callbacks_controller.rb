@@ -37,10 +37,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       @user = User.from_omniauth(auth_data)
     rescue
       if @provider == :steam
-        redirect_to new_user_session_path, alert: 'Steam accounts must be linked before being used for sign in. ' +
+        redirect_to new_user_session_path, alert: 'Steam accounts must be linked before being used for sign in. ' \
           'Please log in and link your Steam account.'
         return
       end
+
+      raise
     end
 
     if @user.persisted?

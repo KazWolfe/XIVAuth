@@ -10,7 +10,7 @@ module Users::AuthenticatesWithMFA
       authenticate_with_totp(user)
     elsif user_params[:device_response].present? && session[:otp_user_id]
       authenticate_with_webauthn(user)
-    elsif user && user.valid_password?(user_params[:password])
+    elsif user&.valid_password?(user_params[:password])
       prompt_for_mfa(user)
     end
   end

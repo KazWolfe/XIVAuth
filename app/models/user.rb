@@ -9,6 +9,8 @@ class User < ApplicationRecord
          :rememberable, :validatable,
          :omniauthable, omniauth_providers: %i[discord github steam]
 
+  default_scope { order(created_at: :asc) }
+
   has_many :social_identities, dependent: :destroy
   has_many :character_registrations, dependent: :destroy
 
