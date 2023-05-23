@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "remote_modal" do %>
+  <%= render 'layouts/components/remote_modal', title: 'Remove TOTP Credential' do %>
+    <%= render 'users/totp_credentials/destroy_modal' %>
+  <% end %>
+<% end %>

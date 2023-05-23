@@ -84,18 +84,22 @@
 
   <div class="col-md-6 mb-4">
     <h3>Multi-Factor Authentication</h3>
-    <% if resource.totp_credential.present? %>
-      <%= button_to new_totp_credential_path, class: "btn btn-outline-danger", method: :get, data: { turbo_stream: "remote_modal" } do %>
-        <i class="bi bi-calculator"></i> Remove OTP Code
+    <div class="btn-toolbar gap-2" role="toolbar">
+      <% if resource.totp_credential.present? %>
+        <%= button_to totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
+          <i class="bi bi-calculator"></i> Remove OTP Code
+        <% end %>
+      <% else %>
+        <%= button_to new_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+          <i class="bi bi-calculator"></i> Add OTP Code
+        <% end %>
       <% end %>
-    <% else %>
-      <%= button_to new_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
-        <i class="bi bi-calculator"></i> Add OTP Code
+
+      <%= button_to new_webauthn_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+        <i class="bi bi-usb-drive"></i> Add Security Key
       <% end %>
-    <% end %>
-    <%= button_to new_webauthn_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
-      <i class="bi bi-usb-drive"></i> Add Security Key
-    <% end %>
+    </div>
+
     <% if resource.webauthn_credentials.present? %>
       <h5>Registered Security Keys</h5>
       <table class="table">
