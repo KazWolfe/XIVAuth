@@ -1,6 +1,8 @@
 class Developer::ClientAppsController < ApplicationController
   before_action :set_application, only: %i[show edit update destroy]
 
+  helper Doorkeeper::DashboardHelper
+
   def index
     @applications = OAuth::ClientApplication.accessible_by(current_ability).ordered_by(:created_at)
 
@@ -35,7 +37,7 @@ class Developer::ClientAppsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render :new }
+        format.html { render :new, status: :unprocessable_entity }
         format.json do
           errors = @application.errors.full_messages
 
@@ -57,7 +59,7 @@ class Developer::ClientAppsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render :edit }
+        format.html { render :edit, status: :unprocessable_entity }
         format.json do
           errors = @application.errors.full_messages
 
@@ -88,5 +90,9 @@ class Developer::ClientAppsController < ApplicationController
   def application_params
     params.require(:doorkeeper_application)
           .permit(:name, :redirect_uri, { scopes: [] }, :confidential, :public)
+  end
+
+  def i18n_scope(action)
+    %i[doorkeeper flash applications] << action
   end
 end
