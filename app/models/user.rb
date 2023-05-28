@@ -7,7 +7,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :confirmable, :trackable, :recoverable,
          :rememberable, :validatable,
-         :omniauthable, omniauth_providers: %i[discord github steam twitch]
+         :omniauthable
 
   default_scope { order(created_at: :asc) }
 
@@ -42,5 +42,14 @@ class User < ApplicationRecord
     # social_providers = [:patreon]
     
     omniauth_providers + social_providers
+  end
+
+  # Get a list of all Social Identity providers that can be used *for login* to XIVAuth accounts.
+  def self.omniauth_providers
+    # ToDo: figure out a good way to restrict this (?)
+    allowed_signin_providers = Devise.omniauth_configs.keys
+    configured_providers = Rails.application.credentials.dig(:oauth)&.keys || []
+
+    allowed_signin_providers & configured_providers
   end
 end
