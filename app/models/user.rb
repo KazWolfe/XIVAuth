@@ -35,21 +35,20 @@ class User < ApplicationRecord
     webauthn_credentials.any? || totp_credential&.otp_enabled
   end
 
-  # Get a list of all social identity providers that this user can use. This is a superset of login providers and extra
-  # data-only social providers (e.g. Patreon)
-  def self.social_identity_providers
-    social_providers = []
-    # social_providers = [:patreon]
+  # Get the list of providers that can be used for authentication purposes.
+  def self.omniauth_login_providers
+    social_only_providers = []
     
-    omniauth_providers + social_providers
+    omniauth_providers - social_only_providers
   end
 
-  # Get a list of all Social Identity providers that can be used *for login* to XIVAuth accounts.
+  # Get a list of configured Omniauth providers that can be bound to this user.
+  # Used to generate routes and other systems, so will include providers that cannot be used for authentication.
   def self.omniauth_providers
-    # ToDo: figure out a good way to restrict this (?)
-    allowed_signin_providers = Devise.omniauth_configs.keys
-    configured_providers = Rails.application.credentials.dig(:oauth)&.keys || []
+    Devise.omniauth_configs.keys & (Rails.application.credentials.dig(:oauth)&.keys || [])
+  end
 
-    allowed_signin_providers & configured_providers
+  def self.signup_permitted?
+    true
   end
 end

@@ -1,5 +1,5 @@
 <%- if devise_mapping.omniauthable? %>
-  <%- resource_class.omniauth_providers.each do |provider| %>
+  <%- resource_class.omniauth_login_providers.each do |provider| %>
     <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false },
                   form: { class: "d-grid" },
                   class: "btn btn-social-#{provider}" do %>

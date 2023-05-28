@@ -48,7 +48,7 @@
           <i class="bi bi-person-add"></i> Link Social Identity
         </button>
         <ul class="dropdown-menu">
-          <%- resource_class.social_identity_providers.each do |provider| %>
+          <%- resource_class.omniauth_providers.each do |provider| %>
             <li>
               <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
                 <i class="bi bi-<%= provider %>"></i> Add <%= OmniAuth::Utils.camelize(provider) %> account

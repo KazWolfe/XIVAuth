@@ -7,12 +7,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   prepend_before_action :check_captcha, only: [:create]
   before_action :configure_account_update_params, only: [:update]
   
-  before_action :deny_registrations, only: [:new, :create]
+  before_action :check_registration_allowed, only: [:new, :create]
 
   # GET /resource/sign_up
-  # def new
-  #   super
-  # end
+  def new
+    super
+  end
 
   # POST /resource
   def create
@@ -65,11 +65,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super(resource)
   # end
 
-  def deny_registrations
-    flash[:alert] = "User registrations are disabled at this time."
+  def check_registration_allowed
+    return if User.signup_permitted?
+
     sign_out current_user
-    
-    redirect_to new_user_session_path
+    redirect_to new_user_session_path, alert: 'Sign-ups are disabled at this time.'
   end
 
   def check_captcha

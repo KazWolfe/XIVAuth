@@ -4,28 +4,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # FIXME: Possible security issue (?) - Steam doesn't give us CSRF back, so we have to deal with a bit of a headache.
   skip_before_action :verify_authenticity_token, only: [:steam]
 
-  def discord
-    @provider = :discord
+  User.omniauth_providers.each do |provider|
+    define_method(provider) do
+      @provider = provider
 
-    common
-  end
-
-  def github
-    @provider = :github
-
-    common
-  end
-
-  def steam
-    @provider = :steam
-
-    common
-  end
-
-  def twitch
-    @provider = :twitch
-
-    common
+      common
+    end
   end
 
   private
@@ -33,22 +17,38 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def common
     return sso_bind_identity if user_signed_in?
 
+    unless User.omniauth_login_providers.include? @provider
+      raise 'Cannot proceed with authentication for a non-login provider.'
+    end
+
     sso_signin
   end
 
   def sso_signin
     raise 'sso_signin called while a user was logged in!' if user_signed_in?
 
-    begin
-      @user = User.from_omniauth(auth_data)
-    rescue
-      if @provider == :steam
-        redirect_to new_user_session_path, alert: 'Steam accounts must be linked before being used for sign in. ' \
-          'Please log in and link your Steam account.'
+    @user = User.find_by_omniauth(auth_data)
+
+    unless @user.present?
+      unless User.omniauth_login_providers.include? @provider
+        redirect_to new_user_session_path, alert: "#{@provider.to_s.titleize} accounts cannot be used for authentication."
         return
       end
 
-      raise
+      # check for login-only providers.
+      if [:steam].include? @provider
+        redirect_to new_user_session_path, alert: "#{@provider.to_s.titleize} must be linked before being used for " \
+        "sign in. Please log in and link your #{@provider.to_s.titleize} account first."
+        return
+      end
+
+      unless User.signup_permitted?
+        redirect_to new_user_session_path, alert: 'Sign-ups are disabled at this time.'
+        return
+      end
+
+      @user = User.new_with_omniauth(auth_data)
+      @user.save
     end
 
     if @user.persisted?
