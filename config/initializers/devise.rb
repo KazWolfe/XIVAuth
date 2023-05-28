@@ -280,6 +280,10 @@ Devise.setup do |config|
                   client_secret: Rails.application.credentials.dig(:oauth, :discord, :client_secret),
                   scope: 'identify email'
   config.omniauth :steam, Rails.application.credentials.dig(:oauth, :steam, :token)
+  config.omniauth :twitch,
+                  client_id: Rails.application.credentials.dig(:oauth, :twitch, :client_id),
+                  client_secret: Rails.application.credentials.dig(:oauth, :twitch, :client_secret),
+                  scope: 'user:read:email'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

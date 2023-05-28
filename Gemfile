@@ -71,6 +71,7 @@ gem 'webauthn', '~> 3.0.0'
 gem 'omniauth-discord', '~> 1.1.0'
 gem 'omniauth-github', '~> 2.0.1'
 gem 'omniauth-steam', '~> 1.0.6'
+gem 'omniauth-twitch', '~> 1.2.0'
 
 # Outbound OAuth2
 gem 'doorkeeper', '~> 5.6.6'

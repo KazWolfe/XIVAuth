@@ -22,6 +22,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     common
   end
 
+  def twitch
+    @provider = :twitch
+
+    common
+  end
+
   private
 
   def common
