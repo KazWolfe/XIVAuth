@@ -87,6 +87,36 @@
       <% end %>
       </tbody>
     </table>
+
+    <h4>MFA Credentials</h4>
+    <p>
+      TOTP Enabled:
+      <% if @user.totp_credential.present? %>
+        Yes (<%= @user.totp_credential.otp_backup_codes.count %> backup codes remaining)
+      <% else %>
+        No
+      <% end %>
+    </p>
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Name</th>
+        <th scope="col">Sign Count</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @user.webauthn_credentials.each do |cred| %>
+        <tr>
+          <td>WebAuthn</td>
+          <td><%= cred.nickname %></td>
+          <td><%= cred.sign_count %></td>
+          <td>N/A</td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
   </div>
 
   <div class="col-md-12">

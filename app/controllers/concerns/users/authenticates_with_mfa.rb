@@ -47,7 +47,7 @@ module Users::AuthenticatesWithMFA
       return
     end
 
-    if user.totp_credential.validate_and_consume_otp!(user_params[:otp_attempt])
+    if user.totp_credential.validate_and_consume_otp_or_backup!(user_params[:otp_attempt])
       handle_mfa_success(user)
     else
       handle_mfa_failure(user, 'TOTP', message: 'TOTP was invalid or could not be verified.')

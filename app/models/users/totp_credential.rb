@@ -6,7 +6,11 @@ class Users::TotpCredential < ApplicationRecord
 
   def validate_and_consume_otp_or_backup!(code)
     return true if validate_and_consume_otp!(code)
-    return true if invalidate_otp_backup_code!(code)
+
+    if invalidate_otp_backup_code!(code)
+      save(validate: false)
+      return true
+    end
 
     false
   end

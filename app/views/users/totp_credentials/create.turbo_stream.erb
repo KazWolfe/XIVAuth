@@ -7,7 +7,7 @@
       <strong>Great success!</strong> Your TOTP code was successfully registered and your account is now protected.
     </p>
     <p>
-      Please take a minute to save the below recovery codes.
+      Please take a minute to save the below single-use recovery codes.
     </p>
     <ul class="text-center list-unstyled">
       <% @backup_codes.each do |code| %>
@@ -17,7 +17,7 @@
 
     <p>
       If you lose your authenticator, you will not be able to log in without one of these codes.
-      <span class="text-danger">These backup codes will not be shown again!</span>
+      <span class="text-danger">These recovery codes will not be shown again!</span>
     </p>
 
     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
