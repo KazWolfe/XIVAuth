@@ -2,7 +2,8 @@ $brand-colors: (
         "discord": #7289DA,
         "github": #333333,
         "steam": #4E697D,
-        "twitch": #9146FF
+        "twitch": #9146FF,
+        "patreon": #FF424D
 );
 
 @each $brand, $color in $brand-colors {

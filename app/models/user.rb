@@ -37,7 +37,7 @@ class User < ApplicationRecord
 
   # Get the list of providers that can be used for authentication purposes.
   def self.omniauth_login_providers
-    social_only_providers = []
+    social_only_providers = [:patreon]
     
     omniauth_providers - social_only_providers
   end

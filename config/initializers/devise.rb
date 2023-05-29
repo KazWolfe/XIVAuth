@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'omniauth/discord'
+require 'omniauth/patreon'
 
 # Assuming you have not yet modified this file, each configuration option below
 # is set to its default value. Note that some are commented out while others
@@ -286,6 +287,10 @@ Devise.setup do |config|
                   client_id: Rails.application.credentials.dig(:oauth, :twitch, :client_id),
                   client_secret: Rails.application.credentials.dig(:oauth, :twitch, :client_secret),
                   scope: 'user:read:email'
+  config.omniauth :patreon,
+                  client_id: Rails.application.credentials.dig(:oauth, :patreon, :client_id),
+                  client_secret: Rails.application.credentials.dig(:oauth, :patreon, :client_secret),
+                  scope: 'identity'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
