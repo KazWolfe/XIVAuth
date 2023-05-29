@@ -1,0 +1,129 @@
+<div class="row">
+  <div class="col-md-6">
+    <h3>Basic User Info</h3>
+    <table class="table table-borderless">
+      <tbody>
+      <tr>
+        <th scope="row">User ID</th>
+        <td><code><%= @user.id %></code></td>
+      </tr>
+      <tr>
+        <th scope="row">User Name</th>
+        <td>TODO</td>
+      </tr>
+      <tr>
+        <th scope="row">Roles</th>
+        <td>
+          <% if @user.admin? %><span class="badge bg-danger"><i class="bi bi-lightning-fill"></i> ADMIN</span>
+          <% end %>
+          <% if @user.developer? %><span class="badge bg-primary"><i class="bi bi-code-slash"></i> Developer</span>
+          <% end %>
+          <% if false %><span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Banned</span>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Email Address</th>
+        <td>
+          <%= @user.email %>
+          <% if @user.confirmed? %>
+            <i class="bi bi-envelope-check text-success"></i>
+          <% end %>
+        </td>
+      </tr>
+      <% if @user.pending_reconfirmation? %>
+        <th scope="row">Pending Email</th>
+        <td>
+          <%= @user.unconfirmed_email %>
+        </td>
+      <% end %>
+      <tr>
+        <th scope="row">Creation Date</th>
+        <td><%= @user.created_at %></td>
+      </tr>
+      <tr>
+        <th scope="row">Last Edit Date</th>
+        <td><%= @user.updated_at %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-md-6">
+    <h3>Security</h3>
+
+    <div class="button-toolbar pb-4">
+      <% if @user.pending_reconfirmation? || !@user.confirmed? %>
+        <button class="btn btn-primary"><i class="bi bi-envelope-plus"></i> Skip Email Confirmation</button>
+      <% end %>
+      <button class="btn btn-primary"><i class="bi bi-envelope"></i> Send Password Reset</button>
+      <button class="btn btn-primary" disabled><i class="bi bi-unlock"></i> Remove MFA</button>
+    </div>
+
+    <h4>Social Identities</h4>
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">IdP</th>
+        <th scope="col">External ID</th>
+        <th scope="col">Linked</th>
+        <th scope="col">Last Used</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @user.social_identities.each do |ident| %>
+        <tr>
+          <th scope="row"><i class="bi bi-<%= ident.provider %>"></i> <%= ident.provider.titleize %></th>
+          <td><%= ident.external_id %></td>
+          <td><%= dotiw_hover ident.created_at %></td>
+          <td><%= dotiw_hover ident.updated_at %></td>
+          <td>
+            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-md-12">
+    <h3>Character Registrations</h3>
+    <table class="table caption-top">
+      <caption><%= @user.character_registrations.verified.count %> verified, <%= @user.character_registrations.count %> total</caption>
+      <thead>
+      <tr>
+        <th scope="col" width="48"></th>
+        <th scope="col">Lodestone ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Server</th>
+        <th scope="col">Verified At</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @user.character_registrations.each do |registration| %>
+      <% character = registration.character %>
+        <tr>
+          <td><%= image_tag character.avatar_url, width: 36, class: "rounded" %></td>
+          <td><%= character.lodestone_id %></td>
+          <td><%= character.name %></td>
+          <td><%= character.home_world %> @ <%= character.data_center %></td>
+          <td>
+            <%= registration.verified_at || "Not Verified!" %>
+          </td>
+          <td>
+            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+            <% if registration.verified? %>
+              <button class="btn btn-outline-danger"><i class="bi bi-patch-minus"></i></button>
+            <% else %>
+              <button class="btn btn-outline-primary"><i class="bi bi-patch-plus"></i></button>
+            <% end %>
+            <button class="btn btn-outline-primary"><i class="bi bi-arrow-repeat"></i></button>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

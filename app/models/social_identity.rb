@@ -9,6 +9,7 @@ class SocialIdentity < ApplicationRecord
     name || nickname || email || external_id
   end
 
+  # Merges an incoming authentication hash from OmniAuth, and saves the record.
   # @param [OmniAuth::AuthHash] auth The AuthHash from OmniAuth
   def merge_auth_hash(auth, save_email: false)
     self.name = auth['info']['name']
@@ -16,5 +17,10 @@ class SocialIdentity < ApplicationRecord
     self.email = auth['info']['email'] || email if save_email
 
     save
+  end
+
+  def touch_used_at
+    self.last_used_at = DateTime.now
+    save(touch: false)
   end
 end

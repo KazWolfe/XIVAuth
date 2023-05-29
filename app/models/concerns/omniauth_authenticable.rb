@@ -23,27 +23,6 @@ module OmniauthAuthenticable
   end
 
   class_methods do
-    # @param [OmniAuth::AuthHash] auth
-    # @return [User, nil]
-    def find_by_omniauth(auth)
-      social_identity = SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
-      if social_identity.present?
-        social_identity.merge_auth_hash(auth)
-        return social_identity.user
-      end
-
-      email = auth.dig(:info, :email)
-      return nil unless email.present?
-
-      existing_user = find_for_database_authentication(email: email.downcase)
-      if existing_user
-        existing_user.add_social_identity(auth)
-      end
-
-      # returns nil if none found
-      return existing_user
-    end
-
     def new_with_omniauth(auth)
       user = User.new(
         email: auth.dig(:info, :email),

@@ -27,7 +27,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def sso_signin
     raise 'sso_signin called while a user was logged in!' if user_signed_in?
 
-    @user = User.find_by_omniauth(auth_data)
+    @user = find_user_by_authdata(auth_data)
 
     unless @user.present?
       unless User.omniauth_login_providers.include? @provider
@@ -88,5 +88,23 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def auth_data
     request.env['omniauth.auth']
+  end
+
+  def find_user_by_authdata(auth)
+    social_identity = SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
+    if social_identity.present?
+      social_identity.merge_auth_hash(auth)
+      social_identity.touch_used_at
+      return social_identity.user
+    end
+
+    email = auth.dig(:info, :email)
+    return nil unless email.present?
+
+    existing_user = find_for_database_authentication(email: email.downcase)
+    existing_user&.add_social_identity(auth)
+
+    # returns nil if none found
+    existing_user
   end
 end

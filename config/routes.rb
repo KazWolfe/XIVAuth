@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     namespace 'admin' do
       root to: 'dashboard#index'
+      
+      resources :users, controller: 'users'
 
       mount Sidekiq::Web => '/sidekiq'
       mount Flipper::UI.app(Flipper) => '/flipper'

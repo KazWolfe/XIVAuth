@@ -15,6 +15,7 @@ class CreateSocialIdentities < ActiveRecord::Migration[7.0]
       t.json :raw_info
 
       t.timestamps
+      t.datetime :last_used_at, null: true
 
       t.index %i[provider external_id], unique: true
     end

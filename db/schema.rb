@@ -122,6 +122,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_28_235044) do
     t.json "raw_info"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_used_at"
     t.index ["provider", "external_id"], name: "index_social_identities_on_provider_and_external_id", unique: true
     t.index ["user_id"], name: "index_social_identities_on_user_id"
   end

@@ -31,6 +31,7 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                 <li><%= link_to "Dashboard", admin_root_path, class: 'dropdown-item' %></li>
+                <li><%= link_to "User Management", admin_users_path, class: 'dropdown-item' %></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><%= link_to "Sidekiq UI", "/admin/sidekiq", class: 'dropdown-item' %></li>
                 <li><%= link_to "Feature Flags", "/admin/flipper", class: 'dropdown-item' %></li>
