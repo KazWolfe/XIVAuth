@@ -5,9 +5,7 @@ Rails.application.routes.draw do
   root 'marketing#index'
 
   resources :characters, controller: :character_registrations, as: :character_registrations, except: [:update] do
-    get 'verify', to: 'character_registration_verification#index'
-    post 'verify', to: 'character_registration_verification#create'
-    delete 'verify', to: 'character_registration_verification#destroy'
+    resource :verify, controller: 'character_registration_verifications'
 
     post 'refresh', to: 'character_registrations#refresh'
   end
@@ -29,6 +27,8 @@ Rails.application.routes.draw do
   # Admin routes
   authenticate :user, ->(u) { u.admin? } do
     namespace 'admin' do
+      root to: 'dashboard#index'
+
       mount Sidekiq::Web => '/sidekiq'
       mount Flipper::UI.app(Flipper) => '/flipper'
     end

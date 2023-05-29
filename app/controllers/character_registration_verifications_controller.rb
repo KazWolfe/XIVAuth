@@ -1,7 +1,7 @@
-class CharacterRegistrationVerificationController < ApplicationController
+class CharacterRegistrationVerificationsController < ApplicationController
   before_action :set_character_registration
 
-  def index
+  def show
     respond_to do |format|
       if !@character_registration.verified?
         format.turbo_stream

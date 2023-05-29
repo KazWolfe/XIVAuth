@@ -1,0 +1,17 @@
+<h2 class="pb-5">Admin Panel</h2>
+
+<div class="row">
+  <div class="col col-md-4">
+    <h3>System Status</h3>
+    <table class="table">
+      <tbody>
+      <% @status.each do |k, v| %>
+        <tr>
+          <th scope="row"><%= k %></th>
+          <td><%= v %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
