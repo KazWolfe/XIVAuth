@@ -17,3 +17,12 @@ $brand-colors: (
     border: 1px solid $color;
   }
 }
+
+.bi-patreon {
+  display: inline-block;
+  vertical-align: -.125em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3C!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --%3E%3Cpath d='M512 194.8c0 101.3-82.4 183.8-183.8 183.8-101.7 0-184.4-82.4-184.4-183.8 0-101.6 82.7-184.3 184.4-184.3C429.6 10.5 512 93.2 512 194.8zM0 501.5h90v-491H0v491z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  height: 1rem;
+  width: 1rem;
+}
