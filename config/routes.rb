@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       root to: 'dashboard#index'
       
       resources :users, controller: 'users'
+      resources :characters, controller: 'characters', param: :lodestone_id
 
       mount Sidekiq::Web => '/sidekiq'
       mount Flipper::UI.app(Flipper) => '/flipper'

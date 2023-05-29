@@ -1,0 +1,95 @@
+<div class="row">
+  <div class="col-md-8">
+    <h3>Basic Character Info</h3>
+    <div class="row">
+      <div class="col-sm-3">
+        <%= image_tag @character.portrait_url, class: "img-fluid rounded", title: "Portrait image of #{@character.name}" %>
+      </div>
+      <div class="col">
+        <table class="table table-borderless">
+          <tbody>
+          <tr>
+            <th scope="row">Internal ID</th>
+            <td><code><%= @character.id %></code></td>
+          </tr>
+          <tr>
+            <th scope="row">Lodestone ID</th>
+            <td>
+              <%= link_to @character.lodestone_id, @character.lodestone_url %>
+            </td>
+          </tr>
+
+          <tr>
+            <th scope="row">Character Name</th>
+            <td>
+              <%= @character.name %>
+            </td>
+          </tr>
+
+          <% if @verified_registration.present? %>
+            <tr>
+              <th scope="row">Verified Owner</th>
+              <td><%= link_to @verified_registration.user.id, admin_user_path(@verified_registration.user) %></td>
+            </tr>
+            <tr>
+              <th scope="row">Claiming Verification Key</th>
+              <td class="font-monospace"><%= @verified_registration.verification_key %></td>
+            </tr>
+          <% end %>
+
+          <tr>
+            <th scope="row">Creation Date</th>
+            <td><%= @character.created_at %></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Updated (Lodestone Sync)</th>
+            <td><%= @character.updated_at %></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-md-4">
+    <h3>Data Integrity</h3>
+
+    <div class="button-toolbar pb-4">
+      <button class="btn btn-primary"><i class="bi bi-arrow-repeat"></i> Lodestone Sync</button>
+      <button class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <h4>Claiming Users</h4>
+    <% if @character.character_registrations.count > 0 %>
+      <table class="table caption-top">
+        <thead>
+        <tr>
+          <th scope="col">User</th>
+          <th scope="col">Verification Key</th>
+          <th scope="col">Created At</th>
+          <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @character.character_registrations.each do |registration| %>
+          <tr>
+            <td>
+              <%= link_to registration.user.id, admin_user_path(registration.user) %>
+              <% if registration.verified? %>
+                <i class="bi bi-patch-check-fill text-success" title="Verified Owner"></i>
+              <% end %>
+            </td>
+            <td class="font-monospace"><%= registration.verification_key %></td>
+            <td><%= registration.created_at %></td>
+            <td>N/A</td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No registrations found for this character.</p>
+    <% end %>
+  </div>
+</div>

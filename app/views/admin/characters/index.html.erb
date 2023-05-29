@@ -1,0 +1,32 @@
+<h1>ADMIN - Character Management</h1>
+<table class="table">
+  <thead>
+  <tr>
+    <th></th>
+    <th scope="col">Lodestone ID</th>
+    <th scope="col">Name</th>
+    <th scope="col">Home World</th>
+    <th scope="col">Registrations</th>
+    <th scope="col">Creation Date</th>
+    <th scope="col">Last Update</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @characters.each do |character| %>
+    <tr>
+      <td><%= image_tag character.avatar_url, class: "rounded", size: 28 %></td>
+      <td><%= link_to character.lodestone_id, admin_character_path(character.lodestone_id) %></td>
+      <td>
+        <%= character.name %>
+        <% if character.character_registrations.verified.present? %>
+          <i class="bi bi-patch-check-fill text-success" title="Verified Character"></i>
+        <% end %>
+      </td>
+      <td><%= character.home_with_datacenter %></td>
+      <td><%= character.character_registrations.count %></td>
+      <td><%= character.created_at %></td>
+      <td><%= character.updated_at %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
