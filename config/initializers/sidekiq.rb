@@ -1,6 +1,9 @@
 # frozen_string_literal: true
+require 'sidekiq/web'
 
 index = ENV.fetch('SIDEKIQ_DB_INDEX', 12)
+
+Sidekiq::Web.app_url = '/'
 
 Sidekiq.configure_server do |config|
   config.redis = {
