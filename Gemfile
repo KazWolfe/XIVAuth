@@ -76,6 +76,11 @@ gem 'omniauth-twitch', '~> 1.2.0'
 # Outbound OAuth2
 gem 'doorkeeper', '~> 5.6.6'
 
+# Feature flags
+gem 'flipper', '~> 0.28.0'
+gem 'flipper-active_record', '~> 0.28.0'
+gem 'flipper-ui', '~> 0.28.0'
+
 # Internal security
 gem 'jwt', '~> 2.5.0'
 gem 'omniauth-rails_csrf_protection', '~> 1.0.1'

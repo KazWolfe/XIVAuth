@@ -28,7 +28,10 @@ Rails.application.routes.draw do
 
   # Admin routes
   authenticate :user, ->(u) { u.admin? } do
-    mount Sidekiq::Web => '/admin/sidekiq'
+    namespace 'admin' do
+      mount Sidekiq::Web => '/sidekiq'
+      mount Flipper::UI.app(Flipper) => '/flipper'
+    end
   end
 
   use_doorkeeper do; end

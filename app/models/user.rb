@@ -45,10 +45,10 @@ class User < ApplicationRecord
   # Get a list of configured Omniauth providers that can be bound to this user.
   # Used to generate routes and other systems, so will include providers that cannot be used for authentication.
   def self.omniauth_providers
-    Devise.omniauth_configs.keys & (Rails.application.credentials.dig(:oauth)&.keys || [])
+    Devise.omniauth_configs.keys & (Rails.application.credentials[:oauth]&.keys || [])
   end
 
   def self.signup_permitted?
-    true
+    Flipper.enabled? :user_signups
   end
 end
