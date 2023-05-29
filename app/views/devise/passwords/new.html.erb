@@ -14,7 +14,8 @@
       </div>
 
       <div class="form-group d-grid d-md-flex mt-2">
-        <%= invisible_recaptcha_tags ui: :button, text: 'Send Reset Instructions', class: 'btn btn-primary' %>
+        <%= invisible_recaptcha_tags ui: :button, text: 'Send Reset Instructions', class: 'btn btn-primary col-md-8 me-2' %>
+        <%= link_to "Back To Login", new_user_session_path, class: "btn btn-secondary col" %>
       </div>
     <% end %>
 

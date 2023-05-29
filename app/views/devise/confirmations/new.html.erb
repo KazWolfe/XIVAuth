@@ -1,16 +1,30 @@
-<h2>Resend confirmation instructions</h2>
+<div class="row justify-content-center">
+  <div class="col-lg-4">
+    <h2 class="mb-4">Resend confirmation instructions</h2>
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <p>
+      Confirmation email didn't arrive? While we can't help you punch a Moogle for messing up the delivery, we can
+      dispatch another one to your mailbox. Let us know what direction to kick them in!
+    </p>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+    <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="form-group field">
+        <%= f.label :email, class: "form-label"%><br/>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control",
+                          placeholder: eegg_random_npc_email,
+                          value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email)%>
+      </div>
+
+      <div class="form-group d-grid d-md-flex mt-2">
+        <%= invisible_recaptcha_tags ui: :button, text: 'Resend confirmation instructions', class: 'btn btn-primary col-md-8 me-2' %>
+        <%= link_to "Back To Login", new_user_session_path, class: "btn btn-secondary col" %>
+
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+
   </div>
-
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

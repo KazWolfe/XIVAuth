@@ -2,6 +2,8 @@
 
 class Users::PasswordsController < Devise::PasswordsController
   helper Users::SessionsHelper
+
+  prepend_before_action :check_captcha, only: [:create]
   
   # GET /resource/password/new
   # def new
@@ -9,9 +11,9 @@ class Users::PasswordsController < Devise::PasswordsController
   # end
 
   # POST /resource/password
-  # def create
-  #   super
-  # end
+  def create
+    super
+  end
 
   # GET /resource/password/edit?reset_password_token=abcdef
   # def edit
