@@ -68,8 +68,8 @@ gem 'rqrcode', '~> 2.1.2'
 gem 'webauthn', '~> 3.0.0'
 
 # OAuth2 Providers
-gem 'omniauth-discord', '~> 1.1.0'
 gem 'omniauth-github', '~> 2.0.1'
+gem 'omniauth-oauth2', '~> 1.8.0'
 gem 'omniauth-steam', '~> 1.0.6'
 gem 'omniauth-twitch', '~> 1.2.0'
 

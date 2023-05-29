@@ -190,9 +190,6 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
-    omniauth-discord (1.1.0)
-      omniauth (~> 2.1.0)
-      omniauth-oauth2
     omniauth-github (2.0.1)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.8)
@@ -396,8 +393,8 @@ DEPENDENCIES
   jbuilder
   jsbundling-rails
   jwt (~> 2.5.0)
-  omniauth-discord (~> 1.1.0)
   omniauth-github (~> 2.0.1)
+  omniauth-oauth2 (~> 1.8.0)
   omniauth-rails_csrf_protection (~> 1.0.1)
   omniauth-steam (~> 1.0.6)
   omniauth-twitch (~> 1.2.0)

@@ -64,7 +64,8 @@
     <table class="table">
       <thead>
       <tr>
-        <th scope="col">IdP</th>
+        <th scope="col" aria-label="Identity Provider"></th>
+        <th scope="col">Name</th>
         <th scope="col">External ID</th>
         <th scope="col">Linked</th>
         <th scope="col">Last Used</th>
@@ -74,10 +75,11 @@
       <tbody>
       <% @user.social_identities.each do |ident| %>
         <tr>
-          <th scope="row"><i class="bi bi-<%= ident.provider %>"></i> <%= ident.provider.titleize %></th>
+          <th scope="row"><i class="bi bi-<%= ident.provider %>" title="<%= ident.provider.titleize %>"></i></th>
+          <td><%= ident.friendly_name %></td>
           <td><%= ident.external_id %></td>
           <td><%= dotiw_hover ident.created_at %></td>
-          <td><%= dotiw_hover ident.updated_at %></td>
+          <td><%= dotiw_hover ident.last_used_at %></td>
           <td>
             <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
           </td>
