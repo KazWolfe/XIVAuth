@@ -29,11 +29,10 @@ class CharacterRegistration < ApplicationRecord
 
   def verification_key
     # TODO: Load secret from environment, don't use lodestone_id as it's not reusable (other models in future)
-    digest = OpenSSL::Digest.new('sha256')
-    hmac = OpenSSL::HMAC.digest(digest, 'secret', "#{character.lodestone_id}###{user.id}")
-    hmac_s = Base32.encode(hmac).truncate(24, omission: '')
+    secret = Rails.application.key_generator.generate_key('CharacterVerificationSecret')
+    hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha256'), secret, "#{character.lodestone_id}###{user.id}")
 
-    "XIVAUTH:#{hmac_s}"
+    "XIVAUTH:#{Base32.encode(hmac).truncate(24, omission: '')}"
   end
 
   # Generates an "entangled ID", suitable for unique, consistent, and private identification of a single Character Registration.
@@ -43,8 +42,8 @@ class CharacterRegistration < ApplicationRecord
     entanglement_key += "###{higher_order_id}" if higher_order_id.present?
 
     # TODO: Think of a better strategy for this
-    digest = OpenSSL::Digest.new('sha1')
-    hmac = OpenSSL::HMAC.digest(digest, 'NotQuantumEntanglement', entanglement_key)
+    secret = Rails.application.key_generator.generate_key('CharacterEntanglementSecret')
+    hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), secret, entanglement_key)
 
     Base64.urlsafe_encode64(hmac, padding: false)
   end
