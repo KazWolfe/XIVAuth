@@ -5,8 +5,8 @@
     </div>
     <div class="modal-body">
       <p>
-        To verify your character, visit your <%= link_to "Lodestone profile", @character.lodestone_url %> and place the
-        following verification code <em>exactly as it appears below</em> into the character profile.
+        To verify your character, visit your <%= link_to "Lodestone profile", @character.lodestone_url, target: "_blank", rel: 'noreferrer noopener' %>
+        and place the following verification code <em>exactly as it appears below</em> into the character profile.
       </p>
       <div class="input-group mb-3" data-controller="copy-code">
         <input type="text" data-copy-code-target="source" readonly class="form-control text-center font-monospace"

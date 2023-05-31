@@ -138,7 +138,12 @@
       <% character = registration.character %>
         <tr>
           <td><%= image_tag character.avatar_url, width: 36, class: "rounded" %></td>
-          <td><%= character.lodestone_id %></td>
+          <td>
+            <%= link_to character.lodestone_id, admin_character_path(character.lodestone_id) %>
+            <% if registration.verified? %>
+              <i class="bi bi-patch-check-fill" title="Verified Character"></i>
+            <% end %>
+          </td>
           <td><%= character.name %></td>
           <td><%= character.home_world %> @ <%= character.data_center %></td>
           <td>

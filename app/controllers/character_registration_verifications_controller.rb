@@ -20,9 +20,10 @@ class CharacterRegistrationVerificationsController < ApplicationController
     respond_to do |format|
       if job
         format.turbo_stream
-        format.html { redirect_to character_registrations_path, notice: 'Registration job enqueued.' }
+        format.html { redirect_to character_registrations_path, notice: 'Your verification request has been received!' }
       else
-        format.html { redirect_to character_registrations_path, error: 'Could not enqueue job?' }
+        flash[:error] = 'Your verification request could not be submitted at this time. Please try again later.'
+        format.html { redirect_to character_registrations_path }
       end
     end
   end
