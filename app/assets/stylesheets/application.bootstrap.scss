@@ -3,3 +3,13 @@
 
 @import 'devise/password';
 @import 'brand-colors';
+
+.pride-brand {
+  background: linear-gradient(85deg, rgba(222,80,80,1) 5%, rgba(222,180,114,1) 15%, rgba(213,213,114,1) 30%, rgba(140,207,140,1) 45%, rgba(118,114,231,1) 60%, rgba(148,82,229,1) 75%, rgba(191,94,233,1) 95%);
+  background-clip: text;
+  color: transparent;
+}
+
+.pride-brand:hover {
+  color: transparent;
+}
