@@ -10,6 +10,9 @@ en:
       user:social:
         friendly: Read Linked Accounts
         description: Allows getting a list of external accounts (e.g. Discord, GitHub) linked to the user.
+      user:jwt:
+        friendly: Generate User Claim
+        description: Allows generating a cryptographic claim for a user.
       user:manage:
         friendly: Manage User Information
         description: Allows modifying user information via API.

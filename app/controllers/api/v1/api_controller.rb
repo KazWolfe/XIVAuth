@@ -12,6 +12,10 @@ class Api::V1::ApiController < ActionController::Base
   end
 
   private
+  
+  def check_resource_owner_presence
+    render status: :unauthorized unless (@current_user.present? && @current_user.persisted?)
+  end
 
   def load_token
     @doorkeeper_token = doorkeeper_token

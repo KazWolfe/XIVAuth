@@ -141,11 +141,11 @@
           <td>
             <%= link_to character.lodestone_id, admin_character_path(character.lodestone_id) %>
             <% if registration.verified? %>
-              <i class="bi bi-patch-check-fill" title="Verified Character"></i>
+              <i class="bi bi-patch-check-fill text-success" title="Verified Character"></i>
             <% end %>
           </td>
           <td><%= character.name %></td>
-          <td><%= character.home_world %> @ <%= character.data_center %></td>
+          <td><%= character.home_with_datacenter %></td>
           <td>
             <%= registration.verified_at || "Not Verified!" %>
           </td>

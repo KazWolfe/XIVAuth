@@ -9,6 +9,7 @@ if @doorkeeper_token.scopes.exists?('user:social')
   json.social_identities @user.social_identities, partial: 'api/v1/user/social_identity', as: 'social_identity'
 end
 
+json.mfa_enabled @user.requires_mfa?
 json.verified_characters @user.character_registrations.verified.count.positive?
 
 json.created_at @user.created_at
