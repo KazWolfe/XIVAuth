@@ -16,6 +16,8 @@ class SocialIdentity < ApplicationRecord
     self.nickname = auth['info']['nickname']
     self.email = auth['info']['email'] || email if save_email
 
+    self.raw_info = auth['extra']['raw_info']
+
     save
   end
 

@@ -20,8 +20,8 @@ module OmniAuth
 
       info do
         {
-          name: username,
-          nickname: raw_info['global_name'],
+          name: raw_info['global_name'],
+          nickname: username,
           email: raw_info['verified'] ? raw_info['email'] : nil,
           image: raw_info['avatar'] ? "https://cdn.discordapp.com/avatars/#{raw_info['id']}/#{raw_info['avatar']}" : nil,
         }

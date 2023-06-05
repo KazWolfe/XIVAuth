@@ -66,6 +66,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     identity = SocialIdentity.find_by(provider: auth_data[:provider], external_id: auth_data[:uid])
     if identity.present?
       if identity.user == current_user
+        identity.merge_auth_hash(auth_data)
+
         redirect_to edit_user_registration_path, alert: 'This social identity already exists on your account! ' \
                                                         'Information about this identity has been updated.'
       else
