@@ -6,8 +6,9 @@ class FFXIV::Character < ApplicationRecord
   validates :name, presence: true
   validates :home_world, presence: true
   validates :data_center, presence: true
-  
+
   has_many :character_registrations, dependent: :destroy
+  has_one :ban, as: :character, class_name: 'CharacterBan', dependent: :destroy
 
   def lodestone_url(region = 'na')
     "https://#{region}.finalfantasyxiv.com/lodestone/character/#{lodestone_id}"

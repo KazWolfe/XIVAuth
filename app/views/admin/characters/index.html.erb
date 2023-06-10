@@ -21,6 +21,9 @@
         <% if character.character_registrations.verified.present? %>
           <i class="bi bi-patch-check-fill text-success" title="Verified Character"></i>
         <% end %>
+        <% if character.ban.present? %>
+          <i class="bi bi-slash-circle text-danger" title="Banned Character"></i>
+        <% end %>
       </td>
       <td><%= character.home_with_datacenter %></td>
       <td><%= character.character_registrations.count %></td>

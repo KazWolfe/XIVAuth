@@ -11,6 +11,7 @@ module Users::SessionsHelper
       warrioroflight@eorzeamail.com
       godbert@goldsaucer.net
       tataru@seventhdawn.org
+      this.is.thancred@lnkprl.com
     ].sample
   end
 end

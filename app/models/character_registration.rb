@@ -9,6 +9,9 @@ class CharacterRegistration < ApplicationRecord
 
   validates_associated :character, message: 'could not be found or is invalid.'
 
+  attr_accessor :skip_ban_check
+  validate :character_not_banned, unless: :skip_ban_check
+
   validate :owner_can_create
 
   scope :verified, -> { where.not(verified_at: nil) }
@@ -53,6 +56,12 @@ class CharacterRegistration < ApplicationRecord
   def owner_can_create
     if user.character_registrations.unverified.count >= user.unverified_character_allowance
       errors.add(:user, 'has too many unverified characters.')
+    end
+  end
+  
+  def character_not_banned
+    if character.ban.present? && !skip_ban_check
+      errors.add(:character, 'is currently banned.')
     end
   end
 end

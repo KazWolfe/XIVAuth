@@ -15,7 +15,7 @@ class CharacterRegistrationsController < ApplicationController
   def create
     lodestone_id = helpers.extract_id(character_registration_params[:character_key])
     ffxiv_character = FFXIV::Character.for_lodestone_id(lodestone_id)
-
+    
     @character_registration = CharacterRegistration.new(
       character: ffxiv_character,
       user: current_user,

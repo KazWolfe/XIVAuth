@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_28_235044) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_10_052604) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "character_bans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "character_type"
+    t.uuid "character_id"
+    t.string "reason"
+    t.datetime "created_at", null: false
+    t.index ["character_type", "character_id"], name: "index_character_bans_on_character"
+  end
 
   create_table "character_registrations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"

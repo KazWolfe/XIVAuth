@@ -1,6 +1,16 @@
 <div class="row">
   <div class="col-md-8">
     <h3>Basic Character Info</h3>
+    <% if @character.ban.present? %>
+      <div class="alert alert-danger">
+        <h5 class="alert-heading"><i class="bi bi-slash-circle"></i> Character Banned</h5>
+        <p class="mb-1">This character may not be registered by end users without admin authorization.</p>
+        <p class="mb-0">
+          <strong>Ban Reason:</strong> <%= @character.ban.reason %><br>
+          <strong>Ban Time:</strong> <%= @character.ban.created_at %>
+        </p>
+      </div>
+    <% end %>
     <div class="row">
       <div class="col-sm-3">
         <%= image_tag @character.portrait_url, class: "img-fluid rounded", title: "Portrait image of #{@character.name}" %>
@@ -58,10 +68,16 @@
     <div class="button-toolbar pb-4">
       <button class="btn btn-primary"><i class="bi bi-arrow-repeat"></i> Lodestone Sync</button>
       <button class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+      <% if @character.ban.nil? %>
+        <button class="btn btn-danger"><i class="bi bi-slash-circle"></i> Ban</button>
+      <% else %>
+        <button class="btn btn-secondary"><i class="bi bi-slash-circle"></i> Unban</button>
+      <% end %>
     </div>
   </div>
   <div class="col-md-12">
     <h4>Claiming Users</h4>
+    <button class="btn btn-outline-primary"><i class="bi bi-person-add"></i> Add Registration</button>
     <% if @character.character_registrations.count > 0 %>
       <table class="table caption-top">
         <thead>

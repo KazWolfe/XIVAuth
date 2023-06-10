@@ -103,7 +103,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     email = auth.dig(:info, :email)
     return nil unless email.present?
 
-    existing_user = find_for_database_authentication(email: email.downcase)
+    existing_user = User.find_for_database_authentication(email: email.downcase)
     existing_user&.add_social_identity(auth)
 
     # returns nil if none found
