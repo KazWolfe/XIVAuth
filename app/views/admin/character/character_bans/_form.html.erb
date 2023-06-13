@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <h5 class="modal-title">Ban <%= @character.name %></h5>
+</div>
+<div class="modal-body">
+  <%= form_with model: @ban, url: admin_character_ban_path(@character.lodestone_id), method: :post do |f| %>
+    <div class="mb-3">
+      <%= f.label :reason, "Ban Reason", class: "form-label" %>
+      <%= f.text_field :reason, placeholder: "A compelling reason", class: "form-control" %>
+
+      <%= f.submit "Ban Character", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

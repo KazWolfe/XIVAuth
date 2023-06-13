@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::CharactersController < Admin::AdminController
-  before_action :set_character, only: %i[show update destroy]
+  before_action :set_character, only: %i[ show update destroy refresh ]
 
   def index
     @characters = FFXIV::Character.order(created_at: :desc)
@@ -12,10 +12,22 @@ class Admin::CharactersController < Admin::AdminController
   end
 
   def destroy
-    if @user.destroy
-      redirect_to admin_character_path, notice: 'Character deleted.'
+    if @character.destroy
+      redirect_to admin_characters_path, notice: 'Character deleted.'
     else
       redirect_to admin_character_path(@character), alert: 'Character could not be deleted.'
+    end
+  end
+
+  def refresh
+    if FFXIV::RefreshCharactersJob.perform_later @character
+      respond_to do |format|
+        format.html { redirect_to admin_character_path(@character.lodestone_id), notice: 'Character refresh was successfully enqueued.' }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to admin_character_path(@character.lodestone_id), error: 'Character refresh could not be enqueued.' }
+      end
     end
   end
 

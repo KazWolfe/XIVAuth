@@ -34,9 +34,12 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     namespace 'admin' do
       root to: 'dashboard#index'
-      
+
       resources :users, controller: 'users'
-      resources :characters, controller: 'characters', param: :lodestone_id
+      resources :characters, controller: 'characters', param: :lodestone_id do
+        post :refresh, on: :member
+        resource :ban, controller: 'character/character_bans'
+      end
 
       mount Sidekiq::Web => '/sidekiq'
       mount Flipper::UI.app(Flipper) => '/flipper'
