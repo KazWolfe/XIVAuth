@@ -14,14 +14,10 @@
     <code><%= @totp_credential.otp_secret %></code>
   </p>
   <%= form_with(model: @totp_credential, method: :post, url: totp_credential_path, data: {"turbo-frame": "_top"}) do |f| %>
+
     <div class="mb-3">
       <%= f.label :otp_attempt, "Current OTP Code", class: "form-label" %>
-      <%= f.text_field :otp_attempt, placeholder: "123456", class: "form-control #{"is-invalid" if @totp_credential.errors.present?}" %>
-      <% if @totp_credential.errors.present? %>
-        <div class="invalid-feedback">
-          <%= @totp_credential.errors.full_messages.join("\n") %>
-        </div>
-      <% end %>
+      <%= f.text_field :otp_attempt, placeholder: "123456", class: "form-control" %>
     </div>
 
     <%= f.submit "Register Authenticator", class: "btn btn-primary" %>

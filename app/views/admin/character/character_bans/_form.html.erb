@@ -3,11 +3,21 @@
 </div>
 <div class="modal-body">
   <%= form_with model: @ban, url: admin_character_ban_path(@character.lodestone_id), method: :post do |f| %>
+
     <div class="mb-3">
       <%= f.label :reason, "Ban Reason", class: "form-label" %>
-      <%= f.text_field :reason, placeholder: "A compelling reason", class: "form-control" %>
-
-      <%= f.submit "Ban Character", class: "btn btn-primary" %>
+      <%= f.text_area :reason, placeholder: "A compelling reason to ban this character...", class: "form-control" %>
     </div>
+
+    <div class="form-check mb-3">
+      <%= f.check_box :remove_registrations, class: "form-check-input" %>
+      <%= f.label :remove_registrations, "Remove Existing Registrations", class: "form-check-label" %>
+      <p class="form-text text-muted small">
+          When selected, remove all character registrations as part of banning this user. This should only be used in
+          cases where this character is being banned for abuse or exceptional circumstances.
+      </p>
+    </div>
+
+    <%= f.submit "Ban Character", class: "btn btn-primary" %>
   <% end %>
 </div>
