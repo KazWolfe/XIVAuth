@@ -34,6 +34,15 @@ class User < ApplicationRecord
   def requires_mfa?
     webauthn_credentials.any? || totp_credential&.otp_enabled
   end
+  
+  def avatar_url(size = 32, options: {})
+    gravatar_url(size, *options)
+  end
+
+  def gravatar_url(size = 32, fallback: 'retro', rating: 'pg')
+    hash = Digest::MD5.hexdigest(email.strip.downcase)
+    "https://secure.gravatar.com/avatar/#{hash}.png?s=#{size}&d=#{fallback}&r=#{rating}"
+  end
 
   # Get the list of providers that can be used for authentication purposes.
   def self.omniauth_login_providers

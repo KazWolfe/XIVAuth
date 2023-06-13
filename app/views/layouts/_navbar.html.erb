@@ -52,6 +52,7 @@
         <% else %>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="<%= current_user.avatar_url %>" alt="" width="24" height="24" class="d-inline-block align-text-top rounded-2">
               Hi, <%= current_user.email %>
             </a>
             <ul class="dropdown-menu" aria-labelledby="profileDropdown">
