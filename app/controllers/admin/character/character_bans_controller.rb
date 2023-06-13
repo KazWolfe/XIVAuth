@@ -12,8 +12,9 @@ class Admin::Character::CharacterBansController < Admin::AdminController
   end
 
   def create
-    @ban = @character.create_ban(filtered_params)
-
+    @character.character_registrations.destroy_all if params.dig(:character_ban, :remove_registrations)
+    @ban = @character.build_ban(filtered_params)
+    
     if @ban.save
       respond_to do |format|
         format.html { redirect_to admin_character_path(@character.lodestone_id), notice: "Character banned." }
