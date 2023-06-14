@@ -74,7 +74,7 @@ Rails.application.configure do
   config.action_mailer.postmark_settings = {
     api_token: Rails.application.credentials.dig(:postmark, :api_token)
   }
-  
+
   config.action_mailer.default_url_options = {
     host: ENV['APP_URL'] || 'http://localhost:3000'
   }
