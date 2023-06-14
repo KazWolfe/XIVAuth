@@ -68,7 +68,7 @@
     <div class="button-toolbar pb-4">
       <%= button_to refresh_admin_character_path(@character.lodestone_id), class: 'btn btn-primary',
                     form_class: 'd-inline-block' do %>
-        <i class="bi bi-arrow-repeat"></i> Lodestone Sync
+        <i class="bi bi-arrow-repeat"></i> Force Lodestone Refresh
       <% end %>
       <% if @character.ban.nil? %>
         <%= button_to new_admin_character_ban_path(@character.lodestone_id), method: 'get', class: 'btn btn-danger',

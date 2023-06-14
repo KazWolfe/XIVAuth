@@ -12,7 +12,7 @@ class Admin::Character::CharacterBansController < Admin::AdminController
   end
 
   def create
-    @character.character_registrations.destroy_all if params.dig(:character_ban, :remove_registrations)
+    @character.character_registrations.destroy_all if params.dig(:character_ban, :remove_registrations) == '1'
     @ban = @character.build_ban(filtered_params)
     
     if @ban.save

@@ -20,7 +20,7 @@ class Admin::CharactersController < Admin::AdminController
   end
 
   def refresh
-    if FFXIV::RefreshCharactersJob.perform_later @character
+    if FFXIV::RefreshCharactersJob.perform_later(@character, force_refresh: true)
       respond_to do |format|
         format.html { redirect_to admin_character_path(@character.lodestone_id), notice: 'Character refresh was successfully enqueued.' }
       end
