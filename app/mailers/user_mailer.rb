@@ -1,7 +1,7 @@
 class UserMailer < Devise::Mailer
   include PostmarkRails::TemplatedMailerMixin
   include Devise::Controllers::UrlHelpers
-  default from: 'noreply@xivauth.net'
+  default from: 'XIVAuth <noreply@xivauth.net>'
 
   def reset_password_instructions(record, token, opts = nil)
     self.template_model = {
