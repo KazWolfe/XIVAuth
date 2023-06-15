@@ -4,7 +4,7 @@ class Api::V1::ApiController < ActionController::Base
   # There are no "open" API calls; everything must require at least authorization.
   before_action :doorkeeper_authorize!
   before_action :load_token
-  
+
   respond_to :json
 
   def current_user
@@ -12,9 +12,9 @@ class Api::V1::ApiController < ActionController::Base
   end
 
   private
-  
+
   def check_resource_owner_presence
-    render status: :unauthorized unless (@current_user.present? && @current_user.persisted?)
+    render status: :unauthorized unless (current_user.present? && current_user.persisted?)
   end
 
   def load_token

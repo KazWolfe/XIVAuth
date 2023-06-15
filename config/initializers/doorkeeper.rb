@@ -52,9 +52,11 @@ Doorkeeper.configure do
   #
   #   def destroy_me!
   #     destroy
-  #   end
+  #   end::Doorkeeper::Orm::ActiveRecord::Mixins::AccessGrant
   # end
   application_class 'OAuth::ClientApplication'
+  access_grant_class 'OAuth::AccessGrant'
+  access_token_class 'OAuth::AccessToken'
 
   # Enables polymorphic Resource Owner association for Access Tokens and Access Grants.
   # By default this option is disabled.

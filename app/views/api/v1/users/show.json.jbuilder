@@ -6,7 +6,7 @@ if @doorkeeper_token.scopes.exists?('user:email')
 end
 
 if @doorkeeper_token.scopes.exists?('user:social')
-  json.social_identities @user.social_identities, partial: 'api/v1/user/social_identity', as: 'social_identity'
+  json.social_identities @user.social_identities, partial: 'api/v1/users/social_identity', as: 'social_identity'
 end
 
 json.mfa_enabled @user.requires_mfa?
