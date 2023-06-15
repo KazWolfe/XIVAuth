@@ -92,6 +92,11 @@ gem 'faraday', '~> 2.7'
 # Better logging
 gem 'rails_semantic_logger', '~> 4.12'
 
+# Observability (Sentry) - temp for now
+gem 'sentry-ruby', '~> 5.9.0'
+gem 'sentry-rails', '~> 5.9.0'
+gem 'stackprof', '~> 0.2.25'
+
 # Heroku dependencies
 gem 'rexml', '~> 3.2.5'
 
