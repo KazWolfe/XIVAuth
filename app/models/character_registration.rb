@@ -10,7 +10,7 @@ class CharacterRegistration < ApplicationRecord
   validates_associated :character, message: 'could not be found or is invalid.'
 
   attr_accessor :skip_ban_check
-  validate :character_not_banned, unless: :skip_ban_check
+  validate :character_not_banned, unless: :skip_ban_check, on: :create
 
   validate :owner_can_create
 
