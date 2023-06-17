@@ -93,8 +93,8 @@ gem 'faraday', '~> 2.7'
 gem 'rails_semantic_logger', '~> 4.12'
 
 # Observability (Sentry) - temp for now
-gem 'sentry-ruby', '~> 5.9.0'
 gem 'sentry-rails', '~> 5.9.0'
+gem 'sentry-ruby', '~> 5.9.0'
 gem 'stackprof', '~> 0.2.25'
 
 # Heroku dependencies
@@ -106,6 +106,10 @@ group :development, :test do
   gem 'rubocop', require: false
 
   gem 'amazing_print'
+
+  gem 'factory_bot_rails', '~> 6.2.0'
+  gem 'faker', '~> 3.2.0'
+  gem 'rspec-rails', '~> 6.0.3'
 end
 
 group :development do

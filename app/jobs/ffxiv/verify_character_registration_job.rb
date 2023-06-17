@@ -25,7 +25,6 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
             "Verification failed for #{registration.id} - key was not found."
     end
 
-    registration.verify!
-    registration.save!
+    registration.verify!(clobber: true)
   end
 end

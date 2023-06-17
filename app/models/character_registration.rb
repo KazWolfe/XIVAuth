@@ -5,7 +5,9 @@ class CharacterRegistration < ApplicationRecord
   belongs_to :character, class_name: 'FFXIV::Character'
 
   validates :character_id, uniqueness: { scope: [:user_id], message: 'is already registered to you!' }
-  validates_uniqueness_of :character_id, if: :verified?, message: 'has already been verified.'
+  validates_uniqueness_of :character_id,
+                          conditions: -> { where.not(verified_at: nil) },
+                          message: 'has already been verified.'
 
   validates_associated :character, message: 'could not be found or is invalid.'
 
@@ -23,11 +25,28 @@ class CharacterRegistration < ApplicationRecord
     verified_at.present?
   end
 
-  def verify!
-    # FIXME: This needs to handle the edge case of *other* registrations also being verified somehow.
-    #        Clobber?
+  # Mark the targeted CharacterRegistration as verified, optionally unverifying any other registrations that may be present.
+  # This method will attempt to save all modified CharacterRegistrations.
+  # @param clobber [Boolean] When true, unverify the prior CharacterRegistration.
+  # @param send_email [Boolean] When true, send an email to the prior owner if their character was clobbered.
+  def verify!(clobber: false, send_email: false)
+    transaction do
+      other_registration = CharacterRegistration.verified.find_by(character_id:)
 
-    self.verified_at = DateTime.now
+      if other_registration.present? && clobber
+        Rails.logger.warn('Character verification was clobbered!', old: other_registration, new: self)
+        other_registration.verified_at = nil
+        other_registration.save!
+
+        # TODO: Send an email to the losing user.
+      end
+
+      self.verified_at = DateTime.now
+      save!
+    rescue ActiveRecord::RecordInvalid
+      self.verified_at = nil  # rollback record in memory
+      raise
+    end
   end
 
   def verification_key
