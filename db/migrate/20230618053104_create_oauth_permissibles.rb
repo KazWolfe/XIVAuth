@@ -4,7 +4,7 @@ class CreateOAuthPermissibles < ActiveRecord::Migration[7.0]
       t.datetime :created_at, null: false
     end
 
-    create_table :oauth_permissible_entries, id: :uuid do |t|
+    create_table :oauth_permissible_rules, id: :uuid do |t|
       t.references :policy, type: :uuid, foreign_key: { to_table: :oauth_permissible_policies }
 
       t.boolean :deny, default: false

@@ -114,18 +114,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_053104) do
     t.index ["uid"], name: "index_oauth_client_applications_on_uid", unique: true
   end
 
-  create_table "oauth_permissible_entries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "oauth_permissible_policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+  end
+
+  create_table "oauth_permissible_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "policy_id"
     t.boolean "deny", default: false
     t.string "resource_type"
     t.string "resource_id"
     t.datetime "created_at", null: false
-    t.index ["policy_id"], name: "index_oauth_permissible_entries_on_policy_id"
-    t.index ["resource_type", "resource_id"], name: "index_oauth_permissible_entries_on_resource"
-  end
-
-  create_table "oauth_permissible_policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
+    t.index ["policy_id"], name: "index_oauth_permissible_rules_on_policy_id"
+    t.index ["resource_type", "resource_id"], name: "index_oauth_permissible_rules_on_resource"
   end
 
   create_table "site_announcements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -204,7 +204,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_053104) do
   add_foreign_key "oauth_access_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_access_tokens", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_permissible_policies", column: "permissible_policy_id"
-  add_foreign_key "oauth_permissible_entries", "oauth_permissible_policies", column: "policy_id"
+  add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
   add_foreign_key "users_totp_credentials", "users"
   add_foreign_key "users_webauthn_credentials", "users"
 end
