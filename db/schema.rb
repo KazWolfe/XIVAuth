@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_10_052604) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_18_053104) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -73,7 +73,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_10_052604) do
     t.string "scopes", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
+    t.uuid "permissible_policy_id"
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
+    t.index ["permissible_policy_id"], name: "index_oauth_access_grants_on_permissible_policy_id"
     t.index ["resource_owner_type", "resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
@@ -89,7 +91,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_10_052604) do
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "previous_refresh_token", default: "", null: false
+    t.uuid "permissible_policy_id"
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
+    t.index ["permissible_policy_id"], name: "index_oauth_access_tokens_on_permissible_policy_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, where: "((refresh_token IS NOT NULL) OR ((refresh_token)::text <> ''::text))"
     t.index ["resource_owner_type", "resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
@@ -108,6 +112,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_10_052604) do
     t.datetime "updated_at", null: false
     t.index ["owner_type", "owner_id"], name: "index_oauth_client_applications_on_owner"
     t.index ["uid"], name: "index_oauth_client_applications_on_uid", unique: true
+  end
+
+  create_table "oauth_permissible_entries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "policy_id"
+    t.boolean "deny", default: false
+    t.string "resource_type"
+    t.string "resource_id"
+    t.datetime "created_at", null: false
+    t.index ["policy_id"], name: "index_oauth_permissible_entries_on_policy_id"
+    t.index ["resource_type", "resource_id"], name: "index_oauth_permissible_entries_on_resource"
+  end
+
+  create_table "oauth_permissible_policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
   end
 
   create_table "site_announcements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -183,7 +201,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_10_052604) do
 
   add_foreign_key "character_registrations", "ffxiv_characters", column: "character_id"
   add_foreign_key "oauth_access_grants", "oauth_client_applications", column: "application_id"
+  add_foreign_key "oauth_access_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_access_tokens", "oauth_client_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "oauth_permissible_policies", column: "permissible_policy_id"
+  add_foreign_key "oauth_permissible_entries", "oauth_permissible_policies", column: "policy_id"
   add_foreign_key "users_totp_credentials", "users"
   add_foreign_key "users_webauthn_credentials", "users"
 end
