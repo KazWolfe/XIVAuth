@@ -20,13 +20,17 @@
           rgba(222,80,80,1)
   );
   background-clip: text;
+  -webkit-background-clip: text;
   background-size: 200% 100%;
   color: transparent;
-}
 
-.pride-brand:hover {
-  color: transparent;
   animation: pride-gradient 5s linear infinite;
+  animation-play-state: paused;
+
+  &:hover {
+    color: transparent;
+    animation-play-state: unset;
+  }
 }
 
 @keyframes pride-gradient {
