@@ -12,6 +12,6 @@ class Ability
     can :use, OAuth::ClientApplication
     can :manage, OAuth::ClientApplication, owner: user
 
-    can :manage, SocialIdentity, user_id: user.id
+    can :manage, Users::SocialIdentity, user_id: user.id
   end
 end

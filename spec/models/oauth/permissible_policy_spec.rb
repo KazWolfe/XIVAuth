@@ -66,8 +66,12 @@ RSpec.describe OAuth::PermissiblePolicy, type: :model do
 
   context 'mixed mode (multiple resource types in a single policy)' do
     before do
+      @user_resource = FactoryBot.create(:user)
       @allowed_resource = FactoryBot.create(:ffxiv_character)
-      @denied_resource = SocialIdentity.create(external_id: 'abcdef', provider: 'test')
+      @denied_resource = Users::SocialIdentity.create(
+        external_id: 'abcdef', provider: 'test', 
+        user: @user_resource
+      )
 
       @policy = OAuth::PermissiblePolicy.create
       @policy.rules.create(resource: @allowed_resource, deny: false)
@@ -81,15 +85,13 @@ RSpec.describe OAuth::PermissiblePolicy, type: :model do
     end
 
     it 'uses implicit allow for a resource if no allow rules are present' do
-      resource = SocialIdentity.create(external_id: 'wolf', provider: 'test')
+      resource = Users::SocialIdentity.create(external_id: 'wolf', provider: 'test', user: @user_resource)
 
       expect(@policy.can_access_resource?(resource)).to be true
     end
 
     it 'uses implicit allow if no rules are present for the resource type' do
-      resource = User.create(email: 'test@example.com', password: 'resource_abuse_is_fun', confirmed_at: DateTime.now)
-
-      expect(@policy.can_access_resource?(resource)).to be true
+      expect(@policy.can_access_resource?(@user_resource)).to be true
     end
 
     it 'still evaluates explicit rules correctly' do

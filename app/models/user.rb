@@ -11,7 +11,7 @@ class User < ApplicationRecord
 
   default_scope { order(created_at: :asc) }
 
-  has_many :social_identities, dependent: :destroy
+  has_many :social_identities, class_name: 'Users::SocialIdentity', dependent: :destroy
   has_many :character_registrations, dependent: :destroy
 
   has_many :webauthn_credentials, class_name: 'Users::WebauthnCredential', dependent: :destroy
@@ -32,7 +32,7 @@ class User < ApplicationRecord
   end
 
   def requires_mfa?
-    webauthn_credentials.any? || totp_credential&.otp_enabled
+    webauthn_credentials.any? || totp_credential&.otp_enabled || false
   end
   
   def avatar_url(size = 32, options: {})
