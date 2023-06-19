@@ -34,6 +34,7 @@
               <i class="bi bi-arrow-clockwise"></i> Refresh Character
             <% end %>
           <% end %>
+          <% # TODO: Remove unverify button. %>
           <% if character_registration.verified? %>
             <%= button_to character_registration_verify_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
               <i class="bi bi-patch-minus"></i> Unverify Character

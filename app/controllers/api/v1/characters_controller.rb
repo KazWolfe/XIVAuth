@@ -30,7 +30,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     if @character.save
       render :show, status: :created, location: @character
     else
-      render json: @character_registration.errors, status: :unprocessable_entity
+      render json: @character.errors, status: :unprocessable_entity
     end
   end
 
