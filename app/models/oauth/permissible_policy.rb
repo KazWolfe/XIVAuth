@@ -11,7 +11,7 @@ class OAuth::PermissiblePolicy < ApplicationRecord
 
     return fallback unless fallback.nil?
 
-    !implicit_deny?(resource_type: resource.class.name)
+    !implicit_deny?(resource_type: resource.class.polymorphic_name)
   end
 
   # Check if implicit denial should be used for this policy. The policy will use implicit denial if *any* rule in the
@@ -21,7 +21,7 @@ class OAuth::PermissiblePolicy < ApplicationRecord
   def implicit_deny?(resource_type: nil)
     search = { deny: false }
     search[:resource_type] = resource_type if resource_type.present?
-    
+
     rules.where(search).count.positive?
   end
 end

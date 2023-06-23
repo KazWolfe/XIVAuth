@@ -90,6 +90,10 @@ GEM
       xpath (~> 3.2)
     cbor (0.5.9.6)
     chunky_png (1.4.0)
+    cloudflare-rails (3.0.0)
+      actionpack (>= 6.0, < 7.1.0)
+      activesupport (>= 6.0, < 7.1.0)
+      railties (>= 6.0, < 7.1.0)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.0)
     cose (1.3.0)
@@ -412,6 +416,7 @@ DEPENDENCIES
   bootsnap
   cancancan (~> 3.5)
   capybara
+  cloudflare-rails (~> 3.0.0)
   cssbundling-rails
   debug
   devise (~> 4.9)

@@ -69,7 +69,7 @@ RSpec.describe OAuth::PermissiblePolicy, type: :model do
       @user_resource = FactoryBot.create(:user)
       @allowed_resource = FactoryBot.create(:ffxiv_character)
       @denied_resource = Users::SocialIdentity.create(
-        external_id: 'abcdef', provider: 'test', 
+        external_id: 'abcdef', provider: 'test',
         user: @user_resource
       )
 
