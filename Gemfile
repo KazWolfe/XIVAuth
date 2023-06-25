@@ -84,6 +84,7 @@ gem 'flipper-ui', '~> 0.28.0'
 # Internal security
 gem 'jwt', '~> 2.5.0'
 gem 'omniauth-rails_csrf_protection', '~> 1.0.1'
+gem 'rbnacl', '~> 7.1.1'
 gem 'recaptcha', '~> 5.14.0'
 
 # HTTP Requests

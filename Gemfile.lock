@@ -134,6 +134,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
+    ffi (1.15.5)
     flipper (0.28.0)
       concurrent-ruby (< 2)
     flipper-active_record (0.28.0)
@@ -279,6 +280,8 @@ GEM
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
     rake (13.0.6)
+    rbnacl (7.1.1)
+      ffi
     recaptcha (5.14.0)
     redis-client (0.14.1)
       connection_pool
@@ -442,6 +445,7 @@ DEPENDENCIES
   rack-mini-profiler
   rails (~> 7.0.4, >= 7.0.4.3)
   rails_semantic_logger (~> 4.12)
+  rbnacl (~> 7.1.1)
   recaptcha (~> 5.14.0)
   rexml (~> 3.2.5)
   rqrcode (~> 2.1.2)
