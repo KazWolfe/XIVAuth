@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::ApiController < ActionController::Base
+class Api::V1::ApiController < ActionController::API
   # There are no "open" API calls; everything must require at least authorization.
   before_action :doorkeeper_authorize!
   before_action :load_token
