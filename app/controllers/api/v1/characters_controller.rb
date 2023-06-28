@@ -1,18 +1,11 @@
 class Api::V1::CharactersController < Api::V1::ApiController
-  before_action -> { doorkeeper_authorize! 'character', 'character:all', 'character:manage', 'character:jwt' }
-  before_action(only: %i[create update]) { doorkeeper_authorize! 'character:manage' }
+  before_action { doorkeeper_authorize! 'character', 'character:all', 'character:manage', 'character:jwt' }
+  before_action(except: %i[index show jwt]) { doorkeeper_authorize! 'character:manage' }
+  before_action(only: %i[jwt]) { doorkeeper_authorize! 'character:jwt', 'character:manage' }
 
   before_action :check_resource_owner_presence
   before_action :load_authorized_characters
   before_action :set_character, except: %i[index create]
-
-  before_action except: %i[index show jwt] do
-    doorkeeper_authorize! 'character:manage'
-  end
-
-  before_action only: %i[jwt] do
-    doorkeeper_authorize! 'user:jwt', 'user:manage'
-  end
 
   def index
     @registrations = @authorized_registrations
@@ -30,7 +23,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     if @registration.save
       render :show, status: :created, location: @registration
     else
-      render json: @registration.errors, status: :unprocessable_entity
+      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -42,7 +35,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     if @registration.save
       render :show, status: :ok, location: @registration
     else
-      render json: @registration.errors, status: :unprocessable_entity
+      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -72,7 +65,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     if @registration.save
       head status: :no_content
     else
-      render json: @registration.errors, status: :unprocessable_entity
+      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_entity
     end
   end
   
