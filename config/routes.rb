@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   end
 
   use_doorkeeper do; end
+  use_doorkeeper_device_authorization_grant do; end
 
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
