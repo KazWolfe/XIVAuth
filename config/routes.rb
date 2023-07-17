@@ -40,6 +40,8 @@ Rails.application.routes.draw do
         post :refresh, on: :member
         resource :ban, controller: 'character/character_bans'
       end
+      
+      resources :client_applications, controller: 'client_applications'
 
       mount Sidekiq::Web => '/sidekiq'
       mount Flipper::UI.app(Flipper) => '/flipper'

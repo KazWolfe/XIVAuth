@@ -1,0 +1,20 @@
+<h1>ADMIN - Client Application Management</h1>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">App ID</th>
+    <th scope="col">App Name</th>
+    <th scope="col">Owner</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @client_applications.each do |app| %>
+    <tr>
+      <td><%= link_to app.id, admin_client_application_path(app) %></td>
+      <td><%= app.name %></td>
+      <td><%= app.owner.id %> (<%= app.owner_type %>)</td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
