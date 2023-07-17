@@ -5,7 +5,7 @@ class FFXIV::RefreshCharactersJob < ApplicationJob
   def perform(*characters, force_refresh: false)
     characters.each do |character|
       if !force_refresh && (character.updated_at > 24.hours.ago)
-        Rails.logger.info "Skipping refresh of character #{character.lodestone_id}, they're already fresh."
+        logger.info "Skipping refresh of character #{character.lodestone_id}, they're already fresh."
         next
       end
 

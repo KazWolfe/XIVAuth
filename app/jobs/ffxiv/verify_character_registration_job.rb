@@ -10,7 +10,7 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     character = registration.character
 
     if registration.verified?
-      Rails.logger.warn "CharacterRegistration #{registration.id} is already verified!"
+      logger.warn "CharacterRegistration #{registration.id} is already verified!"
       return
     end
 

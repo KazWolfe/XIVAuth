@@ -36,7 +36,7 @@ class Users::WebauthnCredentialsController < ApplicationController
         end
       end
     rescue WebAuthn::Error => e
-      Rails.logger.error('Error while registering webauthn credential!', e)
+      logger.error('Error while registering webauthn credential!', e)
 
       respond_to do |format|
         format.turbo_stream { render_new_form_again }

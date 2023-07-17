@@ -76,5 +76,7 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   # Enable the web console for local networks
-  config.web_console.whitelisted_ips = %w[10.0.0.0/8 127.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ::/64]
+  config.web_console.allowed_ips = %w[10.0.0.0/8 127.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ::/64]
+
+  config.log_level = ENV['LOG_LEVEL']&.downcase&.strip&.to_sym || :debug
 end

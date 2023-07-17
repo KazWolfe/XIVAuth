@@ -34,7 +34,7 @@ class CharacterRegistration < ApplicationRecord
       other_registration = CharacterRegistration.verified.find_by(character_id:)
 
       if other_registration.present? && clobber
-        Rails.logger.warn('Character verification was clobbered!', old: other_registration, new: self)
+        logger.warn('Character verification was clobbered!', old: other_registration, new: self)
         other_registration.verified_at = nil
         other_registration.save!
 
