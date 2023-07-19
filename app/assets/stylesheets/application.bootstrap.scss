@@ -42,3 +42,18 @@
     background-position: 200% 0;
   }
 }
+
+#env-watermark {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  position: fixed;
+  text-align: center;
+  line-height: 100vh;
+  font-size: 10vw;
+  z-index: -99999;
+  opacity: 0.2;
+  transform: rotate(-20deg);
+  user-select: none;
+}

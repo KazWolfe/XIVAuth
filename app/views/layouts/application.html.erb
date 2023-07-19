@@ -8,10 +8,12 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+
   </head>
 
   <body>
-    <%= render 'layouts/navbar' %>
+  <%= render 'layouts/components/env_watermark' %>
+  <%= render 'layouts/navbar' %>
 
     <div class="container">
       <%= render 'layouts/components/flashes' %>
