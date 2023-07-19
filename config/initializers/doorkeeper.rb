@@ -205,7 +205,7 @@ Doorkeeper.configure do
   #
   # This can be done by adding 'fallback: plain', e.g. :
   #
-  # hash_application_secrets using: '::Doorkeeper::SecretStoring::BCrypt', fallback: :plain
+  hash_application_secrets using: '::Doorkeeper::SecretStoring::BCrypt', fallback: :plain
 
   # Issue access tokens with refresh token (disabled by default), you may also
   # pass a block which accepts `context` to customize when to give a refresh
