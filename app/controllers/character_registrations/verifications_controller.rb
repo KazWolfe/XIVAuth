@@ -1,4 +1,4 @@
-class CharacterRegistrationVerificationsController < ApplicationController
+class CharacterRegistrations::VerificationsController < ApplicationController
   before_action :set_character_registration
 
   def show

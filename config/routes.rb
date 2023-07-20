@@ -5,13 +5,15 @@ Rails.application.routes.draw do
   root 'marketing#index'
 
   resources :characters, controller: :character_registrations, as: :character_registrations, except: [:update] do
-    resource :verify, controller: 'character_registration_verifications'
+    resource :verify, controller: 'character_registrations/verifications'
 
     post 'refresh', to: 'character_registrations#refresh'
   end
 
   namespace 'developer' do
-    resources :applications, controller: 'client_apps'
+    resources :applications, controller: 'client_apps' do
+      post 'regenerate_secret', to: 'client_apps#regenerate', on: :member
+    end
   end
 
   namespace 'api' do
