@@ -54,6 +54,9 @@ gem 'bootsnap', require: false
 # Mail Services
 gem 'postmark-rails', '~> 0.22.1'
 
+# Internal Security
+gem 'rack-cors', '~> 2.0.1'
+
 # Workers
 gem 'sidekiq', '~> 7.1.0'
 gem 'sidekiq-cron', '~> 1.10.0'
