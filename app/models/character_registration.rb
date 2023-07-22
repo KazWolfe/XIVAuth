@@ -14,7 +14,7 @@ class CharacterRegistration < ApplicationRecord
   attr_accessor :skip_ban_check
   validate :character_not_banned, unless: :skip_ban_check, on: :create
 
-  validate :owner_can_create
+  validate :owner_can_create, on: :create
 
   scope :verified, -> { where.not(verified_at: nil) }
   scope :unverified, -> { where(verified_at: nil) }

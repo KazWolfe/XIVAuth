@@ -62,6 +62,6 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def user_params
-    params.require(:user).permit(:email, :password, :otp_attempt, :device_response)
+    params.require(:user).permit(:email, :password, :otp_attempt, :device_response, :remember_me)
   end
 end
