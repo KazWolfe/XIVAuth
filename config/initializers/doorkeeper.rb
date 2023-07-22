@@ -1,3 +1,5 @@
+require 'doorkeeper/permissible_policy_cloner'
+
 # frozen_string_literal: true
 
 Doorkeeper.configure do
@@ -421,11 +423,7 @@ Doorkeeper.configure do
   # end
   #
   after_successful_strategy_response do |request, response|
-    # clone permissible ID, if it exists
-    if request&.grant.respond_to? :permissible_policy
-      response.token.permissible_policy = request.grant.permissible_policy
-      response.token.save
-    end
+    Doorkeeper::PermissiblePolicyCloner.clone(request, response)
   end
 
   # Hook into Authorization flow in order to implement Single Sign Out

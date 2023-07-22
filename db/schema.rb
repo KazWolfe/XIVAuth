@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_18_053104) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_17_144812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -221,6 +221,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_18_053104) do
   add_foreign_key "oauth_access_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_access_tokens", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_permissible_policies", column: "permissible_policy_id"
+  add_foreign_key "oauth_device_grants", "oauth_client_applications", column: "application_id"
+  add_foreign_key "oauth_device_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
   add_foreign_key "users_social_identities", "users"
   add_foreign_key "users_totp_credentials", "users"
