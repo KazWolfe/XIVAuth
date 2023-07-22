@@ -5,8 +5,8 @@ if @doorkeeper_token.scopes.exists?('user:email')
   json.email_verified @user.confirmed_at.present? # basically always true
 end
 
-if @doorkeeper_token.scopes.exists?('user:social')
-  json.social_identities @user.social_identities, partial: 'api/v1/users/social_identity', as: 'social_identity'
+if @social_identities.present?
+  json.social_identities @social_identities, partial: 'api/v1/users/social_identity', as: 'social_identity'
 end
 
 json.mfa_enabled @user.requires_mfa?

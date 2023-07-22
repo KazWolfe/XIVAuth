@@ -1,0 +1,9 @@
+<label for="character_selector">Share the following:</label>
+<select class="form-select" name="characters[]" id="character_selector">
+  <% @current_resource_owner.character_registrations.verified.each do |registration| %>
+    <% character = registration.character %>
+    <option value="<%= character.lodestone_id %>">
+      <%= character.name %> @ <%= character.home_with_datacenter %>
+    </option>
+  <% end %>
+</select>
