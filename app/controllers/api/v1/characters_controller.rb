@@ -77,9 +77,16 @@ class Api::V1::CharactersController < Api::V1::ApiController
 
   def load_authorized_characters
     @authorized_registrations = CharacterRegistration.accessible_by(current_ability)
-    @authorized_registrations = @authorized_registrations.verified unless character_manage?
 
-    # TODO: scoping
+    unless character_manage?
+      @authorized_registrations = @authorized_registrations.verified
+
+      policy = @doorkeeper_token.permissible_policy
+
+      @authorized_registrations = @authorized_registrations.verified.filter do |r|
+        policy.blank? || policy.can_access_resource?(r)
+      end
+    end
   end
 
   def set_character

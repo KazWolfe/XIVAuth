@@ -41,10 +41,10 @@ module OAuth
 
       if share_new_characters
         # Filter to only characters that were *not* selected, so we can deny access to them.
-        objects = objects.where.not('character.lodestone_id': character_ids)
+        objects = objects.where.not(character: {lodestone_id: character_ids })
       else
         # Otherwise, filter to only selected characters.
-        objects = objects.where('character.lodestone_id': character_ids)
+        objects = objects.where(character: {lodestone_id: character_ids })
       end
 
       Rails.logger.info("Creating rules for #{objects.count} characters.")
