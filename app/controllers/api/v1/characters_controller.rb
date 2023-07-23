@@ -68,7 +68,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
       render json: { errors: @registration.errors.full_messages }, status: :unprocessable_entity
     end
   end
-  
+
   def jwt
     render json: { "jwt": 'hi' }
   end
@@ -90,10 +90,13 @@ class Api::V1::CharactersController < Api::V1::ApiController
   end
 
   def set_character
-    @registration = @authorized_registrations
-                   .joins(:character)
-                   .where(character: { lodestone_id: params[:lodestone_id] })
-                   .first!
+    character = @authorized_registrations.filter do |r|
+      r.character.lodestone_id == params[:lodestone_id]
+    end
+
+    raise ActiveRecord::RecordNotFound if character[0].nil?
+
+    @registration = character[0]
   end
 
   def search_params
@@ -102,7 +105,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
 
     params.permit(allowlist)
   end
-  
+
   def update_params
     params.permit(:content_id)
   end
