@@ -184,6 +184,7 @@ Doorkeeper.configure do
   #
   # Keep in mind that changing the hashing function will invalidate all existing
   # secrets, if there are any.
+  hash_token_secrets fallback: :plain
 
   # Hash application secrets before persisting them.
   #
@@ -512,5 +513,5 @@ Doorkeeper.configure do
 
   # WWW-Authenticate Realm (default: "Doorkeeper").
   #
-  # realm "Doorkeeper"
+  realm 'XIVAuth'
 end
