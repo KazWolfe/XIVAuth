@@ -28,7 +28,9 @@ Rails.application.routes.draw do
         get 'jwt', to: 'characters#jwt'
       end
 
-      post 'jwt/verify', to: 'jwt_verification#verify'
+      post 'jwt/verify', to: 'jwt#verify'
+      get 'jwt/jwks', to: 'jwt#jwks'
+      get 'jwt/gen_jwt', to: 'jwt#dummy_jwt'
     end
   end
 

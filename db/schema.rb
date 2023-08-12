@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_17_144812) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_12_062713) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -61,6 +61,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_144812) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
+  create_table "jwt_signing_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "type", null: false
+    t.boolean "enabled", default: true, null: false
+    t.string "public_key", limit: 65535
+    t.string "private_key", limit: 65535, null: false
+    t.jsonb "key_params", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_jwt_signing_keys_on_name", unique: true
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

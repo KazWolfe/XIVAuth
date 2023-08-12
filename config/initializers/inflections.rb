@@ -15,4 +15,8 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'OAuth'
   inflect.acronym 'MFA'
   inflect.acronym 'OTP'
+
+  inflect.acronym 'RSA' 
+  inflect.acronym 'HMAC'
+  inflect.acronym 'ECDSA'
 end
