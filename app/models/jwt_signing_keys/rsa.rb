@@ -1,6 +1,7 @@
 class JwtSigningKeys::RSA < JwtSigningKey
   after_initialize :generate_keypair, if: :new_record?
   validates :public_key, presence: true
+  validates :size, numericality: { greater_than_or_equal_to: 1024 }
 
   # @return [OpenSSL::PKey::RSA] A private RSA key.
   def private_key

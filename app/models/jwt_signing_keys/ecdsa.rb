@@ -1,6 +1,7 @@
 class JwtSigningKeys::ECDSA < JwtSigningKey
   after_initialize :generate_keypair, if: :new_record?
   validates :public_key, presence: true
+  validates :curve, inclusion: JWT::Algos::Ecdsa::NAMED_CURVES.keys
 
   # @return [OpenSSL::PKey::ECDSA] A private RSA key.
   def private_key
