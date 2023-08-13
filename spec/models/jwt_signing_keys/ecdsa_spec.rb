@@ -55,5 +55,17 @@ RSpec.describe JwtSigningKeys::ECDSA, type: :model do
       ec_key = described_class.new(name: 'curve_override_test', curve: 'secp384r1')
       expect(ec_key.curve).to eq('secp384r1')
     end
+
+    it 'validates that a curve is supported' do
+      # this is very improper, but eh.
+
+      jwt_supported_curves = JWT::Algos::Ecdsa::NAMED_CURVES.keys
+      openssl_supported_curves = OpenSSL::PKey::EC.builtin_curves.map { |k| k[0] }.uniq
+      test_curves = openssl_supported_curves - jwt_supported_curves
+      pending('No unsupported curves on this platform!') if test_curves.empty?
+
+      ec_key = described_class.new(name: 'invalid_curve_test', curve: test_curves.sample)
+      expect(ec_key).to be_invalid
+    end
   end
 end
