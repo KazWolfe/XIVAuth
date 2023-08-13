@@ -78,11 +78,11 @@ class Api::V1::CharactersController < Api::V1::ApiController
     issued_at = Time.now.to_i
 
     payload = {
-      jti: params[:nonce] || SecureRandom.urlsafe_base64(24, padding: false),
+      sub: @registration.character.lodestone_id,
+      pk: @registration.entangled_id,
       iat: issued_at,
       exp: issued_at + 600,
-      id: @registration.character.lodestone_id,
-      pk: @registration.entangled_id
+      jti: params[:nonce] || SecureRandom.urlsafe_base64(24, padding: false)
     }
 
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
@@ -92,7 +92,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
       return
     end
 
-    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name)
+    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name, typ: 'Character')
 
     render json: { token: jwt_token }
   end

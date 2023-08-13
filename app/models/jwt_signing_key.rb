@@ -1,4 +1,6 @@
 class JwtSigningKey < ApplicationRecord
+  DEFAULT_ALGORITHM = "EdDSA"
+  
   encrypts :private_key
 
   validates :name, presence: true
