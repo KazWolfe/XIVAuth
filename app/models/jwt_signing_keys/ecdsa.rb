@@ -1,6 +1,4 @@
 class JwtSigningKeys::ECDSA < JwtSigningKey
-  CURVE_MAP = JWT::Algos::Ecdsa::NAMED_CURVES.select
-
   after_initialize :generate_keypair, if: :new_record?
   validates :public_key, presence: true
 
@@ -22,6 +20,10 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
   # @return [OpenSSL::PKey::EC] A public RSA key.
   def public_key
     OpenSSL::PKey::EC.new self[:public_key]
+  end
+
+  def jwk
+    JWT::JWK.new(private_key, use: 'sig', kid: name, alg: supported_algorithms[0])
   end
 
   def generate_keypair(curve = 'prime256v1')
