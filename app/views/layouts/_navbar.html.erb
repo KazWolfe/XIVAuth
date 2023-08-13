@@ -18,7 +18,7 @@
               <% if current_user.developer? %>
                 <li><%= link_to "Applications", developer_applications_path, class: 'dropdown-item' %></li>
                 <li><a class="dropdown-item disabled">Teams</a></li>
-                <li><a class="dropdown-item disabled">API Documentation</a></li>
+                <li><a class="dropdown-item" target="_blank" href="https://www.notion.so/kazwolfe/Documentation-128e77f0016c4901888ea1234678c37d">API Documentation</a></li>
               <% else %>
                 <li><a class="dropdown-item disabled">Request Developer Access</a></li>
               <% end %>
