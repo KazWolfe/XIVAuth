@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       resources :characters, param: :lodestone_id do
         post 'verify', to: 'characters#verify'
         delete 'verify', to: 'characters#unverify'
-        get 'jwt', to: 'characters#jwt'
+        get 'jwt', to: 'characters#jwt', on: :member
       end
 
       post 'jwt/verify', to: 'jwt#verify'

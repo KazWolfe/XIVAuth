@@ -19,7 +19,11 @@ class JwtSigningKey < ApplicationRecord
   end
 
   def jwk
-    JWT::JWK.new(private_key, use: 'sig', kid: name)
+    JWT::JWK.new(private_key, use: 'sig', kid: name, algs: supported_algorithms)
+  end
+  
+  def supported_algorithms
+    nil
   end
 
   def self.jwks

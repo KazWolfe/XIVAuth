@@ -36,9 +36,10 @@ class Api::V1::JwtController < Api::V1::ApiController
                                  algorithms: signing_key.supported_algorithms,
                                  verify_iat: true)
 
-      render json: { status: 'ok', decoded: validated_jwt }
+      render json: { status: 'valid', jwt_head: validated_jwt[1], jwt_body: validated_jwt[0] }
     rescue JWT::DecodeError => e
-      render json: { status: 'invalid', error: e, decoded: decoded_jwt }, status: :unprocessable_entity
+      render json: { status: 'invalid', error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+             status: :unprocessable_entity
     end
   end
 
