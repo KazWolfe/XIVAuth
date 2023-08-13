@@ -2,8 +2,6 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
   after_initialize :generate_keypair, if: :new_record?
   validates :public_key, presence: true
 
-  attr_readonly :curve_name
-
   # @return [OpenSSL::PKey::ECDSA] A private RSA key.
   def private_key
     OpenSSL::PKey::EC.new self[:private_key]
@@ -26,12 +24,19 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
     JWT::JWK.new(private_key, use: 'sig', kid: name, alg: supported_algorithms[0])
   end
 
-  def generate_keypair(curve = 'prime256v1')
+  def generate_keypair(curve = nil)
+    curve ||= key_params[:curve] || 'prime256v1'
     self.private_key = OpenSSL::PKey::EC.generate(curve)
   end
 
-  def curve_name
+  def curve
     key_params[:curve] || public_key.group&.curve_name
+  end
+
+  def curve=(curve)
+    return if self[:private_key].present?
+
+    key_params[:curve] = curve
   end
 
   def supported_algorithms
@@ -43,7 +48,7 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
 
     active.where("key_params->'curve' ?| array[:curves]", curves.keys).first
   end
-  
+
   private
 
   def extra_jwk_fields

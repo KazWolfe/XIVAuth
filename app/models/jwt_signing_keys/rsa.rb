@@ -11,6 +11,8 @@ class JwtSigningKeys::RSA < JwtSigningKey
   def private_key=(key)
     self[:private_key] = key.export(nil)
     self[:public_key] = key.public_to_pem
+
+    key_params[:size] = key.public_key.n.num_bits
   end
 
   # @return [OpenSSL::PKey::RSA] A public RSA key.
@@ -18,8 +20,19 @@ class JwtSigningKeys::RSA < JwtSigningKey
     OpenSSL::PKey::RSA.new self[:public_key]
   end
 
-  def generate_keypair(size = 4096)
+  def generate_keypair(size = nil)
+    size ||= key_params[:size] || 4096
     self.private_key = OpenSSL::PKey::RSA.generate(size)
+  end
+
+  def size=(size)
+    return if self[:private_key].present?
+
+    key_params[:size] = size
+  end
+
+  def size
+    key_params[:size] || public_key.n.num_bits
   end
 
   def supported_algorithms
