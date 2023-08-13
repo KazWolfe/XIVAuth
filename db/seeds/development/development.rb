@@ -13,3 +13,7 @@ OAuth::ClientApplication.find_or_create_by!(uid: 'superapp') do |app|
   app.redirect_uri = 'http://127.0.0.1:3030/oauth/redirect'
   app.scopes = Doorkeeper.configuration.scopes
 end
+
+JwtSigningKeys::RSA.create(name: 'dev_rsa', size: 1024)
+JwtSigningKeys::Ed25519.create(name: 'dev_ed25519')
+JwtSigningKeys::HMAC.create(name: 'dev_hmac')
