@@ -85,7 +85,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
       pk: @registration.entangled_id
     }
 
-    algorithm = params[:algorithm] || 'ED25519'
+    algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
     unless signing_key.present?
       render json: { error: 'Algorithm is not valid, or a key does not exist for it.' }, status: :unprocessable_entity

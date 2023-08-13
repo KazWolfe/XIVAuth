@@ -2,7 +2,7 @@
 
 class Api::V1::JwtController < Api::V1::ApiController
   def dummy_jwt
-    algorithm = (request.query_parameters['algorithm'] or 'ED25519')
+    algorithm = request.query_parameters['algorithm'] || JwtSigningKey::DEFAULT_ALGORITHM
     payload = { data: 'dummy jwt for testing', id: SecureRandom.uuid }
 
     expiry_time = (request.query_parameters[:ttl].to_i or 300)
