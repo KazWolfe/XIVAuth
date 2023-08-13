@@ -12,6 +12,7 @@ class CreateJwtSigningKeys < ActiveRecord::Migration[7.0]
       t.jsonb :key_params, null: true, default: {}
 
       t.timestamps
+      t.datetime :expires_at, null: true
     end
   end
 end

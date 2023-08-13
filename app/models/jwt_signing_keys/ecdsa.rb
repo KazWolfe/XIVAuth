@@ -43,4 +43,16 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
 
     active.where("key_params->'curve' ?| array[:curves]", curves.keys).first
   end
+  
+  private
+
+  def extra_jwk_fields
+    fields = {
+      alg: supported_algorithms[0]
+    }
+
+    fields[:exp] = expires_at.to_i if expires_at.present?
+
+    fields
+  end
 end

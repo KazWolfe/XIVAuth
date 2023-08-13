@@ -72,6 +72,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_12_062713) do
     t.jsonb "key_params", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "expires_at"
     t.index ["name"], name: "index_jwt_signing_keys_on_name", unique: true
   end
 

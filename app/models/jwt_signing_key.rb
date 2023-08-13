@@ -8,7 +8,7 @@ class JwtSigningKey < ApplicationRecord
 
   default_scope { order(created_at: :desc) }
 
-  scope :active, -> { where(enabled: true) }
+  scope :active, -> { where(enabled: true).where('expires_at IS NULL or expires_at >= ?', DateTime.now) }
 
   attr_readonly :public_key, :raw_public_key, :raw_private_key, :jwk
 
@@ -21,11 +21,19 @@ class JwtSigningKey < ApplicationRecord
   end
 
   def jwk
-    JWT::JWK.new(private_key, use: 'sig', kid: name, algs: supported_algorithms)
+    JWT::JWK.new(private_key, use: 'sig', kid: name, **extra_jwk_fields)
   end
-  
+
   def supported_algorithms
-    nil
+    []
+  end
+
+  def expired?
+    expires_at.present? && expires_at <= DateTime.now
+  end
+
+  def active?
+    enabled? && !expired?
   end
 
   def self.jwks
@@ -51,5 +59,17 @@ class JwtSigningKey < ApplicationRecord
     else
       nil
     end
+  end
+  
+  private
+  
+  def extra_jwk_fields
+    fields = {
+      algs: supported_algorithms
+    }
+
+    fields[:exp] = expires_at.to_i if expires_at.present?
+
+    fields
   end
 end
