@@ -43,8 +43,9 @@
 
       <p>By signing up to XIVAuth, you agree to our Terms of Service and Privacy Policy (lol).</p>
 
-      <div class="form-group d-grid d-md-flex mt-2">
-        <%= invisible_recaptcha_tags ui: :button, text: 'Sign up', class: 'btn btn-primary col-md-8 me-2' %>
+      <%= invisible_recaptcha_tags ui: :invisible %>
+      <div class="form-group d-grid d-md-flex mt-2 gap-2 mb-1">
+        <button onclick="grecaptcha.execute()" class="btn btn-primary col-md-8">Sign Up</button>
         <%= link_to "Log in", new_session_path(resource_name), class: "btn btn-secondary col" %>
       </div>
     <% end %>
