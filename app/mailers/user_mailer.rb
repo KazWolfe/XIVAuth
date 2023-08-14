@@ -30,10 +30,10 @@ class UserMailer < Devise::Mailer
 
   def reconfirmation_instructions(record, token, opts = nil)
     self.template_model = {
-      email: record.email,
+      email: record.unconfirmed_email,
       action_url: confirmation_url(record, confirmation_token: token)
     }
 
-    mail to: record.email, postmark_template_alias: 'reconfirmation'
+    mail to: record.unconfirmed_email, postmark_template_alias: 'reconfirmation'
   end
 end
