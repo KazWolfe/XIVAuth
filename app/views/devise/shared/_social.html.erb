@@ -1,9 +1,9 @@
 <%- if devise_mapping.omniauthable? %>
   <%- resource_class.omniauth_login_providers.each do |provider| %>
     <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false },
-                  form: { class: "d-grid" },
-                  class: "btn btn-social-#{provider}" do %>
-      <i class="bi bi-<%= provider %>"></i> Sign in with <%= OmniAuth::Utils.camelize(provider) %>
-    <% end %><br/>
+                  form: { class: "col-6 col-sm-3 col-lg-6" },
+                  class: "btn w-100 btn-social-#{provider}" do %>
+      <i class="bi bi-<%= provider %>"></i> <%= OmniAuth::Utils.camelize(provider) %>
+    <% end %>
   <% end %>
 <% end %>
