@@ -10,13 +10,15 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.irregular 'person', 'people'
   inflect.uncountable %w[fish sheep]
 
+  inflect.uncountable 'legal'
+
   inflect.acronym 'FFXIV'
   inflect.acronym 'XIV'
   inflect.acronym 'OAuth'
   inflect.acronym 'MFA'
   inflect.acronym 'OTP'
 
-  inflect.acronym 'RSA' 
+  inflect.acronym 'RSA'
   inflect.acronym 'HMAC'
   inflect.acronym 'ECDSA'
 end

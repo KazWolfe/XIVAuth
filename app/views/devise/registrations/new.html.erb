@@ -41,7 +41,10 @@
         </div>
       </div>
 
-      <p>By signing up to XIVAuth, you agree to our Terms of Service and Privacy Policy (lol).</p>
+      <p>
+        By signing up to XIVAuth, you agree to our <%= link_to "Terms of Service", legal_terms_path %> and
+        <%= link_to "Privacy Policy", legal_privacy_path %>.
+      </p>
 
       <%= invisible_recaptcha_tags ui: :invisible %>
       <div class="form-group d-grid d-md-flex mt-2 gap-2 mb-1">

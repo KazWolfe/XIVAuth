@@ -1,0 +1,35 @@
+<h1>XIVAuth Security Policy</h1>
+
+<p>
+  As an open source and a relatively high-trust project, XIVAuth holds security in the strictest regards. To that end,
+  we have a published security policy to answer most questions about penetration testing, reporting security
+  vulnerabilities, and how to interact with the site.
+</p>
+
+<h2>Pentesting Ground Rules</h2>
+<p>
+  While we strongly encourage that you spin up a local version of XIVAuth for any sort of security testing (it is open
+  source!), you <strong>are allowed</strong> to perform penetration tests against our production servers.
+</p>
+<p>
+  If you are performing a pentest against the production servers, we ask you to <em>please</em> keep other users in
+  mind. If you find something that crashes XIVAuth, don't do it forty times to make a point. If you're trying to see
+  if you can access and modify a resource directly by ID, please use a resource you've created on a second account. If
+  you're trying to break in to an account or bypass MFA, please attack your own account. XIVAuth is used by other
+  people too; please don't inconvenience them for hacker cred.
+</p>
+<p>In addition, please refrain from performing any of the following activities:</p>
+<ul>
+  <li>
+    <strong>Testing the underlying infrastructure.</strong> We're hosted on Heroku right now, and are sharing
+    resources and server space with other people.
+  </li>
+  <li>
+    <strong>Directly attacking our providers.</strong> A CAPTCHA bypass is cool, but only if you actually get the
+    server to not care about the CAPTCHA. Outsourcing solves to a click farm is boring and has been done before.
+  </li>
+  <li>
+    <strong>Attacking other people on the platform.</strong> Attacking the platform is cool. Specifically attacking
+    other people using the platform in a targeted manner is not cool. Even if you report it to us afterwards.
+  </li>
+</ul>

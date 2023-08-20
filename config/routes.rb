@@ -44,12 +44,19 @@ Rails.application.routes.draw do
         post :refresh, on: :member
         resource :ban, controller: 'character/character_bans'
       end
-      
+
       resources :client_applications, controller: 'client_applications'
 
       mount Sidekiq::Web => '/sidekiq'
       mount Flipper::UI.app(Flipper) => '/flipper'
     end
+  end
+
+  scope path: '/legal', as: :legal, controller: :legal do
+    get 'terms', to: 'legal#terms_of_service'
+    get 'privacy', to: 'legal#privacy_policy'
+    get 'devagreement', to: 'legal#developer_agreement'
+    get 'security', to: 'legal#security_policy'
   end
 
   use_doorkeeper do
