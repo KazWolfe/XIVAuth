@@ -6,7 +6,7 @@
       <%= render "devise/shared/error_messages", resource: resource %>
       <%= flash[:recaptcha_error] %>
 
-      <div class="form-group field">
+      <div class="form-group field mb-2">
         <%= f.label :email, class: "form-label" %><br/>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', placeholder: "#{eegg_random_npc_email}" %>
         <div class="form-text">
@@ -15,7 +15,7 @@
       </div>
 
       <div data-controller="password-strength">
-        <div class="form-group field">
+        <div class="form-group field mb-2">
           <%= f.label :password, class: "form-label" %>
           <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
                                data: {
@@ -25,13 +25,11 @@
 
           <div class="form-text text-secondary">
             <meter value="0" max="4" class="password-strength-meter" data-password-strength-target="strength"></meter>
-            <span id="password-strength-warning" class="text-warning" data-password-strength-target="warning"></span><br />
-            <ul class="list-unstyled" data-password-strength-target="tips"></ul>
+            <ul class="list-unstyled mb-0" data-password-strength-target="tips"></ul>
           </div>
         </div>
 
-
-        <div class="form-group field">
+        <div class="form-group field mb-2">
           <%= f.label :password_confirmation %><br/>
           <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",
                                data: {
