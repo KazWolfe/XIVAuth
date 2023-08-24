@@ -3,8 +3,6 @@
 class Users::SessionsController < Devise::SessionsController
   include Users::AuthenticatesWithMFA
 
-  http_basic_authenticate_with name: 'xivauth', password: 'alphademo' if Rails.env == :production
-
   prepend_before_action :authenticate_with_mfa, if: -> { action_name == 'create' && mfa_required? }
   prepend_before_action :check_captcha, only: [:create]
 
