@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div data-controller="password-strength">
+      <div data-controller="password-strength" data-password-strength-minScore-value="<%= User.min_password_score %>">
         <div class="form-group field mb-2">
           <%= f.label :password, class: "form-label" %>
           <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
@@ -24,11 +24,10 @@
                                } %>
 
           <div class="form-text text-secondary">
-            <% min_req_pw_score = User.min_password_score %>
-            <% high_pw_score = min_req_pw_score + 0.25 %>
-            <meter value="0" max="4" optimum="4"
-                   low="<%= min_req_pw_score - 0.25 %>" high="<%= high_pw_score > 4 ? 3.99 : high_pw_score %>"
-                   class="password-strength-meter" data-password-strength-target="strength">foo</meter>
+            <div class="progress">
+              <div class="progress-bar bg-primary" role="meter" data-password-strength-target="meter"
+                   aria-valuemin="0" aria-valuemax="10"></div>
+            </div>
             <ul class="list-unstyled mb-0" data-password-strength-target="tips"></ul>
             <p>
               <abbr title="A rough guess as to how long it would take a very determined attacker to guess this password.">Time to crack</abbr>:
