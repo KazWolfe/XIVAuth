@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div data-controller="password-strength" data-password-strength-minScore-value="<%= User.min_password_score %>">
+      <div data-controller="password-strength" data-password-strength-min-score-value="<%= User.min_password_score %>">
         <div class="form-group field mb-2">
           <%= f.label :password, class: "form-label" %>
           <%= f.password_field :password, autocomplete: "new-password", class: "form-control",

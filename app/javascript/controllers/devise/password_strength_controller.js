@@ -2,7 +2,7 @@ import {Controller} from "@hotwired/stimulus"
 import zxcvbn from "zxcvbn";
 
 export default class PasswordStrengthController extends Controller {
-    static targets = ["password", "confirm", "strength", "tips", "warning", "crackTime", "meter"];
+    static targets = ["password", "confirm", "tips", "warning", "crackTime", "meter"];
     static values = {
         minScore: Number,
     }
