@@ -422,7 +422,7 @@ PLATFORMS
 DEPENDENCIES
   amazing_print
   bootsnap
-  brakeman (~> 6.0.1)
+  brakeman
   cancancan (~> 3.5)
   capybara
   cloudflare-rails (~> 3.0.0)

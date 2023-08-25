@@ -113,7 +113,6 @@ end
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
-  gem 'rubocop', require: false
 
   gem 'amazing_print'
 
@@ -121,7 +120,9 @@ group :development, :test do
   gem 'faker', '~> 3.2.0'
   gem 'rspec-rails', '~> 6.0.3'
 
-  gem 'brakeman', '~> 6.0.1'
+  # Analysis tools
+  gem 'brakeman', require: false
+  gem 'rubocop', require: false
 end
 
 group :development do
