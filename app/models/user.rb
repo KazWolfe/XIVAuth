@@ -6,7 +6,7 @@ class User < ApplicationRecord
   # :lockable, :timeoutable, and :omniauthable
   devise :database_authenticatable, :registerable,
          :confirmable, :trackable, :recoverable,
-         :rememberable, :validatable,
+         :rememberable, :validatable, :zxcvbnable,
          :omniauthable
 
   default_scope { order(created_at: :asc) }

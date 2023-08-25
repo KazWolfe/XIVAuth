@@ -24,8 +24,16 @@
                                } %>
 
           <div class="form-text text-secondary">
-            <meter value="0" max="4" low="1.5" high="2.5" optimum="4" class="password-strength-meter" data-password-strength-target="strength"></meter>
+            <% min_req_pw_score = User.min_password_score %>
+            <% high_pw_score = min_req_pw_score + 0.25 %>
+            <meter value="0" max="4" optimum="4"
+                   low="<%= min_req_pw_score - 0.25 %>" high="<%= high_pw_score > 4 ? 3.99 : high_pw_score %>"
+                   class="password-strength-meter" data-password-strength-target="strength">foo</meter>
             <ul class="list-unstyled mb-0" data-password-strength-target="tips"></ul>
+            <p>
+              <abbr title="A rough guess as to how long it would take a very determined attacker to guess this password.">Time to crack</abbr>:
+              <span data-password-strength-target="crackTime">unknown</span>.
+            </p>
           </div>
         </div>
 

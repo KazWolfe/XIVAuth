@@ -2,10 +2,11 @@ import {Controller} from "@hotwired/stimulus"
 import zxcvbn from "zxcvbn";
 
 export default class PasswordStrengthController extends Controller {
-    static targets = ["password", "confirm", "strength", "tips", "warning"];
+    static targets = ["password", "confirm", "strength", "tips", "warning", "crackTime"];
 
     connect() {
         console.debug('Password strength controller connected!');
+        this.calc();
     }
 
     calc() {
@@ -14,6 +15,7 @@ export default class PasswordStrengthController extends Controller {
         let result = zxcvbn(this.passwordTarget.value);
 
         this.strengthTarget.value = result.score.toString();
+        this.crackTimeTarget.innerText = result.crack_times_display["offline_slow_hashing_1e4_per_second"];
 
         this.tipsTarget.innerHTML = "";
         if (result.feedback.warning) {

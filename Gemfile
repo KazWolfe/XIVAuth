@@ -64,6 +64,7 @@ gem 'sidekiq-cron', '~> 1.10.0'
 # Authentication / Authorization
 gem 'cancancan', '~> 3.5'
 gem 'devise', '~> 4.9'
+gem 'devise_zxcvbn', '~> 6.0.0'
 
 # Authn (MFA)
 gem 'devise-two-factor', '~> 5.0.0'
