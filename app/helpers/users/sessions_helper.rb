@@ -12,6 +12,12 @@ module Users::SessionsHelper
       godbert@goldsaucer.net
       tataru@seventhdawn.org
       this.is.thancred@lnkprl.com
+      cid@garlondironworks.com
+      wanderingminstrel@orchestri.on
+      starboard@omega.ai
+      larboard@omega.ai
+      securingway@carrot.moon
+      conjuringcatgirl@aether.net
     ].sample
   end
 end
