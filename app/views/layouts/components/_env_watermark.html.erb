@@ -1,4 +1,4 @@
-<% if Rails.env != :production || (ENV["APP_ENV"] != "production") %>
+<% if !Rails.env.production? || (ENV["APP_ENV"] != "production") %>
   <div id="env-watermark" style="color: <%= ENV["APP_ENV"] == "staging" ? "orange" : "unset" %>">
     <%= (ENV["APP_ENV"] || Rails.env).upcase %>
   </div>
