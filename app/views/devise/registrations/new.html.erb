@@ -3,7 +3,6 @@
     <h2 class="mb-4">Sign Up for XIVAuth</h2>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
       <%= flash[:recaptcha_error] %>
 
       <div class="form-group field mb-2">
@@ -24,15 +23,13 @@
                                } %>
 
           <div class="form-text text-secondary">
-            <div class="progress" role="meter" aria-label="Password Strength Score" aria-valuemin="0"
-                 aria-valuemax="100" data-password-strength-target="meter">
+            <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-password-strength-target="meter">
               <div class="progress-bar bg-primary" data-password-strength-target="meterInner"></div>
             </div>
-            <ul class="list-unstyled mb-0" data-password-strength-target="tips"></ul>
-            <p>
-              <abbr title="Calculated at 1000 guesses/second">Time to crack</abbr>:
-              <span data-password-strength-target="crackTime">unknown</span>
+            <p class="mb-0 d-none"><strong class="text-secondary" data-password-strength-target="strength">Unknown</strong> -
+              <span data-password-strength-target="crackTime"></span> <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
             </p>
+            <ul class="list-unstyled mb-0" data-password-strength-target="tips"></ul>
           </div>
         </div>
 
