@@ -1,10 +1,10 @@
 <div class="row justify-content-center">
-  <div class="col-lg-4">
+  <div class="col-lg-6 col-xl-4">
     <h2 class="mb-4">Resend confirmation instructions</h2>
 
     <p>
-      Confirmation email didn't arrive? While we can't help you punch a Moogle for messing up the delivery, we can
-      dispatch another one to your mailbox. Let us know what direction to kick them in!
+      Confirmation email didn't arrive? While we can't help you punch the Moogle who messed up your delivery,
+      we can at least kick a new one in your general direction.
     </p>
 
     <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>

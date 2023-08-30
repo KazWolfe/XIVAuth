@@ -5,11 +5,19 @@
       <br class="d-xxl-none">
       Not associated with Square Enix.
     </p>
-    <p class="mb-0"><code><%= controller_name %>#<%= action_name %></code></p>
-    <p class="mb-0">Build <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a></p>
+    <p class="mb-0">Build
+      <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
+    </p>
   </div>
 
-  <ul class="nav col-md-4 justify-content-end">
+  <% if !Rails.env.production? || (ENV["APP_ENV"] != "production") %>
+    <div class="col-md-4 mb-0 text-muted small text-center">
+      <p class="mb-0">Env: <%= (ENV["APP_ENV"] || Rails.env) %></p>
+      <p class="mb-0"><code><%= controller_name %>#<%= action_name %></code></p>
+    </div>
+  <% end %>
+
+  <ul class="nav col justify-content-end">
     <li class="nav-item"><a href="https://github.com/KazWolfe/XIVAuth" class="nav-link px-2 text-muted">GitHub</a></li>
     <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Status</a></li>
     <li class="nav-item">
