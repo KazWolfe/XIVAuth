@@ -59,6 +59,8 @@ Rails.application.routes.draw do
     get 'security', to: 'legal#security_policy'
   end
 
+  resource :health, only: [:show], controller: :health
+
   use_doorkeeper do
     controllers authorizations: 'oauth/authorizations'
   end
