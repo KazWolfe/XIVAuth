@@ -34,8 +34,9 @@ The following security issues are considered "out of scope":
 * Any attacks that rely on social engineering, including leaked or stolen credentials. 
 * Any attacks that rely on physical or virtual access to a victim's computer or network.
 * Any reports of publicly accessible XIVAuth API Keys.
+* Any CSRF issues that do not modify state (e.g. logout commands).
 * Any attacks that require the use of brute force, denial of service attacks, or similar.
-* Any CSRF issues that do not modify state (e.g. logout commands). 
+* Any security issues in a specific API client (e.g. a plugin or web service).
 * Any of the following without demonstrable widespread or significant impact:
   * Any plain text reflection, including non-persistent self-XSS.
   * Any missing or invalid HTTP headers or settings.
