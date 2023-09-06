@@ -15,16 +15,12 @@ If your security report contains confidential or sensitive information, please e
 [`2588 13F5 3A16 EBB4`][pgpkey]. Please note that the email on this key will not match the above email. This key is
 additionally available on other keyservers, as well as on [KazWolfe's GitHub][pgpkey-gh].
 
-You may additionally report security issues on the project's [GitHub Issues][gh-issues] page, provided the security 
-issue cannot reasonably be exploited by a third party.
-
 Please do not disclose any security vulnerability publicly until we have confirmed that the bug has been fixed. Under
 certain rare cases, we may ask that you not publicly disclose a bug - we will provide specific justification to you if
 this is the case.
 
 [pgpkey]: https://keys.openpgp.org/vks/v1/by-fingerprint/14C529AD4BACE342F2E1AA5D258813F53A16EBB4
 [pgpkey-gh]: https://github.com/KazWolfe.gpg
-[gh-issues]: https://github.com/KazWolfe/XIVAuth/issues
 
 ## Out of Scope Issues
 
@@ -33,7 +29,7 @@ The following systems may not be tested:
 * Any underlying infrastructure, e.g. the servers running XIVAuth itself.
 * Any of our providers, e.g. captcha bypasses via click farms.
 
-The following security issues are considered "out of scope" and reports will not be accepted for them:
+The following security issues are considered "out of scope":
 
 * Any attacks that rely on social engineering, including leaked or stolen credentials. 
 * Any attacks that rely on physical or virtual access to a victim's computer or network.
@@ -46,3 +42,8 @@ The following security issues are considered "out of scope" and reports will not
   * Anything related to CORS.
   * SPF, DMARC, or DKIM misconfigurations.
   * Attacks that rely on a specific browser or system configuration.
+
+If your report covers one of the above categories and is a code-level issue, we encourage you to submit a normal 
+[GitHub Issue][gh-issues] for it instead. 
+
+[gh-issues]: https://github.com/KazWolfe/XIVAuth/issues

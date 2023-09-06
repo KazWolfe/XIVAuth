@@ -7,8 +7,8 @@
 </div>
 
 <p>
-  As an open source and a relatively high-trust project, XIVAuth holds security in the strictest regards. To that end,
-  we have a published security policy to answer most questions about penetration testing, reporting security
+  As an open source and a relatively high-trust project, XIVAuth holds security in the highest regard. To that end,
+  we have decided to publish a security policy to answer most questions about penetration testing, reporting security
   vulnerabilities, and how to interact with the site.
 </p>
 
@@ -55,19 +55,11 @@
   You may report the bug by sending an email to
   <a href="mailto:security@kazwolfe.io"><code>security@kazwolfe.io</code></a> or by DMing Kaz on Discord through his
   username, <code>kazwolfe</code>. Please be sure to include the steps to reproduce the bug, as well as your specific
-  expectations and what you saw instead.
-</p>
-<p>
-  If your report needs to include sensitive or confidential issue, please encrypt your report using PGP. While the
-  above security email does not have its own PGP key, Kaz still has a key available with fingerprint
-  <a href="https://keys.openpgp.org/vks/v1/by-fingerprint/14C529AD4BACE342F2E1AA5D258813F53A16EBB4">
-    <code>2588 13F5 3A16 EBB4</code></a>. This key should be published to most keyservers, and can also be found via
-  on <a href="https://github.com/kazwolfe.gpg">GitHub</a>.
-</p>
-<p>
-  If your security report is minor or unimportant, you may also submit the report to the
-  <a href="https://github.com/KazWolfe/XIVAuth/issues">GitHub Issues</a> page for this project. Please make sure any
-  bugs reported through this method cannot cause widespread damage or otherwise be easily exploitable.
+  expectations and what you saw instead. If your report includes sensitive or confidential information, please encrypt it using PGP. Kaz's PGP key has an ID
+  of <a href="https://keys.openpgp.org/vks/v1/by-fingerprint/14C529AD4BACE342F2E1AA5D258813F53A16EBB4">
+    <code>2588 13F5 3A16 EBB4</code></a>, and can also be found on most keyservers or
+  <a href="https://github.com/kazwolfe.gpg">GitHub</a>. It's okay to send content encrypted with this key to the above
+  email as well, even though it's not listed on the key.
 </p>
 
 <h4>What <em>Not</em> To Report</h4>
@@ -92,14 +84,34 @@
   </li>
 </ul>
 
+<p>
+  If you find any code-level issues that don't qualify for a security report, you are welcome to report them via
+  <a href="https://github.com/KazWolfe/XIVAuth/issues">GitHub Issues</a> as a standard bug or code defect.
+</p>
+
 <h4>Do I Get Rewarded?</h4>
 <p>
   Unfortunately, no. XIVAuth is an open source project and is currently run by a single person. While rewards
-  are awesome (and we'll likely make a Hall of Fame at some point), it's just not currently feasible.
+  are awesome (and we'll likely make a Hall of Fame at some point), it's just not currently feasible. If we ever do
+  offer a bounty, anyone who has previously submitted a valid report will be contacted as well.
 </p>
 <p>
-  You are permitted, however, to publish information about your findings to personal blogs or portfolios provided that
+  You are permitted to publish information about your findings to personal blogs or portfolios provided that
   you have received confirmation that the bug has been fixed, and that any and all sensitive information is redacted.
   We may request that certain security issues not be published elsewhere - if this is the case, we will communicate
   the exact reason and motivation behind our request to you.
+</p>
+
+<h4>Will We Be In Touch?</h4>
+<p>
+  We will follow up on any security reports as quickly as reasonably possible based on the report type and
+  severity. If we need additional information, we will reach out to discuss and ask questions; please make sure you are
+  submitting reports from a monitored mailbox. If you'd like for us to contact you over PGP as well, please ensure that
+  your public key is published or attached to your initial report.
+</p>
+<p>
+  You will also be notified about our findings. If the report is accepted, you will be notified when the fix has been
+  pushed to the codebase in case you would like to verify our fix, although you are not obligated to do so. If the
+  report is rejected, we will include detailed information about our justifications and any mitigations that we have
+  in place (if necessary).
 </p>
