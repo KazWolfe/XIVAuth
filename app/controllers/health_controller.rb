@@ -7,6 +7,4 @@ class HealthController < ApplicationController
       format.json { render json: { status: 'ok' } }
     end
   end
-
-  private
 end
