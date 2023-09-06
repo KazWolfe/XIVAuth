@@ -1,5 +1,11 @@
 <h1>XIVAuth Security Policy</h1>
 
+<div class="alert alert-info">
+  <div>
+    <strong>This is a draft!</strong> The contents of this document will change, possibly in significant ways.
+  </div>
+</div>
+
 <p>
   As an open source and a relatively high-trust project, XIVAuth holds security in the strictest regards. To that end,
   we have a published security policy to answer most questions about penetration testing, reporting security
@@ -8,21 +14,22 @@
 
 <h2>Pentesting Ground Rules</h2>
 <p>
-  While we strongly encourage that you spin up a local version of XIVAuth for any sort of security testing (it is open
-  source!), you <strong>are allowed</strong> to perform penetration tests against our production servers.
+  We strongly encourage that any security tests are run on a local version of XIVAuth. The software is open source and
+  freely available, and should be simple to set up even for non-Ruby developers.
 </p>
 <p>
   If you are performing a pentest against the production servers, we ask you to <em>please</em> keep other users in
-  mind. If you find something that crashes XIVAuth, don't do it forty times to make a point. If you're trying to see
-  if you can access and modify a resource directly by ID, please use a resource you've created on a second account. If
-  you're trying to break in to an account or bypass MFA, please attack your own account. XIVAuth is used by other
-  people too; please don't inconvenience them for hacker cred.
+  mind. If you find something that crashes XIVAuth, don't do it forty times to make a point. If you're trying to access
+  a resource that isn't owned by you, create a second account and try to access those. If you're trying to break in to
+  an account or bypass MFA, please attack your own account. XIVAuth is used by other people too; please don't
+  inconvenience them for hacker cred.
 </p>
 <p>In addition, please refrain from performing any of the following activities:</p>
 <ul>
   <li>
     <strong>Testing the underlying infrastructure.</strong> We're hosted on Heroku right now, and are sharing
-    resources and server space with other people.
+    resources and server space with other people. They're (probably) innocent, so please don't make their day bad.
+    This includes denial of service attacks.
   </li>
   <li>
     <strong>Directly attacking our providers.</strong> A CAPTCHA bypass is cool, but only if you actually get the
@@ -32,4 +39,66 @@
     <strong>Attacking other people on the platform.</strong> Attacking the platform is cool. Specifically attacking
     other people using the platform in a targeted manner is not cool. Even if you report it to us afterwards.
   </li>
+  <li>
+    <strong>Performing brute-force attacks.</strong> Anyone can guess a password with enough tries. Please don't waste
+    our servers' time by testing the top 50,000 passwords list.
+  </li>
 </ul>
+
+<h2>Reporting A Vulnerability</h2>
+<p>
+  If you've found a vulnerability, congratulations! Please follow standard Responsible Disclosure procedures for
+  submitting issues to us. Put simply, please report the vulnerability to us <em>first</em> (before any sort of public
+  blog post or social media message) so that we can fix it before anyone has a chance to abuse the reported bug.
+</p>
+<p>
+  You may report the bug by sending an email to
+  <a href="mailto:security@kazwolfe.io"><code>security@kazwolfe.io</code></a> or by DMing Kaz on Discord through his
+  username, <code>kazwolfe</code>. Please be sure to include the steps to reproduce the bug, as well as your specific
+  expectations and what you saw instead.
+</p>
+<p>
+  If your report needs to include sensitive or confidential issue, please encrypt your report using PGP. While the
+  above security email does not have its own PGP key, Kaz still has a key available with fingerprint
+  <a href="https://keys.openpgp.org/vks/v1/by-fingerprint/14C529AD4BACE342F2E1AA5D258813F53A16EBB4">
+    <code>2588 13F5 3A16 EBB4</code></a>. This key should be published to most keyservers, and can also be found via
+  on <a href="https://github.com/kazwolfe.gpg">GitHub</a>.
+</p>
+<p>
+  If your security report is minor or unimportant, you may also submit the report to the
+  <a href="https://github.com/KazWolfe/XIVAuth/issues">GitHub Issues</a> page for this project. Please make sure any
+  bugs reported through this method cannot cause widespread damage or otherwise be easily exploitable.
+</p>
+
+<h4>What <em>Not</em> To Report</h4>
+<p>
+  While we appreciate all kinds of reports, there are a select few things that we don't need to be informed about.
+  Please don't submit security issues related to the following:
+</p>
+<ul>
+  <li>Any attacks that rely on social engineering, including leaked or stolen credentials.</li>
+  <li>Any attacks that rely on physical or virtual access to a victim's computer or network.</li>
+  <li>Any reports of publicly accessible XIVAuth API Keys.</li>
+  <li>Any CSRF issues that do not modify state (e.g. logout commands).</li>
+  <li>Any attacks that require the use of brute force, denial of service attacks, or similar.</li>
+  <li>Any of the following without demonstrable widespread or significant impact:</li>
+  <ul>
+    <li>Any plain text reflection, including non-persistent self-XSS.</li>
+    <li>Any missing or invalid HTTP headers or settings.</li>
+    <li>Anything related to CORS.</li>
+    <li>SPF, DMARC, or DKIM misconfigurations.</li>
+    <li>Attacks that rely on a specific browser or system configuration.</li>
+  </ul>
+</ul>
+
+<h4>Do I Get Rewarded?</h4>
+<p>
+  Unfortunately, no. XIVAuth is an open source project and is currently run by a single person. While rewards
+  are awesome (and we'll likely make a Hall of Fame at some point), it's just not currently feasible.
+</p>
+<p>
+  You are permitted, however, to publish information about your findings to personal blogs or portfolios provided that
+  you have received confirmation that the bug has been fixed, and that any and all sensitive information is redacted.
+  We may request that certain security issues not be published elsewhere - if this is the case, we will communicate
+  the exact reason and motivation behind our request to you.
+</p>
