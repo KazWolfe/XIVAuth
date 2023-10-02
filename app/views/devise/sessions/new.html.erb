@@ -37,7 +37,7 @@
 
       <%= invisible_recaptcha_tags ui: :invisible %>
       <div class="form-group d-grid d-md-flex mt-2 gap-2 mb-1">
-        <button type="button" onclick="grecaptcha.execute()" class="btn btn-primary col-md-8">Log In</button>
+        <button type="submit" onclick="grecaptcha.execute(); return false;" class="btn btn-primary col-md-8">Log In</button>
         <%= link_to "Sign up", new_registration_path(resource_name), class: "btn btn-secondary col" %>
       </div>
     <% end %>
