@@ -21,12 +21,16 @@ validation that a character is verified) to these applications, however. It is b
 as purely an identity and authentication service (really, a dedicated SSO provider) that may tack on additional
 character data in an attempt to be useful.
 
-Initial documentation for this project is available [here](https://kazwolfe.notion.site/Documentation-128e77f0016c4901888ea1234678c37d?pvs=4), and will be updated as project development continues.
+Initial documentation for this project is available [on Notion][notion-docs], and will be updated as project development 
+continues.
+
+[notion-docs]: https://kazwolfe.notion.site/Documentation-128e77f0016c4901888ea1234678c37d?pvs=4
 
 ### Running XIVAuth Locally
 
-To run XIVAuth locally (say, for development purposes), you just need Docker installed and properly configured. In 
-theory, all that's necessary to run XIVAuth will be:
+To run XIVAuth locally (say, for development purposes), you need Docker installed and properly configured and a `.env`
+file set up. A template `development.env` is provided and can just be copied over accordingly. To actually start the
+server, all that should be necessary is the following command:
 
 ```shell
 docker compose up
@@ -47,13 +51,17 @@ rake db:migrate  # required to load all tables
 rake db:seed     # required to load in core sample data
 ```
 
-I would highly recommend just configuring your IDE to handle just running `Procfile.dev` for you, if that's an option.
+If you'd rather run Rails without Docker, this should also work but be aware that you will need to properly configure
+all of the usual things accordingly.
+
+Regardless, it's probably a better option to just configure your IDE to run `Procfile.dev` for you and manage everything
+that way thanks to the watcher paradigm that every web app uses nowadays.
 
 #### Local Credentials
 
-XIVAuth's development database seed creates an admin user with credetials `dev@eorzea.id` with a password of `password`.
-This should be enough to get started with base development, as well as seeing all the various features that XIVAuth has
-available to it.
+XIVAuth's development database seed creates an admin user with credentials `dev@eorzea.id` with a password of 
+`password`. This should be enough to get started with base development, as well as seeing all the various features that
+XIVAuth has available to it.
 
 Certain XIVAuth features (particularly OAuth and mailers) require the use of an encrypted credentials file. A sample
 file and instructions are present in `config/credentials/sample.yml`. Note that setting up credentials is *not* required

@@ -67,7 +67,7 @@ Rails.application.configure do
 
   # Default activerecord encryption for ease of local dev
   config.active_record.encryption.primary_key =
-    Rails.application.credentials.dig(:active_record_encryption, :primary_key) || +
+    Rails.application.credentials.dig(:active_record_encryption, :primary_key) ||
     'JZcnPw4IvRp6P4pAbfCsENpAxbghOiPv'
   config.active_record.encryption.deterministic_key =
     Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) ||
