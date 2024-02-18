@@ -19,7 +19,7 @@ class User < ApplicationRecord
 
   def admin?
     # FIXME: This is terrible.
-    email == 'dev@eorzea.id' || email.end_with?('kazwolfe.io')
+    (Rails.env.development? && email == 'dev@eorzea.id') || (email.end_with?('kazwolfe.io') && self.confirmed?)
   end
 
   # Check if the user has permission to access developer functions, like the ability to register OAuth applications.
