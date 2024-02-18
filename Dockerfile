@@ -7,7 +7,7 @@ RUN apk add --update --no-cache \
     postgresql-dev postgresql-client \
     nodejs yarn npm \
     tzdata \
-    libsodium
+    libsodium libsodium-dev
 
 # Required for local dev shenanigans, because we can't add Foreman to the gemfile.
 # See https://www.jdeen.com/blog/don-t-add-foreman-to-your-gemfile
