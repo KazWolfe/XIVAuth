@@ -1,12 +1,12 @@
 <%= form_with(model: character_registration) do |form| %>
   <p>
-    To add a character, please paste in either the character's Lodestone ID or a link to the character to add.
+    To register a character, please paste in either the character's Lodestone ID or a link to the character to add.
   </p>
 
   <div class="form-floating mb-3">
     <%= form.text_field :character_key,
                         class: "form-control #{"is-invalid" if character_registration.errors.present?}",
-                        # pattern: CharacterRegistrationsHelper::LODESTONE_URL_REGEX,
+                        pattern: CharacterRegistrationsHelper::LODESTONE_URL_REGEX,
                         placeholder: "id" %>
     <%= form.label :character_key, "Lodestone ID or URL" %>
     <% if character_registration.errors.present? %>
@@ -17,7 +17,7 @@
   </div>
 
   <div>
-    <%= form.submit "Add Character", class: "btn btn-primary" %>
+    <%= form.submit "Register Character", class: "btn btn-primary" %>
     <%= link_to "Cancel", character_registrations_path, class: "btn btn-secondary-outline" %>
   </div>
 <% end %>

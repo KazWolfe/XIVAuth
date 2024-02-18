@@ -2,7 +2,9 @@
   <h1><%= t('.title') %></h1>
 </div>
 
-<p><%= link_to t('.new'), new_developer_application_path, class: 'btn btn-success' %></p>
+<p><%= link_to new_developer_application_path, class: 'btn btn-success' do %>
+  <i class="bi bi-plus"></i> Create App
+<% end %></p>
 
 <table class="table table-striped">
   <thead>
