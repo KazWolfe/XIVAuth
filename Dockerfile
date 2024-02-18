@@ -16,6 +16,9 @@ RUN gem install foreman
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
+COPY package.json yarn.lock ./
+RUN yarn install
+
 COPY . .
 
 ENTRYPOINT ["bin/docker-entrypoint.sh"]

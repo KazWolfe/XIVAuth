@@ -14,6 +14,6 @@ OAuth::ClientApplication.find_or_create_by!(uid: 'superapp') do |app|
   app.scopes = Doorkeeper.configuration.scopes
 end
 
-JwtSigningKeys::RSA.create(name: 'dev_rsa', size: 1024)
-JwtSigningKeys::Ed25519.create(name: 'dev_ed25519')
-JwtSigningKeys::HMAC.create(name: 'dev_hmac')
+JwtSigningKeys::RSA.find_or_create_by(name: 'dev_rsa')
+JwtSigningKeys::Ed25519.find_or_create_by(name: 'dev_ed25519')
+JwtSigningKeys::HMAC.find_or_create_by(name: 'dev_hmac')

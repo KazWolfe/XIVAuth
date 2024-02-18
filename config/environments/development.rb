@@ -1,4 +1,6 @@
-require "active_support/core_ext/integer/time"
+# frozen_string_literal: true
+
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -19,13 +21,13 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join("tmp/caching-dev.txt").exist?
+  if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      "Cache-Control" => "public, max-age=#{2.days.to_i}"
+      'Cache-Control' => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
@@ -62,6 +64,17 @@ Rails.application.configure do
 
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
+
+  # Default activerecord encryption for ease of local dev
+  config.active_record.encryption.primary_key =
+    Rails.application.credentials.dig(:active_record_encryption, :primary_key) || +
+    'JZcnPw4IvRp6P4pAbfCsENpAxbghOiPv'
+  config.active_record.encryption.deterministic_key =
+    Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) ||
+    'hIWebFlVbQ22cllX4ii1Qtq1UFe95KnA'
+  config.active_record.encryption.key_derivation_salt =
+    Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) ||
+    'EvBsq2idg2gdUs1NULVhV2ocWFdcKrzn'
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
