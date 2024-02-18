@@ -4,8 +4,8 @@
 
 > ⚠️ **Here be dragons!**
 >
-> This application is still undergoing active develpment. There will be bugs, some of which will be dangerous or problematic.
-> This application is not yet ready for production use, and will not be for a bit. You've been warned!
+> This application is still undergoing active development. There will be bugs, some of which will be dangerous or 
+> problematic. This application is not yet ready for production use, and will not be for a bit. You've been warned!
 
 XIVAuth is an identity service designed to provide a unified and cohesive authentication solution for websites targeting
 players of the critically-acclaimed MMORPG Final Fantasy XIV.
