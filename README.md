@@ -29,7 +29,7 @@ To run XIVAuth locally (say, for development purposes), you just need Docker ins
 theory, all that's necessary to run XIVAuth will be:
 
 ```shell
-docker compose build && docker compose up
+docker compose build && docker compose run app bin/dev
 ```
 
 However, this is a Rails app and nothing is simple here. In order to access a terminal inside of the container, the 
@@ -48,3 +48,5 @@ rake db:seed     # required to load in core sample data
 ```
 
 You may also need to run a `yarn install` to properly install the JavaScript packages in the bind mount.
+
+I would highly recommend just configuring your IDE to handle just running `Procfile.dev` for you, if that's an option.
