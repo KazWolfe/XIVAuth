@@ -44,6 +44,12 @@ class User < ApplicationRecord
     "https://secure.gravatar.com/avatar/#{hash}.png?s=#{size}&d=#{fallback}&r=#{rating}"
   end
 
+  # Check if the user has a defined encrypted password. If not, this user is considered oauth-only and cannot
+  # use certain login features.
+  def has_password?
+    not self.encrypted_password.blank?
+  end
+
   # Get the list of providers that can be used for authentication purposes.
   def self.omniauth_login_providers
     social_only_providers = [:patreon]
