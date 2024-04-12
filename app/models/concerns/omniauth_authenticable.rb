@@ -26,7 +26,7 @@ module OmniauthAuthenticable
     def new_with_omniauth(auth)
       user = User.new(
         email: auth.dig(:info, :email),
-        password: Devise.friendly_token
+        password: nil
       )
 
       user.add_social_identity(auth)

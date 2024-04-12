@@ -34,6 +34,12 @@ class User < ApplicationRecord
   def requires_mfa?
     webauthn_credentials.any? || totp_credential&.otp_enabled || false
   end
+
+  # Check if the user has a defined encrypted password. If not, this user is considered oauth-only and cannot
+  # use certain login features.
+  def has_password?
+    not self.encrypted_password.blank?
+  end
   
   def avatar_url(size = 32, options: {})
     gravatar_url(size, *options)
@@ -44,10 +50,15 @@ class User < ApplicationRecord
     "https://secure.gravatar.com/avatar/#{hash}.png?s=#{size}&d=#{fallback}&r=#{rating}"
   end
 
-  # Check if the user has a defined encrypted password. If not, this user is considered oauth-only and cannot
-  # use certain login features.
-  def has_password?
-    not self.encrypted_password.blank?
+  # Overrides Devise's Validatable#password_required?
+  def password_required?
+    # Don't require a password for validation for new users if a social identity is present
+    return false if (!persisted? and not social_identities.empty?)
+
+    # Don't require a password for validation if the user does not have a password
+    return false if (persisted? and !has_password?)
+
+    super
   end
 
   # Get the list of providers that can be used for authentication purposes.
