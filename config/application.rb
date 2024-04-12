@@ -25,5 +25,9 @@ module App
     if ENV['APP_ENV'].present?
       Rails.application.config.credentials.content_path = Rails.root.join("config/credentials/#{ENV['APP_ENV']}.yml.enc")
     end
+
+    config.generators do |generate|
+      generate.orm :active_record, primary_key_type: :uuid
+    end
   end
 end
