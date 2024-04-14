@@ -100,6 +100,9 @@ gem 'faraday', '~> 2.9'
 # Better logging
 gem 'rails_semantic_logger', '~> 4.14'
 
+# Temporary hack to silence rack deprecation warnings caused byu Semantic Logger
+gem 'rackup', '~> 2.1.0'
+
 # Observability (Sentry) - temp for now
 gem 'sentry-rails', '~> 5.17.3'
 gem 'sentry-ruby', '~> 5.17.3'
