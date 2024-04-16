@@ -18,6 +18,6 @@ class JwtSigningKeys::HMAC < JwtSigningKey
   end
 
   def supported_algorithms
-    JWT::Algos::Hmac::SUPPORTED
+    JWT::JWA::Hmac::SUPPORTED
   end
 end

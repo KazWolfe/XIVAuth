@@ -37,6 +37,6 @@ class JwtSigningKeys::RSA < JwtSigningKey
   end
 
   def supported_algorithms
-    JWT::Algos::Rsa::SUPPORTED + JWT::Algos::Ps::SUPPORTED
+    JWT::JWA::Rsa::SUPPORTED + JWT::JWA::Ps::SUPPORTED
   end
 end

@@ -46,15 +46,15 @@ class JwtSigningKey < ApplicationRecord
   end
 
   def self.preferred_key_for_algorithm(algorithm_name)
-    alg_type = JWT::Algos.find(algorithm_name)[1]
+    alg_type = JWT::JWA.find(algorithm_name)[1]
     case alg_type.to_s
-    when 'JWT::Algos::Rsa', 'JWT::Algos::Ps'
+    when 'JWT::JWA::Rsa', 'JWT::JWA::Ps'
       JwtSigningKeys::RSA.active.first
-    when 'JWT::Algos::Eddsa'
+    when 'JWT::JWA::Eddsa'
       JwtSigningKeys::Ed25519.active.first
-    when 'JWT::Algos::Hmac', 'JWT::Algos::HmacRbNaCl'
+    when 'JWT::JWA::Hmac', 'JWT::JWA::HmacRbNaCl'
       JwtSigningKeys::HMAC.active.first
-    when 'JWT::Algos::Ecdsa'
+    when 'JWT::JWA::Ecdsa'
       JwtSigningKeys::ECDSA.preferred_key_for_algorithm(algorithm_name)
     else
       nil
