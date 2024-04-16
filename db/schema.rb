@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_12_051705) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_16_002002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -29,6 +29,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_051705) do
     t.datetime "verified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "extra_data"
+    t.string "source", default: "internal", null: false
+    t.string "verification_type"
     t.index ["character_id"], name: "index_character_registrations_on_character_id"
     t.index ["user_id"], name: "index_character_registrations_on_user_id"
   end
@@ -201,6 +204,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_051705) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_used_at"
+    t.string "access_token"
+    t.string "refresh_token"
     t.index ["provider", "external_id"], name: "index_users_social_identities_on_provider_and_external_id", unique: true
     t.index ["user_id"], name: "index_users_social_identities_on_user_id"
   end

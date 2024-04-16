@@ -1,5 +1,12 @@
 require 'utilities/base32'
 
+# {CharacterRegistration} represents a mapping between a game character and a claim by any specific user.
+# Character registrations are only considered "effective" if they have been verified in some way.
+#
+# @!attribute source [string] The original source of this character registration, often used if this character
+#                             was imported from another site.
+# @!attribute verification_type [string] The means by which this specific character was verified. Varies based on
+#                                        character type and other factors.
 class CharacterRegistration < ApplicationRecord
   belongs_to :user
   belongs_to :character, class_name: 'FFXIV::Character'
@@ -10,6 +17,9 @@ class CharacterRegistration < ApplicationRecord
                           message: 'has already been verified.'
 
   validates_associated :character, message: 'could not be found or is invalid.'
+
+  validates :verification_type, presence: true, if: -> { self.verified? }
+  validates :verification_type, absence: true, unless: -> { self.verified? }
 
   attr_accessor :skip_ban_check
   validate :character_not_banned, unless: :skip_ban_check, on: :create
@@ -29,22 +39,25 @@ class CharacterRegistration < ApplicationRecord
   # This method will attempt to save all modified CharacterRegistrations.
   # @param clobber [Boolean] When true, unverify the prior CharacterRegistration.
   # @param send_email [Boolean] When true, send an email to the prior owner if their character was clobbered.
-  def verify!(clobber: false, send_email: false)
+  def verify!(verification_type, clobber: false, send_email: false)
     transaction do
       other_registration = CharacterRegistration.verified.find_by(character_id:)
 
       if other_registration.present? && clobber
         logger.warn('Character verification was clobbered!', old: other_registration, new: self)
         other_registration.verified_at = nil
+        other_registration.verification_type = nil
         other_registration.save!
 
         # TODO: Send an email to the losing user.
       end
 
       self.verified_at = DateTime.now
+      self.verification_type = verification_type
       save!
     rescue ActiveRecord::RecordInvalid
       self.verified_at = nil  # rollback record in memory
+      self.verification_type = nil
       raise
     end
   end

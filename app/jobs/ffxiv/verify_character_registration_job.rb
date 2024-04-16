@@ -25,6 +25,6 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
             "Verification failed for #{registration.id} - key was not found."
     end
 
-    registration.verify!(clobber: true)
+    registration.verify!("lodestone_code", clobber: true)
   end
 end
