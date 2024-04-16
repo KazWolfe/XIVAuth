@@ -5,9 +5,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_action :verify_authenticity_token, only: [:steam]
 
   User.omniauth_providers.each do |provider|
+    next if self.method_defined?(provider)
+
     define_method(provider) do
       @provider = provider
-
       common
     end
   end
