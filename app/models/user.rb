@@ -18,8 +18,7 @@ class User < ApplicationRecord
   has_one :totp_credential, class_name: 'Users::TotpCredential', dependent: :destroy
 
   def admin?
-    # FIXME: This is terrible.
-    (Rails.env.development? && email == 'dev@eorzea.id') || (email.end_with?('kazwolfe.io') && self.confirmed?)
+    self.has_role? :admin
   end
 
   # Check if the user has permission to access developer functions, like the ability to register OAuth applications.
