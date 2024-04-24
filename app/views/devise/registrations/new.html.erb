@@ -13,6 +13,17 @@
         </div>
       </div>
 
+      <%= f.fields_for :profile do |pf| %>
+        <div class="form-group field mb-2">
+          <%= pf.label :display_name, class: 'form-label' %>
+          <%= pf.text_field :display_name, class: 'form-control' %>
+          <div class="form-text">
+            The Display Name is given to apps you sign in to, as well as shown on any apps you create. It can be changed
+            at any time.
+          </div>
+        </div>
+      <% end %>
+
       <div data-controller="password-strength" data-password-strength-min-score-value="<%= User.min_password_score %>">
         <div class="form-group field mb-2">
           <%= f.label :password, class: "form-label" %>

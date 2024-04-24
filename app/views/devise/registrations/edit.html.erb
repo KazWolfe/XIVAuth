@@ -15,6 +15,13 @@
         <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
       <% end %>
 
+      <%= f.fields_for :profile do |pf| %>
+        <div class="form-group field mb-2">
+          <%= pf.label :display_name, class: 'form-label' %>
+          <%= pf.text_field :display_name, class: 'form-control' %>
+        </div>
+      <% end %>
+
       <div class="form-group field">
         <%= f.label :password, class: "form-label" %> <i>(leave blank if you don't want to change it)</i><br/>
         <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>

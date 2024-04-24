@@ -3,7 +3,7 @@
 <table class="table">
   <thead>
   <tr>
-    <th scope="col">User ID</th>
+    <th scope="col">Display Name</th>
     <th scope=""></th>
     <th scope="col">Characters</th>
     <th scope="col">Verified?</th>
@@ -12,7 +12,7 @@
   <tbody>
   <% @users.each do |user| %>
     <tr>
-      <td><%= link_to user.id, admin_user_path(user) %></td>
+      <td><%= link_to user.profile.display_name, admin_user_path(user) %></td>
       <td>
         <% if user.developer? %>
           <i class="bi bi-code-slash" title="Developer Access"></i>

@@ -17,6 +17,14 @@ class User < ApplicationRecord
   has_many :webauthn_credentials, class_name: 'Users::WebauthnCredential', dependent: :destroy
   has_one :totp_credential, class_name: 'Users::TotpCredential', dependent: :destroy
 
+  has_one :profile, class_name: 'Users::Profile', dependent: :destroy, required: true, autosave: true
+  validates_associated :profile
+  accepts_nested_attributes_for :profile, update_only: true
+
+  def profile
+    super || build_profile
+  end
+
   def admin?
     self.has_role? :admin
   end

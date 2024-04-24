@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_21_000000) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_23_025610) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -198,6 +198,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_21_000000) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "users_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "display_name", null: false
+    t.index "lower((display_name)::text)", name: "index_users_profiles_on_lower_display_name", unique: true
+    t.index ["user_id"], name: "index_users_profiles_on_user_id", unique: true
+  end
+
   create_table "users_social_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id"
     t.string "provider", null: false
@@ -247,6 +254,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_21_000000) do
   add_foreign_key "oauth_device_grants", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_device_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
+  add_foreign_key "users_profiles", "users"
   add_foreign_key "users_social_identities", "users"
   add_foreign_key "users_totp_credentials", "users"
   add_foreign_key "users_webauthn_credentials", "users"

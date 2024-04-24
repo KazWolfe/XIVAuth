@@ -39,7 +39,7 @@
           <% if @verified_registration.present? %>
             <tr>
               <th scope="row">Verified Owner</th>
-              <td><%= link_to @verified_registration.user.id, admin_user_path(@verified_registration.user) %></td>
+              <td><%= link_to @verified_registration.user.profile.display_name, admin_user_path(@verified_registration.user) %></td>
             </tr>
             <tr>
               <th scope="row">Claiming Verification Key</th>

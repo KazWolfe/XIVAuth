@@ -26,7 +26,10 @@ module OmniauthAuthenticable
     def new_with_omniauth(auth)
       user = User.new(
         email: auth.dig(:info, :email),
-        password: nil
+        password: nil,
+        profile_attributes: {
+          display_name: auth.dig(:info, :nickname) || auth.dig(:info, :name)
+        }
       )
 
       user.add_social_identity(auth)
