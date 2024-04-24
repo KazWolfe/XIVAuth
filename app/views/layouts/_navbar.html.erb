@@ -54,7 +54,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <img src="<%= current_user.avatar_url %>" alt="" width="24" height="24" class="d-inline-block rounded-2">
-              Hi, <%= current_user.email %>
+              Hi, <%= current_user.profile.display_name %>
             </a>
             <ul class="dropdown-menu" aria-labelledby="profileDropdown">
               <li><%= link_to "Profile", edit_user_registration_path, class: 'dropdown-item' %></li>
