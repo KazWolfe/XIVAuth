@@ -59,7 +59,7 @@ RSpec.describe JwtSigningKeys::ECDSA, type: :model do
     it 'validates that a curve is supported' do
       # this is very improper, but eh.
 
-      jwt_supported_curves = JWT::Algos::Ecdsa::NAMED_CURVES.keys
+      jwt_supported_curves = JWT::JWA::Ecdsa::NAMED_CURVES.keys
       openssl_supported_curves = OpenSSL::PKey::EC.builtin_curves.map { |k| k[0] }.uniq
       test_curves = openssl_supported_curves - jwt_supported_curves
       pending('No unsupported curves on this platform!') if test_curves.empty?

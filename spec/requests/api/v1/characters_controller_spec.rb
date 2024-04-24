@@ -13,7 +13,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
 
     context 'GET /characters' do
       it 'returns a verified character when present' do
-        CharacterRegistration.create(character:, user:, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character:, user:)
 
         get api_v1_characters_path, headers: { 'Authorization': "Bearer #{oauth_token.token}" }, as: :json
 
@@ -26,7 +26,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
       end
 
       it 'does not return an unverified character' do
-        CharacterRegistration.create(character:, user:)
+        FactoryBot.create(:character_registration, character:, user:)
 
         get api_v1_characters_path, headers: { 'Authorization': "Bearer #{oauth_token.token}" }, as: :json
 
@@ -37,10 +37,9 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
       end
 
       it 'allows filtering by parameters' do
-        CharacterRegistration.create(character:, user:, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character:, user:)
         3.times do
-          another_character = FactoryBot.create(:ffxiv_character)
-          CharacterRegistration.create(character: another_character, user:, verified_at: DateTime.now)
+          FactoryBot.create(:verified_registration, user:)
         end
 
         get api_v1_characters_path,
@@ -58,7 +57,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
 
     context 'GET /characters/:lodestone_id' do
       it 'allows retrieving a verified character by id' do
-        CharacterRegistration.create(character:, user:, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character:, user:)
 
         get api_v1_character_path(lodestone_id: character.lodestone_id), headers: { 'Authorization': "Bearer #{oauth_token.token}" }, as: :json
 
@@ -69,7 +68,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
       end
 
       it 'does not allow retrieving an unverified character by id' do
-        CharacterRegistration.create(character:, user:)
+        FactoryBot.create(:character_registration, character:, user:)
 
         without_detailed_exceptions do
           get api_v1_character_path(lodestone_id: character.lodestone_id),
@@ -82,7 +81,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
       it 'does not allow retrieving a character owned by another user' do
         another_user = FactoryBot.create(:user)
         another_character = FactoryBot.create(:ffxiv_character)
-        CharacterRegistration.create(character: another_character, user: another_user, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character: another_character, user: another_user)
 
         without_detailed_exceptions do
           get api_v1_character_path(lodestone_id: another_character.lodestone_id),
@@ -107,7 +106,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
     end
 
     context 'PATCH /characters/:lodestone_id' do
-      let(:registration) { CharacterRegistration.create(user:, character:, verified_at: DateTime.now) }
+      let(:registration) { FactoryBot.create(:verified_registration, character:, user:) }
 
       it 'returns HTTP 403' do
         without_detailed_exceptions do
@@ -123,7 +122,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
 
     context 'DELETE /characters/:lodestone_id' do
       it 'returns HTTP 403' do
-        CharacterRegistration.create(user:, character:, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character:, user:)
 
         delete api_v1_character_path(lodestone_id: character.lodestone_id),
                headers: { 'Authorization': "Bearer #{oauth_token.token}" },
@@ -141,7 +140,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
 
     context 'GET /characters' do
       it 'returns unverified characters' do
-        registration = CharacterRegistration.create(character:, user:)
+        registration = FactoryBot.create(:character_registration, character:, user:)
 
         get api_v1_characters_path, headers: { 'Authorization': "Bearer #{oauth_token.token}" }, as: :json
 
@@ -187,7 +186,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
 
     context 'GET /characters/:lodestone_id' do
       it 'allows fetching a character (with extended data)' do
-        CharacterRegistration.create(character:, user:)
+        FactoryBot.create(:character_registration, character:, user:)
 
         get api_v1_character_path(lodestone_id: character.lodestone_id),
             headers: { 'Authorization': "Bearer #{oauth_token.token}" },
@@ -204,8 +203,8 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
 
     context 'DELETE /characters/:lodestone_id' do
       it 'can delete a character' do
-        CharacterRegistration.create(character:, user:, verified_at: DateTime.now)
-
+        FactoryBot.create(:verified_registration, character:, user:)
+        
         delete api_v1_character_path(lodestone_id: character.lodestone_id),
                headers: { 'Authorization': "Bearer #{oauth_token.token}" },
                as: :json
@@ -220,7 +219,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
       it "can't delete another user's character" do
         another_user = FactoryBot.create(:user)
         another_character = FactoryBot.create(:ffxiv_character)
-        CharacterRegistration.create(user: another_user, character: another_character, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character: another_character, user: another_user)
 
         without_detailed_exceptions do
           delete api_v1_character_path(lodestone_id: character.lodestone_id),
@@ -235,7 +234,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
 
     context 'PATCH /characters/:lodestone_id' do
       before do
-        CharacterRegistration.create(character:, user:, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character:, user:)
       end
 
       it "can edit a character's Content ID" do
@@ -272,7 +271,7 @@ RSpec.describe 'Api::V1::CharactersControllers', type: :request do
       it "can't edit another user's character" do
         another_user = FactoryBot.create(:user)
         another_character = FactoryBot.create(:ffxiv_character)
-        CharacterRegistration.create(user: another_user, character: another_character, verified_at: DateTime.now)
+        FactoryBot.create(:verified_registration, character: another_character, user: another_user)
 
         without_detailed_exceptions do
           patch api_v1_character_path(lodestone_id: another_character.lodestone_id),
