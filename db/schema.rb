@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_23_025610) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_28_213829) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -200,8 +200,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_025610) do
 
   create_table "users_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
-    t.string "display_name", null: false
-    t.index "lower((display_name)::text)", name: "index_users_profiles_on_lower_display_name", unique: true
+    t.string "display_name", limit: 64, null: false
     t.index ["user_id"], name: "index_users_profiles_on_user_id", unique: true
   end
 
