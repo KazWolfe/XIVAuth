@@ -106,6 +106,7 @@ gem 'rackup', '~> 2.1.0'
 # Observability (Sentry) - temp for now
 gem 'sentry-rails', '~> 5.17.3'
 gem 'sentry-ruby', '~> 5.17.3'
+gem 'sentry-sidekiq', '~> 5.17.3'
 gem 'stackprof', '~> 0.2.26'
 
 # Heroku dependencies
