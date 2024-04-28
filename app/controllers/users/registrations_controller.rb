@@ -7,7 +7,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   prepend_before_action :check_captcha, only: [:create]
   before_action :configure_account_update_params, only: [:update]
   
-  before_action :check_registration_allowed, only: [:new, :create]
+  before_action :check_registration_allowed, only: %i[new create]
 
   # GET /resource/sign_up
   def new
@@ -43,7 +43,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  protected
+
+  def update_resource(resource, params)
+    # block updates of protected fields
+    return super if params[:password].present? || params[:password_confirmation].present?
+    return super if params[:email].present? && params[:email] != current_user.email
+
+    # NOTE: we're filtering out allowable attributes early so this is safe-ish. may cause headaches later though.
+    resource.update_without_password(params.slice(:profile_attributes))
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
