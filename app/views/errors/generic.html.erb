@@ -1,0 +1,9 @@
+<% content_for :title, "XIVAuth | #{status}: #{Rack::Utils::HTTP_STATUS_CODES[status]}" %>
+
+<div>
+  <h1>Error <%= status %>: <%= Rack::Utils::HTTP_STATUS_CODES[status] %>"</h1>
+  <p>
+    XIVAuth encountered an error trying to handle your request.
+  </p>
+</div>
+<p class="footer">If you feel this is in error, please contact a developer.</p>
