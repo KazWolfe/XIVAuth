@@ -68,8 +68,8 @@
 </div>
 <div class="diagnostics">
   <p>Environment: <%= (ENV["APP_ENV"] || Rails.env) %></p>
-  <% if @trace_id.present? %>
-    <p>Trace ID: <code><%= @trace_id %></code></p>
+  <% if @trace_type.present? && @trace_id.present? %>
+    <p><%= @trace_type %>: <code><%= @trace_id %></code></p>
   <% end %>
   <% if commit_hash.present? %>
     <p>Build:

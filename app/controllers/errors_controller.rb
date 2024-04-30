@@ -4,7 +4,7 @@ class ErrorsController < ApplicationController
 
   def show
     @exception = request.env['action_dispatch.exception']
-    @trace_id = trace_id
+    set_trace_id
     
     @status_code = @exception.try(:status_code) ||
       ActionDispatch::ExceptionWrapper.new(
@@ -19,9 +19,18 @@ class ErrorsController < ApplicationController
   private
 
   def trace_id
-    Sentry.last_event_id || 
+    Sentry.last_event_id ||
       request.env['sentry.error_event_id'] ||
       Sentry.get_current_scope&.get_span&.trace_id ||
       request.uuid
+
+    trace = {
+      "Last Event ID": Sentry.last_event_id,
+      "Error Event ID": request.env['sentry.error_event_id'],
+      "Trace ID": Sentry.get_current_scope&.get_span&.trace_id,
+      "Request ID": request.uuid
+    }
+
+    @trace_type, @trace_id = trace.select { |_, v| v.present? }.first
   end
 end
