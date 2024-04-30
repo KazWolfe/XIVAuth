@@ -1,11 +1,12 @@
 class ErrorsController < ApplicationController
   skip_before_action :authenticate_user!
+  before_action :set_trace_id
+
   layout 'error'
 
   def show
     @exception = request.env['action_dispatch.exception']
-    set_trace_id
-    
+
     @status_code = @exception.try(:status_code) ||
       ActionDispatch::ExceptionWrapper.new(
         request.env, @exception
@@ -20,10 +21,9 @@ class ErrorsController < ApplicationController
 
   def set_trace_id
     trace = {
-      "Last Event ID": Sentry.last_event_id,
-      "Error Event ID": request.env['sentry.error_event_id'],
+      "Event ID": Sentry.last_event_id,
       "Trace ID": Sentry.get_current_scope&.get_span&.trace_id,
-      "Request ID": request.uuid
+      "Request ID": request.uuid  # fallback
     }
 
     @trace_type, @trace_id = trace.select { |_, v| v.present? }.first
