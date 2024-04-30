@@ -18,12 +18,7 @@ class ErrorsController < ApplicationController
 
   private
 
-  def trace_id
-    Sentry.last_event_id ||
-      request.env['sentry.error_event_id'] ||
-      Sentry.get_current_scope&.get_span&.trace_id ||
-      request.uuid
-
+  def set_trace_id
     trace = {
       "Last Event ID": Sentry.last_event_id,
       "Error Event ID": request.env['sentry.error_event_id'],
