@@ -5,9 +5,11 @@
       <br class="d-xxl-none">
       Not associated with Square Enix.
     </p>
-    <p class="mb-0">Build
-      <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
-    </p>
+    <% if commit_hash.present? %>
+      <p class="mb-0">Build
+        <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
+      </p>
+    <% end %>
   </div>
 
   <% if !Rails.env.production? || (ENV["APP_ENV"] != "production") %>

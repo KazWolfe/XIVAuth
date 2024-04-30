@@ -19,6 +19,8 @@ class ErrorsController < ApplicationController
   private
 
   def trace_id
-    Sentry.get_current_scope&.get_span&.trace_id || request.uuid
+    Sentry.get_current_scope&.get_span&.trace_id ||
+      Sentry.get_current_scope&.propagation_context&.trace_id ||
+      request.uuid
   end
 end

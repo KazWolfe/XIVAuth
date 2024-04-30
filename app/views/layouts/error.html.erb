@@ -71,6 +71,11 @@
   <% if @trace_id.present? %>
     <p>Trace ID: <code><%= @trace_id %></code></p>
   <% end %>
+  <% if commit_hash.present? %>
+    <p>Build:
+      <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash %></code></a>
+    </p>
+  <% end %>
 </div>
 </body>
 </html>

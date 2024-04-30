@@ -6,6 +6,6 @@ module ApplicationHelper
   end
   
   def commit_hash
-    ENV['COMMIT_HASH'] || ENV['HEROKU_SLUG_COMMIT'] || '???'
+    ENV['COMMIT_HASH'] || ENV['HEROKU_SLUG_COMMIT'] || nil
   end
 end
