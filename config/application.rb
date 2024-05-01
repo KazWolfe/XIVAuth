@@ -20,6 +20,11 @@ module App
     # config.eager_load_paths << Rails.root.join("extras")
     
     config.action_controller.include_all_helpers = false
+    
+    # Better error pages
+    config.exceptions_app = lambda { |env|
+      ErrorsController.action(:show).call(env)
+    }
 
     # heroku compat for now
     if ENV['APP_ENV'].present?
