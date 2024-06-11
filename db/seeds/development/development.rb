@@ -2,6 +2,7 @@
 superuser = User.find_or_create_by!(email: 'dev@eorzea.id') do |u|
   u.id = 'e5854f0d-fdad-4a76-a208-ec682ec7ffb4'
   u.password = 'password'
+  u.roles = [:admin]
   u.build_profile(display_name: 'developer')
   u.skip_confirmation!
 end
