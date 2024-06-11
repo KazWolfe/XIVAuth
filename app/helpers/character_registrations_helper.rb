@@ -1,4 +1,6 @@
 module CharacterRegistrationsHelper
+  include Pagy::Frontend
+
   LODESTONE_URL_REGEX = %r{((https?://)?(?<region>[a-z]{2})\.finalfantasyxiv\.com/lodestone/character/)?(?<lodestone_id>\d+)}
 
   def extract_id(id_or_url)
