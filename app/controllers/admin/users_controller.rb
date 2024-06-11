@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class Admin::UsersController < Admin::AdminController
+  include Pagy::Backend
+
   before_action :set_user, only: %i[show update destroy]
 
   def index
-    @users = User.order(created_at: :desc)
+    @pagy, @users = pagy(User.order(created_at: :desc))
   end
 
   def show; end
