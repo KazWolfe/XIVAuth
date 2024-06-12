@@ -9,7 +9,9 @@ class Admin::UsersController < Admin::AdminController
     @pagy, @users = pagy(User.order(created_at: :desc))
   end
 
-  def show; end
+  def show;
+    @pagy_cregs, @cregs = pagy(@user.character_registrations, page_param: :page_cr, items: 10)
+  end
 
   def destroy
     if @user.destroy
