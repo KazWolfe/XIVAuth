@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class Admin::CharactersController < Admin::AdminController
+  include Pagy::Backend
+
   before_action :set_character, only: %i[ show update destroy refresh ]
 
   def index
-    @characters = FFXIV::Character.order(created_at: :desc)
+    @pagy, @characters = pagy(FFXIV::Character.order(created_at: :desc))
   end
 
   def show
