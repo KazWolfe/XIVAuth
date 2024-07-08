@@ -34,7 +34,7 @@ gem 'postmark-rails', '~> 0.22.1'
 gem 'rack-cors', '~> 2.0.2'
 
 # Workers
-gem 'sidekiq', '~> 7.2.2'
+gem 'sidekiq', '~> 7.3.0'
 gem 'sidekiq-cron', '~> 1.12.0'
 gem 'sidekiq-throttled', '~> 1.4.0'
 gem 'sidekiq-unique-jobs', '~> 8.0.10'
@@ -45,7 +45,7 @@ gem 'devise', '~> 4.9'
 gem 'devise_zxcvbn', '~> 6.0.0'
 
 # Authn (MFA)
-gem 'devise-two-factor', '~> 5.0.0'
+gem 'devise-two-factor', '~> 5.1'
 gem 'rqrcode', '~> 2.2.0'
 gem 'webauthn', '~> 3.1.0'
 
@@ -56,44 +56,41 @@ gem 'omniauth-steam', '~> 1.0.6'
 gem 'omniauth-twitch', '~> 1.2.0'
 
 # Outbound OAuth2
-gem 'doorkeeper', '~> 5.6.9'
+gem 'doorkeeper', '~> 5.7.1'
 gem 'doorkeeper-device_authorization_grant', '~> 1.0.3'
 
 # Feature flags
-gem 'flipper', '~> 1.2.2'
-gem 'flipper-active_record', '~> 1.2.2'
-gem 'flipper-ui', '~> 1.2.2'
+gem 'flipper', '~> 1.3'
+gem 'flipper-active_record', '~> 1.3'
+gem 'flipper-ui', '~> 1.3'
 
 # Internal security
 gem 'jwt', '~> 2.8.1'
 gem 'omniauth-rails_csrf_protection', '~> 1.0.1'
 gem 'rbnacl', '~> 7.1.1'
-gem 'recaptcha', '~> 5.16.0'
+gem 'recaptcha', '~> 5.17'
 
 # HTTP Requests
 gem 'faraday', '~> 2.9'
 
 # Better logging
-gem 'rails_semantic_logger', '~> 4.14'
-
-# Temporary hack to silence rack deprecation warnings caused byu Semantic Logger
-gem 'rackup', '~> 2.1.0'
+gem 'rails_semantic_logger', '~> 4.17'
 
 # Observability (Sentry) - temp for now
-gem 'sentry-rails', '~> 5.17.3'
-gem 'sentry-ruby', '~> 5.17.3'
-gem 'sentry-sidekiq', '~> 5.17.3'
-gem 'stackprof', '~> 0.2.26'
+gem 'sentry-rails', '~> 5.18'
+gem 'sentry-ruby', '~> 5.18'
+gem 'sentry-sidekiq', '~> 5.18'
+gem 'stackprof', '~> 0.2'
 
 # Heroku dependencies
-gem 'rexml', '~> 3.2.5'
+gem 'rexml', '~> 3.3.1'
 
 # Helpers
-gem 'pagy', '~> 8.4'
+gem 'pagy', '~> 8.6'
 
 group :production do
   # Handle Cloudflare IPs in our X-Forwarded-For chain
-  gem 'cloudflare-rails', '~> 5.0.1'
+  gem 'cloudflare-rails', '~> 6.0'
 end
 
 group :development, :test do
@@ -103,8 +100,8 @@ group :development, :test do
   gem 'amazing_print'
 
   gem 'factory_bot_rails', '~> 6.4.3'
-  gem 'faker', '~> 3.3.1'
-  gem 'rspec-rails', '~> 6.1.2'
+  gem 'faker', '~> 3.4'
+  gem 'rspec-rails', '~> 6.1'
 
   # Analysis tools
   gem 'brakeman', require: false
