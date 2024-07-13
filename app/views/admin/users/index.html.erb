@@ -3,6 +3,7 @@
 <table class="table">
   <thead>
   <tr>
+    <th scope="col" width="128">ID Fragment</th>
     <th scope="col">Display Name</th>
     <th scope=""></th>
     <th scope="col">Characters</th>
@@ -12,6 +13,7 @@
   <tbody>
   <% @users.each do |user| %>
     <tr>
+      <td class="font-monospace"><%= user.id[-8..] %></td>
       <td><%= link_to user.profile.display_name, admin_user_path(user) %></td>
       <td>
         <% if user.developer? %>

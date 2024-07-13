@@ -14,7 +14,7 @@
 
   <% if !Rails.env.production? || (ENV["APP_ENV"] != "production") %>
     <div class="col-md-4 mb-0 text-muted small text-center">
-      <p class="mb-0">Env: <%= (ENV["APP_ENV"] || Rails.env) %></p>
+      <p class="mb-0">Environment: <%= (ENV["APP_ENV"] || Rails.env).titleize %></p>
       <p class="mb-0"><code><%= controller_name %>#<%= action_name %></code></p>
     </div>
   <% end %>

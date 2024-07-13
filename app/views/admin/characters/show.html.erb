@@ -19,7 +19,7 @@
         <table class="table table-borderless">
           <tbody>
           <tr>
-            <th scope="row">Internal ID</th>
+            <th scope="row">XIVAuth ID</th>
             <td><code><%= @character.id %></code></td>
           </tr>
           <tr>
@@ -34,6 +34,11 @@
             <td>
               <%= @character.name %>
             </td>
+          </tr>
+
+          <tr>
+            <th scope="row">Home World</th>
+            <td><%= @character.home_world %> [<%= @character.data_center %>]</td>
           </tr>
 
           <% if @verified_registration.present? %>
@@ -104,7 +109,10 @@
         <% @character.character_registrations.each do |registration| %>
           <tr>
             <td>
-              <%= link_to registration.user.id, admin_user_path(registration.user) %>
+              <span>
+                <%= link_to registration.user.profile.display_name, admin_user_path(registration.user) %>
+                (<span class="font-monospace"><%= registration.user.id[-8..] %></span>)
+              </span>
               <% if registration.verified? %>
                 <i class="bi bi-patch-check-fill text-success" title="Verified Owner"></i>
               <% end %>
