@@ -11,6 +11,8 @@ class FFXIV::LodestoneProfile
 
   attr_reader :id, :last_parsed
   validate :character_exists?
+  validate :character_visible?
+  validate :character_profile_visible?
 
   def initialize(lodestone_id)
     super()
@@ -80,5 +82,15 @@ class FFXIV::LodestoneProfile
 
   def character_exists?
     errors.add(:id, 'Could not find character by specified ID') if http_404?(@request, @doc)
+  end
+
+  def character_profile_visible?
+    errors.add(:id, "Specified character's profile information is private.") if
+      @doc.at_css('.character__content')&.text&.include?("This character's profile is private.")
+  end
+
+  def character_visible?
+    errors.add(:id, 'Specified character is private.') if
+      (@request.status == 403) && (@doc.at_css('.error__heading')&.text == 'Access Restricted')
   end
 end
