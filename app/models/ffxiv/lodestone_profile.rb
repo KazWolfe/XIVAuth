@@ -9,6 +9,8 @@ class FFXIV::LodestoneProfile
   MOBILE_USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, ' \
     'like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1'
 
+  FREE_TRIAL_LEVEL_CAP = 70
+
   attr_reader :id, :last_parsed
   validate :character_exists?
   validate :character_visible?
@@ -64,6 +66,43 @@ class FFXIV::LodestoneProfile
 
   def avatar
     @avatar ||= @doc.at_css('.frame__chara__face > img').attributes['src'].value
+  end
+
+  def free_company
+    return @fc_info if @fc_info.present?
+
+    element = @doc.at_css('.character__freecompany__name > h4 > a')
+    return nil unless element
+
+    @fc_info = {
+      name: element.text,
+      id: element.attributes['href'].value&.split('/')&.last&.to_i
+    }
+  end
+
+  def class_levels
+    return @class_levels if @class_levels.present?
+    @class_levels = {}
+
+    ary = @doc.css('.character__level__list > ul > li')
+    return @class_levels unless ary.count > 0
+
+    ary.each do |it|
+      name = ary.at_css('img')&.attributes['data-tooltip']&.value
+      level = it.text
+
+      next unless name.present? && level.present? && level != "-"
+
+      @class_levels[name] = level.to_i
+    end
+
+    @class_levels
+  end
+
+  # Check if this character is known to be paid. Returns true heuristically.
+  # A false value does *not* indicate that this is a free trial character.
+  def paid_character?
+    self.free_company.present? || self.class_levels.values.any? { |x| x > FREE_TRIAL_LEVEL_CAP }
   end
 
   private
