@@ -119,7 +119,27 @@
             </td>
             <td class="font-monospace"><%= registration.verification_key %></td>
             <td><%= registration.created_at %></td>
-            <td>N/A</td>
+            <td>
+              <%= button_to admin_character_registration_path(registration), method: :delete,
+                            form_class: "d-inline-block", class: "btn btn-outline-danger",
+                            title: "Delete Registration" do %>
+                <i class="bi bi-trash"></i>
+              <% end %>
+              <% if registration.verified? %>
+                <%= button_to verify_admin_character_registration_path(registration), method: :delete,
+                              form_class: "d-inline-block", class: "btn btn-outline-danger",
+                              title: "Force Unverify" do %>
+                  <i class="bi bi-patch-minus"></i>
+                <% end %>
+              <% else %>
+                <% b_class =  @character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
+                <%= button_to verify_admin_character_registration_path(registration), params: {force: true},
+                              form_class: "d-inline-block", class: "btn #{b_class}",
+                              title: "Force Verify", disabled: @character.verified? do %>
+                  <i class="bi bi-patch-plus"></i>
+                <% end %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
         </tbody>

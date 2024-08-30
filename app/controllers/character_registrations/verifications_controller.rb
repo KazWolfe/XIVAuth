@@ -31,7 +31,7 @@ class CharacterRegistrations::VerificationsController < ApplicationController
   def destroy
     authorize! :manage, @character_registration
     
-    @character_registration.verified_at = nil
+    @character_registration.unverify
 
     respond_to do |format|
       if @character_registration.save

@@ -33,6 +33,10 @@ class Admin::CharactersController < Admin::AdminController
     end
   end
 
+  def force_register
+
+  end
+
   private
 
   def set_character

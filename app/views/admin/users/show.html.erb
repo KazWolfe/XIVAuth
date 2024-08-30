@@ -122,7 +122,9 @@
   <div class="col-md-12">
     <h3>Character Registrations</h3>
     <table class="table caption-top">
-      <caption><%= @user.character_registrations.verified.count %> verified, <%= @user.character_registrations.count %> total</caption>
+      <caption><%= @user.character_registrations.verified.count %> verified, <%= @user.character_registrations.count %>
+        total
+      </caption>
       <thead>
       <tr>
         <th scope="col" width="48"></th>
@@ -135,7 +137,7 @@
       </thead>
       <tbody>
       <% @cregs.each do |registration| %>
-      <% character = registration.character %>
+        <% character = registration.character %>
         <tr>
           <td><%= image_tag character.avatar_url, width: 36, class: "rounded" %></td>
           <td>
@@ -147,16 +149,39 @@
           <td><%= character.name %></td>
           <td><%= character.home_with_datacenter %></td>
           <td>
-            <%= registration.verified_at || "Not Verified!" %>
+            <% if registration.verified_at %>
+              <%= registration.verified_at %>
+            <% elsif character.verified? %>
+              Verified <%= link_to "Elsewhere", admin_user_path(character.verified_owner) %>
+            <% else %>
+              Not Verified!
+            <% end %>
           </td>
           <td>
-            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
-            <% if registration.verified? %>
-              <button class="btn btn-outline-danger"><i class="bi bi-patch-minus"></i></button>
-            <% else %>
-              <button class="btn btn-outline-primary"><i class="bi bi-patch-plus"></i></button>
+            <%= button_to admin_character_registration_path(registration), method: :delete,
+                          form_class: "d-inline-block", class: "btn btn-outline-danger",
+                          title: "Delete Registration" do %>
+              <i class="bi bi-trash"></i>
             <% end %>
-            <button class="btn btn-outline-primary"><i class="bi bi-arrow-repeat"></i></button>
+            <% if registration.verified? %>
+              <%= button_to verify_admin_character_registration_path(registration), method: :delete,
+                            form_class: "d-inline-block", class: "btn btn-outline-danger",
+                            title: "Force Unverify" do %>
+                <i class="bi bi-patch-minus"></i>
+              <% end %>
+            <% else %>
+              <% b_class = character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
+              <%= button_to verify_admin_character_registration_path(registration), params: { force: true },
+                            form_class: "d-inline-block", class: "btn #{b_class}",
+                            title: "Force Verify", disabled: character.verified? do %>
+                <i class="bi bi-patch-plus"></i>
+              <% end %>
+            <% end %>
+            <%= button_to refresh_admin_character_path(character),
+                          form_class: "d-inline-block", class: "btn btn-outline-primary",
+                          title: "Refresh Character" do %>
+              <i class="bi bi-arrow-repeat"></i>
+            <% end %>
           </td>
         </tr>
       <% end %>

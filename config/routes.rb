@@ -45,6 +45,11 @@ Rails.application.routes.draw do
         resource :ban, controller: 'character/character_bans'
       end
 
+      resources :character_registrations, controller: 'character_registrations' do
+        post :verify, on: :member
+        delete :verify, on: :member, to: 'character_registrations#unverify'
+      end
+
       resources :client_applications, controller: 'client_applications'
 
       mount Sidekiq::Web => '/sidekiq'

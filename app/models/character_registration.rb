@@ -62,6 +62,11 @@ class CharacterRegistration < ApplicationRecord
     end
   end
 
+  def unverify
+    self.verified_at = nil
+    self.verification_type = nil
+  end
+
   def verification_key
     # TODO: Load secret from environment, don't use lodestone_id as it's not reusable (other models in future)
     secret = Rails.application.key_generator.generate_key('CharacterVerificationSecret')

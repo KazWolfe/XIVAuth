@@ -60,7 +60,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
   def unverify
     authorize! :update, @registration
 
-    @registration.verified_at = nil
+    @registration.unverify
 
     if @registration.save
       head status: :no_content

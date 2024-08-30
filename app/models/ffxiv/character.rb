@@ -22,6 +22,14 @@ class FFXIV::Character < ApplicationRecord
     updated_at <= hours.hours.ago
   end
 
+  def verified?
+    self.character_registrations.verified.present?
+  end
+
+  def verified_owner
+    self.character_registrations.verified.first&.user
+  end
+
   def refresh_from_lodestone(lodestone_data = nil)
     return if lodestone_id.nil? && lodestone_data.nil?
 
