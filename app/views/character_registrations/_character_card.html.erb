@@ -3,7 +3,8 @@
 <div class="card" id="<%= dom_id character_registration %>">
   <div class="card-body">
     <div class="d-flex flex-row align-items-center">
-      <img src="<%= image_url character.avatar_url %>" class="rounded m-2">
+      <img src="<%= image_url character.avatar_url %>" class="rounded m-2"
+           alt="Headshot of <%= character.name %>" width="96" height="96">
       <div class="ps-2">
         <h5 class="card-title">
           <%= character.name %>

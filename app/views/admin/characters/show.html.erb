@@ -50,6 +50,10 @@
               <th scope="row">Claiming Verification Key</th>
               <td class="font-monospace"><%= @verified_registration.verification_key %></td>
             </tr>
+            <tr>
+              <th scope="row">Verification Type</th>
+              <td><%= @verified_registration.verification_type.titleize %></td>
+            </tr>
           <% end %>
 
           <tr>

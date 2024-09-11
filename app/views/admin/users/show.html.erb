@@ -1,6 +1,15 @@
 <div class="row">
   <div class="col-md-6">
     <h3>Basic User Info</h3>
+
+    <div class="button-toolbar pb-4" id="admin-user-maintenance">
+      <%= button_to admin_user_path(@user), method: :delete,
+                    class: 'btn btn-danger', form_class: 'd-inline-block', disabled: delete_block_reason != nil,
+                    title: delete_block_reason || "Permanently delete this user" do %>
+        <i class="bi bi-person-x"></i> Delete User
+      <% end %>
+    </div>
+
     <table class="table table-borderless">
       <tbody>
       <tr>
@@ -27,7 +36,7 @@
         <td>
           <%= @user.email %>
           <% if @user.confirmed? %>
-            <i class="bi bi-envelope-check text-success"></i>
+            <i class="bi bi-envelope-check text-success" title="Email Verified"></i>
           <% end %>
         </td>
       </tr>
@@ -52,12 +61,19 @@
   <div class="col-md-6">
     <h3>Security</h3>
 
-    <div class="button-toolbar pb-4">
+    <div class="button-toolbar pb-2" id="admin-user-security">
       <% if @user.pending_reconfirmation? || !@user.confirmed? %>
-        <button class="btn btn-primary"><i class="bi bi-envelope-plus"></i> Skip Email Confirmation</button>
+        <%= button_to confirm_admin_user_path(@user), class: 'btn btn-primary', form_class: 'd-inline-block' do %>
+          <i class="bi bi-envelope-plus"></i> Skip Email Confirmation
+        <% end %>
       <% end %>
-      <button class="btn btn-primary"><i class="bi bi-envelope"></i> Send Password Reset</button>
-      <button class="btn btn-primary" disabled><i class="bi bi-unlock"></i> Remove MFA</button>
+      <%= button_to reset_password_admin_user_path(@user), class: 'btn btn-primary', form_class: 'd-inline-block' do %>
+        <i class="bi bi-envelope"></i> Send Password Reset</button>
+      <% end %>
+      <%= button_to mfa_admin_user_path(@user), method: :delete, class: 'btn btn-primary', form_class: 'd-inline-block',
+                    disabled: !@user.requires_mfa? do %>
+        <i class="bi bi-unlock"></i> Remove MFA
+      <% end %>
     </div>
 
     <h4>Social Identities</h4>
@@ -152,7 +168,8 @@
             <% if registration.verified_at %>
               <%= registration.verified_at %>
             <% elsif character.verified? %>
-              Verified <%= link_to "Elsewhere", admin_user_path(character.verified_owner) %>
+              Verified
+              by <%= link_to character.verified_owner.profile.display_name, admin_user_path(character.verified_owner) %>
             <% else %>
               Not Verified!
             <% end %>
@@ -177,7 +194,7 @@
                 <i class="bi bi-patch-plus"></i>
               <% end %>
             <% end %>
-            <%= button_to refresh_admin_character_path(character),
+            <%= button_to refresh_admin_character_path(character.lodestone_id),
                           form_class: "d-inline-block", class: "btn btn-outline-primary",
                           title: "Refresh Character" do %>
               <i class="bi bi-arrow-repeat"></i>

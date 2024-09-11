@@ -39,7 +39,11 @@ Rails.application.routes.draw do
     namespace 'admin' do
       root to: 'dashboard#index'
 
-      resources :users, controller: 'users'
+      resources :users, controller: 'users' do
+        delete :mfa, on: :member, to: 'users#destroy_mfa'
+        post :reset_password, on: :member, to: 'users#send_password_reset'
+        post :confirm, on: :member, to: 'users#confirm'
+      end
       resources :characters, controller: 'characters', param: :lodestone_id do
         post :refresh, on: :member
         resource :ban, controller: 'character/character_bans'

@@ -14,6 +14,7 @@ class CharacterRegistration < ApplicationRecord
   validates :character_id, uniqueness: { scope: [:user_id], message: 'is already registered to you!' }
   validates_uniqueness_of :character_id,
                           conditions: -> { where.not(verified_at: nil) },
+                          if: -> { verified_at != nil },
                           message: 'has already been verified.'
 
   validates_associated :character, message: 'could not be found or is invalid.'
@@ -45,21 +46,23 @@ class CharacterRegistration < ApplicationRecord
 
       if other_registration.present? && clobber
         logger.warn('Character verification was clobbered!', old: other_registration, new: self)
-        other_registration.verified_at = nil
-        other_registration.verification_type = nil
+        other_registration.unverify
         other_registration.save!
 
         # TODO: Send an email to the losing user.
       end
 
-      self.verified_at = DateTime.now
-      self.verification_type = verification_type
+      self.verify(verification_type)
       save!
     rescue ActiveRecord::RecordInvalid
-      self.verified_at = nil  # rollback record in memory
-      self.verification_type = nil
+      self.unverify
       raise
     end
+  end
+
+  def verify(verification_type)
+    self.verified_at = DateTime.now
+    self.verification_type = verification_type
   end
 
   def unverify

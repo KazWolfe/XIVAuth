@@ -24,11 +24,17 @@ class Admin::CharactersController < Admin::AdminController
   def refresh
     if FFXIV::RefreshCharactersJob.perform_later(@character, force_refresh: true)
       respond_to do |format|
-        format.html { redirect_to admin_character_path(@character.lodestone_id), notice: 'Character refresh was successfully enqueued.' }
+        format.html {
+          flash[:notice] = "Character refresh was successfully enqueued."
+          redirect_back fallback_location: admin_character_path(@character.lodestone_id)
+        }
       end
     else
       respond_to do |format|
-        format.html { redirect_to admin_character_path(@character.lodestone_id), error: 'Character refresh could not be enqueued.' }
+        format.html {
+          flash[:error] = "Character refresh could not be enqueued."
+          redirect_back fallback_location: admin_character_path(@character.lodestone_id)
+        }
       end
     end
   end

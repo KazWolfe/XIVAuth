@@ -3,7 +3,7 @@
 class Admin::UsersController < Admin::AdminController
   include Pagy::Backend
 
-  before_action :set_user, only: %i[show update destroy]
+  before_action :set_user, except: %i[ index ]
 
   def index
     @pagy, @users = pagy(User.order(created_at: :desc))
@@ -18,6 +18,39 @@ class Admin::UsersController < Admin::AdminController
       redirect_to admin_users_path, notice: 'User deleted.'
     else
       redirect_to admin_user_path(@user), alert: 'User could not be deleted.'
+    end
+  end
+
+  def destroy_mfa
+    @user.webauthn_credentials.clear
+    @user.totp_credential = nil
+
+    if @user.save
+      flash[:notice] = "MFA was removed for user."
+      redirect_back_or_to admin_user_path(@user)
+    else
+      flash[:error] = "MFA could not be removed for user."
+      redirect_back_or_to admin_user_path(@user)
+    end
+  end
+
+  def send_password_reset
+    if @user.send_reset_password_instructions
+      flash[:notice] = "A password reset email was sent to #{@user.email}."
+      redirect_back_or_to admin_user_path(@user)
+    else
+      flash[:error] = "Could not dispatch a password reset email."
+      redirect_back_or_to admin_user_path(@user)
+    end
+  end
+
+  def confirm
+    if @user.confirm
+      flash[:notice] = "The user was successfully confirmed."
+      redirect_back_or_to admin_user_path(@user)
+    else
+      flash[:error] = "Could not confirm user."
+      redirect_back_or_to admin_user_path(@user)
     end
   end
 
