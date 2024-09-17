@@ -1,0 +1,52 @@
+require:
+  - rubocop-rails
+
+Style/AccessModifierDeclarations:
+  EnforcedStyle: inline
+
+Style/RedundantReturn:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either_consistent
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+# To be enforced with Ruby 3.4, so we don't care about it.
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+Layout/HashAlignment:
+  EnforcedLastArgumentHashStyle: ignore_implicit
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyleForEmptyBraces: space
+
+# My code's too broken to care.
+Metrics/AbcSize:
+  Enabled: false
+
+# Ditto
+Metrics/MethodLength:
+  Enabled: false
+
+# ...
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# lol.
+Style/Documentation:
+  Enabled: false

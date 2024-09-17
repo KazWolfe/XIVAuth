@@ -1,5 +1,4 @@
 class FFXIV::Character < ApplicationRecord
-
   validates :lodestone_id, presence: true, uniqueness: true
   validate :lodestone_data_ok?
 
@@ -8,9 +7,9 @@ class FFXIV::Character < ApplicationRecord
   validates :data_center, presence: true
 
   has_many :character_registrations, dependent: :destroy
-  has_one :ban, as: :character, class_name: 'CharacterBan', dependent: :destroy
+  has_one :ban, as: :character, class_name: "CharacterBan", dependent: :destroy
 
-  def lodestone_url(region = 'na')
+  def lodestone_url(region = "na")
     "https://#{region}.finalfantasyxiv.com/lodestone/character/#{lodestone_id}"
   end
 
@@ -44,7 +43,7 @@ class FFXIV::Character < ApplicationRecord
   end
 
   def self.for_lodestone_id(lodestone_id)
-    existing = find_by_lodestone_id(lodestone_id)
+    existing = find_by(lodestone_id: lodestone_id)
     return existing if existing.present?
 
     character = new(lodestone_id:)
@@ -53,9 +52,7 @@ class FFXIV::Character < ApplicationRecord
     character
   end
 
-  private
-
-  def lodestone_data_ok?
+  private def lodestone_data_ok?
     if @lodestone_data.present? && !@lodestone_data.valid?
       errors.merge!(@lodestone_data.errors)
     end

@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-require 'active_support/core_ext/integer/time'
+require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -21,13 +19,13 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join('tmp/caching-dev.txt').exist?
+  if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}"
+      "Cache-Control" => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
@@ -42,7 +40,7 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.perform_caching = false
   config.action_mailer.default_url_options = {
-    host: ENV['APP_URL'] || 'http://localhost:3000'
+    host: ENV["APP_URL"] || "http://localhost:3000"
   }
 
   # config.action_mailer.delivery_method = :postmark
@@ -68,13 +66,13 @@ Rails.application.configure do
   # Default activerecord encryption for ease of local dev
   config.active_record.encryption.primary_key =
     Rails.application.credentials.dig(:active_record_encryption, :primary_key) ||
-    'JZcnPw4IvRp6P4pAbfCsENpAxbghOiPv'
+    "JZcnPw4IvRp6P4pAbfCsENpAxbghOiPv"
   config.active_record.encryption.deterministic_key =
     Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) ||
-    'hIWebFlVbQ22cllX4ii1Qtq1UFe95KnA'
+    "hIWebFlVbQ22cllX4ii1Qtq1UFe95KnA"
   config.active_record.encryption.key_derivation_salt =
     Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) ||
-    'EvBsq2idg2gdUs1NULVhV2ocWFdcKrzn'
+    "EvBsq2idg2gdUs1NULVhV2ocWFdcKrzn"
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
@@ -91,5 +89,5 @@ Rails.application.configure do
   # Enable the web console for local networks
   config.web_console.allowed_ips = %w[10.0.0.0/8 127.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ::/64]
 
-  config.log_level = ENV['LOG_LEVEL']&.downcase&.strip&.to_sym || :debug
+  config.log_level = ENV["LOG_LEVEL"]&.downcase&.strip&.to_sym || :debug
 end

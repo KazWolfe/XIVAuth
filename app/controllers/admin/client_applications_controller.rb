@@ -9,9 +9,7 @@ class Admin::ClientApplicationsController < Admin::AdminController
 
   def show; end
 
-  private
-
-  def set_app
+  private def set_app
     @client_application = OAuth::ClientApplication.find(params[:id])
   end
 end

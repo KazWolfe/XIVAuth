@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 class Admin::CharactersController < Admin::AdminController
   include Pagy::Backend
 
-  before_action :set_character, only: %i[ show update destroy refresh ]
+  before_action :set_character, except: %i[index]
 
   def index
     @pagy, @characters = pagy(FFXIV::Character.order(created_at: :desc))
@@ -15,37 +13,33 @@ class Admin::CharactersController < Admin::AdminController
 
   def destroy
     if @character.destroy
-      redirect_to admin_characters_path, notice: 'Character deleted.'
+      redirect_to admin_characters_path, notice: "Character deleted."
     else
-      redirect_to admin_character_path(@character), alert: 'Character could not be deleted.'
+      redirect_to admin_character_path(@character), alert: "Character could not be deleted."
     end
   end
 
   def refresh
     if FFXIV::RefreshCharactersJob.perform_later(@character, force_refresh: true)
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:notice] = "Character refresh was successfully enqueued."
           redirect_back fallback_location: admin_character_path(@character.lodestone_id)
-        }
+        end
       end
     else
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:error] = "Character refresh could not be enqueued."
           redirect_back fallback_location: admin_character_path(@character.lodestone_id)
-        }
+        end
       end
     end
   end
 
-  def force_register
+  def force_register; end
 
-  end
-
-  private
-
-  def set_character
+  private def set_character
     @character = FFXIV::Character.find_by_lodestone_id(params[:lodestone_id])
   end
 end

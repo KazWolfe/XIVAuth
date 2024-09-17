@@ -1,12 +1,9 @@
-# frozen_string_literal: true
-
 module OAuth
   class AuthorizationsController < Doorkeeper::AuthorizationsController
-
     def create
       # Cheat to get around needing client-side JavaScript to submit a DELETE.
       # The actual DELETE method still works, so this is in addition to compliance, at least.
-      (destroy and return) if params['disposition'] == 'deny'
+      (destroy and return) if params["disposition"] == "deny"
 
       super
 
@@ -20,9 +17,7 @@ module OAuth
       end
     end
 
-    private
-
-    def build_permissible_policy
+    private def build_permissible_policy
       policy = OAuth::PermissiblePolicy.new
 
       build_character_policy_rules(policy)
@@ -31,7 +26,7 @@ module OAuth
       policy
     end
 
-    def build_character_policy_rules(policy)
+    private def build_character_policy_rules(policy)
       character_ids = params[:characters] || []
       share_new_characters = params[:share_new_characters].present?
 
@@ -41,10 +36,10 @@ module OAuth
 
       if share_new_characters
         # Filter to only characters that were *not* selected, so we can deny access to them.
-        objects = objects.where.not(character: {lodestone_id: character_ids })
+        objects = objects.where.not(character: { lodestone_id: character_ids })
       else
         # Otherwise, filter to only selected characters.
-        objects = objects.where(character: {lodestone_id: character_ids })
+        objects = objects.where(character: { lodestone_id: character_ids })
       end
 
       Rails.logger.info("Creating rules for #{objects.count} characters.")
@@ -55,7 +50,7 @@ module OAuth
       end
     end
 
-    def build_identity_policy_rules(policy)
+    private def build_identity_policy_rules(policy)
       identity_ids = params[:social_identities] || []
       share_new_identities = params[:share_new_identities].present?
 

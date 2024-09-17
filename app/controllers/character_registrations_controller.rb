@@ -1,7 +1,7 @@
 class CharacterRegistrationsController < ApplicationController
   include Pagy::Backend
 
-  before_action :set_character_registration, only: %i[ show destroy ]
+  before_action :set_character_registration, only: %i[show destroy]
 
   # GET /character_registrations or /character_registrations.json
   def index
@@ -17,7 +17,7 @@ class CharacterRegistrationsController < ApplicationController
   def create
     lodestone_id = helpers.extract_id(character_registration_params[:character_key])
     ffxiv_character = FFXIV::Character.for_lodestone_id(lodestone_id)
-    
+
     @character_registration = CharacterRegistration.new(
       character: ffxiv_character,
       user: current_user,
@@ -26,7 +26,9 @@ class CharacterRegistrationsController < ApplicationController
 
     respond_to do |format|
       if @character_registration.save
-        format.html { redirect_to character_registrations_path, notice: 'Character registration was successfully created.' }
+        format.html do
+          redirect_to character_registrations_path, notice: "Character registration was successfully created."
+        end
       else
         format.html { render :new, status: :unprocessable_entity }
       end
@@ -39,7 +41,9 @@ class CharacterRegistrationsController < ApplicationController
 
     respond_to do |format|
       if @character_registration.update(character_registration_params)
-        format.html { redirect_to character_registrations_path, notice: 'Character registration was successfully updated.' }
+        format.html do
+          redirect_to character_registrations_path, notice: "Character registration was successfully updated."
+        end
       else
         format.html { render :edit, status: :unprocessable_entity }
       end
@@ -53,7 +57,9 @@ class CharacterRegistrationsController < ApplicationController
     @character_registration.destroy
 
     respond_to do |format|
-      format.html { redirect_to character_registrations_path, notice: 'Character registration was successfully destroyed.' }
+      format.html do
+        redirect_to character_registrations_path, notice: "Character registration was successfully destroyed."
+      end
     end
   end
 
@@ -63,7 +69,7 @@ class CharacterRegistrationsController < ApplicationController
 
     unless @character_registration.character.stale?
       respond_to do |format|
-        format.html { redirect_to character_registrations_path, alert: 'Character is not yet stale!' }
+        format.html { redirect_to character_registrations_path, alert: "Character is not yet stale!" }
       end
 
       return
@@ -71,19 +77,17 @@ class CharacterRegistrationsController < ApplicationController
 
     if FFXIV::RefreshCharactersJob.perform_later @character_registration.character
       respond_to do |format|
-        format.html { redirect_to character_registrations_path, notice: 'Character refresh was successfully enqueued.' }
+        format.html { redirect_to character_registrations_path, notice: "Character refresh was successfully enqueued." }
       end
     else
       respond_to do |format|
-        format.html { redirect_to character_registrations_path, error: 'Character refresh could not be enqueued.' }
+        format.html { redirect_to character_registrations_path, error: "Character refresh could not be enqueued." }
       end
     end
   end
 
-  private
-
   # Use callbacks to share common setup or constraints between actions.
-  def set_character_registration
+  private def set_character_registration
     @character_registration = CharacterRegistration.find(params[:id])
     authorize! :show, @character_registration
 
@@ -91,14 +95,14 @@ class CharacterRegistrationsController < ApplicationController
   end
 
   # Only allow a list of trusted parameters through.
-  def character_registration_params
+  private def character_registration_params
     params.require(:character_registration)
           .permit(:character_key)
   end
 
-  def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_entity)
     render status: status,
-           turbo_stream: turbo_stream.update('remote_modal-content',
-                                             partial: 'portal/characters/partials/new_character_form')
+           turbo_stream: turbo_stream.update("remote_modal-content",
+                                             partial: "portal/characters/partials/new_character_form")
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ChangeFlipperGatesValueToText < ActiveRecord::Migration[7.1]
   def up
     # Ensure this incremental update migration is idempotent

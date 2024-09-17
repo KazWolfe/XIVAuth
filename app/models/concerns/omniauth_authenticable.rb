@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module OmniauthAuthenticable
   extend ActiveSupport::Concern
 
@@ -10,12 +8,12 @@ module OmniauthAuthenticable
       #       depending on how badly certain clients behave. (Please guys, use IDs.)
 
       identity = {
-        provider: data['provider'],
-        external_id: data['uid'],
-        email: data['info']['email'],
-        name: data['info']['name'],
-        nickname: data['info']['nickname'],
-        raw_info: data['extra']['raw_info']
+        provider: data["provider"],
+        external_id: data["uid"],
+        email: data["info"]["email"],
+        name: data["info"]["name"],
+        nickname: data["info"]["nickname"],
+        raw_info: data["extra"]["raw_info"]
       }
 
       social_identities.build(identity)
@@ -40,8 +38,8 @@ module OmniauthAuthenticable
 
     def new_with_session(params, session)
       super.tap do |user|
-        if (data = session['devise.oauth.data'])
-          user.email = data['info']['email'] if user.email.blank?
+        if (data = session["devise.oauth.data"])
+          user.email = data["info"]["email"] if user.email.blank?
           user.add_social_identity(data)
         end
       end

@@ -7,7 +7,7 @@ Flipper.register(:developers) do |actor, ctx|
 end
 
 Flipper::UI.configure do |config|
-  config.application_breadcrumb_href = '/'
+  config.application_breadcrumb_href = "/"
   config.cloud_recommendation = false
   config.show_feature_description_in_list = true
 end

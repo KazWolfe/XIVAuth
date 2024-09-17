@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users::AuthenticatesWithMFA
   extend ActiveSupport::Concern
 
@@ -32,43 +30,41 @@ module Users::AuthenticatesWithMFA
     @webauthn_challenge = Users::Webauthn::AuthenticateService.build_challenge_for_user(user)
     session[:webauthn_challenge] = @webauthn_challenge&.challenge
 
-    render 'devise/sessions/mfa', status: status_code
+    render "devise/sessions/mfa", status: status_code
   end
 
-  private
-
-  def reset_mfa_attempt!
+  private def reset_mfa_attempt!
     session.delete(:otp_user_id)
     session.delete(:webauthn_challenge)
   end
 
-  def authenticate_with_webauthn(user)
+  private def authenticate_with_webauthn(user)
     Users::Webauthn::AuthenticateService.new(user, user_params[:device_response], session[:webauthn_challenge]).execute
     handle_mfa_success(user)
   rescue WebAuthn::Error => e
-    handle_mfa_failure(user, 'WebAuthn', message: e.message)
+    handle_mfa_failure(user, "WebAuthn", message: e.message)
   end
 
-  def authenticate_with_totp(user)
+  private def authenticate_with_totp(user)
     unless user.totp_credential&.otp_enabled
-      handle_mfa_failure(user, 'TOTP', message: 'TOTP is not configured!')
+      handle_mfa_failure(user, "TOTP", message: "TOTP is not configured!")
       return
     end
 
     if user.totp_credential.validate_and_consume_otp_or_backup!(user_params[:otp_attempt])
       handle_mfa_success(user)
     else
-      handle_mfa_failure(user, 'TOTP', message: 'TOTP was invalid or could not be verified.')
+      handle_mfa_failure(user, "TOTP", message: "TOTP was invalid or could not be verified.")
     end
   end
 
-  def handle_mfa_success(user)
+  private def handle_mfa_success(user)
     reset_mfa_attempt!
 
     sign_in(:user, user)
   end
 
-  def handle_mfa_failure(user, method, message: nil)
+  private def handle_mfa_failure(user, method, message: nil)
     flash.now[:alert] = "MFA authentication via #{method} failed: #{message}"
     prompt_for_mfa(user, status_code: :unprocessable_entity)
   end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # FIXME: Possible security issue (?) - Steam doesn't give us CSRF back, so we have to deal with a bit of a headache.
   skip_before_action :verify_authenticity_token, only: [:steam]
@@ -13,26 +11,25 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
-  private
-
-  def common
+  private def common
     return sso_bind_identity if user_signed_in?
 
     unless User.omniauth_login_providers.include? @provider
-      raise 'Cannot proceed with authentication for a non-login provider.'
+      raise "Cannot proceed with authentication for a non-login provider."
     end
 
     sso_signin
   end
 
-  def sso_signin
-    raise 'sso_signin called while a user was logged in!' if user_signed_in?
+  private def sso_signin
+    raise "sso_signin called while a user was logged in!" if user_signed_in?
 
     @user = find_user_by_authdata(auth_data)
 
     unless @user.present?
       unless User.omniauth_login_providers.include? @provider
-        redirect_to new_user_session_path, alert: "#{@provider.to_s.titleize} accounts cannot be used for authentication."
+        redirect_to new_user_session_path,
+                    alert: "#{@provider.to_s.titleize} accounts cannot be used for authentication."
         return
       end
 
@@ -44,7 +41,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
 
       unless User.signup_permitted?
-        redirect_to new_user_session_path, alert: 'Sign-ups are disabled at this time.'
+        redirect_to new_user_session_path, alert: "Sign-ups are disabled at this time."
         return
       end
 
@@ -53,27 +50,27 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     if @user.persisted?
-      set_flash_message(:notice, :success, kind: auth_data['provider'].camelize) if is_navigational_format?
+      set_flash_message(:notice, :success, kind: auth_data["provider"].camelize) if is_navigational_format?
       sign_in_and_redirect @user, event: :authentication
     else
-      session['devise.oauth.data'] = auth_data.except(:extra)
+      session["devise.oauth.data"] = auth_data.except(:extra)
 
       msg = @user.errors.full_messages.join("\n")
       redirect_to new_user_registration_url, alert: msg
     end
   end
 
-  def sso_bind_identity
+  private def sso_bind_identity
     identity = Users::SocialIdentity.find_by(provider: auth_data[:provider], external_id: auth_data[:uid])
     if identity.present?
       if identity.user == current_user
         identity.merge_auth_hash(auth_data)
 
-        redirect_to edit_user_registration_path, alert: 'This social identity already exists on your account! ' \
-                                                        'Information about this identity has been updated.'
+        redirect_to edit_user_registration_path, alert: "This social identity already exists on your account! " \
+                                                        "Information about this identity has been updated."
       else
-        redirect_to edit_user_registration_path, alert: 'This social identity is already used on another account. ' \
-                                                        'Please delete it from that account first.'
+        redirect_to edit_user_registration_path, alert: "This social identity is already used on another account. " \
+                                                        "Please delete it from that account first."
       end
 
       return
@@ -82,18 +79,18 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     identity = current_user.add_social_identity(auth_data)
 
     if identity.save
-      set_flash_message(:notice, :success, kind: auth_data['provider'].camelize) if is_navigational_format?
+      set_flash_message(:notice, :success, kind: auth_data["provider"].camelize) if is_navigational_format?
       redirect_to edit_user_registration_path
     else
       redirect_to edit_user_registration_path, alert: identity.errors.full_messages.join("\n")
     end
   end
 
-  def auth_data
-    request.env['omniauth.auth']
+  private def auth_data
+    request.env["omniauth.auth"]
   end
 
-  def find_user_by_authdata(auth)
+  private def find_user_by_authdata(auth)
     social_identity = Users::SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
     if social_identity.present?
       social_identity.merge_auth_hash(auth)

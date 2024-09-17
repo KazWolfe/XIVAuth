@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Users::TotpCredentialsController < ApplicationController
   def new
     if current_user.totp_credential&.otp_enabled
@@ -29,7 +27,7 @@ class Users::TotpCredentialsController < ApplicationController
 
     # Also will save here!
     unless @totp_credential.validate_and_consume_otp!(filtered_params[:otp_attempt])
-      @totp_credential.errors.add(:otp_attempt, 'was invalid')
+      @totp_credential.errors.add(:otp_attempt, "was invalid")
       render_new_form_again
     end
   end
@@ -43,30 +41,28 @@ class Users::TotpCredentialsController < ApplicationController
     render and return if otp_attempt.nil?
 
     unless @totp_credential.validate_and_consume_otp_or_backup!(otp_attempt)
-      @totp_credential.errors.add(:otp_attempt, 'was invalid')
+      @totp_credential.errors.add(:otp_attempt, "was invalid")
       render status: :unprocessable_entity,
-             turbo_stream: turbo_stream.update('remote_modal-content', partial: 'users/totp_credentials/destroy_modal')
+             turbo_stream: turbo_stream.update("remote_modal-content", partial: "users/totp_credentials/destroy_modal")
 
       return
     end
 
     if @totp_credential.delete
-      flash[:notice] = 'TOTP credential successfully removed.'
+      flash[:notice] = "TOTP credential successfully removed."
     else
-      flash[:error] = 'TOTP credential could not be removed.'
+      flash[:error] = "TOTP credential could not be removed."
     end
 
     redirect_to edit_user_registration_path
   end
 
-  private
-
-  def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_entity)
     render status: status,
-           turbo_stream: turbo_stream.update('remote_modal-content', partial: 'users/totp_credentials/new_modal')
+           turbo_stream: turbo_stream.update("remote_modal-content", partial: "users/totp_credentials/new_modal")
   end
 
-  def filtered_params
+  private def filtered_params
     params.require(:users_totp_credential).permit(:otp_attempt)
   end
 end

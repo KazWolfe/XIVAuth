@@ -1,4 +1,4 @@
-require 'doorkeeper/permissible_policy_cloner'
+require "doorkeeper/permissible_policy_cloner"
 
 # frozen_string_literal: true
 
@@ -56,9 +56,9 @@ Doorkeeper.configure do
   #     destroy
   #   end::Doorkeeper::Orm::ActiveRecord::Mixins::AccessGrant
   # end
-  application_class 'OAuth::ClientApplication'
-  access_grant_class 'OAuth::AccessGrant'
-  access_token_class 'OAuth::AccessToken'
+  application_class "OAuth::ClientApplication"
+  access_grant_class "OAuth::AccessGrant"
+  access_token_class "OAuth::AccessToken"
 
   # Enables polymorphic Resource Owner association for Access Tokens and Access Grants.
   # By default this option is disabled.
@@ -208,7 +208,7 @@ Doorkeeper.configure do
   #
   # This can be done by adding 'fallback: plain', e.g. :
   #
-  hash_application_secrets using: '::Doorkeeper::SecretStoring::BCrypt', fallback: :plain
+  hash_application_secrets using: "::Doorkeeper::SecretStoring::BCrypt", fallback: :plain
 
   # Issue access tokens with refresh token (disabled by default), you may also
   # pass a block which accepts `context` to customize when to give a refresh
@@ -220,7 +220,7 @@ Doorkeeper.configure do
   # `scopes` - the requested scopes (see Doorkeeper::OAuth::Scopes)
   #
   use_refresh_token do |context|
-    context.scopes.exists? 'refresh'
+    context.scopes.exists? "refresh"
   end
 
   # Provide support for an owner to be assigned to each registered application (disabled by default)
@@ -236,9 +236,9 @@ Doorkeeper.configure do
   # https://doorkeeper.gitbook.io/guides/ruby-on-rails/scopes
   #
   # default_scopes  :public
-  optional_scopes 'user', 'user:email', 'user:social', 'user:jwt', 'user:manage',
-                  'character', 'character:all', 'character:jwt', 'character:manage',
-                  'refresh'
+  optional_scopes "user", "user:email", "user:social", "user:jwt", "user:manage",
+                  "character", "character:all", "character:jwt", "character:manage",
+                  "refresh"
 
   # Allows to restrict only certain scopes for grant_type.
   # By default, all the scopes will be available for all the grant types.
@@ -282,7 +282,7 @@ Doorkeeper.configure do
   # force_ssl_in_redirect_uri !Rails.env.development?
   #
   # force_ssl_in_redirect_uri { |uri| uri.host != 'localhost' }
-  force_ssl_in_redirect_uri { |uri| !(uri.host == 'localhost' || uri.host == '127.0.0.1' || uri.host == '[::1]') }
+  force_ssl_in_redirect_uri { |uri| !(uri.host == "localhost" || uri.host == "127.0.0.1" || uri.host == "[::1]") }
 
   # Specify what redirect URI's you want to block during Application creation.
   # Any redirect URI is allowed by default.
@@ -513,5 +513,5 @@ Doorkeeper.configure do
 
   # WWW-Authenticate Realm (default: "Doorkeeper").
   #
-  realm 'XIVAuth'
+  realm "XIVAuth"
 end

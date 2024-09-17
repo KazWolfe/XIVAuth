@@ -50,7 +50,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_213829) do
     t.string "portrait_url", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["content_id"], name: "index_ffxiv_characters_on_content_id", unique: true, where: "((content_id IS NOT NULL) OR ((content_id)::text <> ''::text))"
+    t.index ["content_id"], name: "index_ffxiv_characters_on_content_id", unique: true,
+where: "((content_id IS NOT NULL) OR ((content_id)::text <> ''::text))"
     t.index ["lodestone_id"], name: "index_ffxiv_characters_on_lodestone_id", unique: true
   end
 
@@ -76,7 +77,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_213829) do
     t.boolean "enabled", default: true, null: false
     t.string "public_key", limit: 65535
     t.string "private_key", limit: 65535, null: false
-    t.jsonb "key_params", default: {}
+    t.jsonb "key_params", default: { }
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "expires_at"
@@ -114,7 +115,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_213829) do
     t.uuid "permissible_policy_id"
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["permissible_policy_id"], name: "index_oauth_access_tokens_on_permissible_policy_id"
-    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, where: "((refresh_token IS NOT NULL) OR ((refresh_token)::text <> ''::text))"
+    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true,
+where: "((refresh_token IS NOT NULL) OR ((refresh_token)::text <> ''::text))"
     t.index ["resource_owner_type", "resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
   end

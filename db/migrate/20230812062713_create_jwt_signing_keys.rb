@@ -9,7 +9,7 @@ class CreateJwtSigningKeys < ActiveRecord::Migration[7.0]
       t.string :public_key, null: true, limit: 65_535
       t.string :private_key, null: false, limit: 65_535
 
-      t.jsonb :key_params, null: true, default: {}
+      t.jsonb :key_params, null: true, default: { }
 
       t.timestamps
       t.datetime :expires_at, null: true

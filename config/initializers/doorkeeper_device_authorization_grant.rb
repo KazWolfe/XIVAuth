@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Doorkeeper::DeviceAuthorizationGrant.configure do
   # Minimum device code polling interval expected from the client, expressed in seconds.
   # device_code_polling_interval 5

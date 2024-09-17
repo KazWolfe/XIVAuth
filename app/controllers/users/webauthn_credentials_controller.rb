@@ -1,7 +1,4 @@
-# frozen_string_literal: true
-
 class Users::WebauthnCredentialsController < ApplicationController
-
   def new
     @webauthn_credential = Users::WebauthnCredential.new
     @challenge = build_challenge
@@ -36,7 +33,7 @@ class Users::WebauthnCredentialsController < ApplicationController
         end
       end
     rescue WebAuthn::Error => e
-      logger.error('Error while registering webauthn credential!', e)
+      logger.error("Error while registering webauthn credential!", e)
 
       respond_to do |format|
         format.turbo_stream { render_new_form_again }
@@ -47,19 +44,17 @@ class Users::WebauthnCredentialsController < ApplicationController
     end
   end
 
-  private
-
-  def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_entity)
     render status: status,
-           turbo_stream: turbo_stream.update('remote_modal-content', partial: 'users/webauthn_credentials/modal')
+           turbo_stream: turbo_stream.update("remote_modal-content", partial: "users/webauthn_credentials/modal")
   end
 
-  def create_params
+  private def create_params
     params.require(:users_webauthn_credential)
           .permit(:credential, :nickname)
   end
 
-  def build_challenge
+  private def build_challenge
     create_options = WebAuthn::Credential.options_for_create(
       user: {
         id: current_user.id,

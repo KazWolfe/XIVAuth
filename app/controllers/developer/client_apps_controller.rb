@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Developer
   class ClientAppsController < ApplicationController
     before_action :set_application, only: %i[show edit update destroy regenerate]
@@ -81,7 +79,7 @@ module Developer
         flash[:application_secret] = @application.plaintext_secret
 
         respond_to do |format|
-          format.html { redirect_to developer_application_path(@application), notice: 'Secret regenerated!' }
+          format.html { redirect_to developer_application_path(@application), notice: "Secret regenerated!" }
           format.json { render json: @application, as_owner: true }
         end
       else
@@ -89,7 +87,7 @@ module Developer
           format.html do
             redirect_to developer_application_path(@application),
                         status: :unprocessable_entity,
-                        error: 'Could not regenerate app secret.'
+                        error: "Could not regenerate app secret."
           end
           format.json { render json: @application, as_owner: true }
         end
@@ -107,19 +105,17 @@ module Developer
       end
     end
 
-    private
-
-    def set_application
+    private def set_application
       @application = OAuth::ClientApplication.find(params[:id])
       authorize! :show, @application
     end
 
-    def application_params
+    private def application_params
       params.require(:doorkeeper_application)
             .permit(:name, :redirect_uri, { scopes: [] }, :confidential, :public)
     end
 
-    def i18n_scope(action)
+    private def i18n_scope(action)
       %i[doorkeeper flash applications] << action
     end
   end

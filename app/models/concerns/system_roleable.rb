@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
 module SystemRoleable
   extend ActiveSupport::Concern
 
-  APP_ROLES = %w[admin developer]
-  
+  APP_ROLES = %w[admin developer].freeze
+
   included do
-    validates :roles, array: { presence: true, inclusion: { in: APP_ROLES }}
+    validates :roles, array: { presence: true, inclusion: { in: APP_ROLES } }
 
     def has_role?(role)
       return false if roles.blank?

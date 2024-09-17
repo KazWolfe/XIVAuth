@@ -22,11 +22,11 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
   end
 
   def jwk
-    JWT::JWK.new(private_key, use: 'sig', kid: name, alg: supported_algorithms[0])
+    JWT::JWK.new(private_key, use: "sig", kid: name, alg: supported_algorithms[0])
   end
 
   def generate_keypair(curve = nil)
-    curve ||= key_params[:curve] || 'prime256v1'
+    curve ||= key_params[:curve] || "prime256v1"
     self.private_key = OpenSSL::PKey::EC.generate(curve)
   end
 
@@ -50,9 +50,7 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
     active.where("key_params->'curve' ?| array[:curves]", curves.keys).first
   end
 
-  private
-
-  def extra_jwk_fields
+  private def extra_jwk_fields
     fields = {
       alg: supported_algorithms[0]
     }

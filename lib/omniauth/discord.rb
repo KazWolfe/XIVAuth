@@ -1,29 +1,29 @@
-require 'omniauth-oauth2'
+require "omniauth-oauth2"
 
 # Based off of https://github.com/adaoraul/omniauth-discord, updated with Pomelo support.
 
 module OmniAuth
   module Strategies
     class Discord < OmniAuth::Strategies::OAuth2
-      DEFAULT_SCOPE = 'identify'.freeze
+      DEFAULT_SCOPE = "identify".freeze
 
-      option :name, 'discord'
+      option :name, "discord"
 
       option :client_options,
-             site: 'https://discord.com/api',
-             authorize_url: 'oauth2/authorize',
-             token_url: 'oauth2/token'
+             site: "https://discord.com/api",
+             authorize_url: "oauth2/authorize",
+             token_url: "oauth2/token"
 
       option :authorize_options, %i[scope permissions prompt]
 
-      uid { raw_info['id'] }
+      uid { raw_info["id"] }
 
       info do
         {
-          name: raw_info['global_name'],
+          name: raw_info["global_name"],
           nickname: username,
-          email: raw_info['verified'] ? raw_info['email'] : nil,
-          image: raw_info['avatar'] ? "https://cdn.discordapp.com/avatars/#{raw_info['id']}/#{raw_info['avatar']}" : nil,
+          email: raw_info["verified"] ? raw_info["email"] : nil,
+          image: raw_info["avatar"] ? "https://cdn.discordapp.com/avatars/#{raw_info['id']}/#{raw_info['avatar']}" : nil
         }
       end
 
@@ -34,14 +34,14 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get('users/@me').parsed
+        @raw_info ||= access_token.get("users/@me").parsed
       end
 
       def username
-        username = raw_info['username']
+        username = raw_info["username"]
 
-        discriminator = raw_info['discriminator']
-        username += "##{discriminator}" if discriminator.present? && discriminator != '0'
+        discriminator = raw_info["discriminator"]
+        username += "##{discriminator}" if discriminator.present? && discriminator != "0"
 
         username
       end

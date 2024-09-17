@@ -1,1 +1,1 @@
-json.partial! 'character_registration', character_registration: @registration
+json.partial! "character_registration", character_registration: @registration

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class OAuth::CleanupStaleRecordsJob < ApplicationJob
   queue_as :cronjobs
 

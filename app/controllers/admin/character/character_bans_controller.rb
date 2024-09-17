@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Admin::Character::CharacterBansController < Admin::AdminController
   before_action :load_context
 
@@ -12,9 +10,9 @@ class Admin::Character::CharacterBansController < Admin::AdminController
   end
 
   def create
-    @character.character_registrations.destroy_all if params.dig(:character_ban, :remove_registrations) == '1'
+    @character.character_registrations.destroy_all if params.dig(:character_ban, :remove_registrations) == "1"
     @ban = @character.build_ban(filtered_params)
-    
+
     if @ban.save
       respond_to do |format|
         format.html { redirect_to admin_character_path(@character.lodestone_id), notice: "Character banned." }
@@ -31,24 +29,24 @@ class Admin::Character::CharacterBansController < Admin::AdminController
       end
     else
       respond_to do |format|
-        format.html { redirect_to admin_character_path(@character.lodestone_id), notice: "Character could not be unbanned." }
+        format.html do
+          redirect_to admin_character_path(@character.lodestone_id), notice: "Character could not be unbanned."
+        end
       end
     end
   end
 
-  private
-
-  def load_context
+  private def load_context
     @character = FFXIV::Character.find_by(lodestone_id: params[:character_lodestone_id])
   end
 
-  def filtered_params
+  private def filtered_params
     params.require(:character_ban).permit(:reason)
   end
 
-  def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_entity)
     render status: status,
-           turbo_stream: turbo_stream.update('remote_modal-content',
-                                             partial: 'admin/character/character_bans/form')
+           turbo_stream: turbo_stream.update("remote_modal-content",
+                                             partial: "admin/character/character_bans/form")
   end
 end

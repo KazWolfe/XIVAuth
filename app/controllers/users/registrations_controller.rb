@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
 class Users::RegistrationsController < Devise::RegistrationsController
   helper Users::SessionsHelper
 
   before_action :configure_sign_up_params, only: [:create]
   prepend_before_action :check_captcha, only: [:create]
   before_action :configure_account_update_params, only: [:update]
-  
+
   before_action :check_registration_allowed, only: %i[new create]
 
   # GET /resource/sign_up
@@ -78,7 +76,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     return if User.signup_permitted?
 
     sign_out current_user
-    redirect_to new_user_session_path, alert: 'Sign-ups are disabled at this time.'
+    redirect_to new_user_session_path, alert: "Sign-ups are disabled at this time."
   end
 
   def check_captcha

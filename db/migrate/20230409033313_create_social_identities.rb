@@ -4,7 +4,7 @@ class CreateSocialIdentities < ActiveRecord::Migration[7.0]
       t.references :user, type: :uuid, foreign_key: { to_table: :users }
 
       t.string :provider, null: false
-      t.string :external_id, null: false  # uid
+      t.string :external_id, null: false # uid
 
       # Optional strings returned from OmniAuth, normalized to their style.
       t.string :email

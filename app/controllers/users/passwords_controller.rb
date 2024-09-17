@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 class Users::PasswordsController < Devise::PasswordsController
   helper Users::SessionsHelper
 
   prepend_before_action :check_captcha, only: [:create]
-  
+
   # GET /resource/password/new
   # def new
   #   super
@@ -36,9 +34,7 @@ class Users::PasswordsController < Devise::PasswordsController
   #   super(resource_name)
   # end
 
-  private
-
-  def check_captcha
+  private def check_captcha
     return if verify_recaptcha
 
     self.resource = resource_class.new

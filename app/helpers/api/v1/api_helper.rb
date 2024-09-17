@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 module Api::V1::ApiHelper
-  SCOPE_SEPARATOR = ':'
+  SCOPE_SEPARATOR = ":"
 
   # Test to see if a specific scope is authorized (or if the manage scope is present).
   # @param scope [string] The scope text to check

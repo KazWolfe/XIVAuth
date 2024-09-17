@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 class Api::V1::JwtController < Api::V1::ApiController
   def dummy_jwt
-    algorithm = request.query_parameters['algorithm'] || JwtSigningKey::DEFAULT_ALGORITHM
-    payload = { data: 'dummy jwt for testing', id: SecureRandom.uuid }
+    algorithm = request.query_parameters["algorithm"] || JwtSigningKey::DEFAULT_ALGORITHM
+    payload = { data: "dummy jwt for testing", id: SecureRandom.uuid }
 
     expiry_time = (request.query_parameters[:ttl].to_i or 300)
     payload[:exp] = Time.now.to_i + expiry_time unless expiry_time.zero?
@@ -21,9 +19,9 @@ class Api::V1::JwtController < Api::V1::ApiController
     body = params[:token]
 
     decoded_jwt = JWT.decode(body, nil, false)
-    key_name = decoded_jwt[1]['kid']
+    key_name = decoded_jwt[1]["kid"]
     unless key_name.present?
-      render json: { status: 'error', error: 'No kid specified - cannot verify' }, status: :unprocessable_entity
+      render json: { status: "error", error: "No kid specified - cannot verify" }, status: :unprocessable_entity
       return
     end
 
@@ -36,9 +34,9 @@ class Api::V1::JwtController < Api::V1::ApiController
                                  algorithms: signing_key.supported_algorithms,
                                  verify_iat: true)
 
-      render json: { status: 'valid', jwt_head: validated_jwt[1], jwt_body: validated_jwt[0] }
+      render json: { status: "valid", jwt_head: validated_jwt[1], jwt_body: validated_jwt[0] }
     rescue JWT::DecodeError => e
-      render json: { status: 'invalid', error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+      render json: { status: "invalid", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
              status: :unprocessable_entity
     end
   end

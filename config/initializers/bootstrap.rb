@@ -3,10 +3,10 @@ ActionView::Base.field_error_proc = proc do |html_tag, instance|
   element = html_doc.children[0]
 
   if element
-    element.add_class('is-invalid')
+    element.add_class("is-invalid")
 
     if %w[input select textarea].include? element.name
-      failing_field_name = instance.instance_variable_get('@sanitized_method_name')
+      failing_field_name = instance.instance_variable_get("@sanitized_method_name")
       errors = instance.object.errors.full_messages_for(failing_field_name)
 
       instance.raw %(#{html_doc.to_html} <div class="invalid-feedback">#{errors.join('<br>'.html_safe)}</div>)

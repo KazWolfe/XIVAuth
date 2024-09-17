@@ -1,4 +1,4 @@
-require 'utilities/base32'
+require "utilities/base32"
 
 # {CharacterRegistration} represents a mapping between a game character and a claim by any specific user.
 # Character registrations are only considered "effective" if they have been verified in some way.
@@ -9,20 +9,21 @@ require 'utilities/base32'
 #                                        character type and other factors.
 class CharacterRegistration < ApplicationRecord
   belongs_to :user
-  belongs_to :character, class_name: 'FFXIV::Character'
+  belongs_to :character, class_name: "FFXIV::Character"
 
-  validates :character_id, uniqueness: { scope: [:user_id], message: 'is already registered to you!' }
+  validates :character_id, uniqueness: { scope: [:user_id], message: "is already registered to you!" }
   validates_uniqueness_of :character_id,
                           conditions: -> { where.not(verified_at: nil) },
                           if: -> { verified_at != nil },
-                          message: 'has already been verified.'
+                          message: "has already been verified."
 
-  validates_associated :character, message: 'could not be found or is invalid.'
+  validates_associated :character, message: "could not be found or is invalid."
 
   validates :verification_type, presence: true, if: -> { self.verified? }
   validates :verification_type, absence: true, unless: -> { self.verified? }
 
   attr_accessor :skip_ban_check
+
   validate :character_not_banned, unless: :skip_ban_check, on: :create
 
   validate :owner_can_create, on: :create
@@ -45,7 +46,7 @@ class CharacterRegistration < ApplicationRecord
       other_registration = CharacterRegistration.verified.find_by(character_id:)
 
       if other_registration.present? && clobber
-        logger.warn('Character verification was clobbered!', old: other_registration, new: self)
+        logger.warn("Character verification was clobbered!", old: other_registration, new: self)
         other_registration.unverify
         other_registration.save!
 
@@ -72,8 +73,8 @@ class CharacterRegistration < ApplicationRecord
 
   def verification_key
     # TODO: Load secret from environment, don't use lodestone_id as it's not reusable (other models in future)
-    secret = Rails.application.key_generator.generate_key('CharacterVerificationSecret')
-    hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha256'), secret, "#{character.lodestone_id}###{user.id}")
+    secret = Rails.application.key_generator.generate_key("CharacterVerificationSecret")
+    hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new("sha256"), secret, "#{character.lodestone_id}###{user.id}")
 
     "XIVAUTH:#{Base32.encode(hmac).truncate(24, omission: '')}"
   end
@@ -85,23 +86,19 @@ class CharacterRegistration < ApplicationRecord
     entanglement_key += "###{higher_order_id}" if higher_order_id.present?
 
     # TODO: Think of a better strategy for this
-    secret = Rails.application.key_generator.generate_key('CharacterEntanglementSecret')
-    hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha1'), secret, entanglement_key)
+    secret = Rails.application.key_generator.generate_key("CharacterEntanglementSecret")
+    hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new("sha1"), secret, entanglement_key)
 
     Base64.urlsafe_encode64(hmac, padding: false)
   end
 
-  private
-  
-  def owner_can_create
+  private def owner_can_create
     if user.character_registrations.unverified.count >= user.unverified_character_allowance
-      errors.add(:user, 'has too many unverified characters.')
+      errors.add(:user, "has too many unverified characters.")
     end
   end
-  
-  def character_not_banned
-    if character.ban.present? && !skip_ban_check
-      errors.add(:character, 'is currently banned.')
-    end
+
+  private def character_not_banned
+      errors.add(:character, "is currently banned.") if character.ban.present? && !skip_ban_check
   end
 end

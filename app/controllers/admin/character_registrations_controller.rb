@@ -1,13 +1,13 @@
 class Admin::CharacterRegistrationsController < Admin::AdminController
-  before_action :set_context, only: %i[ show update destroy verify unverify ]
+  before_action :set_context, only: %i[show update destroy verify unverify]
 
   def verify
     if @registration.verified?
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:error] = "Character was already verified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
         format.json { render json: { error: "Character already verified." }, status: :unprocessable_entity }
       end
 
@@ -18,10 +18,10 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
       @registration.verify!(:administrative, clobber: params[:clobber] == true)
 
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:notice] = "Character was successfully force verified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
         format.json { head :no_content }
       end
 
@@ -32,18 +32,18 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
     if job
       respond_to do |format|
         format.json { render status: :created, json: { job_id: job.id } }
-        format.html {
+        format.html do
           flash[:notice] = "Registration enqueued with Job ID #{job.id}"
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
       end
     else
       respond_to do |format|
         format.json { head :unprocessable_entity }
-        format.html {
+        format.html do
           flash[:error] = "Failed to enqueue verification job?!"
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
       end
     end
   end
@@ -51,10 +51,10 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
   def unverify
     unless @registration.verified?
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:error] = "Character was already unverified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
         format.json { render json: { error: "Character not verified." }, status: :unprocessable_entity }
       end
 
@@ -65,18 +65,18 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
 
     if @registration.save
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:alert] = "Character was successfully unverified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
         format.json { head :no_content }
       end
     else
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:error] = "Character could not be unverified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
         format.json { head :unprocessable_entity }
       end
     end
@@ -85,18 +85,18 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
   def destroy
     if @registration.destroy
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:alert] = "Character registration successfully deleted."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
         format.json { head :no_content }
       end
     else
       respond_to do |format|
-        format.html {
+        format.html do
           flash[:error] = "Character registration could not be deleted??"
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
-        }
+        end
         format.json { head :unprocessable_entity }
       end
     end

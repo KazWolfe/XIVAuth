@@ -50,7 +50,7 @@ Rails.application.configure do
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
-  config.log_level = ENV['LOG_LEVEL']&.downcase&.strip&.to_sym || :info
+  config.log_level = ENV["LOG_LEVEL"]&.downcase&.strip&.to_sym || :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = {
@@ -76,7 +76,7 @@ Rails.application.configure do
   }
 
   config.action_mailer.default_url_options = {
-    host: ENV['APP_URL'] || 'http://localhost:3000'
+    host: ENV["APP_URL"] || "http://localhost:3000"
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
@@ -86,7 +86,7 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  if ENV['RAILS_LOG_TO_STDOUT'].present?
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
     $stdout.sync = true
     config.rails_semantic_logger.add_file_appender = false
     config.semantic_logger.add_appender(io: $stdout, formatter: config.rails_semantic_logger.format)

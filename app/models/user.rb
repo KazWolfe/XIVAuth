@@ -11,13 +11,13 @@ class User < ApplicationRecord
 
   default_scope { order(created_at: :asc) }
 
-  has_many :social_identities, class_name: 'Users::SocialIdentity', dependent: :destroy
+  has_many :social_identities, class_name: "Users::SocialIdentity", dependent: :destroy
   has_many :character_registrations, dependent: :destroy
 
-  has_many :webauthn_credentials, class_name: 'Users::WebauthnCredential', dependent: :destroy
-  has_one :totp_credential, class_name: 'Users::TotpCredential', dependent: :destroy
+  has_many :webauthn_credentials, class_name: "Users::WebauthnCredential", dependent: :destroy
+  has_one :totp_credential, class_name: "Users::TotpCredential", dependent: :destroy
 
-  has_one :profile, class_name: 'Users::Profile', dependent: :destroy, required: true, autosave: true
+  has_one :profile, class_name: "Users::Profile", dependent: :destroy, required: true, autosave: true
   validates_associated :profile
   accepts_nested_attributes_for :profile, update_only: true
 
@@ -45,14 +45,14 @@ class User < ApplicationRecord
   # Check if the user has a defined encrypted password. If not, this user is considered oauth-only and cannot
   # use certain login features.
   def has_password?
-    not self.encrypted_password.blank?
+    self.encrypted_password.present?
   end
-  
-  def avatar_url(size = 32, options: {})
+
+  def avatar_url(size = 32, options: { })
     gravatar_url(size, *options)
   end
 
-  def gravatar_url(size = 32, fallback: 'retro', rating: 'pg')
+  def gravatar_url(size = 32, fallback: "retro", rating: "pg")
     hash = Digest::MD5.hexdigest(email.strip.downcase)
     "https://secure.gravatar.com/avatar/#{hash}.png?s=#{size}&d=#{fallback}&r=#{rating}"
   end
@@ -60,10 +60,10 @@ class User < ApplicationRecord
   # Overrides Devise's Validatable#password_required?
   def password_required?
     # Don't require a password for validation for new users if a social identity is present
-    return false if (!persisted? and not social_identities.empty?)
+    return false if !persisted? and not social_identities.empty?
 
     # Don't require a password for validation if the user does not have a password
-    return false if (persisted? and !has_password?)
+    return false if persisted? and !has_password?
 
     super
   end
@@ -71,7 +71,7 @@ class User < ApplicationRecord
   # Get the list of providers that can be used for authentication purposes.
   def self.omniauth_login_providers
     social_only_providers = [:patreon]
-    
+
     omniauth_providers - social_only_providers
   end
 

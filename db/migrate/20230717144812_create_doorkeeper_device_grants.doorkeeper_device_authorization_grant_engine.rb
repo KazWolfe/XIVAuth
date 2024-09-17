@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This migration comes from doorkeeper_device_authorization_grant_engine (originally 20200629094624)
 class CreateDoorkeeperDeviceGrants < ActiveRecord::Migration[6.0]
   def change
@@ -11,7 +9,7 @@ class CreateDoorkeeperDeviceGrants < ActiveRecord::Migration[6.0]
       t.integer :expires_in, null: false
       t.datetime :created_at, null: false
       t.datetime :last_polling_at, null: true
-      t.string :scopes, null: false, default: ''
+      t.string :scopes, null: false, default: ""
     end
 
     # Patch in permissible policy support.

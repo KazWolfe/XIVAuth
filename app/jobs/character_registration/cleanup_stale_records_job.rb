@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CharacterRegistration::CleanupStaleRecordsJob < ApplicationJob
   queue_as :cronjobs
 

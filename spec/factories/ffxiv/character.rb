@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :ffxiv_character, class: 'FFXIV::Character' do
+  factory :ffxiv_character, class: "FFXIV::Character" do
     lodestone_id { Faker::Number.unique.number(digits: 8) }
     name { Faker::Games::Touhou.character }
     home_world { Faker::Games::DnD.city }

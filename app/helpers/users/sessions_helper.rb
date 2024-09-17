@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users::SessionsHelper
   def eegg_random_npc_email
     %w[

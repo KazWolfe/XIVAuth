@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 class Users::SessionsController < Devise::SessionsController
   include Users::AuthenticatesWithMFA
 
-  prepend_before_action :authenticate_with_mfa, if: -> { action_name == 'create' && mfa_required? }
+  prepend_before_action :authenticate_with_mfa, if: -> { action_name == "create" && mfa_required? }
   prepend_before_action :check_captcha, only: [:create]
 
   # GET /resource/sign_in
@@ -36,7 +34,7 @@ class Users::SessionsController < Devise::SessionsController
   def check_captcha
     # Ignore for non-credential submissions
     return unless user_params[:password].present?
-    
+
     return if verify_recaptcha
 
     self.resource = resource_class.new sign_in_params

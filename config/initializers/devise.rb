@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
-require 'omniauth/discord'
-require 'omniauth/patreon'
+require "omniauth/discord"
+require "omniauth/patreon"
 
 # Assuming you have not yet modified this file, each configuration option below
 # is set to its default value. Note that some are commented out while others
@@ -17,7 +15,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '04eb3c2e2b0e67c7b27c8802513b3ab9ae8c355970143b765b7126221baee70589368bf45e2a7eb65777922d14c2738fc55734569324f11d78d238369af9616d'
+  # config.secret_key = 'ffffffff'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -27,10 +25,10 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'noreply@xivauth.net'
+  config.mailer_sender = "noreply@xivauth.net"
 
   # Configure the class responsible to send e-mails.
-  config.mailer = 'UserMailer'
+  config.mailer = "UserMailer"
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
@@ -39,7 +37,7 @@ Devise.setup do |config|
   # Load and configure the ORM. Supports :active_record (default) and
   # :mongoid (bson_ext recommended) by default. Other ORMs may be
   # available as additional gems.
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   # ==> Configuration for any authentication mechanism
   # Configure which keys are used when authenticating a user. The default is
@@ -129,7 +127,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = '0fff4f035e903f78b9568180edea22f1058888bc711232842322647022f2a605f0f3d1ffbecbccfe3c074a5ada1436cdff3e48cecf99c7252e8c2a9278ece955'
+  # config.pepper = 'ffffffff'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -267,7 +265,7 @@ Devise.setup do |config|
   # should add them to the navigational formats lists.
   #
   # The "*/*" below is required to match Internet Explorer requests.
-  config.navigational_formats = ['*/*', :html, :turbo_stream]
+  config.navigational_formats = ["*/*", :html, :turbo_stream]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
@@ -278,20 +276,20 @@ Devise.setup do |config|
   config.omniauth :github,
                   client_id: Rails.application.credentials.dig(:oauth, :github, :client_id),
                   client_secret: Rails.application.credentials.dig(:oauth, :github, :client_secret),
-                  scope: 'user:email'
+                  scope: "user:email"
   config.omniauth :discord,
                   client_id: Rails.application.credentials.dig(:oauth, :discord, :client_id),
                   client_secret: Rails.application.credentials.dig(:oauth, :discord, :client_secret),
-                  scope: 'identify email'
+                  scope: "identify email"
   config.omniauth :steam, Rails.application.credentials.dig(:oauth, :steam, :token)
   config.omniauth :twitch,
                   client_id: Rails.application.credentials.dig(:oauth, :twitch, :client_id),
                   client_secret: Rails.application.credentials.dig(:oauth, :twitch, :client_secret),
-                  scope: 'user:read:email'
+                  scope: "user:read:email"
   config.omniauth :patreon,
                   client_id: Rails.application.credentials.dig(:oauth, :patreon, :client_id),
                   client_secret: Rails.application.credentials.dig(:oauth, :patreon, :client_secret),
-                  scope: 'identity'
+                  scope: "identity"
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

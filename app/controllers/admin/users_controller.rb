@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 class Admin::UsersController < Admin::AdminController
   include Pagy::Backend
 
-  before_action :set_user, except: %i[ index ]
+  before_action :set_user, except: %i[index]
 
   def index
     @pagy, @users = pagy(User.order(created_at: :desc))
@@ -15,9 +13,9 @@ class Admin::UsersController < Admin::AdminController
 
   def destroy
     if @user.destroy
-      redirect_to admin_users_path, notice: 'User deleted.'
+      redirect_to admin_users_path, notice: "User deleted."
     else
-      redirect_to admin_user_path(@user), alert: 'User could not be deleted.'
+      redirect_to admin_user_path(@user), alert: "User could not be deleted."
     end
   end
 
@@ -27,37 +25,34 @@ class Admin::UsersController < Admin::AdminController
 
     if @user.save
       flash[:notice] = "MFA was removed for user."
-      redirect_back_or_to admin_user_path(@user)
     else
       flash[:error] = "MFA could not be removed for user."
-      redirect_back_or_to admin_user_path(@user)
     end
+
+    redirect_back_or_to admin_user_path(@user)
   end
 
   def send_password_reset
     if @user.send_reset_password_instructions
       flash[:notice] = "A password reset email was sent to #{@user.email}."
-      redirect_back_or_to admin_user_path(@user)
     else
       flash[:error] = "Could not dispatch a password reset email."
-      redirect_back_or_to admin_user_path(@user)
     end
+
+    redirect_back_or_to admin_user_path(@user)
   end
 
   def confirm
     if @user.confirm
       flash[:notice] = "The user was successfully confirmed."
-      redirect_back_or_to admin_user_path(@user)
     else
       flash[:error] = "Could not confirm user."
-      redirect_back_or_to admin_user_path(@user)
     end
+
+    redirect_back_or_to admin_user_path(@user)
   end
 
-  private
-
-  def set_user
+  private def set_user
     @user = User.find(params[:id])
   end
-
 end

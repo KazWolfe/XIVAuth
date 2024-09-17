@@ -18,16 +18,16 @@ module App
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    
+
     config.action_controller.include_all_helpers = false
-    
+
     # Better error pages
     config.exceptions_app = lambda { |env|
       ErrorsController.action(:show).call(env)
     }
 
     # heroku compat for now
-    if ENV['APP_ENV'].present?
+    if ENV["APP_ENV"].present?
       Rails.application.config.credentials.content_path = Rails.root.join("config/credentials/#{ENV['APP_ENV']}.yml.enc")
     end
 

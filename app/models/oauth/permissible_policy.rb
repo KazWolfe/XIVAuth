@@ -1,5 +1,5 @@
 class OAuth::PermissiblePolicy < ApplicationRecord
-  has_many :rules, class_name: 'OAuth::PermissibleRule', foreign_key: 'policy_id',
+  has_many :rules, class_name: "OAuth::PermissibleRule", foreign_key: "policy_id",
                    dependent: :destroy, autosave: true, inverse_of: :policy
 
   # Determine if the specified resource can be accessed or not.

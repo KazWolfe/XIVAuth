@@ -17,7 +17,7 @@ class CharacterRegistrationsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create character_registration" do
     assert_difference("CharacterRegistration.count") do
-      post character_registrations_url, params: { character_registration: {  } }
+      post character_registrations_url, params: { character_registration: { } }
     end
 
     assert_redirected_to character_registration_url(CharacterRegistration.last)
@@ -34,7 +34,7 @@ class CharacterRegistrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update character_registration" do
-    patch character_registration_url(@character_registration), params: { character_registration: {  } }
+    patch character_registration_url(@character_registration), params: { character_registration: { } }
     assert_redirected_to character_registration_url(@character_registration)
   end
 

@@ -4,7 +4,7 @@ class HealthController < ApplicationController
   def show
     respond_to do |format|
       format.html { render }
-      format.json { render json: { status: 'ok' } }
+      format.json { render json: { status: "ok" } }
     end
   end
 end

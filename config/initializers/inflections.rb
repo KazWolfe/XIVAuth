@@ -7,18 +7,18 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   # Rails default inflections
   inflect.plural(/^(ox)$/i, '\\1en')
   inflect.singular(/^(ox)en/i, '\\1')
-  inflect.irregular 'person', 'people'
+  inflect.irregular "person", "people"
   inflect.uncountable %w[fish sheep]
 
-  inflect.uncountable 'legal'
+  inflect.uncountable "legal"
 
-  inflect.acronym 'FFXIV'
-  inflect.acronym 'XIV'
-  inflect.acronym 'OAuth'
-  inflect.acronym 'MFA'
-  inflect.acronym 'OTP'
+  inflect.acronym "FFXIV"
+  inflect.acronym "XIV"
+  inflect.acronym "OAuth"
+  inflect.acronym "MFA"
+  inflect.acronym "OTP"
 
-  inflect.acronym 'RSA'
-  inflect.acronym 'HMAC'
-  inflect.acronym 'ECDSA'
+  inflect.acronym "RSA"
+  inflect.acronym "HMAC"
+  inflect.acronym "ECDSA"
 end

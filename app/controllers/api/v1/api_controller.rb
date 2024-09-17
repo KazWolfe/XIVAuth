@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Api::V1::ApiController < ActionController::API
   # There are no "open" API calls; everything must require at least authorization.
   before_action :doorkeeper_authorize!
@@ -14,17 +12,15 @@ class Api::V1::ApiController < ActionController::API
     @current_user ||= User.find_by(id: doorkeeper_token[:resource_owner_id])
   end
 
-  private
-
-  def check_resource_owner_presence
+  private def check_resource_owner_presence
     render status: :unauthorized unless current_user.present? && current_user.persisted?
   end
 
-  def load_token
+  private def load_token
     @doorkeeper_token = doorkeeper_token
   end
 
-  def set_sentry_context
+  private def set_sentry_context
     return unless doorkeeper_token
 
     ctx = {
@@ -37,6 +33,6 @@ class Api::V1::ApiController < ActionController::API
       ctx[:user_id] = current_user.id
     end
 
-    Sentry.set_context('oauth_application', ctx)
+    Sentry.set_context("oauth_application", ctx)
   end
 end

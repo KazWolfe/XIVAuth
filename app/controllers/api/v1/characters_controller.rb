@@ -1,7 +1,7 @@
 class Api::V1::CharactersController < Api::V1::ApiController
-  before_action { doorkeeper_authorize! 'character', 'character:all', 'character:manage', 'character:jwt' }
-  before_action(except: %i[index show jwt]) { doorkeeper_authorize! 'character:manage' }
-  before_action(only: %i[jwt]) { doorkeeper_authorize! 'character:jwt', 'character:manage' }
+  before_action { doorkeeper_authorize! "character", "character:all", "character:manage", "character:jwt" }
+  before_action(except: %i[index show jwt]) { doorkeeper_authorize! "character:manage" }
+  before_action(only: %i[jwt]) { doorkeeper_authorize! "character:jwt", "character:manage" }
 
   before_action :check_resource_owner_presence
   before_action :load_authorized_characters
@@ -71,7 +71,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
 
   def jwt
     unless @registration.verified?
-      render json: { error: 'Attestations can only be generated for verified characters.' }, status: :forbidden
+      render json: { error: "Attestations can only be generated for verified characters." }, status: :forbidden
       return
     end
 
@@ -88,18 +88,16 @@ class Api::V1::CharactersController < Api::V1::ApiController
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
     unless signing_key.present?
-      render json: { error: 'Algorithm is not valid, or a key does not exist for it.' }, status: :unprocessable_entity
+      render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_entity
       return
     end
 
-    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name, typ: 'Character')
+    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name, typ: "Character")
 
     render json: { token: jwt_token }
   end
 
-  private
-
-  def load_authorized_characters
+  private def load_authorized_characters
     @authorized_registrations = CharacterRegistration.accessible_by(current_ability)
 
     unless character_manage?
@@ -113,7 +111,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     end
   end
 
-  def set_character
+  private def set_character
     character = @authorized_registrations.filter do |r|
       r.character.lodestone_id == params[:lodestone_id]
     end
@@ -123,18 +121,18 @@ class Api::V1::CharactersController < Api::V1::ApiController
     @registration = character[0]
   end
 
-  def search_params
+  private def search_params
     allowlist = %i[name home_world data_center]
     allowlist << :content_id if character_manage?
 
     params.permit(allowlist)
   end
 
-  def update_params
+  private def update_params
     params.permit(:content_id)
   end
 
-  def character_manage?
-    doorkeeper_token[:scopes].include? 'character:manage'
+  private def character_manage?
+    doorkeeper_token[:scopes].include? "character:manage"
   end
 end

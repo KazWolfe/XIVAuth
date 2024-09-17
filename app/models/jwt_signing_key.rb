@@ -1,6 +1,6 @@
 class JwtSigningKey < ApplicationRecord
-  DEFAULT_ALGORITHM = "EdDSA"
-  
+  DEFAULT_ALGORITHM = "EdDSA".freeze
+
   encrypts :private_key
 
   validates :name, presence: true
@@ -8,7 +8,7 @@ class JwtSigningKey < ApplicationRecord
 
   default_scope { order(created_at: :desc) }
 
-  scope :active, -> { where(enabled: true).where('expires_at IS NULL or expires_at >= ?', DateTime.now) }
+  scope :active, -> { where(enabled: true).where("expires_at IS NULL or expires_at >= ?", DateTime.now) }
 
   attr_readonly :public_key, :raw_public_key, :raw_private_key, :jwk
 
@@ -21,7 +21,7 @@ class JwtSigningKey < ApplicationRecord
   end
 
   def jwk
-    JWT::JWK.new(private_key, use: 'sig', kid: name, **extra_jwk_fields)
+    JWT::JWK.new(private_key, use: "sig", kid: name, **extra_jwk_fields)
   end
 
   def supported_algorithms
@@ -48,22 +48,20 @@ class JwtSigningKey < ApplicationRecord
   def self.preferred_key_for_algorithm(algorithm_name)
     alg_type = JWT::JWA.find(algorithm_name)[1]
     case alg_type.to_s
-    when 'JWT::JWA::Rsa', 'JWT::JWA::Ps'
+    when "JWT::JWA::Rsa", "JWT::JWA::Ps"
       JwtSigningKeys::RSA.active.first
-    when 'JWT::JWA::Eddsa'
+    when "JWT::JWA::Eddsa"
       JwtSigningKeys::Ed25519.active.first
-    when 'JWT::JWA::Hmac', 'JWT::JWA::HmacRbNaCl'
+    when "JWT::JWA::Hmac", "JWT::JWA::HmacRbNaCl"
       JwtSigningKeys::HMAC.active.first
-    when 'JWT::JWA::Ecdsa'
+    when "JWT::JWA::Ecdsa"
       JwtSigningKeys::ECDSA.preferred_key_for_algorithm(algorithm_name)
     else
       nil
     end
   end
-  
-  private
-  
-  def extra_jwk_fields
+
+  private def extra_jwk_fields
     fields = {
       algs: supported_algorithms
     }

@@ -6,7 +6,7 @@ class AddCharacterRegistrationVerificationType < ActiveRecord::Migration[7.1]
 
     reversible do |dir|
       dir.up do
-        CharacterRegistration.verified.update_all(verification_type: 'lodestone_code')
+        CharacterRegistration.verified.update_all(verification_type: "lodestone_code")
       end
     end
   end
