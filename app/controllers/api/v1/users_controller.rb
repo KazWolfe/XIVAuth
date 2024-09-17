@@ -20,7 +20,7 @@ class Api::V1::UsersController < Api::V1::ApiController
       vfd: @user.character_registrations.verified.count.positive?,
       iat: issued_at,
       exp: issued_at + 600,
-      jti: params[:nonce] || SecureRandom.urlsafe_base64(24, padding: false),
+      jti: params[:nonce] || SecureRandom.urlsafe_base64(24, padding: false)
     }
 
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM

@@ -99,6 +99,6 @@ class CharacterRegistration < ApplicationRecord
   end
 
   private def character_not_banned
-      errors.add(:character, "is currently banned.") if character.ban.present? && !skip_ban_check
+    errors.add(:character, "is currently banned.") if character.ban.present? && !skip_ban_check
   end
 end

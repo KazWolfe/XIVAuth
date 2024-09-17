@@ -25,7 +25,7 @@ class Api::V1::JwtController < Api::V1::ApiController
       return
     end
 
-    signing_key = JwtSigningKey.find_by_name(key_name)
+    signing_key = JwtSigningKey.find_by(name: key_name)
 
     logger.warn("Validating with signing key #{key_name}", signing_key)
 

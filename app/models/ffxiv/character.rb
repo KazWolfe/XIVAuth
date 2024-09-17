@@ -53,8 +53,6 @@ class FFXIV::Character < ApplicationRecord
   end
 
   private def lodestone_data_ok?
-    if @lodestone_data.present? && !@lodestone_data.valid?
-      errors.merge!(@lodestone_data.errors)
-    end
+    errors.merge!(@lodestone_data.errors) if @lodestone_data.present? && !@lodestone_data.valid?
   end
 end

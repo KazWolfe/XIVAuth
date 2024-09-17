@@ -13,9 +13,7 @@ class Users::SessionsController < Devise::SessionsController
   def create
     super do |resource|
       # If a user has signed in, they no longer need to reset their password.
-      if resource.reset_password_token.present?
-        resource.update(reset_password_token: nil, reset_password_sent_at: nil)
-      end
+      resource.update(reset_password_token: nil, reset_password_sent_at: nil) if resource.reset_password_token.present?
     end
   end
 
@@ -33,7 +31,7 @@ class Users::SessionsController < Devise::SessionsController
 
   def check_captcha
     # Ignore for non-credential submissions
-    return unless user_params[:password].present?
+    return if user_params[:password].blank?
 
     return if verify_recaptcha
 
@@ -49,11 +47,11 @@ class Users::SessionsController < Devise::SessionsController
 
   def find_user
     if session[:otp_user_id] && user_params[:email]
-      User.where(email: user_params[:email]).find_by_id(session[:otp_user_id])
+      User.where(email: user_params[:email]).find(session[:otp_user_id])
     elsif session[:otp_user_id]
       User.find(session[:otp_user_id])
     elsif user_params[:email]
-      User.find_by_email(user_params[:email])
+      User.find_by(email: user_params[:email])
     end
   end
 

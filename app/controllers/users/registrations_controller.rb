@@ -41,9 +41,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  protected
-
-  def update_resource(resource, params)
+  protected def update_resource(resource, params)
     # block updates of protected fields
     return super if params[:password].present? || params[:password_confirmation].present?
     return super if params[:email].present? && params[:email] != current_user.email
@@ -53,12 +51,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   # If you have extra params to permit, append them to the sanitizer.
-  def configure_sign_up_params
+  protected def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: [profile_attributes: [:display_name]])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
-  def configure_account_update_params
+  protected def configure_account_update_params
     devise_parameter_sanitizer.permit(:account_update, keys: [profile_attributes: [:display_name]])
   end
 
@@ -72,14 +70,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super(resource)
   # end
 
-  def check_registration_allowed
+  protected def check_registration_allowed
     return if User.signup_permitted?
 
     sign_out current_user
     redirect_to new_user_session_path, alert: "Sign-ups are disabled at this time."
   end
 
-  def check_captcha
+  protected def check_captcha
     return if verify_recaptcha
 
     self.resource = resource_class.new sign_up_params

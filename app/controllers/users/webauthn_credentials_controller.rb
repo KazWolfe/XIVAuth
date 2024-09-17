@@ -12,7 +12,7 @@ class Users::WebauthnCredentialsController < ApplicationController
   end
 
   def create
-    recovered_credential = WebAuthn::Credential.from_create(JSON.parse create_params[:credential])
+    recovered_credential = WebAuthn::Credential.from_create(JSON.parse(create_params[:credential]))
 
     begin
       recovered_credential.verify(session[:webauthn_register_challenge])
