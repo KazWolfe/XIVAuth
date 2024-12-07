@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Foreman Run" type="CommandRunConfigurationType" factoryName="Gem Command">
+    <module name="XIVAuth" />
+    <COMMAND_RUN_CONFIGURATION NAME="RUBY_ARGS" VALUE="" />
+    <COMMAND_RUN_CONFIGURATION NAME="WORK DIR" VALUE="" />
+    <COMMAND_RUN_CONFIGURATION NAME="SHOULD_USE_SDK" VALUE="false" />
+    <COMMAND_RUN_CONFIGURATION NAME="ALTERN_SDK_NAME" VALUE="" />
+    <COMMAND_RUN_CONFIGURATION NAME="myPassParentEnvs" VALUE="true" />
+    <EXTENSION ID="BundlerRunConfigurationExtension" BUNDLE_MODE="DISABLE" bundleExecEnabled="true" />
+    <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true">
+      <COVERAGE_PATTERN ENABLED="true">
+        <PATTERN REGEXPS="/.rvm/" INCLUDED="false" />
+      </COVERAGE_PATTERN>
+    </EXTENSION>
+    <EXTENSION ID="RubyDockerContainerSettingsRunConfigurationExtension" dockerComposeCommand="UP" />
+    <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
+    <COMMAND_CONFIG_SETTINGS_ID NAME="GEM_NAME" VALUE="foreman" />
+    <COMMAND_CONFIG_SETTINGS_ID NAME="EXECUTABLE_NAME" VALUE="foreman" />
+    <COMMAND_CONFIG_SETTINGS_ID NAME="EXECUTABLE_ARGS" VALUE="start -f Procfile.dev" />
+    <COMMAND_CONFIG_SETTINGS_ID NAME="WORKING_DIR" VALUE="" />
+    <method v="2" />
+  </configuration>
+</component>

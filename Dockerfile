@@ -3,7 +3,7 @@ FROM ruby:3.3-alpine
 WORKDIR /app
 
 RUN apk add --update --no-cache \
-    build-base git \
+    build-base gcompat git \
     postgresql-dev postgresql-client \
     nodejs yarn npm \
     tzdata \

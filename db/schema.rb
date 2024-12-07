@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_28_213829) do
+ActiveRecord::Schema[8.0].define(version: 2024_04_28_213829) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
@@ -50,8 +50,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_213829) do
     t.string "portrait_url", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["content_id"], name: "index_ffxiv_characters_on_content_id", unique: true,
-where: "((content_id IS NOT NULL) OR ((content_id)::text <> ''::text))"
+    t.index ["content_id"], name: "index_ffxiv_characters_on_content_id", unique: true, where: "((content_id IS NOT NULL) OR ((content_id)::text <> ''::text))"
     t.index ["lodestone_id"], name: "index_ffxiv_characters_on_lodestone_id", unique: true
   end
 
@@ -77,7 +76,7 @@ where: "((content_id IS NOT NULL) OR ((content_id)::text <> ''::text))"
     t.boolean "enabled", default: true, null: false
     t.string "public_key", limit: 65535
     t.string "private_key", limit: 65535, null: false
-    t.jsonb "key_params", default: { }
+    t.jsonb "key_params", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "expires_at"
@@ -115,8 +114,7 @@ where: "((content_id IS NOT NULL) OR ((content_id)::text <> ''::text))"
     t.uuid "permissible_policy_id"
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["permissible_policy_id"], name: "index_oauth_access_tokens_on_permissible_policy_id"
-    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true,
-where: "((refresh_token IS NOT NULL) OR ((refresh_token)::text <> ''::text))"
+    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, where: "((refresh_token IS NOT NULL) OR ((refresh_token)::text <> ''::text))"
     t.index ["resource_owner_type", "resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
   end

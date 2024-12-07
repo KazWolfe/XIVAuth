@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby ">= 3.3.3", "< 3.4"
 
 # Rails.
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 8.0.0"
 
 # Core systems
 gem "pg", "~> 1.5"
@@ -35,8 +35,8 @@ gem "rack-cors", "~> 2.0.2"
 
 # Workers
 gem "sidekiq", "~> 7.3.0"
-gem "sidekiq-cron", "~> 1.12.0"
-gem "sidekiq-throttled", "~> 1.4.0"
+gem "sidekiq-cron", "~> 2.0.1"
+gem "sidekiq-throttled", "~> 1.5.0"
 gem "sidekiq-unique-jobs", "~> 8.0.10"
 
 # Authentication / Authorization
@@ -45,9 +45,9 @@ gem "devise", "~> 4.9"
 gem "devise_zxcvbn", "~> 6.0.0"
 
 # Authn (MFA)
-gem "devise-two-factor", "~> 5.1"
+gem "devise-two-factor", "~> 6.1"
 gem "rqrcode", "~> 2.2.0"
-gem "webauthn", "~> 3.1.0"
+gem "webauthn", "~> 3.2.0"
 
 # OAuth2 Providers
 gem "omniauth-github", "~> 2.0.1"
@@ -56,7 +56,7 @@ gem "omniauth-steam", "~> 1.0.6"
 gem "omniauth-twitch", "~> 1.2.0"
 
 # Outbound OAuth2
-gem "doorkeeper", "~> 5.7.1"
+gem "doorkeeper", "~> 5.8.0"
 gem "doorkeeper-device_authorization_grant", "~> 1.0.3"
 
 # Feature flags
@@ -65,7 +65,7 @@ gem "flipper-active_record", "~> 1.3"
 gem "flipper-ui", "~> 1.3"
 
 # Internal security
-gem "jwt", "~> 2.8.1"
+gem "jwt", "~> 2.9.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0.1"
 gem "rbnacl", "~> 7.1.1"
 gem "recaptcha", "~> 5.17"
@@ -86,7 +86,7 @@ gem "stackprof", "~> 0.2"
 gem "rexml", "~> 3.3.1"
 
 # Helpers
-gem "pagy", "~> 8.6"
+gem "pagy", "~> 9.3"
 
 group :production do
   # Handle Cloudflare IPs in our X-Forwarded-For chain
@@ -101,7 +101,7 @@ group :development, :test do
 
   gem "factory_bot_rails", "~> 6.4.3"
   gem "faker", "~> 3.4"
-  gem "rspec-rails", "~> 6.1"
+  gem "rspec-rails", "~> 7.1"
 
   # Analysis tools
   gem "brakeman", require: false
