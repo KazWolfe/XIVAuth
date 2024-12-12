@@ -16,3 +16,6 @@ application.register('webauthn', WebauthnController);
 
 import CopyCodeController from "./utilities/copy_code_controller";
 application.register('copy-code', CopyCodeController);
+
+import ToastController from "./toasts/toast";
+application.register('toast', ToastController)
