@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="verifyLabel">Verifying <%= character.name %></h5>
+</div>
+<div class="modal-body">
+  <p>
+    XIVAuth did not detect your verification code on your character page. Since this can be caused by lag on Square
+    Enix's side, we'll be trying again in about a couple minutes.
+  </p>
+  <p>
+    To ensure a successful verification, please ensure the below code is located on <%= character.name %>'s
+    <%= link_to "Lodestone profile", character.lodestone_url, target: "_blank", rel: 'noreferrer noopener' %>, and
+    appears exactly as it does below.
+  </p>
+  <div class="input-group mb-3" data-controller="copy-code">
+    <input type="text" data-copy-code-target="source" readonly class="form-control text-center font-monospace"
+           value="<%= registration.verification_key %>" aria-label="Verification code"
+           onclick="this.select();">
+    <button class="btn btn-outline-secondary" type="button" data-action="copy-code#copy" data-copy-code-target="button">
+      <i class="bi bi-clipboard"></i> Copy
+    </button>
+  </div>
+  <p>
+    You may safely close this dialog box if your verification code is correct.
+  </p>
+</div>
+<div class="modal-footer">
+  <div class="me-auto">
+    <div class="text-secondary very-small align-middle">
+      Job ID: <span class="font-monospace"><%= job.job_id %></span><br/>
+      Attempt <%= job.executions %> of <%= job.class::MAX_RETRY_ATTEMPTS %>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Got it.</button>
+</div>

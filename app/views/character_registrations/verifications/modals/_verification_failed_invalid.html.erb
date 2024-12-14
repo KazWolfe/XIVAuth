@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h5 class="modal-title text-danger" id="verifyLabel">Couldn't Verify <%= character.name %></h5>
+</div>
+<div class="modal-body">
+  <p>
+    XIVAuth was unable to verify <%= character.name %> because the Lodestone ID associated with it was invalid. This
+    error likely means that the character no longer exists, Square is having problems, or the dev did something wrong.
+  </p>
+  <p>
+    This error has been logged and will be investigated.
+  </p>
+</div>
+<div class="modal-footer">
+  <div class="me-auto">
+    <div class="text-secondary very-small align-middle">
+      Job ID: <span class="font-monospace"><%= job.job_id %></span>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Rats.</button>
+</div>

@@ -1,12 +1,20 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="verifyLabel">Verify <%= @character.name %> - Validating</h5>
+  <h5 class="modal-title" id="verifyLabel">Verifying <%= character.name %></h5>
 </div>
 <div class="modal-body">
   <p>
-    Thanks! We'll go ahead and check for the verification key in your Lodestone profile. This process generally will
-    only take a few moments, so you can sit back and relax.
+    Your verification request for <%= character.name %> has been added to the queue, and will be attempted soon. This
+    process may take a few minutes, depending on current server load and Square Enix's response times.
+  </p>
+  <p>
+    This dialog will auto-update with status updates if necessary, though it is also safe to close.
   </p>
 </div>
 <div class="modal-footer">
+  <div class="me-auto">
+    <div class="text-secondary very-small align-middle">
+      Job ID: <span class="font-monospace"><%= job.job_id %></span>
+    </div>
+  </div>
   <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Got it.</button>
 </div>

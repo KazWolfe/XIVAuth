@@ -15,10 +15,10 @@ class CharacterRegistrations::VerificationsController < ApplicationController
   def create
     authorize! :update, @character_registration
 
-    job = FFXIV::VerifyCharacterRegistrationJob.perform_later @character_registration
+    @job = FFXIV::VerifyCharacterRegistrationJob.perform_later @character_registration
 
     respond_to do |format|
-      if job
+      if @job
         format.turbo_stream
         format.html { redirect_to character_registrations_path, notice: "Your verification request has been received!" }
       else

@@ -1,6 +1,10 @@
 class FFXIV::LodestoneProfile
   include ActiveModel::API
 
+  class LodestoneProfileInvalid < StandardError; end
+  class LodestoneCharacterHidden < LodestoneProfileInvalid; end
+  class LodestoneProfilePrivate < LodestoneProfileInvalid; end
+
   ROOT_URL = "https://na.finalfantasyxiv.com/lodestone".freeze
   DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
     "Chrome/104.0.0.0 Safari/537.36".freeze
@@ -105,6 +109,27 @@ class FFXIV::LodestoneProfile
     self.free_company.present? || self.class_levels.values.any? { |x| x > FREE_TRIAL_LEVEL_CAP }
   end
 
+  def character_profile_visible?
+    is_visible = !@doc.at_css(".character__content")&.text&.include?("This character's profile is private.")
+    errors.add(:id, "Specified character's profile information is private.") unless is_visible
+
+    is_visible
+  end
+
+  def character_visible?
+    is_visible = !((@request.status == 403) && (@doc.at_css(".error__heading")&.text == "Access Restricted"))
+    errors.add(:id, "Specified character is private.") unless is_visible
+
+    is_visible
+  end
+
+  def character_exists?
+    exists = !http_404?(@request, @doc)
+    errors.add(:id, "Could not find character by specified ID") if http_404?(@request, @doc) unless exists
+
+    exists
+  end
+
   private def rcg_data
     @rcg_data ||= @doc.css(".character__profile__data__detail > .character-block > .character-block__box " \
                             "> .character-block__name").first
@@ -115,19 +140,5 @@ class FFXIV::LodestoneProfile
     return true if doc.at_css(".error__heading")&.text == "Page not found."
 
     false
-  end
-
-  private def character_exists?
-    errors.add(:id, "Could not find character by specified ID") if http_404?(@request, @doc)
-  end
-
-  private def character_profile_visible?
-    errors.add(:id, "Specified character's profile information is private.") if
-      @doc.at_css(".character__content")&.text&.include?("This character's profile is private.")
-  end
-
-  private def character_visible?
-    errors.add(:id, "Specified character is private.") if
-      (@request.status == 403) && (@doc.at_css(".error__heading")&.text == "Access Restricted")
   end
 end

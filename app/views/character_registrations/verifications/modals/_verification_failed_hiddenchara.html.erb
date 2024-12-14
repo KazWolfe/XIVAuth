@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <h5 class="modal-title text-danger" id="verifyLabel">Couldn't Verify <%= character.name %></h5>
+</div>
+<div class="modal-body">
+  <p>
+    XIVAuth was unable to verify <%= character.name %> because that character is currently hidden from anonymous users.
+  </p>
+  <p>
+    Please navigate to the
+    <a href="https://na.finalfantasyxiv.com/lodestone/my/setting/account/">Character Privacy Settings</a> page and
+    ensure that the <em>Character Profile Page</em> setting is set to <em>All Users</em>. Character visibility may be
+    disabled after verification succeeds if desired.
+  </p>
+</div>
+<div class="modal-footer">
+  <div class="me-auto">
+    <div class="text-secondary very-small align-middle">
+      Job ID: <span class="font-monospace"><%= job.job_id %></span>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Rats.</button>
+</div>

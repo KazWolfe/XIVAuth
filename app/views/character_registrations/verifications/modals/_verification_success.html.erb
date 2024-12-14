@@ -1,13 +1,20 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="verifyLabel">Verify <%= @character.name %> - Validated!</h5>
+  <h5 class="modal-title text-success" id="verifyLabel">Verified <%= character.name %>!</h5>
 </div>
 <div class="modal-body">
   <p>
-    <strong>Great success!</strong> The character <%= @character.name %> has been successfully validated
-    and you have been listed as the owner. You may now use this character to log in to sites that use
-    XIVAuth!
+    <strong>Great success!</strong> You have successfully proven ownership over <%= character.name %>. You may now use
+    this character to log in to sites that use XIVAuth!
+  </p>
+  <p>
+    You may safely close this dialog.
   </p>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Got it.</button>
+  <div class="me-auto">
+    <div class="text-secondary very-small align-middle">
+      Job ID: <span class="font-monospace"><%= job.job_id %></span>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Yay!</button>
 </div>

@@ -1,0 +1,22 @@
+<div class="modal-header">
+  <h5 class="modal-title text-danger" id="verifyLabel">Couldn't Verify <%= character.name %></h5>
+</div>
+<div class="modal-body">
+  <p>
+    XIVAuth was unable to validate the verification code for <%= character.name %>. This likely means that the
+    verification code was not placed on the relevant
+    <%= link_to "Lodestone profile", character.lodestone_url, target: "_blank", rel: 'noreferrer noopener' %>, was not
+    applied correctly, or Square Enix is taking too long to apply any requested changes.
+  </p>
+  <p>
+    Verification may be retried by selecting the <strong>Verify</strong> button on the character's card. XIVAuth will
+    not attempt to automatically re-verify this character.
+  </p>
+</div>
+<div class="modal-footer">
+  <div class="me-auto">
+    <div class="text-secondary very-small align-middle">
+      Job ID: <span class="font-monospace"><%= job.job_id %></span>
+    </div>  </div>
+  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Rats.</button>
+</div>
