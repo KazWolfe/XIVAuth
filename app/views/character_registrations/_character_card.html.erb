@@ -13,8 +13,14 @@
           <% end %>
         </h5>
         <p class="card-subtitle"><%= character.home_with_datacenter %></p>
-        <p class="mb-0">Lodestone
-          ID <%= link_to "#{character.lodestone_id}", character.lodestone_url, class: "text-reset" %></p>
+        <p class="mb-0">Lodestone ID
+          <%= link_to "#{character.lodestone_id}", character.lodestone_url, class: "text-reset" %>
+        </p>
+        <% if character.refresh_fail_reason.present? %>
+          <span class="text-warning-emphasis" title="<%= I18n.t "character_registrations.refresh_fail_reasons.#{character.refresh_fail_reason}" %>">
+            <span class="bi bi-exclamation-triangle-fill"></span> Refresh failed!
+          </span>
+        <% end %>
       </div>
     </div>
   </div>

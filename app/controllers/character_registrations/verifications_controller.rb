@@ -36,8 +36,10 @@ class CharacterRegistrations::VerificationsController < ApplicationController
     respond_to do |format|
       if @character_registration.save
         format.html { redirect_to character_registrations_path, notice: "Character was successfully unverified" }
+        format.turbo_stream { }
       else
         format.html { redirect_to character_registrations_path, error: "Could not unverify character." }
+        format.turbo_stream { }
       end
     end
   end

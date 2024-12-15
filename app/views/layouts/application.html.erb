@@ -24,7 +24,7 @@
 <%= turbo_frame_tag "remote_modal", target: "_top" %>
 
 <div class="toast-container p-3 top-0 end-0" id="toasts">
-  <%= turbo_stream_from "toasts_#{current_user.id}" if current_user.present? %>
+  <%= turbo_stream_from "UserStream:#{current_user.id}", :toasts if current_user.present? %>
 </div>
 
 <div class="container mt-auto">

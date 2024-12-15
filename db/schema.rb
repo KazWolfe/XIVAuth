@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_04_28_213829) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_15_021854) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "ffxiv_character_refresh_error", ["UNSPECIFIED", "HIDDEN_CHARACTER", "PROFILE_PRIVATE", "NOT_FOUND"]
   create_enum "user_roles", ["developer", "admin"]
 
   create_table "character_bans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -50,6 +51,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_04_28_213829) do
     t.string "portrait_url", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.enum "refresh_fail_reason", enum_type: "ffxiv_character_refresh_error"
     t.index ["content_id"], name: "index_ffxiv_characters_on_content_id", unique: true, where: "((content_id IS NOT NULL) OR ((content_id)::text <> ''::text))"
     t.index ["lodestone_id"], name: "index_ffxiv_characters_on_lodestone_id", unique: true
   end

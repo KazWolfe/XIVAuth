@@ -12,8 +12,11 @@ class FFXIV::LodestoneProfile
     "like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1".freeze
 
   FREE_TRIAL_LEVEL_CAP = 70
+  FAILURE_REASONS = [ :unspecified, :hidden_character, :profile_private, :not_found ]
 
   attr_reader :id, :last_parsed
+
+  attr_accessor :failure_reason
 
   validate :character_exists?
   validate :character_visible?
@@ -110,22 +113,28 @@ class FFXIV::LodestoneProfile
   end
 
   def character_profile_visible?
-    is_visible = !@doc.at_css(".character__content")&.text&.include?("This character's profile is private.")
-    errors.add(:id, "Specified character's profile information is private.") unless is_visible
+    unless (is_visible = !@doc.at_css(".character__content")&.text&.include?("This character's profile is private."))
+      errors.add(:id, "Specified character's profile information is private.")
+      self.failure_reason = :private_profile
+    end
 
     is_visible
   end
 
   def character_visible?
-    is_visible = !((@request.status == 403) && (@doc.at_css(".error__heading")&.text == "Access Restricted"))
-    errors.add(:id, "Specified character is private.") unless is_visible
+    unless (is_visible = !((@request.status == 403) && (@doc.at_css(".error__heading")&.text == "Access Restricted")))
+      errors.add(:id, "Specified character is private.") unless is_visible
+      self.failure_reason = :hidden_character
+    end
 
     is_visible
   end
 
   def character_exists?
-    exists = !http_404?(@request, @doc)
-    errors.add(:id, "Could not find character by specified ID") if http_404?(@request, @doc) unless exists
+    unless (exists = !http_404?(@request, @doc))
+      errors.add(:id, "Could not find character by specified ID") if http_404?(@request, @doc) unless exists
+      self.failure_reason = :not_found
+    end
 
     exists
   end

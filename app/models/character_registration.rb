@@ -25,8 +25,9 @@ class CharacterRegistration < ApplicationRecord
   attr_accessor :skip_ban_check
 
   validate :character_not_banned, unless: :skip_ban_check, on: :create
-
   validate :owner_can_create, on: :create
+
+  after_save :broadcast_card_update
 
   scope :verified, -> { where.not(verified_at: nil) }
   scope :unverified, -> { where(verified_at: nil) }
@@ -90,6 +91,14 @@ class CharacterRegistration < ApplicationRecord
     hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new("sha1"), secret, entanglement_key)
 
     Base64.urlsafe_encode64(hmac, padding: false)
+  end
+
+  def broadcast_card_update
+    broadcast_replace_to(
+      "UserStream:#{user.id}", :character_registrations,
+      target: "character_registration_#{self.id}",
+      partial: "character_registrations/character_card"
+    )
   end
 
   private def owner_can_create

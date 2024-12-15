@@ -19,3 +19,5 @@
 <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
 
 <div id="character-verification-modal-container"></div>
+
+<%= turbo_stream_from "UserStream:#{current_user.id}", :character_registrations %>
