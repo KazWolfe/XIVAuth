@@ -10,7 +10,9 @@ Sidekiq.configure_server do |config|
     password: ENV.fetch("REDIS_PASSWORD", nil)
   }
 
-  config.redis[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE } if Rails.env.production?
+  if Rails.env.production?
+    config.redis[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+  end
 
   config.on(:startup) do
     if File.exist?((schedule_file = "config/cron.yml"))
@@ -25,5 +27,7 @@ Sidekiq.configure_client do |config|
     password: ENV.fetch("REDIS_PASSWORD", nil)
   }
 
-  config.redis[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE } if Rails.env.production?
+  if Rails.env.production?
+    config.redis[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+  end
 end
