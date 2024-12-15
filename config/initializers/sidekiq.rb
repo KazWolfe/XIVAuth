@@ -5,7 +5,7 @@ index = ENV.fetch("SIDEKIQ_DB_INDEX", 12)
 Sidekiq::Web.app_url = "/"
 
 Sidekiq.configure_server do |config|
-  config.redis = {
+  redis_settings = {
     url: "#{ENV['REDIS_URL']}/#{index}",
     password: ENV.fetch("REDIS_PASSWORD", nil),
     ssl_params: {

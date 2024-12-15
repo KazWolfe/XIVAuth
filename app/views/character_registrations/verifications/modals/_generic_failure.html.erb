@@ -1,0 +1,16 @@
+<div class="modal-header">
+  <h5 class="modal-title text-danger" id="verifyLabel">Verification Error</h5>
+</div>
+<div class="modal-body">
+  <p>
+    XIVAuth ran into an error while attempting to run a verification. Please retry your request. If you continue having
+    issues verifying your character, please contact a developer and include the below Job ID.
+  </p>
+</div>
+<div class="modal-footer">
+  <div class="me-auto">
+    <div class="text-secondary very-small align-middle">
+      Job ID: <span class="font-monospace"><%= job.job_id %></span>
+    </div>  </div>
+  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Rats.</button>
+</div>

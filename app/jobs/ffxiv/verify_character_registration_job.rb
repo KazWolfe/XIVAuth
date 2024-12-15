@@ -9,6 +9,11 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     job.report_result("verification_failed_codenotfound")
   end
 
+  discard_on(StandardError) do |job, error|
+    job.report_result("generic_failure")
+    raise error
+  end
+
   discard_on(FFXIV::LodestoneProfile::LodestoneProfileInvalid) do |job, error|
     logger.error("Invalid profile", error: error)
     job.report_result("verification_failed_invalid")
