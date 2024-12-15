@@ -16,6 +16,8 @@ module Users::SessionsHelper
       larboard@omega.ai
       securingway@carrot.moon
       conjuringcatgirl@aether.net
+      koana.hhetsarro@studium.sharlayan.edu
+      thirdpromise@tour.tural
     ].sample
   end
 end
