@@ -10,7 +10,7 @@ Sidekiq.configure_server do |config|
     password: ENV.fetch("REDIS_PASSWORD", nil)
   }
 
-  redis_settings = { verify_mode: OpenSSL::SSL::VERIFY_NONE } if Rails.env.production?
+  redis_settings[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE } if Rails.env.production?
 
   config.redis = redis_settings
 
