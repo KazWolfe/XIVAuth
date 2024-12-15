@@ -1,8 +1,10 @@
-<%= turbo_stream.append "modal-character-verification-#{@character_registration.id}" do %>
-  <%= turbo_stream_from "VerifyCharacterRegistrationJob_#{@job.job_id}" %>
+<%= turbo_stream.append "character-verification-modal:#{@character_registration.id}" do %>
+  <%= turbo_stream_from "VerifyCharacterRegistrationJob:#{@job.job_id}" %>
 <% end %>
 
-<%= turbo_stream.update "modal-character-verification-#{@character_registration.id}-content" do %>
-  <%= render partial: 'character_registrations/verifications/modals/verification_pending',
-             locals: { registration: @character_registration, character: @character, job: @job } %>
+<%= turbo_stream.replace "character-verification-modal:#{@character_registration.id}:content" do %>
+  <div class="modal-content" id="character-registration-job:<%= @job.job_id %>:content">
+    <%= render partial: 'character_registrations/verifications/modals/verification_pending',
+               locals: { registration: @character_registration, character: @character, job: @job } %>
+  </div>
 <% end %>

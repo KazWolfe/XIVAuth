@@ -59,8 +59,8 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     registration = arguments[0]
 
     Turbo::StreamsChannel.broadcast_update_to(
-      "VerifyCharacterRegistrationJob_#{self.job_id}",
-      target: "modal-character-verification-#{registration.id}-content",
+      "VerifyCharacterRegistrationJob:#{self.job_id}",
+      target: "character-registration-job:#{self.job_id}:content",
       partial: "character_registrations/verifications/modals/#{partial_name}",
       locals: { registration: registration, character: registration.character, job: self },
       attributes: { method: :morph }
