@@ -5,14 +5,14 @@ index = ENV.fetch("SIDEKIQ_DB_INDEX", 12)
 Sidekiq::Web.app_url = "/"
 
 Sidekiq.configure_server do |config|
-  config.redis = {
+  redis_settings = {
     url: "#{ENV['REDIS_URL']}/#{index}",
     password: ENV.fetch("REDIS_PASSWORD", nil)
   }
 
-  if Rails.env.production?
-    config.redis[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE }
-  end
+  redis_settings = { verify_mode: OpenSSL::SSL::VERIFY_NONE } if Rails.env.production?
+
+  config.redis = redis_settings
 
   config.on(:startup) do
     if File.exist?((schedule_file = "config/cron.yml"))
@@ -22,12 +22,12 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = {
+  redis_settings = {
     url: "#{ENV['REDIS_URL']}/#{index}",
     password: ENV.fetch("REDIS_PASSWORD", nil)
   }
 
-  if Rails.env.production?
-    config.redis[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE }
-  end
+  redis_settings[:ssl_params] = { verify_mode: OpenSSL::SSL::VERIFY_NONE } if Rails.env.production?
+
+  config.redis = redis_settings
 end
