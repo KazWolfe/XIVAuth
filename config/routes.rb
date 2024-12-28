@@ -71,7 +71,7 @@ Rails.application.routes.draw do
   resource :health, only: [:show], controller: :health
 
   if Rails.env.development? || ENV["APP_ENV"].present? && ENV["APP_ENV"] != "production"
-    get "/_debug/:action", controller: "debug", as: "debug"
+    get "/_debug/:dynamic_action", to: "debug#dynamic_action"
   end
 
   use_doorkeeper do
