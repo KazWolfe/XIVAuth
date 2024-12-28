@@ -20,7 +20,7 @@ class ErrorsController < ApplicationController
   private def set_trace_id
     trace = {
       "Event ID": Sentry.last_event_id,
-      "Trace ID": Sentry.get_current_scope&.get_span&.trace_id,
+      "Trace ID": OpenTelemetry::Trace.current_span.context.hex_trace_id,
       "Request ID": request.uuid # fallback
     }
 
