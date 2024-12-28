@@ -1,3 +1,5 @@
+return unless defined?(OpenTelemetry)
+
 OpenTelemetry::SDK.configure do |c|
   c.use_all
   c.add_span_processor(Sentry::OpenTelemetry::SpanProcessor.instance)

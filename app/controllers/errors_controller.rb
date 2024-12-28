@@ -19,11 +19,18 @@ class ErrorsController < ApplicationController
 
   private def set_trace_id
     trace = {
-      "Event ID": Sentry.last_event_id,
-      "Trace ID": OpenTelemetry::Trace.current_span.context.hex_trace_id,
+      "Event ID": (Sentry.last_event_id if defined?(Sentry)),
+      "Trace ID": get_internal_trace_id,
       "Request ID": request.uuid # fallback
     }
 
     @trace_type, @trace_id = trace.select { |_, v| v.present? }.first
+  end
+
+  private def get_internal_trace_id
+    return OpenTelemetry::Trace.current_span.context.hex_trace_id if defined?(OpenTelemetry)
+    return Sentry.get_current_scope&.get_span&.trace_id if defined?(Sentry)
+
+    nil
   end
 end
