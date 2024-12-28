@@ -2,7 +2,7 @@ class Api::V1::ApiController < ActionController::API
   # There are no "open" API calls; everything must require at least authorization.
   before_action :doorkeeper_authorize!
   before_action :load_token
-  before_action :set_otel_context
+  before_action :set_sentry_context, if: proc { Rails.env.production? }
 
   respond_to :json
 
@@ -20,16 +20,19 @@ class Api::V1::ApiController < ActionController::API
     @doorkeeper_token = doorkeeper_token
   end
 
-  private def set_otel_context
+  private def set_sentry_context
     return unless doorkeeper_token
-    
-    attrs = {
-      "oauth.application_id": doorkeeper_token.application_id,
-      "oauth.scopes": doorkeeper_token.scopes
+
+    ctx = {
+      application_id: doorkeeper_token.application_id,
+      scopes: doorkeeper_token.scopes
     }
 
-    attrs["user.id"] = current_user.id if current_user.present?
+    if current_user.present?
+      Sentry.set_user(id: current_user.id)
+      ctx[:user_id] = current_user.id
+    end
 
-    OpenTelemetry::Trace.current_span.add_attributes(attrs)
+    Sentry.set_context("oauth_application", ctx)
   end
 end
