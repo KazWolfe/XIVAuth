@@ -31,6 +31,6 @@ class JwtSigningKeys::Ed25519 < JwtSigningKey
   end
 
   def supported_algorithms
-    JWT::JWA::Eddsa::SUPPORTED
+    %w[EdDSA Ed25519]
   end
 end

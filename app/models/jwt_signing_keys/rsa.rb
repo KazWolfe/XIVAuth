@@ -37,6 +37,7 @@ class JwtSigningKeys::RSA < JwtSigningKey
   end
 
   def supported_algorithms
-    JWT::JWA::Rsa::SUPPORTED + JWT::JWA::Ps::SUPPORTED
+    # TODO: Figure out some way to read this from JWT again.
+    %w[RS256 RS384 RS512 PS256 PS384 PS512]
   end
 end

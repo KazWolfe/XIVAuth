@@ -46,7 +46,7 @@ class JwtSigningKey < ApplicationRecord
   end
 
   def self.preferred_key_for_algorithm(algorithm_name)
-    alg_type = JWT::JWA.find(algorithm_name)[1]
+    alg_type = JWT::JWA.find(algorithm_name).class
     case alg_type.to_s
     when "JWT::JWA::Rsa", "JWT::JWA::Ps"
       JwtSigningKeys::RSA.active.first
