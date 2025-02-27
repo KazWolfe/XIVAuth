@@ -1,4 +1,4 @@
-FROM ruby:3.3-alpine
+FROM ruby:3.4.2-alpine
 
 WORKDIR /app
 
@@ -7,7 +7,8 @@ RUN apk add --update --no-cache \
     postgresql-dev postgresql-client \
     nodejs yarn npm \
     tzdata \
-    libsodium libsodium-dev
+    libsodium libsodium-dev \
+    yaml-dev
 
 # Required for local dev shenanigans, because we can't add Foreman to the gemfile.
 # See https://www.jdeen.com/blog/don-t-add-foreman-to-your-gemfile
