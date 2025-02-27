@@ -78,6 +78,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     issued_at = Time.now.to_i
 
     payload = {
+      iss: ENV.fetch("APP_URL", "https://xivauth.net"),
       sub: @registration.character.lodestone_id,
       pk: @registration.entangled_id,
       iat: issued_at,
@@ -92,7 +93,8 @@ class Api::V1::CharactersController < Api::V1::ApiController
       return
     end
 
-    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name, typ: "Character")
+    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name, typ: "Character",
+                           jku: api_v1_jwt_jwks_url)
 
     render json: { token: jwt_token }
   end
