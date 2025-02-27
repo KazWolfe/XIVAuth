@@ -26,6 +26,9 @@ Style/FrozenStringLiteralComment:
 Layout/HashAlignment:
   EnforcedLastArgumentHashStyle: ignore_implicit
 
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyleForEmptyBraces: space
 
