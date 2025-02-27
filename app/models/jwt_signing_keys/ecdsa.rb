@@ -21,10 +21,6 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
     OpenSSL::PKey::EC.new self[:public_key]
   end
 
-  def jwk
-    JWT::JWK.new(private_key, use: "sig", kid: name, alg: supported_algorithms[0])
-  end
-
   def generate_keypair(curve = nil)
     curve ||= key_params[:curve] || "prime256v1"
     self.private_key = OpenSSL::PKey::EC.generate(curve)
@@ -41,22 +37,12 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
   end
 
   def supported_algorithms
-    [JWT::JWA::Ecdsa::NAMED_CURVES[curve_name][:algorithm]]
+    [JWT::JWA::Ecdsa::NAMED_CURVES[curve][:algorithm]]
   end
 
   def self.preferred_key_for_algorithm(algorithm_name)
     curves = JWT::JWA::Ecdsa::NAMED_CURVES.filter { |_, c| c[:algorithm] == algorithm_name }
 
     active.where("key_params->'curve' ?| array[:curves]", curves.keys).first
-  end
-
-  private def extra_jwk_fields
-    fields = {
-      alg: supported_algorithms[0]
-    }
-
-    fields[:exp] = expires_at.to_i if expires_at.present?
-
-    fields
   end
 end
