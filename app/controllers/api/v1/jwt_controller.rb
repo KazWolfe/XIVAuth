@@ -8,7 +8,7 @@ class Api::V1::JwtController < Api::V1::ApiController
 
     payload = {
       data: "dummy jwt for testing",
-      jti: SecureRandom.uuid,
+      jti: SecureRandom.urlsafe_base64(24, padding: false),
       iss: issuer,
       aud: issuer
     }
