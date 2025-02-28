@@ -3,10 +3,16 @@ class Api::V1::JwtController < Api::V1::ApiController
 
   def dummy_jwt
     algorithm = request.query_parameters["algorithm"] || JwtSigningKey::DEFAULT_ALGORITHM
-    payload = { data: "dummy jwt for testing", id: SecureRandom.uuid }
-
     expiry_time = (request.query_parameters[:ttl].to_i or 300)
-    payload[:iss] = "XIVAuthDev"
+    issuer = "#{ENV.fetch("APP_URL", "https://xivauth.net/")}/sandbox"
+
+    payload = {
+      data: "dummy jwt for testing",
+      jti: SecureRandom.uuid,
+      iss: issuer,
+      aud: issuer
+    }
+
     payload[:exp] = Time.now.to_i + expiry_time unless expiry_time.zero?
     payload[:iat] = Time.now.to_i unless request.query_parameters[:ignore_iat].present?
 
