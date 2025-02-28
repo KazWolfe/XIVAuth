@@ -28,6 +28,16 @@
           </tr>
 
           <tr>
+            <th scope="row">Supported Algorithms</th>
+            <td>
+              <%= @key.supported_algorithms.each
+                      .map { |a| "<span class='font-monospace'>#{a}</span>" }
+                      .join(", ")
+                      .html_safe %>
+            </td>
+          </tr>
+
+          <tr>
             <th scope="row">Creation Date</th>
             <td><%= @key.created_at %></td>
           </tr>
@@ -43,9 +53,20 @@
   </div>
   <div class="col-md-12">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-7">
         <h4>Public Key</h4>
-        <pre><%= @key.raw_public_key.gsub('\n', "\n") %></pre>
+
+        <% if @key.raw_public_key != nil %>
+          <div data-controller="copy-code">
+          <textarea data-copy-code-target="source" readonly class="form-control font-monospace" style="height: 22em;"
+                    aria-label="Public Key" onclick="this.select();"><%= @key.raw_public_key.gsub('\n', "\n").strip %></textarea>
+            <button class="btn btn-outline-secondary" type="button" data-action="copy-code#copy" data-copy-code-target="button">
+              <i class="bi bi-clipboard"></i> Copy
+            </button>
+          </div>
+        <% else %>
+          <p>This key type does not have a public half.</p>
+        <% end %>
       </div>
     </div>
   </div>
