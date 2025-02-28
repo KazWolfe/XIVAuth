@@ -12,6 +12,10 @@ class JwtSigningKey < ApplicationRecord
 
   attr_readonly :public_key, :raw_public_key, :raw_private_key, :jwk
 
+  def to_param
+    name
+  end
+
   def raw_public_key
     self[:public_key]
   end
@@ -34,7 +38,7 @@ class JwtSigningKey < ApplicationRecord
 
   def active?
     enabled? && !expired?
-  end
+    a  end
 
   def self.jwks
     jwk_set = []

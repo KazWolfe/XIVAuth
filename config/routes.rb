@@ -55,6 +55,7 @@ Rails.application.routes.draw do
       end
 
       resources :client_applications, controller: "client_applications"
+      resources :jwt_keys, controller: "jwt_keys", only: %i[index show], param: :name
 
       mount Sidekiq::Web => "/sidekiq"
       mount Flipper::UI.app(Flipper) => "/flipper"

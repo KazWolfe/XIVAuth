@@ -1,0 +1,36 @@
+<h1>ADMIN - JWT Keys</h1>
+<table class="table">
+  <thead>
+  <tr>
+    <th></th>
+    <th scope="col">Name (kid)</th>
+    <th scope="col">Key Type</th>
+    <th scope="col">Key Age</th>
+    <th scope="col">Expiration Date</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @jwt_keys.each do |key| %>
+    <tr>
+      <td>
+        <% if key.expired? %>
+          <span class="badge bg-danger">Expired</span>
+        <% elsif !key.enabled? %>
+          <span class="badge bg-warning">Disabled</span>
+        <% else %>
+          <span class="badge bg-success">Active</span>
+        <% end %>
+      </td>
+      <td class="font-monospace"><a href="<%= admin_jwt_key_path key %>"><%= key.name %></a></td>
+      <td>
+        <span class="font-monospace"><%= key.type.split("::")[-1] %></span>
+        <% if key.type == "JwtSigningKeys::ECDSA" %>
+          (<span class="font-monospace"><%= key.curve %></span>)
+        <% end %>
+      </td>
+      <td><%= distance_of_time_in_words(key.created_at, Time.now) %></td>
+      <td><%= key.expires_at || "None" %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

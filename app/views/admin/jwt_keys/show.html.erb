@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-md-8">
+    <h3>JWT Key Info</h3>
+    <div class="row">
+      <div class="col">
+        <table class="table table-borderless">
+          <tbody>
+          <tr>
+            <th scope="row">Key Name (kid)</th>
+            <td><code><%= @key.name %></code></td>
+          </tr>
+
+          <tr>
+            <th scope="row">Key GUID</th>
+            <td>
+              <%= @key.id %>
+            </td>
+          </tr>
+
+          <tr>
+            <th scope="row">Key Type</th>
+            <td>
+              <span class="font-monospace"><%= @key.type.split("::")[-1] %></span>
+              <% if @key.type == "JwtSigningKeys::ECDSA" %>
+                (<span class="font-monospace"><%= @key.curve %></span>)
+              <% end %>
+            </td>
+          </tr>
+
+          <tr>
+            <th scope="row">Creation Date</th>
+            <td><%= @key.created_at %></td>
+          </tr>
+
+          <tr>
+            <th scope="row">Expiration Date</th>
+            <td><%= @key.expires_at || "None" %></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Public Key</h4>
+        <pre><%= @key.raw_public_key.gsub('\n', "\n") %></pre>
+      </div>
+    </div>
+  </div>
+</div>
