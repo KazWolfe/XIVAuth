@@ -1,0 +1,47 @@
+.form-group{
+    margin-bottom: $spacer;
+}
+.form-group-alt{
+    &.input-group{
+        box-shadow: $box-shadow-sm;
+        border-radius: $border-radius-sm;
+        .input-group-text{
+            background: transparent;
+        }
+        > :not(:first-child):not(.dropdown-menu){
+            box-shadow: unset;
+            &.input-group-text {
+                border: 0;
+                padding-left: 0;
+            }
+        }
+        > :not(:last-child):not(.dropdown-menu){
+            box-shadow: unset;
+            padding-right: 0;
+            &.input-group-text {
+                border: 0;
+            }
+        }
+    }
+    .form-control {
+        border: 0;
+        box-shadow: $box-shadow-sm;       
+    }
+}
+
+.form-select{
+    box-shadow: none;
+    &:focus{
+        box-shadow: none;
+    }
+}
+.form-control {
+    &[readonly]{
+        background-color: $input-bg;
+        border-color: var(--bs-border-color);
+    }
+}
+
+option:disabled {
+    color: var(--bs-gray-400);
+}

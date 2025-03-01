@@ -1,0 +1,18 @@
+.myChart{
+    min-height: 230px !important;
+}
+.d-activity{
+    min-height: 230px !important; 
+}
+.d-main{
+    min-height: 245px !important; 
+}
+
+.apexcharts-tooltip.apexcharts-theme-light {
+	.apexcharts-tooltip-title {
+		background: var(--bs-body-bg) !important;
+		border-bottom: 1px solid var(--bs-border-color) !important;
+	}
+	border: 1px solid var(--bs-border-color) !important;
+	background: var(--bs-gray-900) !important;
+}
