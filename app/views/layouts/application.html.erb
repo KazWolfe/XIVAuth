@@ -7,11 +7,12 @@
   <%= csp_meta_tag %>
 
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" data-bs-theme="light" data-bs-theme-color="theme-color-default">
 <%= render 'layouts/components/env_watermark' %>
 <%= render 'layouts/navbar' %>
 

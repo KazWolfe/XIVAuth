@@ -2,5 +2,5 @@
 import "@hotwired/turbo-rails";
 import "./controllers";
 import * as bootstrap from "bootstrap";
-import * as hopeUI from "hope-ui";
+import * as hopeUI from "./hope-ui";
 import "./channels";
