@@ -1,0 +1,38 @@
+.pride-brand {
+  background: linear-gradient(85deg,
+          rgba(222,80,80,1),
+          rgba(222,180,114,1),
+          rgba(213,213,114,1),
+          rgba(140,207,140,1),
+          rgba(118,114,231,1),
+          rgba(148,82,229,1),
+          rgba(191,94,233,1),
+          rgba(148,82,229,1),
+          rgba(118,114,231,1),
+          rgba(140,207,140,1),
+          rgba(213,213,114,1),
+          rgba(222,80,80,1)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 200% 100%;
+  color: transparent;
+
+  animation: pride-gradient 5s linear infinite;
+  animation-play-state: paused;
+
+  &:hover {
+    color: transparent;
+    animation-play-state: unset;
+  }
+}
+
+@keyframes pride-gradient {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}

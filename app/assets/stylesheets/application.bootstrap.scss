@@ -1,4 +1,5 @@
 @import "bootstrap/scss/mixins/banner";
+
 @include bsBanner("");
 
 @import "./hope-ui/helper/fonts";
@@ -70,68 +71,9 @@
 
 @import 'bootstrap-icons/font/bootstrap-icons';
 
-@import 'devise/password';
-@import 'brand-colors';
+@import 'xivauth/utility';
+@import 'xivauth/devise/password';
+@import 'xivauth/brand_colors';
+@import 'xivauth/env_watermark';
+@import 'xivauth/branding/pride_logo';
 
-.pride-brand {
-  background: linear-gradient(85deg,
-          rgba(222,80,80,1),
-          rgba(222,180,114,1),
-          rgba(213,213,114,1),
-          rgba(140,207,140,1),
-          rgba(118,114,231,1),
-          rgba(148,82,229,1),
-          rgba(191,94,233,1),
-          rgba(148,82,229,1),
-          rgba(118,114,231,1),
-          rgba(140,207,140,1),
-          rgba(213,213,114,1),
-          rgba(222,80,80,1)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  background-size: 200% 100%;
-  color: transparent;
-
-  animation: pride-gradient 5s linear infinite;
-  animation-play-state: paused;
-
-  &:hover {
-    color: transparent;
-    animation-play-state: unset;
-  }
-}
-
-@keyframes pride-gradient {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-#env-watermark {
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  position: fixed;
-  text-align: center;
-  line-height: 100vh;
-  font-size: 10vw;
-  z-index: -99999;
-  opacity: 0.2;
-  transform: rotate(-20deg);
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.very-small {
-  font-size: 0.75rem;
-}
-
-.extra-small {
-  font-size: 0.5rem;
-}
