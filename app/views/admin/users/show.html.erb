@@ -91,7 +91,7 @@
       <tbody>
       <% @user.social_identities.each do |ident| %>
         <tr>
-          <th scope="row"><i class="fab fa-<%= ident.provider %>" title="<%= ident.provider.titleize %>"></i></th>
+          <th scope="row"><i class="fab fa-<%= ident.provider %> fa-fw" title="<%= ident.provider.titleize %>"></i></th>
           <td><%= ident.friendly_name %></td>
           <td><%= ident.external_id %></td>
           <td><%= dotiw_hover ident.created_at %></td>
