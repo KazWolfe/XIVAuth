@@ -1,0 +1,11 @@
+<% if target.class.name == "User" %>
+  <%= link_to admin_user_path(target) do %>
+    <i class="bi bi-person"></i>
+    <%= target.profile.display_name %> (<span class="font-monospace"><%= target.id[-8..] %></span>)
+  <% end %>
+<% elsif target.class.name == "Team" %>
+  <%= link_to admin_user_path(target) do %>
+    <i class="bi bi-people"></i>
+    <%= target.name %> (<span class="font-monospace"><%= target.id[-8..] %></span>)
+  <% end %>
+<% end %>

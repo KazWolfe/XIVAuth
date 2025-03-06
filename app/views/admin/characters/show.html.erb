@@ -114,8 +114,7 @@
           <tr>
             <td>
               <span>
-                <%= link_to registration.user.profile.display_name, admin_user_path(registration.user) %>
-                (<span class="font-monospace"><%= registration.user.id[-8..] %></span>)
+                <%= render partial: 'admin/_components/user_link', locals: { target: registration.user } %>
               </span>
               <% if registration.verified? %>
                 <i class="bi bi-patch-check-fill text-success" title="Verified Owner"></i>

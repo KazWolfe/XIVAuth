@@ -14,16 +14,7 @@
       <td><%= link_to app.id, admin_client_application_path(app) %></td>
       <td><%= app.name %></td>
       <td>
-        <% if app.owner_type == "User" %>
-          <i class="bi bi-person-fill" title="Owned by a user"></i>
-          <span>
-            <%= link_to app.owner.profile.display_name, admin_user_path(app.owner) %>
-            (<span class="font-monospace"><%= app.owner.id[-8..] %></span>)
-          </span>
-        <% elsif app.owner_type == "Team" %>
-            <i class="bi bi-people-fill" title="Owned by a team"></i>
-            <span class="font-monospace"><%= app.owner.id[-8..] %></span>
-        <% end %>
+        <%= render partial: 'admin/_components/user_link', locals: { target: app.owner } %>
       </td>
     </tr>
   <% end %>

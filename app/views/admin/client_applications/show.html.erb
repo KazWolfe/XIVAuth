@@ -17,15 +17,7 @@
       <tr>
         <th scope="row">App Owner</th>
         <td>
-          <% if @client_application.owner_type == 'Team' %>
-            <i class="bi bi-people"></i>
-            <% @client_application.owner.name %>
-          <% elsif @client_application.owner_type == 'User' %>
-            <i class="bi bi-person"></i>
-            <%= @client_application.owner.id %>
-          <% else %>
-            <% @client_application.owner %>
-          <% end %>
+          <%= render partial: 'admin/_components/user_link', locals: { target: @client_application.owner } %>
         </td>
       </tr>
       <tr>
