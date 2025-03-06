@@ -58,7 +58,7 @@
           <%- resource_class.omniauth_providers.each do |provider| %>
             <li>
               <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
-                <i class="bi bi-<%= provider %> me-1"></i> Add <%= OmniAuth::Utils.camelize(provider) %> account
+                <i class="fab fa-<%= provider %> me-1"></i> Add <%= OmniAuth::Utils.camelize(provider) %> account
               <% end %>
             </li>
           <% end %>
@@ -76,7 +76,7 @@
       </thead>
       <% resource.social_identities.each do |identity| %>
         <tr>
-          <td><i class="bi bi-<%= identity.provider %> me-1"></i> <%= identity.provider.humanize %></td>
+          <td><i class="fa fa-<%= identity.provider %> me-1"></i> <%= identity.provider.humanize %></td>
           <td><%= identity.friendly_name %></td>
           <td><%= identity.external_id %></td>
           <td>

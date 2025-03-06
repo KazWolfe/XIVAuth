@@ -3,7 +3,7 @@
     <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false },
                   form: { class: "col-6 col-sm-3 col-lg-6" },
                   class: "btn w-100 btn-social-#{provider}" do %>
-      <i class="bi bi-<%= provider %>"></i> <%= OmniAuth::Utils.camelize(provider) %>
+      <i class="fab fa-<%= provider %>"></i> <%= OmniAuth::Utils.camelize(provider) %>
     <% end %>
   <% end %>
 <% end %>
