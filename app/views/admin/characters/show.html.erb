@@ -1,6 +1,28 @@
 <div class="row">
-  <div class="col-md-8">
-    <h3>Basic Character Info</h3>
+  <div class="col">
+    <h3>Character Info</h3>
+    <div class="button-toolbar pb-4">
+      <%= button_to refresh_admin_character_path(@character.lodestone_id), class: 'btn btn-primary',
+                    form_class: 'd-inline-block' do %>
+        <i class="bi bi-arrow-repeat"></i> Force Lodestone Refresh
+      <% end %>
+      <% if @character.ban.nil? %>
+        <%= button_to new_admin_character_ban_path(@character.lodestone_id), method: 'get', class: 'btn btn-danger',
+                      form_class: 'd-inline-block', data: { turbo_stream: "remote_modal" } do %>
+          <i class="bi bi-slash-circle"></i> Ban
+        <% end %>
+      <% else %>
+        <%= button_to admin_character_ban_path(@character.lodestone_id), method: 'delete', class: 'btn btn-secondary',
+                      form_class: 'd-inline-block' do %>
+          <i class="bi bi-slash-circle"></i> Unban
+        <% end %>
+      <% end %>
+      <%= button_to admin_character_path(@character.lodestone_id), method: 'delete', class: 'btn btn-danger',
+                    form_class: 'd-inline-block' do %>
+        <i class="bi bi-trash"></i> Delete
+      <% end %>
+    </div>
+
     <% if @character.ban.present? %>
       <div class="alert alert-danger">
         <h5 class="alert-heading"><i class="bi bi-slash-circle"></i> Character Banned</h5>
@@ -69,32 +91,6 @@
       </div>
     </div>
 
-  </div>
-
-  <div class="col-md-4">
-    <h3>Data Integrity</h3>
-
-    <div class="button-toolbar pb-4">
-      <%= button_to refresh_admin_character_path(@character.lodestone_id), class: 'btn btn-primary',
-                    form_class: 'd-inline-block' do %>
-        <i class="bi bi-arrow-repeat"></i> Force Lodestone Refresh
-      <% end %>
-      <% if @character.ban.nil? %>
-        <%= button_to new_admin_character_ban_path(@character.lodestone_id), method: 'get', class: 'btn btn-danger',
-                      form_class: 'd-inline-block', data: { turbo_stream: "remote_modal" } do %>
-          <i class="bi bi-slash-circle"></i> Ban
-        <% end %>
-      <% else %>
-        <%= button_to admin_character_ban_path(@character.lodestone_id), method: 'delete', class: 'btn btn-secondary',
-                      form_class: 'd-inline-block' do %>
-          <i class="bi bi-slash-circle"></i> Unban
-        <% end %>
-      <% end %>
-      <%= button_to admin_character_path(@character.lodestone_id), method: 'delete', class: 'btn btn-danger',
-                    form_class: 'd-inline-block' do %>
-        <i class="bi bi-trash"></i> Delete
-      <% end %>
-    </div>
   </div>
   <div class="col-md-12">
     <h4>Claiming Users</h4>
