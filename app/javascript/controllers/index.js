@@ -12,10 +12,13 @@ import PasswordStrengthController from './devise/password_strength_controller';
 application.register('password-strength', PasswordStrengthController);
 
 import WebauthnController from "./devise/webauthn_controller";
-application.register('webauthn', WebauthnController);
+application.register("webauthn", WebauthnController);
 
 import CopyCodeController from "./utilities/copy_code_controller";
 application.register('copy-code', CopyCodeController);
 
 import ToastController from "./toasts/toast";
 application.register('toast', ToastController)
+
+import ThemingController from "./utilities/theming_controller";
+application.register("theming", ThemingController);

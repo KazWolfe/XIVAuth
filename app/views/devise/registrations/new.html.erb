@@ -24,7 +24,7 @@
         </div>
       <% end %>
 
-      <div data-controller="password-strength" data-password-strength-min-score-value="<%= User.min_password_score %>">
+      <div data-controller="password_strength" data-password-strength-min-score-value="<%= User.min_password_score %>">
         <div class="form-group field mb-2">
           <%= f.label :password, class: "form-label" %>
           <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
@@ -34,13 +34,13 @@
                                } %>
 
           <div class="form-text text-secondary pt-1">
-            <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-password-strength-target="meter">
-              <div class="progress-bar bg-primary" data-password-strength-target="meterInner"></div>
+            <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-password_strength-target="meter">
+              <div class="progress-bar bg-primary" data-password_strength-target="meterInner"></div>
             </div>
-            <p class="mb-0 d-none"><strong class="text-secondary" data-password-strength-target="strength">Unknown</strong> -
-              <span data-password-strength-target="crackTime"></span> <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
+            <p class="mb-0 d-none"><strong class="text-secondary" data-password_strength-target="strength">Unknown</strong> -
+              <span data-password_strength-target="crackTime"></span> <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
             </p>
-            <ul class="list-unstyled mb-0" data-password-strength-target="tips"></ul>
+            <ul class="list-unstyled mb-0" data-password_strength-target="tips"></ul>
           </div>
         </div>
 

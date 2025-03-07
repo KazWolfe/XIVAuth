@@ -4,6 +4,9 @@ import * as WebAuthnJSON from "@github/webauthn-json"
 export default class WebauthnController extends Controller {
     static targets = [ "challenge", "response" ];
 
+    declare readonly challengeTarget: HTMLInputElement;
+    declare readonly responseTarget: HTMLInputElement;
+
     async authenticate(event) {
         event.preventDefault();
 
@@ -12,8 +15,6 @@ export default class WebauthnController extends Controller {
         });
 
         this.responseTarget.value = JSON.stringify(credential);
-        console.log("creds", credential, this.responseTarget.value)
-
         event.target.form.submit();
     }
 
@@ -25,8 +26,6 @@ export default class WebauthnController extends Controller {
         });
 
         this.responseTarget.value = JSON.stringify(credential);
-        console.log("creds", credential, this.responseTarget.value)
-
         event.target.submit();
     }
 }

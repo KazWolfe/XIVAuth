@@ -1,13 +1,19 @@
-import { Controller} from '@hotwired/stimulus'
+import {Controller} from "@hotwired/stimulus";
 
 export default class CopyCodeController extends Controller {
     static targets = [ "source", "button" ]
 
-    connect() {
+    declare readonly hasSourceTarget: boolean;
+    declare readonly sourceTarget: HTMLInputElement;
+    declare readonly sourceTargets: HTMLInputElement[];
 
-    }
+    declare readonly hasButtonTarget: boolean;
+    declare readonly buttonTarget: HTMLInputElement;
+    declare readonly buttonTargets: HTMLInputElement[];
 
-    copy(event) {
+    connect() { }
+
+    copy(event: PointerEvent) {
         event.preventDefault();
         navigator.clipboard.writeText(this.sourceTarget.value);
 
