@@ -1,6 +1,20 @@
-<div data-controller="toast--toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="toast-header">
-    <strong class="me-auto" data-toast-target="title"><%= title %></strong>
+<%# Turbo::StreamsChannel.broadcast_append_to("UserStream:#{current_user.id}", :toasts, target: "toasts",
+    partial: "layouts/components/toasts/toast",
+    locals: { title: "A Title", message: "A Body" }) %>
+<% color ||= nil %>
+<div data-controller="toasts--toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header <%= color ? "text-#{color}" : "" %>">
+    <% if defined?(notification_icon_url) %>
+      <img class="rounded me-2" width="20" height="20" src="<%= notification_icon_url %>" aria-hidden="true" alt="Notification icon">
+    <% elsif defined?(notification_icon_class) %>
+      <i size="20" class="<%= notification_icon_class %> me-2"></i>
+    <% end %>
+    <% if defined?(title) %>
+      <strong class="me-auto" data-toast-target="title"><%= title %></strong>
+    <% end %>
+    <% if defined?(timestamp) %>
+      <small class="text-muted"><%= time_ago_in_words(timestamp, include_seconds: true) %> ago</small>
+    <% end %>
     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
   </div>
 
@@ -9,6 +23,6 @@
   </div>
 
   <div class="progress active" role="progressbar" style="height:5px">
-    <div class="progress-bar bg-success" id="pb" style="width:100%; opacity:0.5"></div>
+    <div class="progress-bar bg-<%= color || "primary" %>" id="pb" style="width:100%; opacity:0.5"></div>
   </div>
 </div>

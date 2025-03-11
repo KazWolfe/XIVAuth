@@ -23,7 +23,7 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     job.report_result("verification_failed_privateprofile")
   end
 
-  retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS, wait: 2.minutes) do |job, error|
+  retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS, wait: 2.minu) do |job, error|
     job.report_result("verification_failed_codenotfound")
   end
 

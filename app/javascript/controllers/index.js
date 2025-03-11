@@ -10,6 +10,9 @@ application.register("devise--password-strength", Devise__PasswordStrengthContro
 import Devise__WebauthnController from "./devise/webauthn_controller"
 application.register("devise--webauthn", Devise__WebauthnController)
 
+import Toasts__ToastController from "./toasts/toast_controller"
+application.register("toasts--toast", Toasts__ToastController)
+
 import Utilities__CopyCodeController from "./utilities/copy_code_controller"
 application.register("utilities--copy-code", Utilities__CopyCodeController)
 

@@ -27,7 +27,7 @@
   <div class="me-auto">
     <div class="text-secondary very-small align-middle">
       Job ID: <span class="font-monospace"><%= job.job_id %></span><br/>
-      Attempt <%= job.executions %> of <%= job.class::MAX_RETRY_ATTEMPTS %>
+      Attempt <%= job.executions + 1 %> of <%= job.class::MAX_RETRY_ATTEMPTS %>
     </div>
   </div>
   <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Got it.</button>
