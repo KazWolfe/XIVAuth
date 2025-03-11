@@ -11,13 +11,13 @@ class User < ApplicationRecord
 
   default_scope { order(created_at: :asc) }
 
-  has_many :social_identities, class_name: "Users::SocialIdentity", dependent: :destroy
+  has_many :social_identities, class_name: "User::SocialIdentity", dependent: :destroy
   has_many :character_registrations, dependent: :destroy
 
-  has_many :webauthn_credentials, class_name: "Users::WebauthnCredential", dependent: :destroy
-  has_one :totp_credential, class_name: "Users::TotpCredential", dependent: :destroy
+  has_many :webauthn_credentials, class_name: "User::WebauthnCredential", dependent: :destroy
+  has_one :totp_credential, class_name: "User::TotpCredential", dependent: :destroy
 
-  has_one :profile, class_name: "Users::Profile", dependent: :destroy, required: true, autosave: true
+  has_one :profile, class_name: "User::Profile", dependent: :destroy, required: true, autosave: true
   validates_associated :profile
   accepts_nested_attributes_for :profile, update_only: true
 

@@ -1,6 +1,6 @@
 class Users::WebauthnCredentialsController < ApplicationController
   def new
-    @webauthn_credential = Users::WebauthnCredential.new
+    @webauthn_credential = User::WebauthnCredential.new
     @challenge = build_challenge
   end
 

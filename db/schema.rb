@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_15_021854) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_11_031000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -177,6 +177,53 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_15_021854) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "display_name", limit: 64, null: false
+    t.index ["user_id"], name: "index_user_profiles_on_user_id", unique: true
+  end
+
+  create_table "user_social_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.string "provider", null: false
+    t.string "external_id", null: false
+    t.string "email"
+    t.string "name"
+    t.string "nickname"
+    t.json "raw_info"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "last_used_at"
+    t.string "access_token"
+    t.string "refresh_token"
+    t.index ["provider", "external_id"], name: "index_user_social_identities_on_provider_and_external_id", unique: true
+    t.index ["user_id"], name: "index_user_social_identities_on_user_id"
+  end
+
+  create_table "user_totp_credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "otp_secret", null: false
+    t.decimal "consumed_timestep"
+    t.boolean "otp_enabled", default: false
+    t.string "otp_backup_codes", array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_totp_credentials_on_user_id", unique: true
+  end
+
+  create_table "user_webauthn_credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "external_id", null: false
+    t.string "public_key", null: false
+    t.string "nickname", null: false
+    t.integer "sign_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_user_webauthn_credentials_on_external_id", unique: true
+    t.index ["user_id", "nickname"], name: "index_user_webauthn_credentials_on_user_id_and_nickname", unique: true
+    t.index ["user_id"], name: "index_user_webauthn_credentials_on_user_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password"
@@ -200,53 +247,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_15_021854) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "users_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
-    t.string "display_name", limit: 64, null: false
-    t.index ["user_id"], name: "index_users_profiles_on_user_id", unique: true
-  end
-
-  create_table "users_social_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id"
-    t.string "provider", null: false
-    t.string "external_id", null: false
-    t.string "email"
-    t.string "name"
-    t.string "nickname"
-    t.json "raw_info"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "last_used_at"
-    t.string "access_token"
-    t.string "refresh_token"
-    t.index ["provider", "external_id"], name: "index_users_social_identities_on_provider_and_external_id", unique: true
-    t.index ["user_id"], name: "index_users_social_identities_on_user_id"
-  end
-
-  create_table "users_totp_credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
-    t.string "otp_secret", null: false
-    t.decimal "consumed_timestep"
-    t.boolean "otp_enabled", default: false
-    t.string "otp_backup_codes", array: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_users_totp_credentials_on_user_id", unique: true
-  end
-
-  create_table "users_webauthn_credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
-    t.string "external_id", null: false
-    t.string "public_key", null: false
-    t.string "nickname", null: false
-    t.integer "sign_count", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["external_id"], name: "index_users_webauthn_credentials_on_external_id", unique: true
-    t.index ["user_id", "nickname"], name: "index_users_webauthn_credentials_on_user_id_and_nickname", unique: true
-    t.index ["user_id"], name: "index_users_webauthn_credentials_on_user_id"
-  end
-
   add_foreign_key "character_registrations", "ffxiv_characters", column: "character_id"
   add_foreign_key "oauth_access_grants", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "oauth_permissible_policies", column: "permissible_policy_id"
@@ -255,8 +255,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_15_021854) do
   add_foreign_key "oauth_device_grants", "oauth_client_applications", column: "application_id"
   add_foreign_key "oauth_device_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
-  add_foreign_key "users_profiles", "users"
-  add_foreign_key "users_social_identities", "users"
-  add_foreign_key "users_totp_credentials", "users"
-  add_foreign_key "users_webauthn_credentials", "users"
+  add_foreign_key "user_profiles", "users"
+  add_foreign_key "user_social_identities", "users"
+  add_foreign_key "user_totp_credentials", "users"
+  add_foreign_key "user_webauthn_credentials", "users"
 end

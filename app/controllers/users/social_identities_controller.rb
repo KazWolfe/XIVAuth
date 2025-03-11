@@ -10,7 +10,7 @@ class Users::SocialIdentitiesController < ApplicationController
   end
 
   private def load_identity
-    @identity = Users::SocialIdentity.find(params[:id])
+    @identity = User::SocialIdentity.find(params[:id])
     authorize! :show, @identity
   end
 end

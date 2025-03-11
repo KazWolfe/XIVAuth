@@ -1,4 +1,4 @@
-class Users::TotpCredential < ApplicationRecord
+class User::TotpCredential < ApplicationRecord
   belongs_to :user
 
   devise :two_factor_authenticatable,

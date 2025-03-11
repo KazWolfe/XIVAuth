@@ -54,7 +54,7 @@ module OAuth
       identity_ids = params[:social_identities] || []
       share_new_identities = params[:share_new_identities].present?
 
-      objects = Users::SocialIdentity.where(user_id: current_resource_owner.id)
+      objects = User::SocialIdentity.where(user_id: current_resource_owner.id)
 
       if share_new_identities
         # Filter to only identities that were *not* selected, so we can deny access to them.

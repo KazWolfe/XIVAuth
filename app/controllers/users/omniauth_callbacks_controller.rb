@@ -61,7 +61,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private def sso_bind_identity
-    identity = Users::SocialIdentity.find_by(provider: auth_data[:provider], external_id: auth_data[:uid])
+    identity = User::SocialIdentity.find_by(provider: auth_data[:provider], external_id: auth_data[:uid])
     if identity.present?
       if identity.user == current_user
         identity.merge_auth_hash(auth_data)
@@ -91,7 +91,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private def find_user_by_authdata(auth)
-    social_identity = Users::SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
+    social_identity = User::SocialIdentity.find_by(provider: auth.provider, external_id: auth.uid)
     if social_identity.present?
       social_identity.merge_auth_hash(auth)
       social_identity.touch_used_at

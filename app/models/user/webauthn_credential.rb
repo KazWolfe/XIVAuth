@@ -1,4 +1,4 @@
-class Users::WebauthnCredential < ApplicationRecord
+class User::WebauthnCredential < ApplicationRecord
   belongs_to :user
 
   validates :external_id, presence: true, uniqueness: true

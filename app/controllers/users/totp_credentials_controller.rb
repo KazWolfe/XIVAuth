@@ -4,9 +4,9 @@ class Users::TotpCredentialsController < ApplicationController
       return
     end
 
-    @totp_credential = Users::TotpCredential.new(
+    @totp_credential = User::TotpCredential.new(
       user_id: current_user.id,
-      otp_secret: Users::TotpCredential.generate_otp_secret
+      otp_secret: User::TotpCredential.generate_otp_secret
     )
 
     session[:staged_totp_secret] = @totp_credential.otp_secret
@@ -15,7 +15,7 @@ class Users::TotpCredentialsController < ApplicationController
   def create
     return if current_user.totp_credential&.otp_enabled
 
-    @totp_credential = Users::TotpCredential.new(
+    @totp_credential = User::TotpCredential.new(
       user_id: current_user.id,
       otp_secret: session[:staged_totp_secret],
       otp_enabled: true

@@ -68,7 +68,7 @@ RSpec.describe OAuth::PermissiblePolicy, type: :model do
     before do
       @user_resource = FactoryBot.create(:user)
       @allowed_resource = FactoryBot.create(:ffxiv_character)
-      @denied_resource = Users::SocialIdentity.create(
+      @denied_resource = User::SocialIdentity.create(
         external_id: "abcdef", provider: "test",
         user: @user_resource
       )
@@ -85,7 +85,7 @@ RSpec.describe OAuth::PermissiblePolicy, type: :model do
     end
 
     it "uses implicit allow for a resource if no allow rules are present" do
-      resource = Users::SocialIdentity.create(external_id: "wolf", provider: "test", user: @user_resource)
+      resource = User::SocialIdentity.create(external_id: "wolf", provider: "test", user: @user_resource)
 
       expect(@policy.can_access_resource?(resource)).to be true
     end

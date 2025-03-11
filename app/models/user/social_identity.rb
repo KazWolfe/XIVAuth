@@ -1,4 +1,4 @@
-class Users::SocialIdentity < ApplicationRecord
+class User::SocialIdentity < ApplicationRecord
   belongs_to :user
   validates_uniqueness_of :external_id, scope: [:provider]
   validates_uniqueness_of :user_id, scope: [:provider, :external_id]
