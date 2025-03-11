@@ -1,11 +1,13 @@
 module Developer
+
   class ClientAppsController < ApplicationController
     before_action :set_application, only: %i[show edit update destroy regenerate]
+    include Pagy::Backend
 
     helper Doorkeeper::DashboardHelper
 
     def index
-      @applications = OAuth::ClientApplication.accessible_by(current_ability).ordered_by(:created_at)
+      @pagy, @applications = pagy(OAuth::ClientApplication.accessible_by(current_ability).ordered_by(:created_at), items: 24)
 
       respond_to do |format|
         format.html

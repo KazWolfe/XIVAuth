@@ -1,4 +1,4 @@
-<h1>My Characters</h1>
+<h1 class="mb-4">My Characters</h1>
 
 <div class="btn-group mb-4" role="group" aria-label="Character Management Actions">
   <% if can_add_characters? %>
@@ -16,7 +16,7 @@
   <% end %>
 </div>
 
-<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 0 %>
+<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
 
 <div id="character-verification-modal-container"></div>
 

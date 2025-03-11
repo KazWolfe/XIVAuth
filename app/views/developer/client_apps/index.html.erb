@@ -1,40 +1,15 @@
-<div class="border-bottom mb-4">
-  <h1><%= t('.title') %></h1>
-</div>
+<h1 class="mb-4">My Applications</h1>
 
-<p><%= link_to new_developer_application_path, class: 'btn btn-success' do %>
+<p><%= link_to new_developer_application_path, class: 'btn btn-primary' do %>
   <i class="bi bi-plus"></i> Create App
 <% end %></p>
 
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th><%= t('.name') %></th>
-    <th><%= t('.callback_url') %></th>
-    <th><%= t('.confidential') %></th>
-    <th><%= t('.actions') %></th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @applications.each do |application| %>
-    <tr id="application_<%= application.id %>">
-      <td class="align-middle">
-        <%= link_to application.name, developer_application_path(application) %>
-      </td>
-      <td class="align-middle">
-        <%= simple_format(application.redirect_uri) %>
-      </td>
-      <td class="align-middle">
-        <%= application.confidential? ? t('doorkeeper.applications.index.confidentiality.yes') : t('doorkeeper.applications.index.confidentiality.no') %>
-      </td>
-      <td class="align-middle">
-        <%= link_to t('doorkeeper.applications.buttons.edit'), edit_developer_application_path(application), class: 'btn btn-link' %>
-      </td>
-      <td class="align-middle">
-        <%= render 'delete_form', application: application %>
-      </td>
-    </tr>
+<div class="row">
+  <% @applications.each do |app| %>
+    <div class="col-md-6 col-xl-4 mb-2">
+      <%= render 'app_card', application: app %>
+    </div>
   <% end %>
-  </tbody>
-</table>
+</div>
+
+<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
