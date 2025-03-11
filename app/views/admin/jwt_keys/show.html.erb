@@ -57,10 +57,10 @@
         <h4>Public Key</h4>
 
         <% if @key.raw_public_key != nil %>
-          <div data-controller="copy-code">
+          <div data-controller="utilities--copy-code">
           <textarea data-copy-code-target="source" readonly class="form-control font-monospace" style="height: 22em;"
                     aria-label="Public Key" onclick="this.select();"><%= @key.raw_public_key.gsub('\n', "\n").strip %></textarea>
-            <button class="btn btn-outline-secondary" type="button" data-action="copy-code#copy" data-copy-code-target="button">
+            <button class="btn btn-outline-secondary" type="button" data-action="utilities--copy-code#copy" data-copy-code-target="button">
               <i class="bi bi-clipboard"></i> Copy
             </button>
           </div>

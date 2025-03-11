@@ -4,21 +4,14 @@
 
 import { application } from "./application"
 
+import Devise__PasswordStrengthController from "./devise/password_strength_controller"
+application.register("devise--password-strength", Devise__PasswordStrengthController)
 
-import RemoteModalController from "./utilities/remote_modal_controller";
-application.register("remote-modal", RemoteModalController);
+import Devise__WebauthnController from "./devise/webauthn_controller"
+application.register("devise--webauthn", Devise__WebauthnController)
 
-import PasswordStrengthController from './devise/password_strength_controller';
-application.register('password-strength', PasswordStrengthController);
+import Utilities__CopyCodeController from "./utilities/copy_code_controller"
+application.register("utilities--copy-code", Utilities__CopyCodeController)
 
-import WebauthnController from "./devise/webauthn_controller";
-application.register("webauthn", WebauthnController);
-
-import CopyCodeController from "./utilities/copy_code_controller";
-application.register('copy-code', CopyCodeController);
-
-import ToastController from "./toasts/toast";
-application.register('toast', ToastController)
-
-import ThemingController from "./utilities/theming_controller";
-application.register("theming", ThemingController);
+import Utilities__RemoteModalController from "./utilities/remote_modal_controller"
+application.register("utilities--remote-modal", Utilities__RemoteModalController)

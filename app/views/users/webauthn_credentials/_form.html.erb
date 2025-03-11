@@ -1,5 +1,5 @@
 <%= form_with(model: webauthn_credential, method: :post, url: webauthn_credentials_path,
-              data: { controller: "webauthn", action: "webauthn#register' }) do |f| %>
+              data: { controller: "webauthn", action: "webauthn#register" }) do |f| %>
   <div class="form-floating mb-3">
     <%= f.text_field :nickname, class: "form-control", placeholder: "nickname" %>
     <%= f.label :character_key, "Security Key Nickname" %>

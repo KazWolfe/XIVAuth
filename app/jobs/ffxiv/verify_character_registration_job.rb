@@ -5,10 +5,6 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
 
   queue_as :ffxiv_lodestone_jobs
 
-  retry_on(VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS, wait: 2.minutes, jitter: 15.seconds) do |job, error|
-    job.report_result("verification_failed_codenotfound")
-  end
-
   discard_on(StandardError) do |job, error|
     job.report_result("generic_failure")
     raise error
@@ -26,6 +22,11 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
   discard_on(FFXIV::LodestoneProfile::LodestoneProfilePrivate) do |job, error|
     job.report_result("verification_failed_privateprofile")
   end
+
+  retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS, wait: 2.minutes, jitter: 15.seconds) do |job, error|
+    job.report_result("verification_failed_codenotfound")
+  end
+
 
   # @param [CharacterRegistration] registration A character registration to verify
   def perform(registration)
