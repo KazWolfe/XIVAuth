@@ -1,3 +1,5 @@
+require "utilities/crockford"
+
 class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
   class VerificationKeyMissingError < StandardError; end
 
@@ -50,10 +52,16 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     character.refresh_from_lodestone(lodestone_data)
     character.save!
 
-    if lodestone_data.bio.upcase.include? registration.verification_key
-      registration.verify!("lodestone_code", clobber: true)
-      self.report_result("verification_success")
-      return
+    lodestone_data.bio.scan(CharacterRegistration::VERIFICATION_KEY_REGEX).each do |match|
+      code = match.delete_prefix(CharacterRegistration::VERIFICATION_KEY_PREFIX)
+      candidate = CharacterRegistration::VERIFICATION_KEY_PREFIX + Crockford.normalize(code).upcase
+
+      puts "candidate: #{candidate}"
+      if candidate == registration.verification_key
+        registration.verify!("lodestone_code", clobber: true)
+        self.report_result("verification_success")
+        return
+      end
     end
 
     self.report_result("verification_retry")
@@ -72,4 +80,6 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
       attributes: { method: :morph }
     )
   end
+
+
 end

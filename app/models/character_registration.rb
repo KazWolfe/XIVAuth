@@ -1,4 +1,4 @@
-require "utilities/base32"
+require "utilities/crockford"
 
 # {CharacterRegistration} represents a mapping between a game character and a claim by any specific user.
 # Character registrations are only considered "effective" if they have been verified in some way.
@@ -8,6 +8,11 @@ require "utilities/base32"
 # @!attribute verification_type [string] The means by which this specific character was verified. Varies based on
 #                                        character type and other factors.
 class CharacterRegistration < ApplicationRecord
+
+  VERIFICATION_KEY_PREFIX = "XIVAUTH:".freeze
+  VERIFICATION_KEY_LENGTH = 24.freeze
+  VERIFICATION_KEY_REGEX = /#{VERIFICATION_KEY_PREFIX}[#{Crockford::ENCODER.join("")}]{#{VERIFICATION_KEY_LENGTH}}/i
+
   belongs_to :user
   belongs_to :character, class_name: "FFXIV::Character"
 
@@ -77,7 +82,7 @@ class CharacterRegistration < ApplicationRecord
     secret = Rails.application.key_generator.generate_key("CharacterVerificationSecret")
     hmac = OpenSSL::HMAC.digest(OpenSSL::Digest.new("sha256"), secret, "#{character.lodestone_id}###{user.id}")
 
-    "XIVAUTH:#{Base32.encode(hmac).truncate(24, omission: '')}"
+    "#{VERIFICATION_KEY_PREFIX}#{Crockford.encode_string(hmac)&.truncate(VERIFICATION_KEY_LENGTH, omission: '')}"
   end
 
   # Generates an "entangled ID", suitable for unique, consistent, and private identification of a single Character Registration.
