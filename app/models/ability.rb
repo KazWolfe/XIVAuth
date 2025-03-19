@@ -8,7 +8,7 @@ class Ability
     can :manage, CharacterRegistration, user_id: user.id
 
     can :use, ClientApplication
-    can :manage, ClientApplication
+    can :manage, ClientApplication, owner_id: user.id
 
     can :manage, User::SocialIdentity, user_id: user.id
   end
