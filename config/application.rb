@@ -26,6 +26,8 @@ module App
       ErrorsController.action(:show).call(env)
     }
 
+    config.action_dispatch.rescue_responses["CanCan::AccessDenied"] = :unauthorized
+
     # heroku compat for now
     if ENV["APP_ENV"].present?
       Rails.application.config.credentials.content_path = Rails.root.join("config/credentials/#{ENV['APP_ENV']}.yml.enc")

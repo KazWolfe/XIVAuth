@@ -90,7 +90,7 @@ class CharacterRegistrationsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   private def set_character_registration
     @character_registration = CharacterRegistration.find(params[:id])
-    authorize! :show, @character_registration
+    raise ActiveRecord::RecordNotFound unless can? :show, @character_registration
 
     @character = @character_registration.character
   end

@@ -46,7 +46,7 @@ class CharacterRegistrations::VerificationsController < ApplicationController
 
   private def set_character_registration
     @character_registration = CharacterRegistration.find(params[:character_registration_id])
-    authorize! :show, @character_registration
+    raise ActiveRecord::RecordNotFound unless can? :show, @character_registration
 
     @character = @character_registration.character
   end

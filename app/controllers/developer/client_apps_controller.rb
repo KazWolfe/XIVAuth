@@ -5,6 +5,8 @@ module Developer
     include Pagy::Backend
     helper Doorkeeper::DashboardHelper
 
+    rescue_from CanCan::AccessDenied
+
     def index
       @pagy, @applications = pagy(ClientApplication.accessible_by(current_ability), items: 24)
 
@@ -62,7 +64,9 @@ module Developer
 
     private def set_application
       @application = ClientApplication.find(params[:id])
-      authorize! :show, @application
+
+      # specifically show RecordNotFound if we can't see it, rather than 403.
+      raise ActiveRecord::RecordNotFound unless can? :show, @application
     end
   end
 end

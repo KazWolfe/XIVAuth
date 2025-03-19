@@ -52,7 +52,8 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
   private def set_oauth_client
     @oauth_client = ClientApplication::OAuthClient.find(params[:id])
     @application = @oauth_client.application
-    authorize! :show, @application
+
+    raise ActiveRecord::RecordNotFound unless can? :show, @application
   end
 
   private def filtered_params
