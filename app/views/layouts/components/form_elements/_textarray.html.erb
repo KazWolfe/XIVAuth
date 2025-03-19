@@ -1,0 +1,17 @@
+<div data-controller="form--textarray">
+  <%
+    # always ensure we have a single field to render so the JS has a template
+    values = [""] if values.blank?
+    values.each do |entry|
+  %>
+    <div data-form--textarray-target="input" class="input-group mb-2">
+      <input type="<%= field_type %>" name="<%= field_name %>[]" value="<%= entry %>" class="form-control" />
+      <button type="button" name="deleteRow" class="btn btn-outline-danger btn-icon px-3" data-action="click->form--textarray#removeField">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  <% end %>
+  <button type="button" class="btn btn-primary" data-action="click->form--textarray#addNewField">
+    <i class="bi bi-plus"></i> <%= add_button_text %>
+  </button>
+</div>

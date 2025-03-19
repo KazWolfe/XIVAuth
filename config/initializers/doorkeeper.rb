@@ -56,7 +56,7 @@ Doorkeeper.configure do
   #     destroy
   #   end::Doorkeeper::Orm::ActiveRecord::Mixins::AccessGrant
   # end
-  application_class "OAuth::ClientApplication"
+  application_class "ClientApplication::OAuthClient"
   access_grant_class "OAuth::AccessGrant"
   access_token_class "OAuth::AccessToken"
 
@@ -229,7 +229,7 @@ Doorkeeper.configure do
   # NOTE: you must also run the rails g doorkeeper:application_owner generator
   # to provide the necessary support
   #
-  enable_application_owner confirmation: false
+  # enable_application_owner confirmation: false
 
   # Define access token scopes for your provider
   # For more information go to
@@ -238,6 +238,7 @@ Doorkeeper.configure do
   # default_scopes  :public
   optional_scopes "user", "user:email", "user:social", "user:jwt", "user:manage",
                   "character", "character:all", "character:jwt", "character:manage",
+                  "internal", "internal:jwt:obo",
                   "refresh"
 
   # Allows to restrict only certain scopes for grant_type.
@@ -381,12 +382,9 @@ Doorkeeper.configure do
   # @param allow_grant_flow_for_client [Proc] Block or any object respond to #call
   # @return [Boolean] `true` if allow or `false` if forbid the request
   #
-  # allow_grant_flow_for_client do |grant_flow, client|
-  #   # `grant_flows` is an Array column with grant
-  #   # flows that application supports
-  #
-  #   client.grant_flows.include?(grant_flow)
-  # end
+  allow_grant_flow_for_client do |grant_flow, client|
+    client.grant_flows.blank? || client.grant_flows.include?(grant_flow)
+  end
 
   # If you need arbitrary Resource Owner-Client authorization you can enable this option
   # and implement the check your need. Config option must respond to #call and return
@@ -396,7 +394,7 @@ Doorkeeper.configure do
   # Be default all Resource Owners are authorized to any Client (application).
   #
   authorize_resource_owner_for_client do |client, resource_owner|
-    Ability.new(resource_owner).can? :use, client
+    Ability.new(resource_owner).can? :use, client.application
   end
 
   # Allows additional data fields to be sent while granting access to an application,

@@ -48,8 +48,8 @@ class User < ApplicationRecord
     self.encrypted_password.present?
   end
 
-  def avatar_url(size = 32, options: { })
-    gravatar_url(size, *options)
+  def avatar_url
+    gravatar_url(144)
   end
 
   def gravatar_url(size = 32, fallback: "retro", rating: "pg")

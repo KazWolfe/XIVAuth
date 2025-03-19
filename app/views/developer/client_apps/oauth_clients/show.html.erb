@@ -1,0 +1,68 @@
+<div class="border-bottom mb-4">
+  <h1>View <%= @oauth_client.name %></h1>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="btn-toolbar gap-2 mb-4">
+      <%= link_to developer_application_path(@application), class: 'btn btn-primary' do %>
+        <i class="bi bi-back"></i> Return to App
+      <% end %>
+      <%= button_to developer_oauth_client_path(@oauth_client), method: :delete, class: "btn btn-danger",
+                    data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
+        <i class="bi bi-trash"></i> Delete OAuth Credential
+      <% end %>
+    </div>
+    <table class="table">
+      <tbody>
+      <tr>
+        <th scope="row">Client ID</th>
+        <td><code><%= @oauth_client.uid %></code></td>
+      </tr>
+      <tr>
+        <th scope="row">Client Secret</th>
+        <td>
+          <% secret = flash[:application_secret].presence || @oauth_client.plaintext_secret %>
+          <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
+            <code><%= secret %></code><br>
+            <small>Warning: This is the only time this secret will be shown. Please ensure it is saved now.</small>
+          <% end %>
+          <%= button_to regenerate_secret_developer_oauth_client_path(@oauth_client), class: 'btn btn-primary' do %>
+            <i class="bi bi-arrow-clockwise"></i> Regenerate
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Scopes</th>
+        <td>
+          <code class="bg-light" id="scopes">
+            <% if @oauth_client.scopes.present? %>
+              <%= @oauth_client.scopes %>
+            <% else %>
+              <span class="bg-light font-italic text-uppercase text-muted"><%= t('.not_defined') %></span>
+            <% end %>
+          </code>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Grant Flows</th>
+        <td><%= @oauth_client.grant_flows.blank? ? "Any" : @oauth_client.grant_flows.join(", ") %></td>
+      <tr>
+        <th scope="row">Confidential App</th>
+        <td>
+          <code class="bg-light" id="confidential"><%= @oauth_client.confidential? %></code>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-6">
+    <h3>Redirect URIs</h3>
+    <%= form_with model: @oauth_client, url: developer_oauth_client_path(@oauth_client) do |form| %>
+      <%= render partial: 'layouts/components/form_elements/textarray',
+                 locals: { form: form, values: @oauth_client.redirect_uris,
+                           field_type: "url", field_name: "oauth_client[redirect_uris]", add_button_text: "Add URI" } %>
+      <%= form.submit %>
+    <% end %>
+  </div>
+</div>

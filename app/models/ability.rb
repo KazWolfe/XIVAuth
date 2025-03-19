@@ -7,8 +7,8 @@ class Ability
 
     can :manage, CharacterRegistration, user_id: user.id
 
-    can :use, OAuth::ClientApplication
-    can :manage, OAuth::ClientApplication, owner: user
+    can :use, ClientApplication
+    can :manage, ClientApplication
 
     can :manage, User::SocialIdentity, user_id: user.id
   end

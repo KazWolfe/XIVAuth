@@ -7,13 +7,17 @@ superuser = User.find_or_create_by!(email: "dev@eorzea.id") do |u|
   u.skip_confirmation!
 end
 
-OAuth::ClientApplication.find_or_create_by!(uid: "superapp") do |app|
-  app.name = "Seeded Super App"
+client_app = ClientApplication.find_or_create_by(name: "Seeded Super App") do |app|
   app.owner = superuser
-  app.confidential = true
-  app.secret = "superapp_6663def85024"
-  app.redirect_uri = "http://127.0.0.1:3030/oauth/redirect"
-  app.scopes = Doorkeeper.configuration.scopes
+  app.private = false
+end
+
+client_app.oauth_clients.find_or_create_by!(client_id: "superapp") do |client|
+  client.name = "Seeded auth_code Client"
+  client.client_secret = "superapp_6663def85024"
+  client.confidential = true
+  client.redirect_uri = "http://127.0.0.1:3030/oauth/redirect"
+  client.scopes = Doorkeeper.configuration.scopes
 end
 
 JwtSigningKeys::RSA.find_or_create_by(name: "dev_rsa")

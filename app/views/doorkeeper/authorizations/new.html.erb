@@ -1,11 +1,21 @@
+<% oauth_client = @pre_auth.client.application %>
+<% client_application = oauth_client.application %>
+
 <header class="page-header" role="banner">
   <h1><%= t('.title') %></h1>
 </header>
 
 <%= form_tag oauth_authorization_path, method: :post do %>
   <main role="main">
+
+    <div class="d-flex justify-content-center pad-2" style="align-self: center;">
+      <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-50 avatar-rounded align-self-center", width: 72 %>
+      <span class="display-2"><i class="bi bi-three-dots"></i></span>
+      <%= image_tag client_application.profile.icon_url, class: "img-fluid avatar avatar-50 avatar-rounded align-self-center", width: 72 %>
+    </div>
+
     <p class="h4">
-      <%= raw t('.prompt', client_name: content_tag(:strong, class: 'text-info') { @pre_auth.client.name }) %>
+      <%= raw t('.prompt', client_name: content_tag(:strong, class: 'text-info') { client_application.name }) %>
     </p>
 
     <% if @pre_auth.scopes.count > 0 %>
@@ -23,6 +33,7 @@
                 <%= render 'doorkeeper/authorizations/scope_selectors/character_all' %>
               <% when 'user:social' %>
                 <%= render 'doorkeeper/authorizations/scope_selectors/social_identity' %>
+              <% else; nil %>
               <% end %>
             </li>
           <% end %>

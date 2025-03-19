@@ -1,12 +1,20 @@
 <div class="card" id="<%= dom_id application %>">
   <div class="card-body">
     <div class="d-flex align-items-center">
-      <img src="https://ui-avatars.com/api/?name=<%= application.name %>&background=random" class="rounded m-2"
+      <img src="<%= application.profile.icon_url %>" class="rounded m-2"
            alt="Icon for <%= application.name %>" width="96" height="96">
       <div class="ps-2">
         <h5 class="card-title">
           <%= application.name %>
         </h5>
+        <div>
+          <% if application.oauth_clients.present? %>
+            <span class="badge bg-success"><i class="bi bi-link-45deg"></i> OAuth</span>
+          <% end %>
+          <% if application.private? %>
+            <span class="badge bg-gray"><i class="bi bi-lock"></i> Private</span>
+          <% end %>
+        </div>
       </div>
     </div>
     <div class="d-flex justify-content-end">

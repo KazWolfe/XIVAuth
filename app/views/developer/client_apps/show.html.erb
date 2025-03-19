@@ -13,57 +13,86 @@
         <i class="bi bi-trash"></i> Delete App
       <% end %>
     </div>
+    <h3 class="mb-2">App Profile</h3>
     <table class="table">
       <tbody>
       <tr>
-        <th scope="row">Client ID</th>
-        <td><code><%= @application.uid %></code></td>
+        <th scope="row">
+          <abbr title="Used for entangled IDs and privacy features.">App ID</abbr>
+        </th>
+        <td><code><%= @application.id %></code></td>
       </tr>
       <tr>
-        <th scope="row">Client Secret</th>
-        <td>
-          <% secret = flash[:application_secret].presence || @application.plaintext_secret %>
-          <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
-            <code><%= secret %></code><br>
-            <small>Warning: This is the only time this secret will be shown. Please ensure it is saved now.</small>
-          <% end %>
-          <%= button_to regenerate_secret_developer_application_path(@application), class: 'btn btn-primary' do %>
-            <i class="bi bi-arrow-clockwise"></i> Regenerate
-          <% end %>
-        </td>
+        <th scope="row">App Privacy</th>
+        <td><%= @application.private ? "Private (ACL Enabled)" : "Public (ACL Disabled)" %></td>
       </tr>
-      <tr>
-        <th scope="row">Scopes</th>
-        <td>
-          <code class="bg-light" id="scopes">
-            <% if @application.scopes.present? %>
-              <%= @application.scopes %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-6">
+    <form>
+      <div class="mb-3 form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked="">
+        <label class="form-check-label" for="flexSwitchCheckChecked">
+          Private App<br>
+          test
+        </label>
+      </div>
+      <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="homepage_url" placeholder="https://xivauth.net/" value="<%= @application.profile.homepage_url %>">
+        <label for="homepage_url">Homepage URL</label>
+      </div>
+      <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="privacy_policy_url" placeholder="https://xivauth.net/privacy" value="<%= @application.profile.privacy_policy_url %>">
+        <label for="privacy_policy_url">Privacy Policy URL</label>
+      </div>
+      <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="terms_of_service_url" placeholder="https://xivauth.net/terms" value="<%= @application.profile.terms_of_service_url %>">
+        <label for="terms_of_service_url">Terms of Service URL</label>
+      </div>
+    </form>
+  </div>
+  <div class="col-md-12">
+    <h3 class="mb-2">OAuth Credentials</h3>
+    <button class="btn btn-primary">Add New Credential</button>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Credentials</th>
+          <th>Credential Age</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @application.oauth_clients.each do |client| %>
+        <tr>
+          <td>
+            <%= link_to client.name, developer_oauth_client_path(client) %>
+            <% if client.active? %>
+              <span class="badge bg-success">Active</span>
+            <% elsif client.expired? %>
+              <span class="badge bg-warning">Expired</span>
             <% else %>
-              <span class="bg-light font-italic text-uppercase text-muted"><%= t('.not_defined') %></span>
+              <span class="badge bg-gray">Disabled</span>
             <% end %>
-          </code>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Confidential App</th>
-        <td>
-          <code class="bg-light" id="confidential"><%= @application.confidential? %></code>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Redirect URIs</th>
-        <td>
-          <ul class="list-unstyled">
-            <% @application.redirect_uri.split.each do |uri| %>
-              <li>
-                <code><%= uri %></code>
-                <%= link_to t('doorkeeper.applications.buttons.authorize'), oauth_authorization_path(client_id: @application.uid, redirect_uri: uri, response_type: 'code', scope: @application.scopes), class: 'btn btn-success', target: '_blank' %>
-              </li>
+          </td>
+          <td>
+            <strong>Client ID:</strong> <span class="font-monospace"><%= client.client_id %></span><br>
+            <strong>Client Secret:</strong> <span class="font-monospace">REDACTED</span>
+          </td>
+          <td>
+            <%= distance_of_time_in_words_to_now(client.created_at).capitalize %> <br>
+            <% if client.expires_at.present? && !client.expired? %>
+              <small class="text-muted">Expires in <%= distance_of_time_in_words_to_now(client.expires_at) %></small>
+            <% elsif client.expires_at.present? && client.expired? %>
+              <small class="text-warning">Expired <%= distance_of_time_in_words_to_now(client.expires_at) %> ago</small>
+            <% else %>
+              <small class="text-muted">Never expires</small>
             <% end %>
-          </ul>
-        </td>
-      </tr>
-      </tr>
+          </td>
+        </tr>
+        <% end %>
       </tbody>
     </table>
   </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_11_031000) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_11_031806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -39,6 +39,43 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_11_031000) do
     t.string "verification_type"
     t.index ["character_id"], name: "index_character_registrations_on_character_id"
     t.index ["user_id"], name: "index_character_registrations_on_user_id"
+  end
+
+  create_table "client_application_oauth_clients", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "application_id", null: false
+    t.string "name", null: false
+    t.boolean "enabled", default: true, null: false
+    t.string "client_id", null: false
+    t.string "client_secret"
+    t.string "grant_flows", default: [], array: true
+    t.string "redirect_uris", default: [], array: true
+    t.string "scopes"
+    t.boolean "confidential", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "expires_at"
+    t.index ["application_id"], name: "index_client_application_oauth_clients_on_application_id"
+    t.index ["client_id"], name: "index_client_application_oauth_clients_on_client_id", unique: true
+  end
+
+  create_table "client_application_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "application_id", null: false
+    t.string "icon_url"
+    t.string "homepage_url"
+    t.string "privacy_policy_url"
+    t.string "terms_of_service_url"
+    t.index ["application_id"], name: "index_client_application_profiles_on_application_id"
+  end
+
+  create_table "client_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "owner_type"
+    t.uuid "owner_id"
+    t.boolean "private", default: false, null: false
+    t.datetime "verified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_client_applications_on_owner"
   end
 
   create_table "ffxiv_characters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -248,11 +285,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_11_031000) do
   end
 
   add_foreign_key "character_registrations", "ffxiv_characters", column: "character_id"
-  add_foreign_key "oauth_access_grants", "oauth_client_applications", column: "application_id"
+  add_foreign_key "client_application_oauth_clients", "client_applications", column: "application_id"
+  add_foreign_key "client_application_profiles", "client_applications", column: "application_id"
+  add_foreign_key "oauth_access_grants", "client_application_oauth_clients", column: "application_id"
   add_foreign_key "oauth_access_grants", "oauth_permissible_policies", column: "permissible_policy_id"
-  add_foreign_key "oauth_access_tokens", "oauth_client_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "client_application_oauth_clients", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_permissible_policies", column: "permissible_policy_id"
-  add_foreign_key "oauth_device_grants", "oauth_client_applications", column: "application_id"
+  add_foreign_key "oauth_device_grants", "client_application_oauth_clients", column: "application_id"
   add_foreign_key "oauth_device_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
   add_foreign_key "user_profiles", "users"
