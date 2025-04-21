@@ -7,12 +7,13 @@ class Api::V1::JwtController < Api::V1::ApiController
     issuer = "#{ENV.fetch("APP_URL", "https://xivauth.net/")}/sandbox"
 
     payload = {
-      data: "dummy jwt for testing",
       jti: SecureRandom.urlsafe_base64(24, padding: false),
+      data: "dummy jwt for testing",
       iss: issuer,
       aud: issuer
     }
 
+    payload[:nonce] = params[:nonce] if params[:nonce].present?
     payload[:exp] = Time.now.to_i + expiry_time unless expiry_time.zero?
     payload[:iat] = Time.now.to_i unless request.query_parameters[:ignore_iat].present?
 

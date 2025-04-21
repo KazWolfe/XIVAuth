@@ -16,12 +16,15 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     issued_at = Time.now.to_i
     payload = {
+      jti: SecureRandom.urlsafe_base64(24, padding: false),
+      iss: ENV.fetch("APP_URL", "https://xivauth.net"),
       sub: @user.id,
-      vfd: @user.character_registrations.verified.count.positive?,
+      verified: @user.character_registrations.verified.count.positive?,
       iat: issued_at,
       exp: issued_at + 600,
-      jti: params[:nonce] || SecureRandom.urlsafe_base64(24, padding: false)
     }
+
+    payload[:nonce] = params[:nonce] if params[:nonce].present?
 
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)

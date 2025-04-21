@@ -78,13 +78,15 @@ class Api::V1::CharactersController < Api::V1::ApiController
     issued_at = Time.now.to_i
 
     payload = {
+      jti: SecureRandom.urlsafe_base64(24, padding: false),
       iss: ENV.fetch("APP_URL", "https://xivauth.net"),
       sub: @registration.character.lodestone_id,
       pk: @registration.entangled_id,
       iat: issued_at,
       exp: issued_at + 600,
-      jti: params[:nonce] || SecureRandom.urlsafe_base64(24, padding: false)
     }
+
+    payload[:nonce] = params[:nonce] if params[:nonce].present?
 
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
