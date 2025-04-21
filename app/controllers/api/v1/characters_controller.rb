@@ -83,7 +83,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
       sub: @registration.character.lodestone_id,
       pk: @registration.entangled_id,
       iat: issued_at,
-      exp: issued_at + 600,
+      exp: (issued_at + 10.minutes).to_i,
     }
 
     payload[:nonce] = params[:nonce] if params[:nonce].present?

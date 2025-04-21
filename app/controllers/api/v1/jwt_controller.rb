@@ -30,21 +30,40 @@ class Api::V1::JwtController < Api::V1::ApiController
 
     decoded_jwt = JWT.decode(body, nil, false)
     key_name = decoded_jwt[1]["kid"]
-    unless key_name.present?
+    if key_name.blank?
       render json: { status: "error", error: "No kid specified - cannot verify" }, status: :unprocessable_entity
       return
     end
 
     signing_key = JwtSigningKey.find_by(name: key_name)
-
     logger.warn("Validating with signing key #{key_name}", signing_key)
+
+    validation_params = {
+      verify_iat: params[:ignore_iat].blank?,
+      verify_nbf: params[:ignore_nbf].blank?,
+      verify_iss: params[:ignore_iss].blank?,
+      iss: ENV.fetch("APP_URL", "https://xivauth.net"),
+    }
+
+    if decoded_jwt[0]["aud"].present? && params[:ignore_aud].blank?
+      validation_params[:verify_aud] = true
+
+      issuer_id = doorkeeper_token&.application&.application_id || "_anonymous"
+      validation_params[:aud] = "https://xivauth.net/applications/#{issuer_id}"
+    end
 
     begin
       validated_jwt = JWT.decode(body, signing_key.jwk.verify_key, true,
                                  algorithms: signing_key.supported_algorithms,
-                                 verify_iat: true)
+                                 **validation_params)
 
       render json: { status: "valid", jwt_head: validated_jwt[1], jwt_body: validated_jwt[0] }
+    rescue JWT::ExpiredSignature => e
+      render json: { status: "expired", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+             status: :unprocessable_entity
+    rescue JWT::InvalidAudError => e
+      render json: { status: "invalid_client", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+             status: :unprocessable_entity
     rescue JWT::DecodeError => e
       render json: { status: "invalid", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
              status: :unprocessable_entity
