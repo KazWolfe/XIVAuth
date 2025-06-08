@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), data: { controller: "devise--webauthn--conditional" }) do |f| %>
       <div class="mb-3">
         <%= f.label :email, class: "form-label" %>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', placeholder: "#{eegg_random_npc_email}" %>
@@ -28,6 +28,13 @@
         <%= f.password_field :password, autocomplete: "current-password", class: 'form-control' %>
       </div>
 
+      <% if @discoverable_challenge %>
+        <%= f.hidden_field :webauthn_challenge, value: @discoverable_challenge.to_json,
+                           data: { "devise--webauthn--conditional-target": "challenge" } %>
+        <%= f.hidden_field :webauthn_response, value: "",
+                           data: { "devise--webauthn--conditional-target": "response" } %>
+      <% end %>
+
       <% if devise_mapping.rememberable? %>
         <div class="form-check">
           <%= f.check_box :remember_me, class: "form-check-input" %>
@@ -37,7 +44,8 @@
 
       <%= invisible_recaptcha_tags ui: :invisible %>
       <div class="form-group d-grid d-md-flex mt-2 gap-2 mb-1">
-        <button type="submit" onclick="grecaptcha.execute(); return false;" class="btn btn-primary col-md-8">Log In</button>
+        <button type="submit" onclick="grecaptcha.execute(); return false;" class="btn btn-primary col-md-8" data-action="devise--webauthn--conditional#immediate_abort">Log In
+        </button>
         <%= link_to "Sign up", new_registration_path(resource_name), class: "btn btn-secondary col" %>
       </div>
     <% end %>

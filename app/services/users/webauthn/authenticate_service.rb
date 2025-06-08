@@ -13,8 +13,7 @@ class Users::Webauthn::AuthenticateService
     response_credential = WebAuthn::Credential.from_get(JSON.parse(@device_response))
     stored_credential = @user.webauthn_credentials.find_by(external_id: response_credential.id)
 
-    response_credential.verify(@challenge, public_key: stored_credential.public_key,
-sign_count: stored_credential.sign_count)
+    response_credential.verify(@challenge, public_key: stored_credential.public_key, sign_count: stored_credential.sign_count)
 
     stored_credential.update!(sign_count: response_credential.sign_count)
   end
@@ -28,6 +27,12 @@ sign_count: stored_credential.sign_count)
     WebAuthn::Credential.options_for_get(
       allow: user.webauthn_credentials.pluck(:external_id),
       user_verification: "discouraged"
+    )
+  end
+
+  def self.build_discoverable_challenge
+    WebAuthn::Credential.options_for_get(
+      allow: [],
     )
   end
 end

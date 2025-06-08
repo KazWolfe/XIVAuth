@@ -1,12 +1,12 @@
 <%= form_with(model: webauthn_credential, method: :post, url: webauthn_credentials_path,
-              data: { controller: "webauthn", action: "webauthn#register" }) do |f| %>
+              data: { controller: "devise--webauthn--registration", action: "devise--webauthn--registration#register" }) do |f| %>
   <div class="form-floating mb-3">
     <%= f.text_field :nickname, class: "form-control", placeholder: "nickname" %>
     <%= f.label :character_key, "Security Key Nickname" %>
   </div>
 
-  <%= f.hidden_field :challenge, value: @challenge.to_json, disabled: true, data: { "webauthn-target": 'challenge' } %>
-  <%= f.hidden_field :credential, data: { "webauthn-target": 'response' } %>
+  <%= f.hidden_field :challenge, value: @challenge.to_json, disabled: true, data: { "devise--webauthn--registration-target": 'challenge' } %>
+  <%= f.hidden_field :credential, data: { "devise--webauthn--registration-target": 'response' } %>
 
   <div>
     <%= f.submit "Register Security Key", class: "btn btn-primary" %>

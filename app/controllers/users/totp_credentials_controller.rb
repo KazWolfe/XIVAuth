@@ -23,19 +23,27 @@ class Users::TotpCredentialsController < ApplicationController
 
     @backup_codes = @totp_credential.generate_otp_backup_codes!
 
-    render_new_form_again and return unless @totp_credential.valid?
+    # perform rails validations first
+    unless @totp_credential.valid?
+      @totp_credential.errors.add(:base, "TOTP credential could not be created. Please try again.")
+      render_new_form_again
+      return
+    end
 
     # Also will save here!
     unless @totp_credential.validate_and_consume_otp!(filtered_params[:otp_attempt])
       @totp_credential.errors.add(:otp_attempt, "was invalid")
       render_new_form_again
+      return
     end
+
+    session.delete(:staged_totp_secret)
   end
 
   def destroy
     @totp_credential = current_user.totp_credential
 
-    otp_attempt = params.dig(:users_totp_credential, :otp_attempt)
+    otp_attempt = params.dig(:user_totp_credential, :otp_attempt)
 
     # If TOTP code isn't present, the user just clicked on the button.
     render and return if otp_attempt.nil?
@@ -63,6 +71,6 @@ class Users::TotpCredentialsController < ApplicationController
   end
 
   private def filtered_params
-    params.require(:users_totp_credential).permit(:otp_attempt)
+    params.require(:user_totp_credential).permit(:otp_attempt)
   end
 end

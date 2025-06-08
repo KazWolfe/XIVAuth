@@ -1,37 +1,27 @@
 class Users::SessionsController < Devise::SessionsController
   include Users::AuthenticatesWithMFA
+  include Users::AuthenticatesViaPasskey
 
-  prepend_before_action :authenticate_with_mfa, if: -> { action_name == "create" && mfa_required? }
+  prepend_before_action :reset_mfa_attempt!, only: [:new]
+  prepend_before_action :generate_discoverable_challenge, only: [:new]
+
+  prepend_before_action :evaluate_login_flow, only: [:create]
   prepend_before_action :check_captcha, only: [:create]
 
-  # GET /resource/sign_in
-  # def new
-  #   super
-  # end
-
-  # POST /resource/sign_in
   def create
     super do |resource|
       # If a user has signed in, they no longer need to reset their password.
       resource.update(reset_password_token: nil, reset_password_sent_at: nil) if resource.reset_password_token.present?
+
+      # and clean up any stray session data
+      reset_mfa_attempt!
+      reset_passkey_challenge!
     end
   end
 
-  # DELETE /resource/sign_out
-  # def destroy
-  #   super
-  # end
-
-  # protected
-
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_in_params
-  #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
-  # end
-
   def check_captcha
-    # Ignore for non-credential submissions
-    return if user_params[:password].blank?
+    # only check captcha if this is a first-level login attempt
+    return unless user_params[:webauthn_response].present? || user_params[:password].present?
 
     return if verify_recaptcha
 
@@ -41,21 +31,36 @@ class Users::SessionsController < Devise::SessionsController
     render :new, status: :unprocessable_entity
   end
 
-  def mfa_required?
-    find_user&.requires_mfa?
+  def find_user
+    if user_params[:email].present?
+      User.find_by(email: user_params[:email])
+    elsif user_params[:webauthn_response].present?
+      cred = WebAuthn::Credential.from_get(JSON.parse(user_params[:webauthn_response]))
+      User.find(cred.user_handle)
+    elsif session.dig("mfa")
+      User.find(session["mfa"]["otp_user_id"])
+    else
+      nil
+    end
   end
 
-  def find_user
-    if session[:otp_user_id] && user_params[:email]
-      User.where(email: user_params[:email]).find(session[:otp_user_id])
-    elsif session[:otp_user_id]
-      User.find(session[:otp_user_id])
-    elsif user_params[:email]
-      User.find_by(email: user_params[:email])
+  def evaluate_login_flow
+    @user ||= find_user
+    self.resource = @user
+
+    if user_params[:webauthn_response].present?
+      authenticate_via_passkey(@user, user_params[:webauthn_response])
+    elsif self.resource&.valid_password?(user_params[:password]) && self.resource&.requires_mfa?
+      reset_mfa_attempt!
+      prompt_for_mfa(self.resource)
+    elsif session["mfa"]
+      authenticate_with_mfa
+    else
+      # implicit; use devise default flow (password only)
     end
   end
 
   def user_params
-    params.require(:user).permit(:email, :password, :otp_attempt, :device_response, :remember_me)
+    params.permit(user: [:email, :password, :webauthn_response, :remember_me]).fetch(:user, {})
   end
 end

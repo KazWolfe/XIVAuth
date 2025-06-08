@@ -7,8 +7,14 @@ import { application } from "./application"
 import Devise__PasswordStrengthController from "./devise/password_strength_controller"
 application.register("devise--password-strength", Devise__PasswordStrengthController)
 
-import Devise__WebauthnController from "./devise/webauthn_controller"
-application.register("devise--webauthn", Devise__WebauthnController)
+import Devise__Webauthn__ConditionalController from "./devise/webauthn/conditional_controller"
+application.register("devise--webauthn--conditional", Devise__Webauthn__ConditionalController)
+
+import Devise__Webauthn__MfaController from "./devise/webauthn/mfa_controller"
+application.register("devise--webauthn--mfa", Devise__Webauthn__MfaController)
+
+import Devise__Webauthn__RegistrationController from "./devise/webauthn/registration_controller"
+application.register("devise--webauthn--registration", Devise__Webauthn__RegistrationController)
 
 import Form__TextarrayController from "./form/textarray_controller"
 application.register("form--textarray", Form__TextarrayController)

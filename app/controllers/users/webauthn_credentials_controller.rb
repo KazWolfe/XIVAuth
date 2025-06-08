@@ -50,7 +50,7 @@ class Users::WebauthnCredentialsController < ApplicationController
   end
 
   private def create_params
-    params.require(:users_webauthn_credential)
+    params.require(:user_webauthn_credential)
           .permit(:credential, :nickname)
   end
 
@@ -61,7 +61,10 @@ class Users::WebauthnCredentialsController < ApplicationController
         display_name: current_user.email,
         name: current_user.email
       },
-      exclude: current_user.webauthn_credentials.pluck(:external_id)
+      exclude: current_user.webauthn_credentials.pluck(:external_id),
+      authenticator_selection: {
+        resident_key: "discouraged",
+      }
     )
 
     session[:webauthn_register_challenge] = create_options.challenge
