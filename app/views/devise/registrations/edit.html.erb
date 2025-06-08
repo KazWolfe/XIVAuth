@@ -76,7 +76,7 @@
       </thead>
       <% resource.social_identities.each do |identity| %>
         <tr>
-          <td><i class="fa fa-<%= identity.provider %> me-1"></i> <%= identity.provider.humanize %></td>
+          <td><i class="fab fa-<%= identity.provider %> fa-fw me-1"></i> <%= identity.provider.humanize %></td>
           <td><%= identity.friendly_name %></td>
           <td><%= identity.external_id %></td>
           <td>
