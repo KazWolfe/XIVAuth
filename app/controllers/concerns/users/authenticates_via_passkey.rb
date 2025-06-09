@@ -9,10 +9,9 @@ module Users::AuthenticatesViaPasskey
   def authenticate_via_passkey(user, response_data)
     Users::Webauthn::AuthenticateService.new(user, response_data, session["webauthn_discoverable_challenge"]).execute
     sign_in(:user, user)
-
-    session.delete("webauthn_discoverable_challenge")
   rescue WebAuthn::Error => e
     flash.now[:alert] = "Passkey authentication failed: #{e.message}"
+    render :new, status: :unprocessable_entity
   end
 
   def reset_passkey_challenge!
