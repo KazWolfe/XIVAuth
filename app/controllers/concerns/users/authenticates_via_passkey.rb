@@ -6,14 +6,14 @@ module Users::AuthenticatesViaPasskey
     session["webauthn_discoverable_challenge"] = @discoverable_challenge.challenge
   end
 
-  def authenticate_via_passkey(user, response_data)
+  def authenticate_via_passkey(response_data)
     challenge_data = session["webauthn_discoverable_challenge"]
-    verifier = Users::Webauthn::AuthenticateService.new(user, response_data, challenge_data)
+    verifier = Users::Webauthn::AuthenticateService.new(@user, response_data, challenge_data)
 
     # see CVE-2020-8236 for why we need UV.
     verifier.execute(user_verification: true)
 
-    sign_in(:user, user)
+    sign_in(:user, @user)
   rescue WebAuthn::Error => e
     flash.now[:alert] = "Passkey authentication failed: #{e.message}"
     render :new, status: :unprocessable_entity

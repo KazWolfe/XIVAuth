@@ -44,7 +44,7 @@ class Users::SessionsController < Devise::SessionsController
       cred = WebAuthn::Credential.from_get(JSON.parse(user_params[:webauthn_response]))
       User.find(cred.user_handle)
     elsif session.dig("mfa")
-      User.find(session["mfa"]["otp_user_id"])
+      User.find(session["mfa"]["user_id"])
     else
       nil
     end
@@ -55,12 +55,13 @@ class Users::SessionsController < Devise::SessionsController
     self.resource = @user
 
     if user_params[:webauthn_response].present?
-      authenticate_via_passkey(@user, user_params[:webauthn_response])
+      authenticate_via_passkey(user_params[:webauthn_response])
     elsif self.resource&.valid_password?(user_params[:password]) && self.resource&.requires_mfa?
       reset_mfa_attempt!
-      prompt_for_mfa(self.resource)
+      prompt_for_mfa
     elsif session["mfa"]
-      authenticate_with_mfa(@user)
+      # active mfa session
+      authenticate_with_mfa
     else
       # implicit; use devise default flow (password only)
     end
