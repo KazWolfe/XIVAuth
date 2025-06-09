@@ -7,7 +7,12 @@ module Users::AuthenticatesViaPasskey
   end
 
   def authenticate_via_passkey(user, response_data)
-    Users::Webauthn::AuthenticateService.new(user, response_data, session["webauthn_discoverable_challenge"]).execute
+    challenge_data = session["webauthn_discoverable_challenge"]
+    verifier = Users::Webauthn::AuthenticateService.new(user, response_data, challenge_data)
+
+    # see CVE-2020-8236 for why we need UV.
+    verifier.execute(user_verification: true)
+
     sign_in(:user, user)
   rescue WebAuthn::Error => e
     flash.now[:alert] = "Passkey authentication failed: #{e.message}"

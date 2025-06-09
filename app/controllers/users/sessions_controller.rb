@@ -8,6 +8,12 @@ class Users::SessionsController < Devise::SessionsController
   prepend_before_action :evaluate_login_flow, only: [:create]
   prepend_before_action :check_captcha, only: [:create]
 
+  # From https://cheeger.com/developer/2018/09/17/enable-two-factor-authentication-for-rails.html
+  # This action comes from DeviseController, but because we call `sign_in`
+  # manually, not skipping this action would cause a "You are already signed
+  # in." error message to be shown upon successful login.
+  skip_before_action :require_no_authentication, only: [:create], raise: false
+
   def create
     super do |resource|
       # If a user has signed in, they no longer need to reset their password.
@@ -54,7 +60,7 @@ class Users::SessionsController < Devise::SessionsController
       reset_mfa_attempt!
       prompt_for_mfa(self.resource)
     elsif session["mfa"]
-      authenticate_with_mfa
+      authenticate_with_mfa(@user)
     else
       # implicit; use devise default flow (password only)
     end

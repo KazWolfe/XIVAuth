@@ -1,7 +1,7 @@
 class Users::WebauthnCredentialsController < ApplicationController
   def new
     @webauthn_credential = User::WebauthnCredential.new
-    @challenge = build_challenge
+    @challenge = build_registration_challenge
   end
 
   def destroy
@@ -54,7 +54,7 @@ class Users::WebauthnCredentialsController < ApplicationController
           .permit(:credential, :nickname)
   end
 
-  private def build_challenge
+  private def build_registration_challenge
     create_options = WebAuthn::Credential.options_for_create(
       user: {
         id: current_user.id,
@@ -64,6 +64,7 @@ class Users::WebauthnCredentialsController < ApplicationController
       exclude: current_user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
         resident_key: "discouraged",
+        # UV at registration is irrelevant - we can assume the user is already privileged.
       },
       extensions: {
         cred_props: true

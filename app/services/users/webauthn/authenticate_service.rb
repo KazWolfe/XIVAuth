@@ -9,11 +9,14 @@ class Users::Webauthn::AuthenticateService
     @challenge = challenge
   end
 
-  def execute
+  def execute(**verification_arguments)
     response_credential = WebAuthn::Credential.from_get(JSON.parse(@device_response))
     stored_credential = @user.webauthn_credentials.find_by(external_id: response_credential.id)
 
-    response_credential.verify(@challenge, public_key: stored_credential.public_key, sign_count: stored_credential.sign_count)
+    response_credential.verify(@challenge,
+                               public_key: stored_credential.public_key,
+                               sign_count: stored_credential.sign_count,
+                               **verification_arguments)
 
     stored_credential.update!(sign_count: response_credential.sign_count)
   end
@@ -26,13 +29,14 @@ class Users::Webauthn::AuthenticateService
 
     WebAuthn::Credential.options_for_get(
       allow: user.webauthn_credentials.pluck(:external_id),
-      user_verification: "discouraged"
+      user_verification: "discouraged"  # acceptable as this is MFA.
     )
   end
 
   def self.build_discoverable_challenge
     WebAuthn::Credential.options_for_get(
       allow: [],
+      user_verification: "required"     # necessary to enforce some degree of MFA.
     )
   end
 end

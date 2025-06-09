@@ -1,14 +1,6 @@
 module Users::AuthenticatesWithMFA
   extend ActiveSupport::Concern
 
-  # From https://cheeger.com/developer/2018/09/17/enable-two-factor-authentication-for-rails.html
-  included do
-    # This action comes from DeviseController, but because we call `sign_in`
-    # manually, not skipping this action would cause a "You are already signed
-    # in." error message to be shown upon successful login.
-    skip_before_action :require_no_authentication, only: [:create], raise: false
-  end
-
   def authenticate_with_mfa
     if mfa_params[:otp_attempt].present? && session.dig("mfa")
       authenticate_with_totp(@user)
@@ -23,8 +15,9 @@ module Users::AuthenticatesWithMFA
     }
 
     # webauthn
-    @webauthn_challenge = Users::Webauthn::AuthenticateService.build_challenge_for_user(user)
-    session["mfa"]["webauthn_challenge"] = @webauthn_challenge&.challenge
+    if (@webauthn_challenge = Users::Webauthn::AuthenticateService.build_challenge_for_user(user))
+      session["mfa"]["webauthn_challenge"] = @webauthn_challenge.challenge
+    end
 
     render "devise/sessions/mfa", status: status_code
   end
@@ -34,7 +27,10 @@ module Users::AuthenticatesWithMFA
   end
 
   private def authenticate_with_webauthn(user)
-    Users::Webauthn::AuthenticateService.new(user, mfa_params[:webauthn_response], session.dig("mfa", "webauthn_challenge")).execute
+    challenge_data = session.dig("mfa", "webauthn_challenge")
+    verifier = Users::Webauthn::AuthenticateService.new(user, mfa_params[:webauthn_response], challenge_data)
+
+    verifier.execute
     handle_mfa_success(user)
   rescue WebAuthn::Error => e
     handle_mfa_failure(user, "WebAuthn", message: e.message)
