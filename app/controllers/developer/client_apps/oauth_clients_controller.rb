@@ -27,8 +27,23 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
 
   def new
     @application = ClientApplication.find(params[:application_id])
-
     @oauth_client = ClientApplication::OAuthClient.new
+  end
+
+  def create
+    @application = ClientApplication.find(params[:application_id])
+    authorize! :edit, @application
+
+    @oauth_client = ClientApplication::OAuthClient.new(filtered_params)
+    @oauth_client.application = @application
+
+    if @oauth_client.save
+      flash[:notice] = "OAuth client created successfully."
+      redirect_to developer_oauth_client_path(@oauth_client)
+    else
+      flash.now[:error] = "Could not create OAuth client."
+      render :new, status: :unprocessable_entity
+    end
   end
 
   def regenerate
@@ -63,6 +78,6 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
   end
 
   private def filtered_params
-    params.require(:oauth_client).permit(:name, :enabled, :expires_at, redirect_uris: [])
+    params.require(:oauth_client).permit(:name, :enabled, :expires_at, :scopes, :confidential, redirect_uris: [], grant_flows: [])
   end
 end

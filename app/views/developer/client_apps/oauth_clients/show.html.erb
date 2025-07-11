@@ -22,13 +22,17 @@
       <tr>
         <th scope="row">Client Secret</th>
         <td>
-          <% secret = flash[:application_secret].presence || @oauth_client.plaintext_secret %>
-          <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
-            <code><%= secret %></code><br>
-            <small>Warning: This is the only time this secret will be shown. Please ensure it is saved now.</small>
-          <% end %>
-          <%= button_to regenerate_secret_developer_oauth_client_path(@oauth_client), class: 'btn btn-primary' do %>
-            <i class="bi bi-arrow-clockwise"></i> Regenerate
+          <% if @oauth_client.needs_secret? %>
+            <% secret = flash[:application_secret].presence || @oauth_client.plaintext_secret %>
+            <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
+              <code><%= secret %></code><br>
+              <small>Warning: This is the only time this secret will be shown. Please ensure it is saved now.</small>
+            <% end %>
+            <%= button_to regenerate_secret_developer_oauth_client_path(@oauth_client), class: 'btn btn-primary' do %>
+              <i class="bi bi-arrow-clockwise"></i> Regenerate
+            <% end %>
+          <% else %>
+            <p>This client does not support secrets.</p>
           <% end %>
         </td>
       </tr>

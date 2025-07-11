@@ -2,7 +2,7 @@
   <h1>Create new OAuth Client</h1>
 </div>
 
-<%= form_for @oauth_client, url: new_developer_application_oauth_client_path(@application), as: :oauth_client, html: { role: 'form' } do |f| %>
+<%= form_for @oauth_client, url: developer_application_oauth_clients_path(@application), as: :oauth_client, html: { role: 'form' } do |f| %>
   <div class="form-group row">
     <%= f.label :name, class: 'col-sm-2 col-form-label font-weight-bold' %>
     <div class="col-sm-10">
@@ -49,4 +49,6 @@
       <% end %>
     </div>
   </div>
+
+  <%= f.submit %>
 <% end %>

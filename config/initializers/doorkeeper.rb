@@ -308,6 +308,9 @@ Doorkeeper.configure do
   # allow_blank_redirect_uri do |grant_flows, client|
   #   client.superapp?
   # end
+  allow_blank_redirect_uri do |grant_flows, client|
+    grant_flows.include?("client_credentials") || grant_flows.include?("password") || grant_flows.include?("device_code")
+  end
 
   # Specify how authorization errors should be handled.
   # By default, doorkeeper renders json errors when access token
