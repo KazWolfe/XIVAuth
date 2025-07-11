@@ -35,13 +35,15 @@
       <tr>
         <th scope="row">Scopes</th>
         <td>
-          <code class="bg-light" id="scopes">
-            <% if @oauth_client.scopes.present? %>
-              <%= @oauth_client.scopes %>
-            <% else %>
-              <span class="bg-light font-italic text-uppercase text-muted"><%= t('.not_defined') %></span>
-            <% end %>
-          </code>
+          <% if @oauth_client.scopes.present? %>
+            <ul>
+              <% @oauth_client.scopes.each do |scope| %>
+                <li><%= t("xivauth.oauth_scopes.#{scope}.friendly", default: scope) %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <span class="bg-light font-italic text-uppercase text-muted"><%= t('.not_defined') %></span>
+          <% end %>
         </td>
       </tr>
       <tr>

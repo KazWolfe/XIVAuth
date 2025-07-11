@@ -1,0 +1,52 @@
+<div class="border-bottom mb-4">
+  <h1>Create new OAuth Client</h1>
+</div>
+
+<%= form_for @oauth_client, url: new_developer_application_oauth_client_path(@application), as: :oauth_client, html: { role: 'form' } do |f| %>
+  <div class="form-group row">
+    <%= f.label :name, class: 'col-sm-2 col-form-label font-weight-bold' %>
+    <div class="col-sm-10">
+      <%= f.text_field :name, class: "form-control #{ 'is-invalid' if @oauth_client.errors[:name].present? }", required: true %>
+    </div>
+
+    <div class="form-group row">
+      <%= f.label :confidential, class: 'col-sm-2 form-check-label font-weight-bold' %>
+      <div class="col-sm-10">
+        <%= f.check_box :confidential, class: "checkbox #{ 'is-invalid' if @oauth_client.errors[:confidential].present? }" %>
+        <span class="form-text text-secondary">
+          <%= t('doorkeeper.applications.help.confidential') %>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <%= f.label :scopes, class: 'col-sm-2 col-form-label font-weight-bold' %>
+      <div class="col-sm-10">
+        <% Doorkeeper.configuration.scopes.each do |scope| %>
+          <%= check_box_tag("oauth_client[scopes][]", scope, @oauth_client.scopes&.exists?(scope)) %>
+          <strong><%= t("xivauth.oauth_scopes.#{scope}.friendly") %></strong> (<code><%= scope %></code>)
+          <br>
+          <span class="form-text text-secondary">
+            <%= t("xivauth.oauth_scopes.#{scope}.description") %>
+          </span>
+          <br>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= f.label "Grant Flows", class: 'col-sm-2 col-form-label font-weight-bold' %>
+    <div class="col-sm-10">
+      <% Doorkeeper.configuration.enabled_grant_flows.each do |flow| %>
+        <%= check_box_tag("oauth_client[grant_flows][]", flow.name, @oauth_client.grant_flows&.include?(flow.name)) %>
+        <strong><%= t("xivauth.grant_flows.#{flow.name}.friendly") %></strong> (<code><%= flow.name %></code>)
+        <br>
+        <span class="form-text text-secondary">
+          <%= t("xivauth.grant_flows.#{flow.name}.description") %>
+        </span>
+        <br>
+      <% end %>
+    </div>
+  </div>
+<% end %>

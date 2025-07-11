@@ -54,7 +54,7 @@
   </div>
   <div class="col-md-12">
     <h3 class="mb-2">OAuth Credentials</h3>
-    <button class="btn btn-primary">Add New Credential</button>
+    <%= link_to "Add New Credential", new_developer_application_oauth_client_path(@application), class: "btn btn-primary" %>
     <table class="table">
       <thead>
         <tr>

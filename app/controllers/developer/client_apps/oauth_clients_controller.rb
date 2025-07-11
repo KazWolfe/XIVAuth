@@ -1,5 +1,5 @@
 class Developer::ClientApps::OAuthClientsController < ApplicationController
-  before_action :set_oauth_client
+  before_action :set_oauth_client, except: [:new, :create]
 
   def show; end
 
@@ -23,6 +23,12 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
         end
       end
     end
+  end
+
+  def new
+    @application = ClientApplication.find(params[:application_id])
+
+    @oauth_client = ClientApplication::OAuthClient.new
   end
 
   def regenerate

@@ -31,7 +31,6 @@ module Developer
 
       if @application.save
         flash[:notice] = I18n.t(:notice, scope: %i[doorkeeper flash applications create])
-        flash[:application_secret] = @application.plaintext_secret
 
         respond_to do |format|
           format.html { redirect_to developer_application_path(@application) }
@@ -52,11 +51,33 @@ module Developer
     def destroy
       authorize! :destroy, @application
 
-      flash[:notice] = I18n.t(:notice, scope: i18n_scope(:destroy)) if @application.destroy
+      flash[:notice] = "Application destroyed." if @application.destroy
 
       respond_to do |format|
         format.html { redirect_to developer_applications_url }
         format.json { head :no_content }
+      end
+    end
+
+    def update
+      authorize! :update, @application
+
+      if @application.update(application_params)
+        flash[:notice] = "Application updated successfully"
+
+        respond_to do |format|
+          format.html { redirect_to developer_application_path(@application) }
+          format.json { render json: @application, as_owner: true }
+        end
+      else
+        respond_to do |format|
+          format.html { render :edit }
+          format.json do
+            errors = @application.errors.full_messages
+
+            render json: { errors: errors }, status: :unprocessable_entity
+          end
+        end
       end
     end
 
@@ -65,6 +86,11 @@ module Developer
 
       # specifically show RecordNotFound if we can't see it, rather than 403.
       raise ActiveRecord::RecordNotFound unless can? :show, @application
+    end
+
+    private def application_params
+      params.require(:client_application)
+            .permit(:name, :private)
     end
   end
 end

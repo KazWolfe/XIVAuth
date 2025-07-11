@@ -31,3 +31,19 @@ en:
       refresh:
         friendly: Allow Persistent Access
         description: Generates an OAuth refresh token, allowing the application to refresh information in the future.
+    grant_flows:
+      authorization_code:
+        friendly: Authorization Code Flow
+        description: Allows the application to request access to user information via an authorization code.
+      client_credentials:
+        friendly: Client Credentials Flow
+        description: Allows the application to access its own resources without user interaction.
+      implicit:
+        friendly: Implicit Flow
+        description: Allows the application to obtain access tokens directly from the authorization endpoint.
+      device_code:
+        friendly: Device Code Flow
+        description: Allows the application to obtain access tokens for devices that do not have a browser or input method.
+      password:
+        friendly: Resource Owner Password Credentials Flow
+        description: Allows the application to obtain access tokens by directly using the user's credentials.
