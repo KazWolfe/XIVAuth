@@ -7,5 +7,5 @@ db/schema.rb linguist-generated
 vendor/* linguist-vendored
 
 # Frontend library...
-app/assets/stylesheets/hope-ui/*.scss linguist-vendored
+app/assets/stylesheets/hope-ui/**/*.scss linguist-vendored
 app/javascript/hope-ui.js
