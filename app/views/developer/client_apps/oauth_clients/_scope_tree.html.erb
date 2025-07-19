@@ -1,0 +1,25 @@
+<%#
+  Partial: _scope_tree.html.erb
+  Usage: render partial: 'developer/client_apps/oauth_clients/scope_tree', locals: { scopes: ..., selected_scopes: ..., nested: false, parent_id: "scope" }
+  Renders a nested scope tree as <ul>/<li> with Bootstrap classes for indentation and bullet removal.
+%>
+<% ul_class = nested ? "ms-4 list-unstyled" : "list-unstyled" %>
+<ul class="<%= ul_class %>">
+  <% scopes.each_with_index do |scope, idx| %>
+    <% checkbox_id = "#{parent_id}_#{idx}_#{scope[:key].parameterize}" %>
+    <li>
+      <%= check_box_tag("oauth_client[scopes][]", scope[:key], selected_scopes&.exists?(scope[:key]), id: checkbox_id) %>
+      <label for="<%= checkbox_id %>" class="ps-1">
+        <strong><%= t("xivauth.oauth_scopes.#{scope[:key]}.friendly") %></strong> (<code><%= scope[:key] %></code>)
+      </label>
+      <br>
+      <span class="form-text text-secondary">
+        <%= t("xivauth.oauth_scopes.#{scope[:key]}.description", default: scope[:key]) %>
+      </span>
+      <% if scope[:children].present? %>
+        <%= render partial: 'developer/client_apps/oauth_clients/scope_tree', locals: { scopes: scope[:children], selected_scopes: selected_scopes, nested: true, parent_id: checkbox_id } %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+

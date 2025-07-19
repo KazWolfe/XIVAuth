@@ -30,42 +30,44 @@
     </table>
   </div>
   <div class="col-md-6">
-    <form>
+    <%= form_for @application, url: app_submit_path(@application), as: :client_application, html: { role: 'form' } do |f| %>
       <div class="mb-3 form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked="">
-        <label class="form-check-label" for="flexSwitchCheckChecked">
-          Private App<br>
-          test
-        </label>
+        <%= f.checkbox :private, class: "form-check-input", aria: { describedby: "privateFieldHelp" } %>
+        <%= f.label :private, "Private App" %>
+        <p class="form-text" id="privateFieldHelp">
+          Private apps require users be listed in the app's Access Control List (ACL) to use it.
+        </p>
       </div>
-      <div class="form-floating mb-2">
-        <input type="text" class="form-control" id="homepage_url" placeholder="https://xivauth.net/" value="<%= @application.profile.homepage_url %>">
-        <label for="homepage_url">Homepage URL</label>
-      </div>
-      <div class="form-floating mb-2">
-        <input type="text" class="form-control" id="privacy_policy_url" placeholder="https://xivauth.net/privacy" value="<%= @application.profile.privacy_policy_url %>">
-        <label for="privacy_policy_url">Privacy Policy URL</label>
-      </div>
-      <div class="form-floating mb-2">
-        <input type="text" class="form-control" id="terms_of_service_url" placeholder="https://xivauth.net/terms" value="<%= @application.profile.terms_of_service_url %>">
-        <label for="terms_of_service_url">Terms of Service URL</label>
-      </div>
-    </form>
+      <%= f.fields_for :profile, @application.profile do |pf| %>
+        <div class="form-floating mb-2">
+          <%= pf.text_field :homepage_url, class: "form-control", placeholder: "https://xivauth.net/" %>
+          <%= pf.label :homepage_url, "Homepage URL" %>
+        </div>
+        <div class="form-floating mb-2">
+          <%= pf.text_field :privacy_policy_url, class: "form-control", placeholder: "https://xivauth.net/privacy" %>
+          <%= pf.label :privacy_policy_url, "Privacy Policy URL" %>
+        </div>
+        <div class="form-floating mb-2">
+          <%= pf.text_field :terms_of_service_url, class: "form-control", placeholder: "https://xivauth.net/terms" %>
+          <%= pf.label :terms_of_service_url, "Terms of Service URL" %>
+        </div>
+      <% end %>
+    <% end %>
   </div>
   <div class="col-md-12">
     <h3 class="mb-2">OAuth Credentials</h3>
     <%= link_to "Add New Credential", new_developer_application_oauth_client_path(@application), class: "btn btn-primary" %>
     <table class="table">
       <thead>
-        <tr>
-          <th>Name</th>
-          <th>Credentials</th>
-          <th>Credential Age</th>
-          <th></th>
-        </tr>
+      <tr>
+        <th>Name</th>
+        <th>Credentials</th>
+        <th>Credential Age</th>
+        <th></th>
+      </tr>
       </thead>
       <tbody>
-        <% @application.oauth_clients.each do |client| %>
+      <% @application.oauth_clients.each do |client| %>
         <tr>
           <td>
             <%= link_to client.name, developer_oauth_client_path(client) %>
@@ -92,7 +94,7 @@
             <% end %>
           </td>
         </tr>
-        <% end %>
+      <% end %>
       </tbody>
     </table>
   </div>

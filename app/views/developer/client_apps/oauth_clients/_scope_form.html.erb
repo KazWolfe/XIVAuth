@@ -1,0 +1,11 @@
+<div class="col-sm-10">
+  <% Doorkeeper.configuration.scopes.each do |scope| %>
+    <%= check_box_tag("oauth_client[scopes][]", scope, @oauth_client.scopes&.exists?(scope)) %>
+    <strong><%= t("xivauth.oauth_scopes.#{scope}.friendly") %></strong> (<code><%= scope %></code>)
+    <br>
+    <span class="form-text text-secondary">
+      <%= t("xivauth.oauth_scopes.#{scope}.description") %>
+    </span>
+    <br>
+  <% end %>
+</div>
