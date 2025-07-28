@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class JWTToken
+class JwtToken
   include ActiveModel::API
 
   attr_accessor :jti,
