@@ -43,16 +43,12 @@ following command may be used:
 docker compose run app /bin/sh
 ```
 
-From there, you may use the following commands to initialize the database:
-
-```sh
-rake db:create   # required to create the database
-rake db:migrate  # required to load all tables
-rake db:seed     # required to load in core sample data
-```
+From there, execute `rake db:setup` to initialize and seed the database with some useful sample data. If you're planning
+on doing a lot of development work, consider making a `private.rb` file in `db/seeds/development/` to load any extra
+things you might want to include.
 
 If you'd rather run Rails without Docker, this should also work but be aware that you will need to properly configure
-all of the usual things accordingly.
+all the usual things accordingly.
 
 Regardless, it's probably a better option to just configure your IDE to run `Procfile.dev` for you and manage everything
 that way thanks to the watcher paradigm that every web app uses nowadays.
