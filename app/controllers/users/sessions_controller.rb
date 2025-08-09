@@ -1,6 +1,8 @@
 class Users::SessionsController < Devise::SessionsController
   include Users::AuthenticatesWithMFA
   include Users::AuthenticatesViaPasskey
+  
+  layout "login/signin"
 
   prepend_before_action :reset_mfa_attempt!, only: [:new]
   prepend_before_action :generate_discoverable_challenge, only: [:new]

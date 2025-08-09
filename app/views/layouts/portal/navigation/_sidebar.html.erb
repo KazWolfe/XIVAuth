@@ -1,0 +1,108 @@
+<nav class="sidebar sidebar-default sidebar-white sidebar-base navs-rounded">
+  <div class="sidebar-header d-flex align-items-center justify-content-start">
+    <a class="navbar-brand pride-brand" href="/">XIVAuth</a>
+    <div class="d-xl-none sidebar-toggle" data-toggle="sidebar" data-active="true">
+      <i class="icon bi bi-x"></i>
+    </div>
+  </div>
+  <div class="sidebar-body pt-0">
+    <div class="sidebar-list">
+      <ul id="sidebar-menu" class="navbar-nav iq-main-menu">
+
+        <li class="nav-item static-item">
+          <a class="nav-link static-item disabled" href="#" tabindex="-1">
+            <span class="default-icon">Characters</span>
+          </a>
+        </li>
+        <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
+          name: "My Characters", target: character_registrations_path, icon_classes: "bi bi-person-badge"
+        } %>
+
+        <li>
+          <hr class="hr-horizontal">
+        </li>
+
+        <li class="nav-item static-item">
+          <a class="nav-link static-item disabled" href="#" tabindex="-1">
+            <span class="default-icon">Developer Tools</span>
+          </a>
+        </li>
+        <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
+          name: "My Applications", target: developer_applications_path, icon_classes: "bi bi-code-slash"
+        } %>
+        <li class="nav-item">
+          <a href="#" class="nav-link disabled">
+            <i class="bi bi-people"></i>
+            <span class="item-name">Teams</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="https://kazwolfe.notion.site/Documentation-128e77f0016c4901888ea1234678c37d?pvs=4" target="_blank" class="nav-link">
+            <i class="bi bi-book"></i>
+            <span class="item-name">API Documentation</span>
+          </a>
+        </li>
+
+        <% if current_user.admin? %>
+          <li>
+            <hr class="hr-horizontal">
+          </li>
+          <li class="nav-item static-item">
+            <a class="nav-link static-item disabled" href="#" tabindex="-1">
+              <span class="default-icon">Admin Panel</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-toggle="collapse" href="#adminToolbox" role="button">
+              <i class="bi bi-table"></i>
+              <span class="item-name">Data Management</span>
+              <i class="bi bi-chevron-right right-icon"></i>
+            </a>
+            <ul id="adminToolbox" class="sub-nav collapse" data-bs-parent="#sidebar-menu">
+              <li class="nav-item">
+                <%= link_to admin_users_path, class: 'nav-link' do %>
+                  <i class="bi bi-person"></i>
+                  <span class="item-name">Users</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_characters_path, class: 'nav-link' do %>
+                  <i class="bi bi-person-badge"></i>
+                  <span class="item-name">Characters</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to admin_client_applications_path, class: 'nav-link' do %>
+                  <i class="bi bi-menu-app"></i>
+                  <span class="item-name">Client Apps</span>
+                <% end %>
+                </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-toggle="collapse" href="#adminInternals" role="button">
+              <i class="bi bi-gear-wide-connected"></i>
+              <span class="item-name">Framework</span>
+              <i class="bi bi-chevron-right right-icon"></i>
+            </a>
+            <ul id="adminInternals" class="sub-nav collapse" data-bs-parent="#sidebar-menu">
+              <li class="nav-item">
+                <%= link_to "/admin/sidekiq", class: 'nav-link' do %>
+                  <i class="bi bi-clock-history"></i>
+                  <span class="item-name">Sidekiq UI</span>
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "/admin/flipper", class: 'nav-link' do %>
+                  <i class="bi bi-toggle-on"></i>
+                  <span class="item-name">Feature Flags</span>
+                <% end %>
+              </li>
+            </ul>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+  </div>
+</nav>

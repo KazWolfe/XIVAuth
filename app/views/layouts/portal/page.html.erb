@@ -1,0 +1,20 @@
+<% content_for :portal_page_content do %>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <% if content_for :page_title %>
+          <div class="card-header d-flex justify-content-between">
+            <div class="header-title">
+              <h4 class="card-title"><%= yield :page_title %></h4>
+            </div>
+          </div>
+        <% end %>
+        <div class="card-body">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<%= render template: "layouts/portal/base" %>

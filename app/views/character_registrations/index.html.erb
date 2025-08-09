@@ -1,12 +1,16 @@
-<h1 class="mb-4">My Characters</h1>
-
-<div class="btn-group mb-4" role="group" aria-label="Character Management Actions">
-  <% if can_add_characters? %>
-    <%= link_to new_character_registration_path, class: "btn btn-primary" do %>
-      <i class="bi bi-plus"></i> Register Character
+<% content_for(:page_header) do %>
+  <div>
+    <h1>My Characters</h1>
+    <p>Add, verify, and remove characters for use with external services.</p>
+  </div>
+  <div>
+    <% if can_add_characters? %>
+      <%= link_to new_character_registration_path, class: "btn btn-primary" do %>
+        <i class="bi bi-plus"></i> Add Character
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
+<% end %>
 
 <div class="row">
   <% @character_registrations.each do |character_registration| %>

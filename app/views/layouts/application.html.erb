@@ -11,27 +11,26 @@
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  <%= javascript_include_tag "hope-ui", "data-turbo-track": "reload", defer: true %>
 
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 <%= render 'layouts/components/env_watermark' %>
-<%= render 'layouts/navbar' %>
 
-<div class="container">
-  <%= render 'layouts/components/flashes' %>
-
-  <%= yield %>
-</div>
+<% if content_for(:page_layout) %>
+  <%= yield(:page_layout) %>
+<% else %>
+  <div class="container">
+    <%= render 'layouts/components/flashes' %>
+    <%= yield %>
+  </div>
+<% end %>
 
 <%= turbo_frame_tag "remote_modal", target: "_top" %>
 
 <div class="toast-container p-3 top-0 end-0" id="toasts">
   <%= turbo_stream_from "UserStream:#{current_user.id}", :toasts if current_user.present? %>
-</div>
-
-<div class="container mt-auto">
-  <%= render 'layouts/footer' %>
 </div>
 </body>
 </html>

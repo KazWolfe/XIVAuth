@@ -1,11 +1,14 @@
 class CharacterRegistrationsController < ApplicationController
   include Pagy::Backend
 
+  layout "portal/page"
   before_action :set_character_registration, only: %i[show destroy]
 
   # GET /character_registrations or /character_registrations.json
   def index
     @pagy, @character_registrations = pagy(CharacterRegistration.accessible_by(current_ability), items: 12)
+
+    render :index, layout: "portal/base"
   end
 
   # GET /character_registrations/new

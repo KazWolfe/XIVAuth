@@ -1,0 +1,6 @@
+<li class="nav-item">
+  <%= link_to target, class: ['nav-link', request.path == target ? "active" : ""] do %>
+    <i class="<%= icon_classes %>"></i>
+    <span class="item-name"><%= name %></span>
+  <% end %>
+</li>

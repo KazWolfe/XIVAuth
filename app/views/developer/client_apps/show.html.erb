@@ -1,6 +1,8 @@
-<div class="border-bottom mb-4">
-  <h1>View <%= @application.name %></h1>
-</div>
+<% content_for(:page_header) do %>
+  <div>
+    <h1>Edit App: <%= @application.name %></h1>
+  </div>
+<% end %>
 
 <div class="row">
   <div class="col-md-6">

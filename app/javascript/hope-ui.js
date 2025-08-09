@@ -43,6 +43,8 @@ Index Of Script
 Index Of Script
 ----------------------------------------------*/
 "use strict";
+
+import $ from "jquery";
 /*---------------------------------------------------------------------
               Sticky-Nav
 -----------------------------------------------------------------------*/
@@ -278,7 +280,7 @@ const resizePlugins = () => {
   // sidebar-mini
   const tabs = document.querySelectorAll('.nav')
   const sidebarResponsive = document.querySelector('.sidebar-default')
-  if (window.innerWidth < 1025) {
+  if (window.innerWidth < 1201) {
     Array.from(tabs, (elem) => {
       if (!elem.classList.contains('flex-column') && elem.classList.contains('nav-tabs') && elem.classList.contains('nav-pills')) {
         elem.classList.add('flex-column', 'on-resize');

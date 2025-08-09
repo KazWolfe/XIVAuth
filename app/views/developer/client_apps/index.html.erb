@@ -1,8 +1,14 @@
-<h1 class="mb-4">My Applications</h1>
-
-<p><%= link_to new_developer_application_path, class: 'btn btn-primary' do %>
-  <i class="bi bi-plus"></i> Create App
-<% end %></p>
+<% content_for(:page_header) do %>
+  <div>
+    <h1>My Applications</h1>
+    <p>Register and manage applications that use XIVAuth APIs for secure login.</p>
+  </div>
+  <div>
+    <%= link_to new_developer_application_path, class: "btn btn-primary" do %>
+      <i class="bi bi-plus"></i> Create App
+    <% end %>
+  </div>
+<% end %>
 
 <div class="row">
   <% @applications.each do |app| %>

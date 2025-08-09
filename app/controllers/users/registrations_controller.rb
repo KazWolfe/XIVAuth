@@ -1,5 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   helper Users::SessionsHelper
+  layout "portal/page"
 
   before_action :configure_sign_up_params, only: [:create]
   prepend_before_action :check_captcha, only: [:create]

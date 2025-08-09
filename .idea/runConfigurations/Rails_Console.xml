@@ -10,11 +10,7 @@
       <env name="TERM" value="dumb" />
     </envs>
     <EXTENSION ID="BundlerRunConfigurationExtension" BUNDLE_MODE="AUTO" bundleExecEnabled="true" />
-    <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true">
-      <COVERAGE_PATTERN ENABLED="true">
-        <PATTERN REGEXPS="/.rvm/" INCLUDED="false" />
-      </COVERAGE_PATTERN>
-    </EXTENSION>
+    <EXTENSION ID="RubyCoverageRunConfigurationExtension" runner="rcov" />
     <EXTENSION ID="RubyDockerContainerSettingsRunConfigurationExtension" dockerComposeCommand="RUN" />
     <EXTENSION ID="org.jetbrains.plugins.ruby.rails.run.RailsRunConfigurationExtension" SCRATCH_USE_RAILS_RUNNER="false" />
     <IRB_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$MODULE_DIR$/bin/rails" />

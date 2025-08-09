@@ -1,0 +1,20 @@
+<% content_for :page_layout do %>
+  <div class="wrapper">
+    <section class="login-content">
+      <div class="row m-0 align-items-center bg-white vh-100">
+        <div class="col-md-6">
+          <div class="row justify-content-center">
+            <div class="col-md-10">
+              <%= yield %>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 d-md-block d-none bg-primary p-0 mt-n1 vh-100 overflow-hidden">
+          <%= image_tag asset_path("auth_bg.png") %>
+        </div>
+      </div>
+    </section>
+  </div>
+<% end %>
+
+<%= render template: "layouts/application" %>
