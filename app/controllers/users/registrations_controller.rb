@@ -1,6 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   helper Users::SessionsHelper
-  layout "portal/page"
+  layout :set_layout
 
   before_action :configure_sign_up_params, only: [:create]
   prepend_before_action :check_captcha, only: [:create]
@@ -87,5 +87,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     flash.discard(:recaptcha_error)
     render :new, status: :unprocessable_entity
+  end
+  
+  private def set_layout
+    if action_name == "new" || action_name == "create"
+      "login/signin"
+    else
+      "portal/page"
+    end
   end
 end

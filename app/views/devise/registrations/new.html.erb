@@ -1,71 +1,70 @@
-<div class="row justify-content-center">
-  <div class="col-lg-6 col-xl-5 col-xxl-4">
-    <h2 class="mb-4">Sign Up for XIVAuth</h2>
+<h2 class="mb-4">Sign Up for XIVAuth</h2>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-      <%= flash[:recaptcha_error] %>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= flash[:recaptcha_error] %>
 
-      <div class="form-group field mb-2">
-        <%= f.label :email, class: "form-label" %><br/>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', placeholder: "#{eegg_random_npc_email}" %>
-        <div class="form-text">
-          We hate marketing emails too. XIVAuth will only use your email for service notifications.
-        </div>
-      </div>
-
-      <%= f.fields_for :profile do |pf| %>
-        <div class="form-group field mb-2">
-          <%= pf.label :display_name, class: 'form-label' %>
-          <%= pf.text_field :display_name, class: 'form-control' %>
-          <div class="form-text">
-            The Display Name is given to apps you sign in to, as well as shown on any apps you create. It can be changed
-            at any time.
-          </div>
-        </div>
-      <% end %>
-
-      <div data-controller="devise--password-strength" data-devise--password-strength-min-score-value="<%= User.min_password_score %>">
-        <div class="form-group field mb-2">
-          <%= f.label :password, class: "form-label" %>
-          <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
-                               data: {
-                                 "action": 'input->devise--password-strength#calc',
-                                 "devise--password-strength-target": 'password'
-                               } %>
-
-          <div class="form-text text-secondary pt-1">
-            <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-devise--password-strength-target="meter">
-              <div class="progress-bar bg-primary" data-devise--password-strength-target="meterInner"></div>
-            </div>
-            <p class="mb-0 d-none"><strong class="text-secondary" data-devise--password-strength-target="strength">Unknown</strong> -
-              <span data-devise--password-strength-target="crackTime"></span> <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
-            </p>
-            <ul class="list-unstyled mb-0" data-devise--password-strength-target="tips"></ul>
-          </div>
-        </div>
-
-        <div class="form-group field mb-2">
-          <%= f.label :password_confirmation %><br/>
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",
-                               data: {
-                                 "action": "input->devise--password-strength#onConfirm",
-                                 "devise--password-strength-target": 'confirm'
-                               } %>
-        </div>
-      </div>
-
-      <p>
-        By signing up to XIVAuth, you agree to our <%= link_to "Terms of Service", legal_terms_path %> and
-        <%= link_to "Privacy Policy", legal_privacy_path %>.
-      </p>
-
-      <%= invisible_recaptcha_tags ui: :invisible %>
-      <div class="form-group d-grid d-md-flex mt-2 gap-2 mb-1">
-        <button type="submit" onclick="grecaptcha.execute(); return false;" class="btn btn-primary col-md-8">Sign Up</button>
-        <%= link_to "Log in", new_session_path(resource_name), class: "btn btn-secondary col" %>
-      </div>
-    <% end %>
-
-    <%= render "devise/shared/links" %>
+  <div class="form-group field mb-2">
+    <%= f.label :email, class: "form-label" %><br/>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', placeholder: "#{eegg_random_npc_email}" %>
+    <div class="form-text">
+      We hate marketing emails too. XIVAuth will only use your email for service notifications.
+    </div>
   </div>
-</div>
+
+  <%= f.fields_for :profile do |pf| %>
+    <div class="form-group field mb-2">
+      <%= pf.label :display_name, class: 'form-label' %>
+      <%= pf.text_field :display_name, class: 'form-control' %>
+      <div class="form-text">
+        The Display Name is given to apps you sign in to, as well as shown on any apps you create. It can be changed
+        at any time.
+      </div>
+    </div>
+  <% end %>
+
+  <div data-controller="devise--password-strength" data-devise--password-strength-min-score-value="<%= User.min_password_score %>">
+    <div class="form-group field mb-2">
+      <%= f.label :password, class: "form-label" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
+                           data: {
+                             "action": 'input->devise--password-strength#calc',
+                             "devise--password-strength-target": 'password'
+                           } %>
+
+      <div class="form-text text-secondary pt-1">
+        <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-devise--password-strength-target="meter">
+          <div class="progress-bar bg-primary" data-devise--password-strength-target="meterInner"></div>
+        </div>
+        <p class="mb-0 d-none">
+          <strong class="text-secondary" data-devise--password-strength-target="strength">Unknown</strong> -
+          <span data-devise--password-strength-target="crackTime"></span>
+          <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
+        </p>
+        <ul class="list-unstyled mb-0" data-devise--password-strength-target="tips"></ul>
+      </div>
+    </div>
+
+    <div class="form-group field mb-2">
+      <%= f.label :password_confirmation %><br/>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",
+                           data: {
+                             "action": "input->devise--password-strength#onConfirm",
+                             "devise--password-strength-target": 'confirm'
+                           } %>
+    </div>
+  </div>
+
+  <p>
+    By signing up to XIVAuth, you agree to our <%= link_to "Terms of Service", legal_terms_path %> and
+    <%= link_to "Privacy Policy", legal_privacy_path %>.
+  </p>
+
+  <%= invisible_recaptcha_tags ui: :invisible %>
+  <div class="form-group d-grid d-md-flex mt-2 gap-2 mb-1">
+    <button type="submit" onclick="grecaptcha.execute(); return false;" class="btn btn-primary col-md-8">Sign Up
+    </button>
+    <%= link_to "Log in", new_session_path(resource_name), class: "btn btn-secondary col" %>
+  </div>
+<% end %>
+
+<%= render "devise/shared/links" %>
