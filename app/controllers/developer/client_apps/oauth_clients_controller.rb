@@ -80,7 +80,7 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
   end
 
   private def filtered_params
-    params.require(:oauth_client).permit(:name, :enabled, :expires_at, :scopes, :confidential, :app_type,
-                                         redirect_uris: [], grant_flows: [])
+    params.require(:oauth_client).permit(:name, :enabled, :expires_at, :confidential, :app_type,
+                                         redirect_uris: [], grant_flows: [], scopes: [])
   end
 end
