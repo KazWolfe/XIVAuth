@@ -10,7 +10,7 @@ export default class WebauthnMFAController extends WebauthnControllerBase {
         let credential = await navigator.credentials.get({publicKey: discovery}) as PublicKeyCredential | null;
 
         if (credential) {
-            this.responseTarget.value = credential.toJSON();
+            this.responseTarget.value = JSON.stringify(credential);
             event.target.form.submit();
         }
     }

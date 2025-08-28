@@ -27,7 +27,7 @@ export default class WebauthnConditionalController extends WebauthnControllerBas
         let discoveredCredential = await navigator.credentials.get({publicKey: discoveryOpts}) as PublicKeyCredential;
 
         if (discoveredCredential) {
-            this.responseTarget.value = discoveredCredential.toJSON();
+            this.responseTarget.value = JSON.stringify(discoveredCredential);
 
             // trigger recaptcha if we have it
             if (this.responseTarget.form.querySelector("#g-recaptcha-response") != null) {
