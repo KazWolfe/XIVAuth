@@ -31,12 +31,12 @@ gem "bootsnap", require: false
 gem "postmark-rails", "~> 0.22.1"
 
 # Internal Security
-gem "rack-cors", "~> 2.0.2"
+gem "rack-cors", "~> 3.0.0"
 
 # Workers
-gem "sidekiq", "~> 7.3.0"
-gem "sidekiq-cron", "~> 2.0.1"
-gem "sidekiq-throttled", "~> 1.5.0"
+gem "sidekiq", "~> 8.0"
+gem "sidekiq-cron", "~> 2.3"
+gem "sidekiq-throttled", "~> 2.0"
 gem "sidekiq-unique-jobs", "~> 8.0.10"
 
 # Authentication / Authorization
@@ -46,8 +46,8 @@ gem "devise_zxcvbn", "~> 6.0.0"
 
 # Authn (MFA)
 gem "devise-two-factor", "~> 6.1"
-gem "rqrcode", "~> 2.2.0"
-gem "webauthn", "~> 3.2.0"
+gem "rqrcode", "~> 3.1.0"
+gem "webauthn", "~> 3.4.1"
 
 # OAuth2 Providers
 gem "omniauth-github", "~> 2.0.1"
@@ -90,7 +90,7 @@ gem "sentry-sidekiq", "~> 5.18"
 gem "stackprof", "~> 0.2"
 
 # Heroku dependencies
-gem "rexml", "~> 3.3.1"
+gem "rexml", "~> 3.4.2"
 
 # Helpers
 gem "pagy", "~> 9.3"
@@ -106,9 +106,9 @@ group :development, :test do
 
   gem "amazing_print"
 
-  gem "factory_bot_rails", "~> 6.4.3"
+  gem "factory_bot_rails", "~> 6.5"
   gem "faker", "~> 3.4"
-  gem "rspec-rails", "~> 7.1"
+  gem "rspec-rails", "~> 8.0"
 
   # Analysis tools
   gem "brakeman", require: false

@@ -1,5 +1,4 @@
 import {WebauthnControllerBase} from "../webauthn_base";
-import * as WebAuthnJSON from "@github/webauthn-json";
 
 export default class WebauthnConditionalController extends WebauthnControllerBase {
     private discoveryAbortController: AbortController = new AbortController();
@@ -18,14 +17,17 @@ export default class WebauthnConditionalController extends WebauthnControllerBas
             return;
         }
 
-        let discoveredCredential = await WebAuthnJSON.get({
-            "signal": this.discoveryAbortController.signal,
-            "publicKey": JSON.parse(this.challengeTarget.value),
+        let discoveryOpts = PublicKeyCredential.parseRequestOptionsFromJSON({
+            ...JSON.parse(this.challengeTarget.value),
+
             "mediation": "conditional",
+            "signal": this.discoveryAbortController.signal,
         });
 
+        let discoveredCredential = await navigator.credentials.get({publicKey: discoveryOpts}) as PublicKeyCredential;
+
         if (discoveredCredential) {
-            this.responseTarget.value = JSON.stringify(discoveredCredential);
+            this.responseTarget.value = discoveredCredential.toJSON();
 
             // trigger recaptcha if we have it
             if (this.responseTarget.form.querySelector("#g-recaptcha-response") != null) {

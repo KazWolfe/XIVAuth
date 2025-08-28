@@ -6,11 +6,12 @@ export default class WebauthnMFAController extends WebauthnControllerBase {
         console.warn("AUTHENTICATION REQUEST RECEIVED!!!")
         event.preventDefault();
 
-        let credential = await WebAuthnJSON.get({
-            "publicKey": JSON.parse(this.challengeTarget.value)
-        });
+        let discovery = PublicKeyCredential.parseRequestOptionsFromJSON(JSON.parse(this.challengeTarget.value));
+        let credential = await navigator.credentials.get({publicKey: discovery}) as PublicKeyCredential | null;
 
-        this.responseTarget.value = JSON.stringify(credential);
-        event.target.form.submit();
+        if (credential) {
+            this.responseTarget.value = credential.toJSON();
+            event.target.form.submit();
+        }
     }
 }
