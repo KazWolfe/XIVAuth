@@ -1,4 +1,5 @@
 import {WebauthnControllerBase} from "../webauthn_base";
+import * as WebAuthnJSON from "@github/webauthn-json";
 
 export default class WebauthnConditionalController extends WebauthnControllerBase {
     private discoveryAbortController: AbortController = new AbortController();
@@ -17,14 +18,21 @@ export default class WebauthnConditionalController extends WebauthnControllerBas
             return;
         }
 
-        let discoveryOpts = PublicKeyCredential.parseRequestOptionsFromJSON({
-            ...JSON.parse(this.challengeTarget.value),
-
-            "mediation": "conditional",
+        // FIXME: Bug in certain password managers where they don't support toJSON on the response.
+        let discoveredCredential = await WebAuthnJSON.get({
             "signal": this.discoveryAbortController.signal,
+            "publicKey": JSON.parse(this.challengeTarget.value),
+            "mediation": "conditional",
         });
 
-        let discoveredCredential = await navigator.credentials.get({publicKey: discoveryOpts}) as PublicKeyCredential;
+        // let discoveryOpts = PublicKeyCredential.parseRequestOptionsFromJSON({
+        //    ...JSON.parse(this.challengeTarget.value),
+        //
+        //    "mediation": "conditional",
+        //    "signal": this.discoveryAbortController.signal,
+        // });
+        //
+        // let discoveredCredential = await navigator.credentials.get({publicKey: discoveryOpts}) as PublicKeyCredential;
 
         if (discoveredCredential) {
             this.responseTarget.value = JSON.stringify(discoveredCredential);
