@@ -157,6 +157,7 @@ GEM
       logger
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
+    ffi (1.17.2)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -548,6 +549,7 @@ PLATFORMS
   arm-linux-gnu
   arm-linux-musl
   arm64-darwin
+  ruby
   x86-linux
   x86-linux-gnu
   x86-linux-musl
@@ -619,7 +621,7 @@ DEPENDENCIES
   webauthn (~> 3.4.1)
 
 RUBY VERSION
-   ruby 3.4.2p28
+   ruby 3.4.5p51
 
 BUNDLED WITH
-   2.6.2
+   2.6.9
