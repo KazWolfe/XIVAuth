@@ -1,25 +1,20 @@
-<div class="row justify-content-center">
-  <div class="col-lg-6 col-xl-5 col-xxl-4">
-    <h2 class="mb-4">Reset Password</h2>
+<h2 class="mb-4">Reset Password</h2>
 
-    <p>We get it, passwords are hard to remember (or your password manager messed up).</p>
-    <p>Enter your account's email address below and we'll send you an email if it's registered to an account.</p>
+<p>We get it, passwords are hard to remember (or your password manager messed up).</p>
+<p>Enter your account's email address below and we'll send you an email if it's registered to an account.</p>
 
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
+<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
 
-      <div class="form-group field">
-        <%= f.label :email, class: "form-label"%><br/>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: eegg_random_npc_email %>
-      </div>
-
-      <div class="form-group d-grid d-md-flex mt-2">
-        <%= invisible_recaptcha_tags ui: :button, text: 'Send Reset Instructions', class: 'btn btn-primary col-md-8 me-2' %>
-        <%= link_to "Back To Login", new_user_session_path, class: "btn btn-secondary col" %>
-      </div>
-    <% end %>
-
-    <%= render "devise/shared/links" %>
-
+  <div class="form-group field">
+    <%= f.label :email, class: "form-label" %><br/>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: eegg_random_npc_email %>
   </div>
-</div>
+
+  <div class="form-group d-grid d-md-flex mt-2">
+    <%= invisible_recaptcha_tags ui: :button, text: 'Send Reset Instructions', class: 'btn btn-primary col-md-8 me-2' %>
+    <%= link_to "Back To Login", new_user_session_path, class: "btn btn-secondary col" %>
+  </div>
+<% end %>
+
+<%= render "devise/shared/links" %>

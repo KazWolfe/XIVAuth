@@ -1,22 +1,19 @@
 <% oauth_client = @pre_auth.client.application %>
 <% client_application = oauth_client.application %>
 
-<header class="page-header" role="banner">
-  <h1><%= t('.title') %></h1>
-</header>
-
 <%= form_tag oauth_authorization_path, method: :post do %>
   <main role="main">
 
-    <div class="d-flex justify-content-center pad-2" style="align-self: center;">
-      <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-50 avatar-rounded align-self-center", width: 72 %>
-      <span class="display-2"><i class="bi bi-three-dots"></i></span>
-      <%= image_tag client_application.profile.icon_url, class: "img-fluid avatar avatar-50 avatar-rounded align-self-center", width: 72 %>
+    <div class="d-flex justify-content-center pad-2 pb-2" style="align-self: center;">
+      <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-50 rounded align-self-center", width: 72 %>
+      <span class="px-2 align-self-center"><i class="bi bi-three-dots"></i></span>
+      <%= image_tag client_application.profile.icon_url, class: "img-fluid avatar avatar-50 rounded   align-self-center", width: 72 %>
     </div>
 
-    <p class="h4">
-      <%= raw t('.prompt', client_name: content_tag(:strong, class: 'text-info') { client_application.name }) %>
-    </p>
+    <h4 class="text-center">Connect to <%= client_application.name %></h4>
+    <p class="text-center text-muted fs-6">by <%= client_application.owner %></p>
+
+    <p><%= client_application.name %> wants to use your XIVAuth account to log in.</p>
 
     <% if @pre_auth.scopes.count > 0 %>
       <div id="oauth-permissions">
@@ -25,7 +22,7 @@
         <ul class="text-info">
           <% @pre_auth.scopes.each do |scope| %>
             <li>
-              <%= t scope, scope: [:doorkeeper, :scopes] %>
+              <%= t(:friendly, scope: ["xivauth", "oauth_scopes", scope], default: scope.humanize.titleize) %>
               <% case scope %>
               <% when 'character' %>
                 <%= render 'doorkeeper/authorizations/scope_selectors/character' %>

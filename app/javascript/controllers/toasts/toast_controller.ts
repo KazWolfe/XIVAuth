@@ -6,9 +6,9 @@ export default class ToastController extends Controller {
     updateInterval = 100;
 
     // state
-    bootstrapToast = null;
+    bootstrapToast?: Toast;
 
-    timer = null;
+    timer?: number;
     timerActive = false;
     timeElapsed = 0;
 
@@ -38,13 +38,14 @@ export default class ToastController extends Controller {
 
         this.timeElapsed += this.updateInterval;
 
-        let progressElement = this.element.querySelector("#pb");
+        let progressElement = this.element.querySelector("#pb") as HTMLDivElement | null;
+        if (!progressElement) return;
 
         let percentRemaining = Math.round(((this.timeToClose - this.timeElapsed) / this.timeToClose) * 100);
         progressElement.style.width = `${percentRemaining}%`;
 
         if (this.timeElapsed >= this.timeToClose) {
-            this.bootstrapToast.hide();
+            this.bootstrapToast?.hide();
             clearInterval(this.timer);
         }
     }

@@ -5,7 +5,7 @@ export default class TextArrayController extends Controller {
 
     declare readonly inputTargets: HTMLInputElement[];
 
-    templateElement: HTMLDivElement;
+    templateElement?: HTMLDivElement;
 
     connect() {
         console.log("CONNECTED!");

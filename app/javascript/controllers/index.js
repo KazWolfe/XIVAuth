@@ -27,3 +27,6 @@ application.register("utilities--copy-code", Utilities__CopyCodeController)
 
 import Utilities__RemoteModalController from "./utilities/remote_modal_controller"
 application.register("utilities--remote-modal", Utilities__RemoteModalController)
+
+import Oauth__CharacterSelect from './oauth/character_select'
+application.register('oauth--character-select', Oauth__CharacterSelect)

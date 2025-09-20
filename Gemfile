@@ -8,7 +8,7 @@ gem "rails", "~> 8.0.0"
 
 # Core systems
 gem "pg", "~> 1.5"
-gem "puma", "~> 6.4"
+gem "puma", "~> 7.0"
 gem "redis", "~> 5.2"
 
 # Platform-specific

@@ -1,5 +1,6 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
   helper Users::SessionsHelper
+  layout "login/signin"
 
   prepend_before_action :check_captcha, only: [:create]
 

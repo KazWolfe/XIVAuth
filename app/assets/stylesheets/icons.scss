@@ -1,6 +1,8 @@
-$fa-font-path: ".";
+@use '@fortawesome/fontawesome-free/scss/variables' with (
+  $font-path: '/assets',
+);
 
-@import "@fortawesome/fontawesome-free/scss/brands";
-@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@use "@fortawesome/fontawesome-free/scss/brands";
+@use "@fortawesome/fontawesome-free/scss/fontawesome";
 
-@import "bootstrap-icons/font/bootstrap-icons";
+@use "bootstrap-icons/font/bootstrap-icons";
