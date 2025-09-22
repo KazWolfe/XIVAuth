@@ -1,5 +1,5 @@
 @use '@fortawesome/fontawesome-free/scss/variables' with (
-  $font-path: '/assets',
+  $font-path: '.',
 );
 
 @use "@fortawesome/fontawesome-free/scss/brands";

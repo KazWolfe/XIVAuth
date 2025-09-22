@@ -10,7 +10,12 @@
       <%= image_tag client_application.profile.icon_url, class: "img-fluid avatar avatar-50 rounded   align-self-center", width: 72 %>
     </div>
 
-    <h4 class="text-center">Connect to <%= client_application.name %></h4>
+    <h4 class="text-center">
+      Connect to <%= client_application.name %>
+      <% if client_application.verified? %>
+        <i class="bi bi-patch-check-fill text-success" title="App verified by XIVAuth"></i>
+      <% end %>
+    </h4>
     <p class="text-center text-muted small">by
       <% case client_application.owner %>
       <% when User %>
