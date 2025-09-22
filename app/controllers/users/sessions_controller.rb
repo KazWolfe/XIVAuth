@@ -72,4 +72,8 @@ class Users::SessionsController < Devise::SessionsController
   def user_params
     params.permit(user: [:email, :password, :webauthn_response, :remember_me]).fetch(:user, {})
   end
+
+  def after_sign_in_path_for(resource)
+    stored_location_for(resource) || character_registrations_path
+  end
 end

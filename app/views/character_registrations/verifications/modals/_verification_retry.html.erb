@@ -12,10 +12,10 @@
     appears exactly as it does below.
   </p>
   <div class="input-group mb-3" data-controller="utilities--copy-code">
-    <input type="text" data-copy-code-target="source" readonly class="form-control text-center font-monospace"
+    <input type="text" data-utilities--copy-code-target="source" readonly class="form-control text-center font-monospace"
            value="<%= registration.verification_key %>" aria-label="Verification code"
            onclick="this.select();">
-    <button class="btn btn-outline-secondary" type="button" data-action="utilities--copy-code#copy" data-copy-code-target="button">
+    <button class="btn btn-outline-secondary" type="button" data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
       <i class="bi bi-clipboard"></i> Copy
     </button>
   </div>
