@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_11_031806) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_22_175159) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -34,7 +34,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_11_031806) do
     t.datetime "verified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "extra_data"
+    t.jsonb "extra_data", default: {}, null: false
     t.string "source", default: "internal", null: false
     t.string "verification_type"
     t.index ["character_id"], name: "index_character_registrations_on_character_id"

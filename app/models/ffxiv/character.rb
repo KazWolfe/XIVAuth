@@ -15,7 +15,8 @@ class FFXIV::Character < ApplicationRecord
 
   after_save :call_character_saves
 
-  def lodestone_url(region = "na")
+  def lodestone_url(region = nil)
+    region ||= "na"
     "https://#{region}.finalfantasyxiv.com/lodestone/character/#{lodestone_id}"
   end
 

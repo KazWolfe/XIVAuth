@@ -18,14 +18,18 @@ class CharacterRegistrationsController < ApplicationController
 
   # POST /character_registrations or /character_registrations.json
   def create
-    lodestone_id = helpers.extract_id(character_registration_params[:character_key])
-    ffxiv_character = FFXIV::Character.for_lodestone_id(lodestone_id)
+    lodestone_data = helpers.extract_data(character_registration_params[:character_key])
+    ffxiv_character = FFXIV::Character.for_lodestone_id(lodestone_data[:lodestone_id])
 
     @character_registration = CharacterRegistration.new(
       character: ffxiv_character,
       user: current_user,
       **character_registration_params
     )
+
+    if lodestone_data[:region]
+      @character_registration.extra_data[:region] = lodestone_data[:region]
+    end
 
     respond_to do |format|
       if @character_registration.save

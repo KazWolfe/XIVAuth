@@ -4,11 +4,11 @@
 <div class="modal-body">
   <p>
     XIVAuth did not detect your verification code on your character page. Since this can be caused by lag on Square
-    Enix's side, we'll be trying again in about a couple minutes.
+    Enix's side, we'll be trying again in about a couple of minutes.
   </p>
   <p>
-    To ensure a successful verification, please ensure the below code is located on <%= character.name %>'s
-    <%= link_to "Lodestone profile", character.lodestone_url, target: "_blank", rel: 'noreferrer noopener' %>, and
+    To ensure successful verification, please ensure the below code is located on <%= character.name %>'s
+    <%= link_to "Lodestone profile", registration.lodestone_url, target: "_blank", rel: 'noreferrer noopener' %>, and
     appears exactly as it does below.
   </p>
   <div class="input-group mb-3" data-controller="utilities--copy-code">

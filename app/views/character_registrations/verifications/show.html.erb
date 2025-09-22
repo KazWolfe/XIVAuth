@@ -1,7 +1,7 @@
 <h2>Character Verification</h2>
 <p>You are currently verifying <strong><%= @character.name %></strong>.</p>
 <p>
-  Please visit this character's<%= link_to "Lodestone profile", @character.lodestone_url, target: "_blank", rel: 'noreferrer noopener'%>
+  Please visit this character's<%= link_to "Lodestone profile", @character_registration.lodestone_url, target: "_blank", rel: 'noreferrer noopener'%>
   and add the following text to the character's description.
 </p>
 <pre><code><%= @character_registration.verification_key %></code></pre>

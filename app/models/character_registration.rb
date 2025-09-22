@@ -98,6 +98,10 @@ class CharacterRegistration < ApplicationRecord
     Base64.urlsafe_encode64(hmac, padding: false)
   end
 
+  def lodestone_url
+    self.character.lodestone_url(self.extra_data&.fetch("region", nil))
+  end
+
   def broadcast_card_update
     broadcast_replace_to(
       "UserStream:#{user.id}", :character_registrations,
