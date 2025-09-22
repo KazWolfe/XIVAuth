@@ -27,7 +27,7 @@
         </nav>
       <% end %>
     </div>
-    <%= yield %>
+    <%= content_for?(:marketing_page_content) ?  yield(:marketing_page_content) : yield %>
   </main>
 <% end %>
 
