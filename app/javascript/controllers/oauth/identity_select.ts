@@ -24,14 +24,22 @@ export default class IdentitySelectController extends TomSelectController {
 
     renderItem(data: TomOption, escape: typeof escape_html): string {
         return "<div>" +
-            `<i class='fab fa-${data.identityProvider} me-1 fa-fw'></i> ${escape(data.identityName)}` +
+            `<i class='fab fa-${data.identityProvider} me-1 fa-fw'></i> ${escape(data.identityDisplayName)}` +
             "</div>";
     }
 
     renderOption(data: TomOption, escape: typeof escape_html): string {
-            return "<div>" +
-                `<span><i class='fab fa-${data.identityProvider} me-1 fa-fw'></i> ${data.identityName}</span><br/>` +
-                `<span class='very-small'>External ID: <span class='font-monospace'>${data.identityExtid}</span></span>` +
-                "</div>";
+        let preferredName = data.identityDisplayName || data.identityUsername;
+
+        let render = "<div>" +
+            `<span><i class='fab fa-${data.identityProvider} me-1 fa-fw'></i> ${data.identityDisplayName}</span>`;
+
+        if (data.identityUsername != data.identityDisplayName) {
+            render += ` <span class='very-small'>(@${escape(data.identityUsername)})</span>`;
+        }
+
+        render += "</div>"
+
+        return render;
     }
 }

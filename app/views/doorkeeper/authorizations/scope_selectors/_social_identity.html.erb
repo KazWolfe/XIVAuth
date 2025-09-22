@@ -3,7 +3,9 @@
   <select class="form-select" name="social_identities[]" id="social_identity_selector" data-controller="oauth--identity-select" multiple>
     <% @current_resource_owner.social_identities.each do |identity| %>
       <option value="<%= identity.id %>" selected data-identity-provider="<%= identity.provider %>"
-              data-identity-name="<%= identity.friendly_name %>" data-identity-extid="<%= identity.external_id %>">
+              data-identity-display-name="<%= identity.friendly_name %>"
+              data-identity-extid="<%= identity.external_id %>"
+              data-identity-username="<%= identity.nickname %>">
         (<%= identity.provider %>) <%= identity.friendly_name %>
       </option>
     <% end %>
