@@ -11,7 +11,14 @@
     </div>
 
     <h4 class="text-center">Connect to <%= client_application.name %></h4>
-    <p class="text-center text-muted fs-6">by <%= client_application.owner %></p>
+    <p class="text-center text-muted small">by
+      <% case client_application.owner %>
+      <% when User %>
+        <i class="bi bi-person-fill"></i> <%= client_application.owner.profile.display_name %>
+      <% else
+           nil %>
+      <% end %>
+    </p>
 
     <p><%= client_application.name %> wants to use your XIVAuth account to log in.</p>
 
@@ -22,7 +29,9 @@
         <ul class="text-info">
           <% @pre_auth.scopes.each do |scope| %>
             <li>
-              <%= t(:friendly, scope: ["xivauth", "oauth_scopes", scope], default: scope.humanize.titleize) %>
+              <span title="<%= t(:description, scope: ["xivauth", "oauth_scopes", scope], default: "") %>">
+                <%= t(:consent, scope: ["xivauth", "oauth_scopes", scope], default: scope.humanize.titleize) %>
+              </span>
               <% case scope %>
               <% when 'character' %>
                 <%= render 'doorkeeper/authorizations/scope_selectors/character' %>
@@ -30,7 +39,8 @@
                 <%= render 'doorkeeper/authorizations/scope_selectors/character_all' %>
               <% when 'user:social' %>
                 <%= render 'doorkeeper/authorizations/scope_selectors/social_identity' %>
-              <% else; nil %>
+              <% else
+                   nil %>
               <% end %>
             </li>
           <% end %>
@@ -47,13 +57,36 @@
     <%= hidden_field_tag :code_challenge, @pre_auth.code_challenge, id: nil %>
     <%= hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method, id: nil %>
 
-    <div class="actions">
-      <%= button_tag t('doorkeeper.authorizations.buttons.authorize'), type: "submit",
-                     class: 'btn btn-success btn-lg btn-block',
-                     name: 'disposition', value: 'authorize' %>
+    <div class="actions d-flex gap-2 mt-5">
       <%= button_tag t('doorkeeper.authorizations.buttons.deny'), type: "submit",
-                     class: 'btn btn-danger btn-lg btn-block',
+                     class: 'btn btn-outline-danger btn-lg col-6',
                      name: 'disposition', value: 'deny' %>
+      <%= button_tag t('doorkeeper.authorizations.buttons.authorize'), type: "submit",
+                     class: 'btn btn-success btn-lg col-6',
+                     name: 'disposition', value: 'authorize' %>
+    </div>
+
+    <div class="text-muted text-center small mt-3">
+      <ul class="list-unstyled list-inline pipe-separated-items">
+        <% if client_application.profile.homepage_url %>
+          <li>
+            <a href="<%= client_application.profile.homepage_url %>" target="_blank" rel="noopener noreferrer">App
+              Homepage</a>
+          </li>
+        <% end %>
+        <% if client_application.profile.terms_of_service_url %>
+          <li>
+            <a href="<%= client_application.profile.terms_of_service_url %>" target="_blank" rel="noopener noreferrer">App
+              Terms of Service</a>
+          </li>
+        <% end %>
+        <% if client_application.profile.privacy_policy_url %>
+          <li>
+            <a href="<%= client_application.profile.privacy_policy_url %>" target="_blank" rel="noopener noreferrer">App
+              Privacy Policy</a>
+          </li>
+        <% end %>
+      </ul>
     </div>
   </main>
 <% end %>

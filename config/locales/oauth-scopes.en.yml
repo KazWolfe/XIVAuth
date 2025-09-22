@@ -3,33 +3,43 @@ en:
     oauth_scopes:
       user:
         friendly: Read User Information
+        consent: Read your user information
         description: Allows accessing base user information such as User ID and whether the user has any verified characters.
       user:email:
         friendly: Read User Email
+        consent: Read your email address
         description: Allows reading the user's email address.
       user:social:
         friendly: Read Linked Accounts
+        consent: Read your linked accounts
         description: Allows getting a list of external accounts (e.g. Discord, GitHub) linked to the user.
       user:jwt:
         friendly: Generate User Claim
+        consent: Generate a claim for your user
         description: Allows generating a cryptographic claim for a user.
       user:manage:
         friendly: Manage User Information
+        consent: Modify your user information
         description: Allows modifying user information via API.
       character:
         friendly: Read a Selected Character
+        consent: Get information about a specific character
         description: Allows reading a single user-selected character.
       character:all:
         friendly: Read Authorized Characters
+        consent: Get information about multiple characters
         description: Allows reading a list of authorized user-selected characters.
       character:manage:
         friendly: Manage Characters
+        consent: Manage your characters
         description: Allows creating new characters and reading, editing, or deleting existing characters.
       character:jwt:
         friendly: Generate Character Claims
+        consent: Generate claims for your characters
         description: Allows generating a cryptographic claim for ownership of a character.
       refresh:
         friendly: Allow Persistent Access
+        consent: Maintain access to your information
         description: Generates an OAuth refresh token, allowing the application to refresh information in the future.
     grant_flows:
       authorization_code:

@@ -1,12 +1,14 @@
-<label for="character_selector">Share the following:</label>
-<select name="characters[]" id="character_selector" data-controller="oauth--character-select"
-        placeholder="Select a character..." autocomplete="off">
-  <% @current_resource_owner.character_registrations.verified.each do |registration| %>
-    <% character = registration.character %>
-    <option value="<%= character.lodestone_id %>"
-            data-character-avatar="<%= character.avatar_url %>" data-character-name="<%= character.name %>"
-            data-character-world="<%= character.home_world %>" data-character-datacenter="<%= character.data_center %>">
-      <%= character.name %> @ <%= character.home_with_datacenter %>
-    </option>
-  <% end %>
-</select>
+<div class="ms-3">
+  <label for="character_selector">Share the following:</label>
+  <select name="characters[]" id="character_selector" data-controller="oauth--character-select"
+          placeholder="Select a character..." autocomplete="off">
+    <% @current_resource_owner.character_registrations.verified.each do |registration| %>
+      <% character = registration.character %>
+      <option value="<%= character.lodestone_id %>"
+              data-character-avatar="<%= character.avatar_url %>" data-character-name="<%= character.name %>"
+              data-character-world="<%= character.home_world %>" data-character-datacenter="<%= character.data_center %>">
+        <%= character.name %> @ <%= character.home_with_datacenter %>
+      </option>
+    <% end %>
+  </select>
+</div>

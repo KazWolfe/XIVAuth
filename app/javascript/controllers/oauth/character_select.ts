@@ -1,25 +1,34 @@
-import {Controller} from "@hotwired/stimulus";
-
-import TomSelect from "tom-select";
-import {TomOption} from "tom-select/dist/types/types";
+import {RecursivePartial, TomOption, TomSettings} from "tom-select/dist/types/types";
 import {escape_html} from "tom-select/src/utils";
+import TomSelectController from "../form/tomselect_controller";
 
-export default class CharacterSelectDropdown extends Controller<HTMLSelectElement> {
-    tomSelect?: TomSelect = undefined;
-
-    connect() {
-        this.tomSelect = new TomSelect(this.element, {
+export default class CharacterSelectDropdown extends TomSelectController {
+    get user_settings() {
+        let settings: RecursivePartial<TomSettings> = {
             render: {
-                option: CharacterSelectDropdown.render_option,
-                item: CharacterSelectDropdown.render_item
+                option: this.renderOption,
+                item: this.renderItem,
+                no_results: this.renderNoResults,
             },
             searchField: ["characterName"]
-        });
+        };
 
-        console.log("It's Tom Select! Get the camera!", this.tomSelect);
+        if (this.element.multiple) {
+            settings.plugins = {
+                'remove_button': {
+                    title: 'Remove this item'
+                },
+                'checkbox_options': {
+                    'checkedClassNames':   ['ts-checked'],
+                    'uncheckedClassNames': ['ts-unchecked'],
+                }
+            };
+        }
+
+        return settings;
     }
 
-    static render_option(data: TomOption, escape: typeof escape_html): string {
+    renderOption(data: TomOption, escape: typeof escape_html): string {
         return "<div class='d-flex flex-row align-items-center'>" +
             `<img src="${data.characterAvatar}" class="me-2 rounded" style="width: 48px; height: 48px;">` +
             `<div class='ps-2'>` +
@@ -29,7 +38,7 @@ export default class CharacterSelectDropdown extends Controller<HTMLSelectElemen
             "</div>";
     }
 
-    static render_item(data: TomOption, escape: typeof escape_html): string {
+    renderItem(data: TomOption, escape: typeof escape_html): string {
         return "<div class='d-flex flex-row align-items-center'>" +
             `<img src="${data.characterAvatar}" class="me-2 rounded" style="width: 48px; height: 48px;">` +
             `<div class='ps-2'>` +
@@ -37,5 +46,9 @@ export default class CharacterSelectDropdown extends Controller<HTMLSelectElemen
             `<span class='small'>${escape(data.characterWorld)} [${escape(data.characterDatacenter)}]</span>` +
             "</div>" +
             "</div>";
+    }
+
+    renderNoResults(data: TomOption, escape: typeof escape_html): string {
+        return `<div class='text-center'>Couldn't find a character name matching "${data.input}"</div>`;
     }
 }

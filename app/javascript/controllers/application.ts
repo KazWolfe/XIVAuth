@@ -4,6 +4,13 @@ const application = Application.start();
 
 // Configure Stimulus development experience
 application.debug = false;
-window["Stimulus"] = application;
+
+declare global {
+    interface Window {
+        Stimulus: Application;
+    }
+}
+
+window.Stimulus = application;
 
 export {application};

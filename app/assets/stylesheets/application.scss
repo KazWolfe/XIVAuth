@@ -7,3 +7,22 @@
 .iq-header-img {
   border-radius: unset !important;
 }
+
+.full-backdrop {
+  overflow-x: hidden;
+  position: fixed;
+  z-index: -1;
+  height: 100vh;
+  width: 100%;
+}
+
+.pipe-separated-items {
+  > li {
+    display: inline-block;
+  }
+  > li:not(:first-child):before {
+    content: "";
+    border-left: 1px solid;
+    padding-right: 0.2rem;
+  }
+}

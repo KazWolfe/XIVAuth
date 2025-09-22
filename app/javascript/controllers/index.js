@@ -30,3 +30,6 @@ application.register("utilities--remote-modal", Utilities__RemoteModalController
 
 import Oauth__CharacterSelect from './oauth/character_select'
 application.register('oauth--character-select', Oauth__CharacterSelect)
+
+import Oauth__IdentitySelect from './oauth/identity_select'
+application.register('oauth--identity-select', Oauth__IdentitySelect)
