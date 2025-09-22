@@ -1,5 +1,189 @@
-<div class="container">
-  <h1>Hello XIVAuth!</h1>
-  <p>This is <code>Marketing#index</code>, reporting for duty.</p>
-  <p>The time is currently <%= @current_time %>.</p>
+<section class="py-5 bg-light">
+  <div class="container py-5">
+    <div class="row align-items-center g-5">
+      <div class="col-12 col-lg-7">
+        <h1 class="display-4 fw-bold mb-3">Hello, XIVAuth.</h1>
+        <p class="lead text-muted mb-4">
+          XIVAuth is the last Lodestone code you'll ever need. Sign in to many services across the Final Fantasy XIV
+          ecosystem
+          with a single, secure account—privacy-first and easy to use.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <% if user_signed_in? %>
+            <%= link_to "Go to My Account", character_registrations_path, class: "btn btn-primary btn-lg" %>
+          <% else %>
+            <%= link_to "Create your account", new_user_registration_path, class: "btn btn-primary btn-lg" %>
+            <%= link_to "Log in", new_user_session_path, class: "btn btn-outline-secondary btn-lg" %>
+          <% end %>
+        </div>
+        <div class="text-muted small mt-3">
+          Secure by design • No passwords to remember across sites • Control what you share
+        </div>
+      </div>
+      <div class="col-12 col-lg-5">
+        <div class="ratio ratio-16x9 rounded-4 shadow bg-body">
+          <!-- Placeholder "hero" visual; replace with branded illustration/screenshot -->
+          <div class="d-flex align-items-center justify-content-center bg-gradient" style="--bs-gradient: linear-gradient(135deg, rgba(13,110,253,.1), rgba(32,201,151,.15)); background-image: var(--bs-gradient);">
+            <div class="text-center p-4">
+              <i class="bi bi-shield-lock display-1 text-primary" aria-hidden="true"></i>
+              <p class="mb-0 mt-2 fw-semibold">Trusted sign‑in for the FFXIV ecosystem</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Subtle background decoration -->
+  <div class="position-absolute top-0 end-0 translate-middle opacity-25" style="width: 40rem; height: 40rem; background: radial-gradient(closest-side, rgba(13,110,253,.15), transparent 70%);"></div>
+</section>
+
+<section id="users" class="py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-lg-8">
+        <h2 class="h1 fw-bold">For players</h2>
+        <p class="text-muted lead">Sign in faster. Share less. Keep control of your characters and your data.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="h-100 p-4 border rounded-3 bg-white" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary" style="width:3rem; height:3rem;">
+            <i class="bi bi-lightning-charge-fill fs-4" aria-hidden="true"></i>
+          </div>
+          <h3 class="h5 mt-3">One‑tap sign‑in</h3>
+          <p class="text-muted">Use one XIVAuth account to access many community services—no more juggling
+            passwords.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="h-100 p-4 border rounded-3 bg-white" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success" style="width:3rem; height:3rem;">
+            <i class="bi bi-lock-fill fs-4" aria-hidden="true"></i>
+          </div>
+          <h3 class="h5 mt-3">Secure by default</h3>
+          <p class="text-muted">Modern authentication with optional multi‑factor support keeps your account
+            protected.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="h-100 p-4 border rounded-3 bg-white" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-info-subtle text-info" style="width:3rem; height:3rem;">
+            <i class="bi bi-shield-check fs-4" aria-hidden="true"></i>
+          </div>
+          <h3 class="h5 mt-3">Privacy you control</h3>
+          <p class="text-muted">Decide what information to share with each service. Nothing more, nothing less.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="developers" class="py-5 bg-light border-top">
+  <div class="container">
+    <div class="row mb-4 align-items-center">
+      <div class="col-lg-12">
+        <h2 class="h1 fw-bold font-monospace">$ cat builtForDevs.md</h2>
+        <p class="text-muted lead mb-1">A turnkey authentication platform for FFXIV tools and websites. Friendly API in minutes.</p>
+        <div class="text-muted small mt-2"><a href="https://github.com/KazWolfe/XIVAuth"><i class="bi bi-github me-1" aria-hidden="true"></i> Open source</a> — transparent and community‑driven.</div>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-12 col-md-6">
+        <div class="h-100 p-4 bg-white border rounded-3" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary" style="width:2.5rem; height:2.5rem;">
+            <i class="bi bi-plug-fill" aria-hidden="true"></i>
+          </div>
+          <h3 class="h5 mb-2 mt-3">Simple API</h3>
+          <p class="text-muted mb-0">
+            Build on top of a handcrafted API designed to make developers happy. Works great
+            in native, web, and whatever else you can imagine.
+          </p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="h-100 p-4 bg-white border rounded-3" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-info-subtle text-info" style="width:2.5rem; height:2.5rem;">
+            <i class="bi bi-journal-code" aria-hidden="true"></i>
+          </div>
+          <h3 class="h5 mb-2 mt-3">Lodestone as a Service</h3>
+          <p class="text-muted mb-0">Skip parsing, retry logic, and edge cases. XIVAuth verifies characters and ships signed, verifiable claims.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="h-100 p-4 bg-white border rounded-3" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success" style="width:2.5rem; height:2.5rem;">
+            <i class="bi bi-shield-lock-fill" aria-hidden="true"></i>
+          </div>
+          <h3 class="h5 mb-2 mt-3">Auth Without Headaches&trade;</h3>
+          <p class="text-muted mb-0">
+            No more reading RFCs to figure out how to add Passkey support. We handle modern auth flows and security best
+            practices for you. No more email servers just for password resets!
+          </p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="h-100 p-4 bg-white border rounded-3" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning-subtle text-warning" style="width:2.5rem; height:2.5rem;">
+            <i class="bi bi-lightning-fill" aria-hidden="true"></i>
+          </div>
+          <h3 class="h5 mb-2 mt-3">Fast integration</h3>
+          <p class="text-muted mb-0">
+            Ever implemented Discord sign-in? You’ll feel right at home. Familiar patterns,
+            minimal config.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <small class="text-muted">By using XIVAuth, you agree to our <%= link_to "Developer Agreement", legal_devagreement_path %>.</small>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-12 col-lg-6">
+        <h2 class="h1 fw-bold">Security and privacy at the core</h2>
+        <p class="text-muted lead">We collect the minimum necessary data and give users clear controls. Our security
+          practices are documented and continuously improved.</p>
+        <div class="d-flex gap-3 flex-wrap mt-3">
+          <%= link_to "Security practices", legal_security_path, class: "btn btn-outline-secondary" %>
+          <%= link_to "Privacy policy", legal_privacy_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="p-4 border rounded-3 h-100 bg-light" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+          <ul class="list-unstyled mb-0">
+            <li class="d-flex align-items-start mb-3">
+              <i class="bi bi-check-circle-fill text-success me-3" aria-hidden="true"></i>
+              <div>
+                <strong>Signed tokens</strong>
+                <div class="text-muted">JWTs with rotating keys for reliable verification.</div>
+              </div>
+            </li>
+            <li class="d-flex align-items-start mb-3">
+              <i class="bi bi-check-circle-fill text-success me-3" aria-hidden="true"></i>
+              <div>
+                <strong>Granular scopes</strong>
+                <div class="text-muted">Least‑privilege access with explicit user consent.</div>
+              </div>
+            </li>
+            <li class="d-flex align-items-start mb-0">
+              <i class="bi bi-check-circle-fill text-success me-3" aria-hidden="true"></i>
+              <div>
+                <strong>Transparent policies</strong>
+                <div class="text-muted">Clear terms for users and developers.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container mt-auto">
+  <%= render 'layouts/footer' %>
 </div>

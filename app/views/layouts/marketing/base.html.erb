@@ -1,17 +1,17 @@
 <% content_for :page_layout do %>
+  <% if user_signed_in? %>
+    <%= render 'layouts/portal/navigation/sidebar' %>
+  <% end %>
+
   <main class="main-content">
     <div class="position-relative">
-      <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar header-hover-menu">
-        <div class="container-fluid navbar-inner">
-          <a class="navbar-brand pride-brand m-0 d-xl-flex d-none">XIVAuth</a>
-          <ul class="navbar-nav align-items-center navbar-list d-none d-xl-flex">
-            <% if user_signed_in? %>
-              <li class="nav-item">
-                <%= link_to character_registrations_path, class: "btn btn-primary nav-link" do %>
-                  My Account
-                <% end %>
-              </li>
-            <% else %>
+      <% if user_signed_in? %>
+        <%= render 'layouts/portal/navigation/topbar' %>
+      <% else %>
+        <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar header-hover-menu">
+          <div class="container-fluid navbar-inner">
+            <a class="navbar-brand pride-brand m-0 d-xl-flex d-none">XIVAuth</a>
+            <ul class="navbar-nav align-items-center navbar-list d-none d-xl-flex">
               <li class="nav-item">
                 <%= link_to new_user_registration_path, class: "nav-link" do %>
                   Sign Up
@@ -22,10 +22,10 @@
                   Log In
                 <% end %>
               </li>
-            <% end %>
-          </ul>
-        </div>
-      </nav>
+            </ul>
+          </div>
+        </nav>
+      <% end %>
     </div>
     <%= yield %>
   </main>

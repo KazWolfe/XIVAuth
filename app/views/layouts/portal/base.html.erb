@@ -7,34 +7,7 @@
 
   <main class="main-content">
     <div class="position-relative iq-banner">
-      <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar">
-        <div class="container-fluid navbar-inner">
-          <a class="navbar-brand pride-brand">XIVAuth</a>
-          <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
-            <i class="bi bi-list"></i>
-          </div>
-          <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
-            <li class="nav-item dropdown custom-drop">
-              <a id="navbarDropdown" class="py-0 nav-link d-flex align-items-center" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="<%= current_user.avatar_url %>" alt="" width="36" height="36" class="d-inline-block rounded-2">
-                <div class="caption ms-3 d-none d-md-block">
-                  <h6 class="mb-0">Hi, <%= current_user&.profile.display_name || 'Guest' %>!</h6>
-                </div>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li>
-                  <a class="dropdown-item" href="<%= edit_user_registration_path %>">
-                    <i class="bi bi-person me-2"></i> Profile
-                  </a>
-                  <%= link_to destroy_user_session_path, class: "dropdown-item text-danger", data: { "turbo-method": :delete } do %>
-                    <i class="bi bi-box-arrow-left me-2"></i> Log Out
-                  <% end %>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </nav>
+      <%= render 'layouts/portal/navigation/topbar' %>
       <div class="iq-navbar-header" style="height: 215px">
         <div class="container-fluid iq-container">
           <div class="row">
