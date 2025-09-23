@@ -1,0 +1,53 @@
+@mixin frosted-bg($image-url, $blur: 2px, $light-alpha: 0.8, $dark-alpha: 0.65) {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -10;
+    background-image: url(#{$image-url});
+    background-size: cover;
+    background-position: center;
+    filter: blur($blur);
+
+    [data-bs-theme="light"] & {
+      background-blend-mode: lighten;
+      background-color: rgba(255, 255, 255, $light-alpha);
+    }
+    [data-bs-theme="dark"] & {
+      background-blend-mode: darken;
+      background-color: rgba(0, 0, 0, $dark-alpha);
+    }
+  }
+}
+
+section#hero {
+  @include frosted-bg("/backgrounds/burnwall_day.png", 1px, 0.8, 0.65);
+
+  &::before {
+    background-position: top center;
+    background-repeat: no-repeat;
+  }
+}
+
+section#developers {
+  @include frosted-bg("/backgrounds/s9_workstation.png", 2px, 0.8, 0.65);
+}
+
+.marketing-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.3s, border 0.3s;
+
+  [data-bs-theme="light"] & {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  [data-bs-theme="dark"] & {
+    background: rgba(30, 30, 30, 0.35);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18);
+  }
+}

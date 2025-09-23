@@ -20,9 +20,26 @@
   > li {
     display: inline-block;
   }
+
   > li:not(:first-child):before {
     content: "";
     border-left: 1px solid;
     padding-right: 0.2rem;
+  }
+}
+
+/** backgrounds **/
+
+.login-backdrop {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right center;
+
+  [data-bs-theme="dark"] & {
+    background-image: url("/backgrounds/limsa_night.png");
+  }
+
+  [data-bs-theme="light"] & {
+    background-image: url("/backgrounds/limsa_day.png");
   }
 }

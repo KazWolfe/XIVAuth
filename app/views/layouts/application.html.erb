@@ -13,6 +13,10 @@
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   <%= javascript_include_tag "hope-ui", "data-turbo-track": "reload", defer: true %>
 
+  <% if content_for(:head_extensions) %>
+    <%= yield(:head_extensions) %>
+  <% end %>
+
 </head>
 
 <body class="d-flex flex-column min-vh-100">
