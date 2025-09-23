@@ -11,6 +11,10 @@
           XIVAuth is the last Lodestone code you'll ever need. Sign in to many services across the Final Fantasy XIV
           ecosystem with a single, secure account: privacy-first and easy to use.
         </p>
+        <p class="very-small">
+          <i class="bi bi-stars"></i> Now using AI for writing copy, because marketing is hard and ultimately
+          doesn't matter! Seriously, why are you even reading this?
+        </p>
         <div class="d-flex flex-wrap gap-3">
           <% if user_signed_in? %>
             <%= link_to "Go to My Account", character_registrations_path, class: "btn btn-primary btn-lg" %>
@@ -22,8 +26,6 @@
       </div>
     </div>
   </div>
-  <!-- Subtle background decoration -->
-  <div class="position-absolute top-0 end-0 translate-middle opacity-25" style="width: 40rem; height: 40rem; background: radial-gradient(closest-side, rgba(13,110,253,.15), transparent 70%);"></div>
 </section>
 
 <section id="users" class="py-5">
@@ -36,7 +38,7 @@
     </div>
     <div class="row g-4">
       <div class="col-12 col-md-6 col-lg-4">
-        <div class="h-100 p-4 border rounded-3 marketing-card" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+        <div class="h-100 p-4 border rounded-3 marketing-card">
           <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary" style="width:3rem; height:3rem;">
             <i class="bi bi-lightning-charge-fill fs-4" aria-hidden="true"></i>
           </div>
@@ -47,7 +49,7 @@
         </div>
       </div>
       <div class="col-12 col-md-6 col-lg-4">
-        <div class="h-100 p-4 border rounded-3 marketing-card" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+        <div class="h-100 p-4 border rounded-3 marketing-card">
           <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success" style="width:3rem; height:3rem;">
             <i class="bi bi-lock-fill fs-4" aria-hidden="true"></i>
           </div>
@@ -58,7 +60,7 @@
         </div>
       </div>
       <div class="col-12 col-md-6 col-lg-4">
-        <div class="h-100 p-4 border rounded-3 marketing-card" style="background-image: linear-gradient(180deg, rgba(13,110,253,.03), rgba(32,201,151,.03));">
+        <div class="h-100 p-4 border rounded-3 marketing-card">
           <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-info-subtle text-info" style="width:3rem; height:3rem;">
             <i class="bi bi-shield-check fs-4" aria-hidden="true"></i>
           </div>
@@ -99,7 +101,10 @@
             <i class="bi bi-journal-code" aria-hidden="true"></i>
           </div>
           <h3 class="h5 mb-2 mt-3">Lodestone as a Service</h3>
-          <p class="mb-0">Stop worrying about parsing, retry logic, and edge cases. XIVAuth verifies characters and ships signed, verifiable claims.</p>
+          <p class="mb-0">
+            Stop worrying about parsing, retry logic, and edge cases. XIVAuth verifies characters so you can focus on
+            the cool parts of your project.
+          </p>
         </div>
       </div>
       <div class="col-12 col-md-6">
