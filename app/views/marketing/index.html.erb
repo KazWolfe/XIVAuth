@@ -9,11 +9,7 @@
         <h1 class="display-4 fw-bold mb-3">Hello, XIVAuth.</h1>
         <p class="lead mb-4">
           XIVAuth is the last Lodestone code you'll ever need. Sign in to many services across the Final Fantasy XIV
-          ecosystem with a single, secure account: privacy-first and easy to use.
-        </p>
-        <p class="very-small">
-          <i class="bi bi-stars"></i> Now using AI for writing copy, because marketing is hard and ultimately
-          doesn't matter! Seriously, why are you even reading this?
+          ecosystem with a single account.
         </p>
         <div class="d-flex flex-wrap gap-3">
           <% if user_signed_in? %>
@@ -27,6 +23,17 @@
     </div>
   </div>
 </section>
+
+<div class="alert border-top-0 border-end-0 border-start-0 alert-warning rounded-0">
+  <div class="container d-flex">
+    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" aria-hidden="true"></i>
+    <div>
+      <strong>XIVAuth is still under active development.</strong>
+      Things should work overall (mostly), but there may be some rough edges, broken/weird areas of the UI, or
+      hastily-deployed AI slop in parts of the frontend (like this very page). I do promise the actual backend features work, though.
+    </div>
+  </div>
+</div>
 
 <section id="users" class="py-5">
   <div class="container">
