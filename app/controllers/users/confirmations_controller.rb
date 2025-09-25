@@ -1,5 +1,4 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
-  include CaptchaHelper
   helper Users::SessionsHelper
   layout "login/signin"
 
