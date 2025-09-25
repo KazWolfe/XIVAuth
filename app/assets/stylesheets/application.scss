@@ -28,6 +28,10 @@
   }
 }
 
+.toast {
+  backdrop-filter: blur(8px);
+}
+
 /** backgrounds **/
 
 .login-backdrop {

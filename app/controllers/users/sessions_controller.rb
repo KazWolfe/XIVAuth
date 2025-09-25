@@ -1,7 +1,7 @@
 class Users::SessionsController < Devise::SessionsController
   include Users::AuthenticatesWithMFA
   include Users::AuthenticatesViaPasskey
-  
+
   layout "login/signin"
 
   prepend_before_action :reset_mfa_attempt!, only: [:new]
@@ -30,12 +30,13 @@ class Users::SessionsController < Devise::SessionsController
   def check_captcha
     # only check captcha if this is a first-level login attempt
     return unless user_params[:webauthn_response].present? || user_params[:password].present?
+    return if cloudflare_turnstile_ok?
 
-    return if verify_recaptcha
-
+    self.flash.now[:alert] = "Captcha verification failed, please try again."
     self.resource = resource_class.new sign_in_params
 
-    flash.discard(:recaptcha_error)
+    # recall all the new session things
+    generate_discoverable_challenge
     render :new, status: :unprocessable_entity
   end
 
@@ -60,7 +61,7 @@ class Users::SessionsController < Devise::SessionsController
       authenticate_via_passkey(user_params[:webauthn_response])
     elsif self.resource&.valid_password?(user_params[:password]) && self.resource&.requires_mfa?
       reset_mfa_attempt!
-      prompt_for_mfa
+      prompt_for_mfa(status_code: :unprocessable_entity)  # turbo hack.
     elsif session["mfa"]
       # active mfa session
       authenticate_with_mfa

@@ -67,9 +67,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   # The path used after sign up for inactive accounts.
-  # def after_inactive_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  def after_inactive_sign_up_path_for(resource)
+    stored_location_for(resource) || new_user_session_path
+  end
 
   protected def check_registration_allowed
     return if User.signup_permitted?
@@ -79,13 +79,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   protected def check_captcha
-    return if verify_recaptcha
+    return if cloudflare_turnstile_ok?
 
     self.resource = resource_class.new sign_up_params
     resource.validate
     set_minimum_password_length
 
-    flash.discard(:recaptcha_error)
     render :new, status: :unprocessable_entity
   end
 

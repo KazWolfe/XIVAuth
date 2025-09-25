@@ -33,3 +33,6 @@ application.register('oauth--character-select', Oauth__CharacterSelect)
 
 import Oauth__IdentitySelect from './oauth/identity_select'
 application.register('oauth--identity-select', Oauth__IdentitySelect)
+
+import TurnstileController from "./form/turnstile_controller";
+application.register("form--turnstile", TurnstileController);

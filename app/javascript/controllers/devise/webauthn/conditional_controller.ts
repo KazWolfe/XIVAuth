@@ -37,12 +37,7 @@ export default class WebauthnConditionalController extends WebauthnControllerBas
         if (discoveredCredential) {
             this.responseTarget.value = JSON.stringify(discoveredCredential);
 
-            // trigger recaptcha if we have it
-            if (this.responseTarget.form.querySelector("#g-recaptcha-response") != null) {
-                window.grecaptcha.execute();
-            } else {
-                this.responseTarget.form.submit();
-            }
+            this.responseTarget.form!.submit();
         }
     }
 

@@ -1,4 +1,5 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
+  include CaptchaHelper
   helper Users::SessionsHelper
   layout "login/signin"
 
@@ -32,11 +33,10 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   # end
 
   def check_captcha
-    return if verify_recaptcha
+    return if cloudflare_turnstile_ok?
 
     self.resource = resource_class.new
 
-    flash.discard(:recaptcha_error)
     render :new, status: :unprocessable_entity
   end
 end

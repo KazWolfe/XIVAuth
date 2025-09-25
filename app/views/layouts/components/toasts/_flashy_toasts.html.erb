@@ -1,0 +1,14 @@
+<% flash_types = {
+  notice: { color: "info", icon: "bi-info-circle" },
+  success: { color: "success", icon: "bi-check-circle" },
+  error: { color: "danger", icon: "bi-exclamation-triangle" },
+  alert: { color: "warning", icon: "bi-exclamation-circle" }
+} %>
+
+<% flash.keys.each do |key| %>
+  <% next unless flash_types.include? key.to_sym %>
+  <%= render partial: "layouts/components/toasts/toast", locals: {
+    title: "XIVAuth System", message: flash[key],
+    color: flash_types[key.to_sym][:color],
+    notification_icon_class: flash_types[key.to_sym][:icon]  } %>
+<% end %>

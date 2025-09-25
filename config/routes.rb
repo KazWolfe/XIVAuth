@@ -92,6 +92,8 @@ Rails.application.routes.draw do
   }
 
   devise_scope :user do
+    get "/sign_up/post_signup", to: "users/registrations#post_signup", as: :post_signup
+    
     resources :social_identities, path: "/profile/identities", controller: "users/social_identities", only: [:destroy]
     resources :webauthn_credentials, path: "/profile/webauthn", controller: "users/webauthn_credentials",
 only: %i[new create destroy]

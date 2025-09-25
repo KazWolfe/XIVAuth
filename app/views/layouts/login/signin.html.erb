@@ -1,3 +1,7 @@
+<% content_for :head_extensions do %>
+  <%= cloudflare_turnstile_script_tag(explicit: true) %>
+<% end %>
+
 <% content_for :page_layout do %>
   <div class="wrapper">
     <section class="login-content">
@@ -5,6 +9,7 @@
         <div class="col-md-6 align-self-center">
           <div class="row justify-content-center">
             <div class="col-md-10">
+              <%= render 'layouts/components/flashes' %>
               <%= yield %>
             </div>
           </div>

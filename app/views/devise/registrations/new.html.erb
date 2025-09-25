@@ -1,8 +1,6 @@
 <h2 class="mb-4">Sign Up for XIVAuth</h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= flash[:recaptcha_error] %>
-
   <div class="form-group field mb-2">
     <%= f.label :email, class: "form-label" %><br/>
     <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', placeholder: "#{eegg_random_npc_email}" %>
@@ -59,9 +57,12 @@
     <%= link_to "Privacy Policy", legal_privacy_path %>.
   </p>
 
-  <%= invisible_recaptcha_tags ui: :invisible %>
+  <div class="d-flex justify-content-center">
+    <%= render partial: "layouts/components/form_elements/turnstile_preflight" %>
+  </div>
   <div class="form-group d-grid d-md-flex mt-2 gap-2 mb-1">
-    <button type="submit" onclick="grecaptcha.execute(); return false;" class="btn btn-primary col-md-8">Sign Up
+    <button type="submit" class="btn btn-primary col-md-8" disabled>
+      Sign Up
     </button>
     <%= link_to "Log in", new_session_path(resource_name), class: "btn btn-secondary col" %>
   </div>

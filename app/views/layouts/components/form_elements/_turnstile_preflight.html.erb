@@ -1,0 +1,21 @@
+<% turnstile_challenge_id = "turnstile-challenge-#{SecureRandom.alphanumeric(10)}" %>
+<script>
+  function handleTurnstileSuccess() {
+    const turnstileChallenge = document.getElementById("<%= turnstile_challenge_id %>");
+    const parentForm = turnstileChallenge.closest('form');
+    const submitButton = parentForm.querySelector('[type="submit"]');
+
+    submitButton.disabled = false;
+  }
+
+  function handleTurnstileInteractiveCheck() {
+    const turnstileChallenge = document.getElementById("<%= turnstile_challenge_id %>");
+    turnstileChallenge.className += " pt-2";
+  }
+</script>
+<%= cloudflare_turnstile id: turnstile_challenge_id,
+                         data: { appearance: "interaction-only", controller: "form--turnstile",
+                                 callback: "handleTurnstileSuccess",
+                                 before_interactive_callback: "handleTurnstileInteractiveCheck"
+                         } %>
+
