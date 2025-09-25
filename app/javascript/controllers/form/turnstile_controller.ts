@@ -4,8 +4,8 @@ export default class TurnstileController extends Controller<HTMLDivElement> {
     connect() {
         console.log("Turnstile connected.");
 
-        if (window.turnstile && this.element.innerHTML.trim() === "") {
-            window.turnstile.render(this.element);
+        if (turnstile && this.element.innerHTML.trim() === "") {
+            turnstile.render(this.element);
         }
     }
 }

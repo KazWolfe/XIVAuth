@@ -283,6 +283,11 @@
   dependencies:
     "@popperjs/core" "^2.9.2"
 
+"@types/cloudflare-turnstile@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@types/cloudflare-turnstile/-/cloudflare-turnstile-0.2.2.tgz#3364d65b00f03376f4e555820db270173807a52c"
+  integrity sha512-3Yf7b1Glci+V2bFWwWBbZkRgTuegp7RDgNTOG4U0UNPB9RV4AWvwqg2/qqLff8G+SwKFNXoXvTkqaRBZrAFdKA==
+
 bootstrap-icons@^1.11.3:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/bootstrap-icons/-/bootstrap-icons-1.13.1.tgz#0aad3f5b55b67402990e729ce3883416f9cef6c5"

@@ -13,9 +13,8 @@
     turnstileChallenge.className += " pt-2";
   }
 </script>
-<%= cloudflare_turnstile id: turnstile_challenge_id,
+<%= cloudflare_turnstile id: turnstile_challenge_id, action: local_assigns[:action] || "generic",
                          data: { appearance: "interaction-only", controller: "form--turnstile",
                                  callback: "handleTurnstileSuccess",
                                  before_interactive_callback: "handleTurnstileInteractiveCheck"
                          } %>
-
