@@ -6,4 +6,6 @@ RailsCloudflareTurnstile.configure do |c|
   c.secret_key = Rails.application.credentials.dig(:turnstile, :secret_key) || TURNSTILE_TEST_SECRET_KEY
 
   c.mock_enabled = false
+
+  c.fail_open = Rails.env.development?
 end

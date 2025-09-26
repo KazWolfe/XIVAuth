@@ -1,142 +1,221 @@
-<div class="row">
+<% content_for(:page_header) do %>
   <h2>Edit <%= resource_name.to_s.humanize %></h2>
-  <div class="col-md-6 mb-4">
-    <h3>Profile Information</h3>
+<% end %>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-
-      <div class="form-group field">
-        <%= f.label :email, class: "form-label" %><br/>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header">
+        <h3 class="h5 mb-0">Profile Information</h3>
       </div>
+      <div class="card-body">
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
 
-      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-        <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-      <% end %>
-
-      <%= f.fields_for :profile do |pf| %>
-        <div class="form-group field mb-2">
-          <%= pf.label :display_name, class: 'form-label' %>
-          <%= pf.text_field :display_name, class: 'form-control' %>
-        </div>
-      <% end %>
-
-      <div class="form-group field">
-        <%= f.label :password, class: "form-label" %> <i>(leave blank if you don't want to change it)</i><br/>
-        <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
-        <% if @minimum_password_length %>
-          <br/>
-          <em><%= @minimum_password_length %> characters minimum</em>
-        <% end %>
-      </div>
-
-      <div class="form-group field">
-        <%= f.label :password_confirmation, class: "form-label" %><br/>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
-      </div>
-
-      <div class="form-group field">
-        <%= f.label :current_password, class: "form-label" %>
-        <i>(we need your current password to confirm your changes)</i><br/>
-        <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control" %>
-      </div>
-
-      <div class="actions">
-        <%= f.submit "Update", class: "btn btn-primary" %>
-      </div>
-    <% end %>
-  </div>
-  <div class="col-md-6 mb-4">
-    <h3>Social Identities</h3>
-    <%- if devise_mapping.omniauthable? %>
-      <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-person-add"></i> Link Social Identity
-        </button>
-        <ul class="dropdown-menu">
-          <%- resource_class.omniauth_providers.each do |provider| %>
-            <li>
-              <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
-                <i class="fab fa-<%= provider %> me-1 fa-fw"></i> Add <%= OmniAuth::Utils.camelize(provider) %> account
-              <% end %>
-            </li>
+          <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+              <i class="bi bi-info-circle me-2"></i>
+              <div>Currently waiting confirmation for: <strong><%= resource.unconfirmed_email %></strong></div>
+            </div>
           <% end %>
-        </ul>
+
+          <div class="mb-3">
+            <%= f.label :email, class: "form-label" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+          </div>
+
+          <%= f.fields_for :profile do |pf| %>
+            <div class="mb-3">
+              <%= pf.label :display_name, class: 'form-label' %>
+              <%= pf.text_field :display_name, class: 'form-control' %>
+            </div>
+          <% end %>
+
+          <% pwd_open = resource.errors[:password].present? || resource.errors[:password_confirmation].present? %>
+          <!-- Change Password accordion (flush) -->
+          <div class="accordion accordion-flush mb-3" id="settingsAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingChangePassword">
+                <button class="accordion-button <%= 'collapsed' unless pwd_open %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChangePassword" aria-expanded="<%= pwd_open %>" aria-controls="collapseChangePassword">
+                  <i class="bi bi-shield-lock me-2"></i> Change password (optional)
+                </button>
+              </h2>
+              <div id="collapseChangePassword" class="accordion-collapse collapse <%= 'show' if pwd_open %>" aria-labelledby="headingChangePassword" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                  <!-- Password strength controller wrapper -->
+                  <div data-controller="devise--password-strength" data-devise--password-strength-min-score-value="<%= User.min_password_score %>">
+                    <div class="mb-3">
+                      <%= f.label :password, "New password", class: "form-label mb-1" %>
+                      <%= f.password_field :password, autocomplete: "new-password", class: "form-control", aria: { describedby: (@minimum_password_length ? "passwordHelp passwordLengthHelp" : "passwordHelp") },
+                                       data: { "action": 'input->devise--password-strength#calc', "devise--password-strength-target": 'password' } %>
+                      <div class="form-text text-secondary pt-1">
+                        <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-devise--password-strength-target="meter">
+                          <div class="progress-bar bg-primary" data-devise--password-strength-target="meterInner"></div>
+                        </div>
+                        <p class="mb-0 d-none">
+                          <strong class="text-secondary" data-devise--password-strength-target="strength">Unknown</strong> -
+                          <span data-devise--password-strength-target="crackTime"></span>
+                          <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
+                        </p>
+                        <ul class="list-unstyled mb-0" data-devise--password-strength-target="tips"></ul>
+                      </div>
+                    </div>
+
+                    <div class="mb-0">
+                      <%= f.label :password_confirmation, "Confirm new password", class: "form-label mb-1" %>
+                      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", aria: { describedby: "passwordConfirmationHelp" },
+                                       data: { "action": "input->devise--password-strength#onConfirm", "devise--password-strength-target": 'confirm' } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :current_password, class: "form-label" %>
+            <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control", aria: { describedby: "currentPasswordHelp" } %>
+            <div id="currentPasswordHelp" class="form-text">We need your current password to confirm your changes.</div>
+          </div>
+
+          <div class="d-grid d-sm-flex gap-2">
+            <%= f.submit "Update", class: "btn btn-primary" %>
+          </div>
+        <% end %>
       </div>
-    <% end %>
-    <table class="table">
-      <thead>
-      <tr>
-        <th scope="col">Provider</th>
-        <th scope="col">Name</th>
-        <th scope="col">External ID</th>
-        <th scope="col">Actions</th>
-      </tr>
-      </thead>
-      <% resource.social_identities.each do |identity| %>
-        <tr>
-          <td><i class="fab fa-<%= identity.provider %> fa-fw me-1"></i> <%= identity.provider.humanize %></td>
-          <td><%= identity.friendly_name %></td>
-          <td><%= identity.external_id %></td>
-          <td>
-            <%= button_to social_identity_path(identity), method: :delete, class: "btn btn-danger" do %>
-              <i class="bi bi-trash"></i>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-
-  <div class="col-md-6 mb-4">
-    <h3>Multi-Factor Authentication</h3>
-    <div class="btn-toolbar gap-2" role="toolbar">
-      <% if resource.totp_credential.present? %>
-        <%= button_to totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
-          <i class="bi bi-calculator"></i> Remove OTP Code
-        <% end %>
-      <% else %>
-        <%= button_to new_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
-          <i class="bi bi-calculator"></i> Add OTP Code
-        <% end %>
-      <% end %>
-
-      <%= button_to new_webauthn_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
-        <i class="bi bi-usb-drive"></i> Add Security Key
-      <% end %>
     </div>
-
-    <% if resource.webauthn_credentials.present? %>
-      <h5>Registered Security Keys</h5>
-      <table class="table">
-        <thead>
-        <th scope="col">Nickname</th>
-        <th scope="col">Actions</th>
-        </thead>
-        <tbody>
-        <% resource.webauthn_credentials.each do |cred| %>
-          <tr>
-            <td><%= cred.nickname %></td>
-            <td>
-              <%= button_to webauthn_credential_path(cred), method: :delete, class: "btn btn-danger" do %>
-                <i class="bi bi-trash"></i>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-        </tbody>
-      </table>
-    <% end %>
   </div>
 
-  <div class="col-md-6 mb-4">
-    <h3>Danger Zone</h3>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="h5 mb-0">Linked Accounts</h3>
+        <%- if devise_mapping.omniauthable? %>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-add"></i> Link
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <%- resource_class.omniauth_providers.each do |provider| %>
+                <li>
+                  <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
+                    <i class="fab fa-<%= provider %> me-1 fa-fw"></i>
+                    Add <%= OmniAuth::Utils.camelize(provider) %>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <% if resource.social_identities.present? %>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <thead>
+              <tr>
+                <th scope="col">Provider</th>
+                <th scope="col">Name</th>
+                <th scope="col">External ID</th>
+                <th scope="col" class="text-end"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% resource.social_identities.each do |identity| %>
+                <tr>
+                  <td><i class="fab fa-<%= identity.provider %> fa-fw me-1"></i> <%= identity.provider.humanize %>
+                  </td>
+                  <td><%= identity.friendly_name %></td>
+                  <td class="font-monospace"><%= identity.external_id %></td>
+                  <td class="text-end">
+                    <%= button_to social_identity_path(identity), method: :delete, class: "btn btn-sm btn-danger" do %>
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                      <span class="visually-hidden">Unlink <%= identity.provider.humanize %> identity</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted mb-0">No linked social identities yet.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
-    <%= button_to "Cancel my account", registration_path(resource_name), class: "btn btn-danger",
-                  data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" },
-                  method: :delete %>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="h5 mb-0">Multi-Factor Authentication</h3>
+        <% if resource.requires_mfa? %>
+          <span class="badge bg-success">MFA Enabled</span>
+        <% else %>
+          <span class="badge bg-secondary">MFA Disabled</span>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <div class="btn-toolbar gap-2 mb-3" role="toolbar">
+          <% if resource.totp_credential.present? %>
+            <%= button_to totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
+              <i class="bi bi-calculator"></i> Remove OTP Code
+            <% end %>
+          <% else %>
+            <%= button_to new_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+              <i class="bi bi-calculator"></i> Add OTP Code
+            <% end %>
+          <% end %>
 
+          <%= button_to new_webauthn_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+            <i class="bi bi-usb-drive"></i> Add Security Key
+          <% end %>
+        </div>
+
+        <% if resource.webauthn_credentials.present? %>
+          <h5 class="h6">Registered Security Keys</h5>
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <thead>
+              <tr>
+                <th scope="col">Nickname</th>
+                <th scope="col" class="text-end"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <% resource.webauthn_credentials.each do |cred| %>
+                <tr>
+                  <td><%= cred.nickname %></td>
+                  <td class="text-end">
+                    <%= button_to webauthn_credential_path(cred), method: :delete, class: "btn btn-sm btn-danger" do %>
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                      <span class="visually-hidden">Remove security key <%= cred.nickname %></span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted mb-0">No security keys registered yet.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card border border-danger h-100">
+      <div class="card-header bg-opacity-10">
+        <h3 class="h5 mb-0 text-danger">Danger Zone</h3>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">Deleting your account is irreversible. All data associated with your account will be
+          removed.</p>
+        <%= button_to "Cancel my account", registration_path(resource_name), class: "btn btn-danger",
+                          data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" },
+                          method: :delete %>
+      </div>
+    </div>
   </div>
 </div>
-

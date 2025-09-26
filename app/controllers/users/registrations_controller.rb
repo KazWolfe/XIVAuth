@@ -91,6 +91,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   private def set_layout
     if action_name == "new" || action_name == "create"
       "login/signin"
+    elsif action_name == "edit" 
+      "portal/base"
     else
       "portal/page"
     end
