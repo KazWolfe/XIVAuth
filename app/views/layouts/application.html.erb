@@ -6,6 +6,10 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
+  <% if content_for(:head_extensions_before) %>
+    <%= yield(:head_extensions_before) %>
+  <% end %>
+
   <%= stylesheet_link_tag "framework", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "icons", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>

@@ -5,7 +5,7 @@
   we can at least punt a new one in your general direction.
 </p>
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }, data: { controller: "form--turnstile"}) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="form-group field">
@@ -19,8 +19,9 @@
     <%= render partial: "layouts/components/form_elements/turnstile_preflight", locals: { action: "resend_confirmation" } %>
   </div>
   <div class="form-group d-grid d-md-flex mt-2">
-    <%= f.submit "Resend confirmation instructions", class: "btn btn-primary col-md-8 me-2", disabled: true %>
+    <%= f.submit class: "btn btn-primary col-md-8 me-2" do %>
+      Resend confirmation instructions
+    <% end %>
     <%= link_to "Back To Login", new_user_session_path, class: "btn btn-secondary col" %>
-
   </div>
 <% end %>

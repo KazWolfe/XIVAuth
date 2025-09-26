@@ -3,7 +3,7 @@
 <p>We get it, passwords are hard to remember (or your password manager messed up).</p>
 <p>Enter your account's email address below and we'll send you an email if it's registered to an account.</p>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }, data: { controller: "form--turnstile" }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="form-group field">
@@ -12,10 +12,10 @@
   </div>
 
   <div class="d-flex justify-content-center">
-    <%= render partial: "layouts/components/form_elements/turnstile_preflight", locals: {action: "reset_password"} %>
+    <%= render partial: "layouts/components/form_elements/turnstile_preflight", locals: { action: "reset_password" } %>
   </div>
   <div class="form-group d-grid d-md-flex mt-2">
-    <%= f.submit 'Send Reset Instructions', class: 'btn btn-primary col-md-8 me-2', disabled: true %>
+    <%= f.submit 'Send Reset Instructions', class: 'btn btn-primary col-md-8 me-2' %>
     <%= link_to "Back To Login", new_user_session_path, class: "btn btn-secondary col" %>
   </div>
 <% end %>
