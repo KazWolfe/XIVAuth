@@ -18,7 +18,7 @@ class Users::Webauthn::AuthenticateService
                                sign_count: stored_credential.sign_count,
                                **verification_arguments)
 
-    stored_credential.update!(sign_count: response_credential.sign_count)
+    stored_credential.update!(sign_count: response_credential.sign_count, last_used_at: DateTime.now)
   end
 
   # Build a new Webauthn challenge for the specified user.

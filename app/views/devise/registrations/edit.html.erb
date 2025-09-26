@@ -47,13 +47,14 @@
                     <div class="mb-3">
                       <%= f.label :password, "New password", class: "form-label mb-1" %>
                       <%= f.password_field :password, autocomplete: "new-password", class: "form-control", aria: { describedby: (@minimum_password_length ? "passwordHelp passwordLengthHelp" : "passwordHelp") },
-                                       data: { "action": 'input->devise--password-strength#calc', "devise--password-strength-target": 'password' } %>
+                                           data: { "action": 'input->devise--password-strength#calc', "devise--password-strength-target": 'password' } %>
                       <div class="form-text text-secondary pt-1">
                         <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-devise--password-strength-target="meter">
                           <div class="progress-bar bg-primary" data-devise--password-strength-target="meterInner"></div>
                         </div>
                         <p class="mb-0 d-none">
-                          <strong class="text-secondary" data-devise--password-strength-target="strength">Unknown</strong> -
+                          <strong class="text-secondary" data-devise--password-strength-target="strength">Unknown</strong>
+                          -
                           <span data-devise--password-strength-target="crackTime"></span>
                           <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
                         </p>
@@ -64,7 +65,7 @@
                     <div class="mb-0">
                       <%= f.label :password_confirmation, "Confirm new password", class: "form-label mb-1" %>
                       <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", aria: { describedby: "passwordConfirmationHelp" },
-                                       data: { "action": "input->devise--password-strength#onConfirm", "devise--password-strength-target": 'confirm' } %>
+                                           data: { "action": "input->devise--password-strength#onConfirm", "devise--password-strength-target": 'confirm' } %>
                     </div>
                   </div>
                 </div>
@@ -185,7 +186,12 @@
               <tbody>
               <% resource.webauthn_credentials.each do |cred| %>
                 <tr>
-                  <td><%= cred.nickname %></td>
+                  <td>
+                    <%= cred.nickname %><br>
+                    <small>
+                      Last used: <%= cred.last_used_at.present? ? distance_of_time_in_words_to_now(cred.last_used_at) + " ago" : "never" %>
+                    </small>
+                  </td>
                   <td class="text-end">
                     <%= button_to webauthn_credential_path(cred), method: :delete, class: "btn btn-sm btn-danger" do %>
                       <i class="bi bi-trash" aria-hidden="true"></i>
@@ -213,8 +219,8 @@
         <p class="text-muted">Deleting your account is irreversible. All data associated with your account will be
           removed.</p>
         <%= button_to "Cancel my account", registration_path(resource_name), class: "btn btn-danger",
-                          data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" },
-                          method: :delete %>
+                      data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" },
+                      method: :delete %>
       </div>
     </div>
   </div>
