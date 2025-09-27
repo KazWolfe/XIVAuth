@@ -7,3 +7,6 @@
 /dataSources/
 /dataSources.xml
 /dataSources.local.xml
+
+# thanks, ai
+/copilot*.xml
