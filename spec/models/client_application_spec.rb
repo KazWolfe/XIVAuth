@@ -1,0 +1,179 @@
+require 'rails_helper'
+
+RSpec.describe ClientApplication, type: :model do
+  describe '#usable_by?' do
+    let!(:random_user) { FactoryBot.create(:user) }
+
+    context 'public application' do
+      it 'allows access for any user' do
+        app = FactoryBot.create(:client_application, owner:  FactoryBot.create(:user), private: false)
+
+        expect(app.usable_by?(random_user)).to be true
+      end
+    end
+
+    context 'owned by a user' do
+      it 'allows access for the owning user even when private' do
+        owner = FactoryBot.create(:user)
+        app = FactoryBot.create(:client_application, owner: owner, private: true)
+
+        expect(app.usable_by?(owner)).to be true
+      end
+
+      it "does not allow access for other users when private" do
+        owner = FactoryBot.create(:user)
+        app = FactoryBot.create(:client_application, owner: owner, private: true)
+
+        expect(app.usable_by?(random_user)).to be false
+      end
+
+      it "allows users to be invited via ACL" do
+        owner = FactoryBot.create(:user)
+        app = FactoryBot.create(:client_application, owner: owner, private: true)
+        FactoryBot.create(:client_application_acl, application: app, principal: random_user, deny: false)
+
+        expect(app.usable_by?(random_user)).to be true
+      end
+    end
+
+    context 'owned by a team' do
+      it 'allows access for direct team members even when private' do
+        team = FactoryBot.create(:team)
+        user = FactoryBot.create(:user)
+        FactoryBot.create(:team_membership, team: team, user: user)
+
+        app = FactoryBot.create(:client_application, owner: team, private: true)
+
+        expect(app.usable_by?(user)).to be true
+      end
+
+      it "does not allow team members to be denied via ACL, even directly" do
+        team = FactoryBot.create(:team)
+        user = FactoryBot.create(:user)
+        FactoryBot.create(:team_membership, team: team, user: user)
+
+        app = FactoryBot.create(:client_application, owner: team, private: true)
+        FactoryBot.create(:client_application_acl, application: app, principal: user, deny: true)
+
+        expect(app.usable_by?(user)).to be true
+      end
+    end
+
+    context 'team invited to app via ACL' do
+      let!(:owner_user) { FactoryBot.create(:user) }
+      let!(:parent_team) { FactoryBot.create(:team) }
+      let!(:child_team) { FactoryBot.create(:team, parent: parent_team) }
+      let!(:grandchild_team) { FactoryBot.create(:team, parent: child_team) }
+      let!(:noninherited_team) { FactoryBot.create(:team, :no_inherit, parent: parent_team) }
+
+      let!(:direct_member) { FactoryBot.create(:user) }
+      let!(:parent_member) { FactoryBot.create(:user) }
+      let!(:child_member) { FactoryBot.create(:user) }
+      let!(:grandchild_member) { FactoryBot.create(:user) }
+
+      let!(:direct_membership) { FactoryBot.create(:team_membership, team: parent_team, user: direct_member) }
+      let!(:parent_membership) { FactoryBot.create(:team_membership, team: parent_team, user: parent_member) }
+      let!(:child_membership) { FactoryBot.create(:team_membership, team: child_team, user: child_member) }
+      let!(:grandchild_membership) { FactoryBot.create(:team_membership, team: grandchild_team, user: grandchild_member) }
+
+      let!(:app) { FactoryBot.create(:client_application, owner: owner_user, private: true) }
+
+      it "allows a team's direct members when the team is on the ACL" do
+        FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: false)
+
+        expect(app.usable_by?(direct_member)).to be true
+      end
+
+      it "allows access to members of parent teams if inheritance is enabled" do
+        FactoryBot.create(:client_application_acl, application: app, principal: child_team, deny: false)
+
+        expect(app.usable_by?(parent_member)).to be true
+      end
+
+      it "blocks access to members of parent teams if inheritance is disabled" do
+        FactoryBot.create(:client_application_acl, application: app, principal: noninherited_team, deny: false)
+
+        expect(app.usable_by?(parent_member)).to be false
+      end
+
+      it "allows access to admins of parent teams regardless of team inheritance" do
+        admin_member = FactoryBot.create(:user)
+        FactoryBot.create(:team_membership, team: parent_team, user: admin_member, role: 'admin')
+        FactoryBot.create(:client_application_acl, application: app, principal: noninherited_team, deny: false)
+
+        expect(app.usable_by?(admin_member)).to be true
+      end
+
+      it "allows access to child team members when include_team_descendants is true" do
+        FactoryBot.create(:client_application_acl, application: app, principal: parent_team, include_team_descendants: true, deny: false)
+
+        expect(app.usable_by?(child_member)).to be true
+      end
+
+      it "does not allow access to child team members when include_team_descendants is false" do
+        FactoryBot.create(:client_application_acl, application: app, principal: parent_team, include_team_descendants: false, deny: false)
+
+        expect(app.usable_by?(child_member)).to be false
+      end
+
+      it "still includes parent team members when include_team_descendants is false" do
+        FactoryBot.create(:client_application_acl, application: app, principal: child_team, include_team_descendants: false, deny: false)
+
+        expect(app.usable_by?(parent_member)).to be true
+        expect(app.usable_by?(grandchild_member)).to be false
+      end
+
+      it "can process mixed team and user ACLs" do
+        FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: false)
+        FactoryBot.create(:client_application_acl, application: app, principal: random_user, deny: false)
+
+        expect(app.usable_by?(direct_member)).to be true
+        expect(app.usable_by?(random_user)).to be true
+      end
+
+      describe "deny rules on ACL" do
+        it "prioritizes a user deny above a team allow" do
+          FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: false)
+          FactoryBot.create(:client_application_acl, application: app, principal: direct_member, deny: true)
+
+          expect(app.usable_by?(direct_member)).to be false
+        end
+
+        it "prioritizes a user allow above a team deny" do
+          FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: true)
+          FactoryBot.create(:client_application_acl, application: app, principal: direct_member, deny: false)
+
+          expect(app.usable_by?(direct_member)).to be true
+        end
+
+        it "prioritizes a team deny even if the parent team has include_team_descendants enabled" do
+          FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: false, include_team_descendants: true)
+          FactoryBot.create(:client_application_acl, application: app, principal: child_team, deny: true)
+
+          expect(app.usable_by?(child_member)).to be false
+        end
+
+        it "ignores inherited members for child team denies" do
+          FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: false, include_team_descendants: true)
+          FactoryBot.create(:client_application_acl, application: app, principal: child_team, deny: true)
+
+          expect(app.usable_by?(parent_member)).to be true
+        end
+
+        it "allows child members if include_team_descendants not set on deny ACL" do
+          FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: false, include_team_descendants: true)
+          FactoryBot.create(:client_application_acl, application: app, principal: child_team, deny: true)
+
+          expect(app.usable_by?(grandchild_member)).to be true
+        end
+
+        it "blocks child members if include_team_descendants set on deny ACL" do
+          FactoryBot.create(:client_application_acl, application: app, principal: parent_team, deny: false, include_team_descendants: true)
+          FactoryBot.create(:client_application_acl, application: app, principal: child_team, deny: true, include_team_descendants: true)
+
+          expect(app.usable_by?(grandchild_member)).to be false
+        end
+      end
+    end
+  end
+end

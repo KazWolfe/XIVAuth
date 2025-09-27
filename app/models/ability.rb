@@ -11,5 +11,11 @@ class Ability
     can :manage, ClientApplication, owner_id: user.id
 
     can :manage, User::SocialIdentity, user_id: user.id
+
+    ## ClientApplications
+    can :use, ClientApplication, private: false
+    can :use, ClientApplication, private: true do |a|
+      a.usable_by?(user)
+    end
   end
 end

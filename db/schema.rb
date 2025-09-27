@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_27_034414) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -40,6 +40,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_034414) do
     t.string "verification_type"
     t.index ["character_id"], name: "index_character_registrations_on_character_id"
     t.index ["user_id"], name: "index_character_registrations_on_user_id"
+  end
+
+  create_table "client_application_access_control_lists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "application_id", null: false
+    t.boolean "deny", default: false, null: false
+    t.string "principal_type", null: false
+    t.uuid "principal_id", null: false
+    t.boolean "include_team_descendants", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_id"], name: "idx_on_application_id_352d79df92"
+    t.index ["principal_type", "principal_id"], name: "index_client_application_access_control_lists_on_principal"
   end
 
   create_table "client_application_oauth_clients", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -316,6 +328,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_034414) do
   end
 
   add_foreign_key "character_registrations", "ffxiv_characters", column: "character_id"
+  add_foreign_key "client_application_access_control_lists", "client_applications", column: "application_id"
   add_foreign_key "client_application_oauth_clients", "client_applications", column: "application_id"
   add_foreign_key "client_application_profiles", "client_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "client_application_oauth_clients", column: "application_id"

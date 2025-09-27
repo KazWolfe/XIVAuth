@@ -39,12 +39,17 @@ class Team < ApplicationRecord
         .reorder(nil)
   end
 
-  def all_members(include_descendants: false)
-    scope = User.where(id: antecedent_memberships.reselect(:user_id))
-                .or(User.where(id: self.direct_memberships.reselect(:user_id)))
+  def all_members(include_antecedents: true, include_descendants: false)
+    scope = User.where(id: self.direct_memberships.reselect(:user_id))
+
+    if include_antecedents
+      scope = scope.or(User.where(id: antecedent_memberships.reselect(:user_id)))
+    end
+
     if include_descendants
       scope = scope.or(User.where(id: descendant_memberships.reselect(:user_id)))
     end
+
     scope.distinct
   end
 
