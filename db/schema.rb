@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_013023) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_27_034414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -18,6 +18,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_013023) do
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "ffxiv_character_refresh_error", ["UNSPECIFIED", "HIDDEN_CHARACTER", "PROFILE_PRIVATE", "NOT_FOUND"]
+  create_enum "team_roles", ["admin", "developer", "member"]
   create_enum "user_roles", ["developer", "admin"]
 
   create_table "character_bans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -214,6 +215,35 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_013023) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "team_id", null: false
+    t.uuid "user_id", null: false
+    t.enum "role", default: "member", null: false, enum_type: "team_roles"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_team_memberships_on_team_id"
+    t.index ["user_id"], name: "index_team_memberships_on_user_id"
+  end
+
+  create_table "team_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "team_id", null: false
+    t.string "avatar_url"
+    t.string "website_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_team_profiles_on_team_id"
+  end
+
+  create_table "teams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.uuid "parent_id"
+    t.boolean "inherit_parent_memberships", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "verified_at"
+    t.index ["parent_id"], name: "index_teams_on_parent_id"
+  end
+
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.string "display_name", limit: 64, null: false
@@ -295,6 +325,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_013023) do
   add_foreign_key "oauth_device_grants", "client_application_oauth_clients", column: "application_id"
   add_foreign_key "oauth_device_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
+  add_foreign_key "team_memberships", "teams", on_delete: :cascade
+  add_foreign_key "team_memberships", "users", on_delete: :cascade
+  add_foreign_key "team_profiles", "teams", on_delete: :cascade
+  add_foreign_key "teams", "teams", column: "parent_id", on_delete: :cascade
   add_foreign_key "user_profiles", "users"
   add_foreign_key "user_social_identities", "users"
   add_foreign_key "user_totp_credentials", "users"

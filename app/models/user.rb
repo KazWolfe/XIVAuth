@@ -21,6 +21,9 @@ class User < ApplicationRecord
   validates_associated :profile
   accepts_nested_attributes_for :profile, update_only: true
 
+  has_many :team_memberships, :class_name => 'Team::Membership', foreign_key: 'user_id', dependent: :destroy
+  has_many :teams, :through => :team_memberships, source: :team
+
   def profile
     super || build_profile
   end
