@@ -25,10 +25,7 @@ class Team < ApplicationRecord
   end
 
   def antecedent_and_own_members
-    User.joins(:team_memberships)
-        .merge(antecedent_and_own_memberships)
-        .reselect('users.*')
-        .distinct
+    User.where(id: antecedent_and_own_memberships.reselect(:user_id))
         .reorder(nil)
   end
 
@@ -48,11 +45,7 @@ class Team < ApplicationRecord
   end
 
   def descendant_and_own_members
-    # Build a chainable relation of Users from the memberships relation
-    User.joins(:team_memberships)
-        .merge(descendant_and_own_memberships)
-        .reselect('users.*')
-        .distinct
+    User.where(id: descendant_and_own_memberships.reselect(:user_id))
         .reorder(nil)
   end
 

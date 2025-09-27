@@ -77,7 +77,7 @@ RSpec.describe Team, type: :model do
       child = FactoryBot.create(:team, parent: parent, inherit_parent_memberships: true)
 
       # Same user is member in parent and admin in child
-      m1 = FactoryBot.create(:team_membership, team: parent, user: u_admin)
+      FactoryBot.create(:team_membership, team: parent, user: u_admin)
       m2 = FactoryBot.create(:team_membership, :admin, team: child, user: u_admin)
 
       expect(child.antecedent_and_own_memberships).to contain_exactly(m2)
@@ -237,21 +237,6 @@ RSpec.describe Team, type: :model do
 
       team.readonly!
       expect(team.readonly?).to be true
-    end
-  end
-end
-
-FactoryBot.define do
-  factory :team do
-    sequence(:name) { |n| "Team #{n}" }
-    inherit_parent_memberships { true }
-
-    trait :no_inherit do
-      inherit_parent_memberships { false }
-    end
-
-    trait :with_parent do
-      association :parent, factory: :team
     end
   end
 end
