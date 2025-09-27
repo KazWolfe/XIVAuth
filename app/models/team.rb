@@ -10,29 +10,19 @@ class Team < ApplicationRecord
   has_many :oauth_applications, class_name: 'OAuth::ClientApplication', as: :owner
 
   # Get all memberships for this team, including ones from inherited teams.
-  def antecedent_and_own_memberships(deduplicate: true)
-    # blame gpt-5 for whatever the hell this is. it passes tests soooo????
-    return all_memberships_inner unless deduplicate
-
-    dedup = Team::Membership
-      .from("(#{all_memberships_inner.reorder(nil).to_sql}) team_memberships")
-      .select('DISTINCT ON (team_memberships.user_id) team_memberships.*')
-      .order(Arel.sql("team_memberships.user_id, #{Team::Membership.generate_case_for_role_ranking} DESC"))
-
-    Team::Membership
-      .from("(#{dedup.to_sql}) team_memberships")
-      .select('team_memberships.*')
+  def antecedent_memberships
+    self.resolve_antecedent_memberships
   end
 
-  def antecedent_and_own_members
-    User.where(id: antecedent_and_own_memberships.reselect(:user_id))
+  def antecedent_members
+    User.where(id: antecedent_memberships.reselect(:user_id))
         .reorder(nil)
   end
 
-  def descendant_and_own_memberships
-    # Collect this team and all descendant team IDs iteratively to avoid deep Ruby recursion
+  def descendant_memberships
+    # Collect descendant team IDs iteratively (exclude self)
     team_ids = []
-    frontier = [self.id].compact
+    frontier = Team.where(parent_id: self.id).ids
 
     while frontier.any?
       team_ids.concat(frontier)
@@ -44,25 +34,39 @@ class Team < ApplicationRecord
     Team::Membership.where(team_id: team_ids)
   end
 
-  def descendant_and_own_members
-    User.where(id: descendant_and_own_memberships.reselect(:user_id))
+  def descendant_members
+    User.where(id: descendant_memberships.reselect(:user_id))
         .reorder(nil)
+  end
+
+  def all_members(include_descendants: false)
+    scope = User.where(id: antecedent_memberships.reselect(:user_id))
+                .or(User.where(id: self.direct_memberships.reselect(:user_id)))
+    if include_descendants
+      scope = scope.or(User.where(id: descendant_memberships.reselect(:user_id)))
+    end
+    scope.distinct
   end
 
   def readonly?
     super || (!new_record? && is_special_id?)
   end
 
-  protected def all_memberships_inner
-    if inherit_parent_memberships
-      direct_memberships.or(parent&.all_memberships_inner || Team::Membership.none)
+  protected def resolve_antecedent_memberships(admin_only: false, recursing: false)
+    if recursing
+      base = admin_only ? self.direct_memberships.admin : self.direct_memberships
     else
-      direct_memberships.or(parent&.admin_memberships || Team::Membership.none)
+      base = Team::Membership.none
     end
-  end
 
-  protected def admin_memberships
-    direct_memberships.admin.or(parent&.admin_memberships || Team::Membership.none)
+    if self.parent
+      only_search_admins = admin_only || !self.inherit_parent_memberships
+      antecedents = self.parent.resolve_antecedent_memberships(admin_only: only_search_admins, recursing: true)
+
+      antecedents.or(base)
+    else
+      base
+    end
   end
 
   # Check if this ID is a special UUID of the form 00000000-0000-8000-8f0f-0000xxxxxxxx
