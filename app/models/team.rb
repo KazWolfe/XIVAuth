@@ -7,16 +7,18 @@ class Team < ApplicationRecord
   has_many :direct_memberships, class_name: "Team::Membership"
   has_many :direct_members, through: :direct_memberships, source: :user
 
+  has_many :invite_links, class_name: "Team::InviteLink", dependent: :destroy
+
   has_many :oauth_applications, class_name: "OAuth::ClientApplication", as: :owner
 
   def profile
     super || build_profile
   end
-  
+
   def active_memberships
     self.direct_memberships.active
   end
-  
+
   def active_members
     User.where(id: active_memberships.reselect(:user_id))
         .reorder(nil)

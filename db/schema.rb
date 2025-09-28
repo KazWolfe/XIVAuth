@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_28_205935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -227,6 +227,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "team_invite_links", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "team_id"
+    t.string "invite_key", null: false
+    t.enum "target_role", default: "member", null: false, enum_type: "team_member_roles"
+    t.boolean "enabled", default: true, null: false
+    t.integer "usage_count", default: 0, null: false
+    t.integer "usage_limit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "expires_at"
+    t.index ["invite_key"], name: "index_team_invite_links_on_invite_key", unique: true
+    t.index ["team_id"], name: "index_team_invite_links_on_team_id"
+  end
+
   create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "team_id", null: false
     t.uuid "user_id", null: false
@@ -250,11 +264,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
     t.string "name", null: false
     t.uuid "parent_id"
     t.boolean "inherit_parent_memberships", default: true, null: false
-    t.string "invite_secret"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "verified_at"
-    t.index ["invite_secret"], name: "index_teams_on_invite_secret", unique: true
     t.index ["parent_id"], name: "index_teams_on_parent_id"
   end
 
@@ -340,6 +352,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
   add_foreign_key "oauth_device_grants", "client_application_oauth_clients", column: "application_id"
   add_foreign_key "oauth_device_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
+  add_foreign_key "team_invite_links", "teams", on_delete: :cascade
   add_foreign_key "team_memberships", "teams", on_delete: :cascade
   add_foreign_key "team_memberships", "users", on_delete: :cascade
   add_foreign_key "team_profiles", "teams", on_delete: :cascade
