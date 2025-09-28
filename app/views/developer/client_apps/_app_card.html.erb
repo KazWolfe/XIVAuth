@@ -7,6 +7,15 @@
         <h5 class="card-title">
           <%= application.name %>
         </h5>
+        <p class="small">Owned by:
+          <% if application.owner_type == "User" %>
+            <i class="bi bi-person"></i> <%= application.owner.profile.display_name %>
+          <% elsif application.owner_type == "Team" %>
+            <i class="bi bi-people"></i> <%= application.owner.name %>
+          <% else %>
+            <i class="bi bi-gear"></i> System
+          <% end %>
+        </p>
         <div>
           <% if application.oauth_clients.present? %>
             <span class="badge bg-success"><i class="bi bi-link-45deg"></i> OAuth</span>

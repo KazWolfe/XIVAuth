@@ -6,7 +6,7 @@ class CharacterRegistrationsController < ApplicationController
 
   # GET /character_registrations or /character_registrations.json
   def index
-    @pagy, @character_registrations = pagy(CharacterRegistration.accessible_by(current_ability), items: 12)
+    @pagy, @character_registrations = pagy(CharacterRegistration.where(user: current_user), items: 12)
 
     render :index, layout: "portal/base"
   end

@@ -16,6 +16,8 @@ Rails.application.routes.draw do
         post "regenerate_secret", to: "client_apps/oauth_clients#regenerate", on: :member
       end
     end
+
+    resources :teams, controller: "teams"
   end
 
   namespace "api" do

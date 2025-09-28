@@ -1,0 +1,18 @@
+<div class="card" id="<%= dom_id team %>">
+  <div class="card-body">
+    <div class="d-flex align-items-center">
+      <img src="<%= team.profile.avatar_url %>" class="rounded m-2"
+           alt="Avatar for <%= team.name %>" width="96" height="96">
+      <div class="ps-2">
+        <h5 class="card-title">
+          <%= team.name %>
+        </h5>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <%= link_to developer_team_path(team), class: 'btn btn-primary' do %>
+        <i class="bi bi-pencil-fill"></i>
+      <% end %>
+    </div>
+  </div>
+</div>

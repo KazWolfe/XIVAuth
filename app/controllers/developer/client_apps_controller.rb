@@ -1,13 +1,14 @@
 module Developer
 
   class ClientAppsController < ApplicationController
-    before_action :set_application, only: %i[show edit update destroy regenerate]
     layout "portal/page"
     include Pagy::Backend
     helper Doorkeeper::DashboardHelper
+
+    before_action :set_application, only: %i[show edit update destroy regenerate]
     
     def index
-      @pagy, @applications = pagy(ClientApplication.accessible_by(current_ability), items: 24)
+      @pagy, @applications = pagy(accessible_applications, items: 24)
 
       respond_to do |format|
         format.html { render :index, layout: "portal/base" }
@@ -80,6 +81,10 @@ module Developer
           end
         end
       end
+    end
+
+    private def accessible_applications
+      ClientApplication.where(owner: current_user).or(ClientApplication.where(owner: current_user.associated_teams))
     end
 
     private def set_application

@@ -1,0 +1,21 @@
+<% content_for(:page_header) do %>
+  <div>
+    <h1>My Teams</h1>
+    <p>Manage teams to own applications, hold user groups, and more.</p>
+  </div>
+  <div>
+    <%= link_to new_developer_team_path, class: "btn btn-primary" do %>
+      <i class="bi bi-plus"></i> Register Team
+    <% end %>
+  </div>
+<% end %>
+
+<div class="row">
+  <% @teams.each do |team| %>
+    <div class="col-md-6 col-xl-4 mb-2">
+      <%= render 'team_card', team: team %>
+    </div>
+  <% end %>
+</div>
+
+<%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>

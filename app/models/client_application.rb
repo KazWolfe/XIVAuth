@@ -30,7 +30,6 @@ class ClientApplication < ApplicationRecord
       return !user_match.deny?
     end
 
-    # evaluate teams
     acls.where(principal_type: "Team").order(deny: :desc).each do |a|
       team = a.principal
       next if team.nil?

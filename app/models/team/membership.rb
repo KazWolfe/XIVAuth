@@ -1,5 +1,8 @@
 class Team::Membership < ApplicationRecord
-  enum :role, { admin: "admin", developer: "developer", member: "member" }
+  enum :role, { admin: "admin", developer: "developer", member: "member" }, scopes: false
+
+  scope :admins, -> { where(role: [:admin]) }
+  scope :developers, -> { where(role: [:admin, :developer]) }
 
   belongs_to :team, class_name: "Team"
   belongs_to :user, class_name: "User"
