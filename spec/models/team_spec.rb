@@ -1,6 +1,21 @@
 require "rails_helper"
 
 RSpec.describe Team, type: :model do
+  describe "#active_memberships" do
+    it "does not return blocked or invited roles" do
+      team = FactoryBot.create(:team)
+      blocked_user = FactoryBot.create(:user)
+      invited_user = FactoryBot.create(:user)
+      active_user = FactoryBot.create(:user)
+
+      FactoryBot.create(:team_membership, :blocked, team: team, user: blocked_user)
+      FactoryBot.create(:team_membership, :invited, team: team, user: invited_user)
+      active_membership = FactoryBot.create(:team_membership, team: team, user: active_user)
+
+      expect(team.active_memberships).to contain_exactly(active_membership)
+    end
+  end
+  
   describe "#antecedent_memberships" do
     let(:u_admin) { FactoryBot.create(:user) }
     let(:u_member) { FactoryBot.create(:user) }
@@ -93,8 +108,23 @@ RSpec.describe Team, type: :model do
       FactoryBot.create(:team_membership, team: child, user: u_member)
 
       expect(child.antecedent_memberships.count).to eq(1)
-      expect(child.antecedent_memberships.admin).to contain_exactly(m1)
+      expect(child.antecedent_memberships.admins).to contain_exactly(m1)
       expect(child.antecedent_memberships.find_by(user: u_member)).to be_nil
+    end
+
+    it "should not include blocked or invited roles from ancestors" do
+      parent = FactoryBot.create(:team)
+      child = FactoryBot.create(:team, parent: parent)
+
+      blocked_user = FactoryBot.create(:user)
+      invited_user = FactoryBot.create(:user)
+      active_user = FactoryBot.create(:user)
+
+      FactoryBot.create(:team_membership, :blocked, team: parent, user: blocked_user)
+      FactoryBot.create(:team_membership, :invited, team: parent, user: invited_user)
+      active_membership = FactoryBot.create(:team_membership, team: parent, user: active_user)
+
+      expect(child.antecedent_memberships).to contain_exactly(active_membership)
     end
   end
 
@@ -156,6 +186,21 @@ RSpec.describe Team, type: :model do
       m2 = FactoryBot.create(:team_membership, team: child2, user: FactoryBot.create(:user))
 
       expect(parent.descendant_memberships).to contain_exactly(m1, m2)
+    end
+    
+    it "shoud not include blocked or invited roles from descendants" do
+      parent = FactoryBot.create(:team)
+      child = FactoryBot.create(:team, parent: parent)
+
+      blocked_user = FactoryBot.create(:user)
+      invited_user = FactoryBot.create(:user)
+      active_user = FactoryBot.create(:user)
+
+      FactoryBot.create(:team_membership, :blocked, team: child, user: blocked_user)
+      FactoryBot.create(:team_membership, :invited, team: child, user: invited_user)
+      active_membership = FactoryBot.create(:team_membership, team: child, user: active_user)
+
+      expect(parent.descendant_memberships).to contain_exactly(active_membership)
     end
   end
 
@@ -265,6 +310,26 @@ RSpec.describe Team, type: :model do
 
       expect(team.all_members.count).to eql(2)
       expect(team.all_members.find(u_2.id)).to eql(u_2)
+    end
+    
+    it "should not include blocked or invited roles from antecedents or descendants" do
+      parent = FactoryBot.create(:team)
+      team = FactoryBot.create(:team, parent: parent)
+      child = FactoryBot.create(:team, parent: team)
+
+      blocked_user = FactoryBot.create(:user)
+      invited_user = FactoryBot.create(:user)
+      active_user_antecedent = FactoryBot.create(:user)
+      active_user_direct = FactoryBot.create(:user)
+      active_user_descendant = FactoryBot.create(:user)
+
+      FactoryBot.create(:team_membership, :blocked, team: parent, user: blocked_user)
+      FactoryBot.create(:team_membership, :invited, team: parent, user: invited_user)
+      FactoryBot.create(:team_membership, team: parent, user: active_user_antecedent)
+      FactoryBot.create(:team_membership, team: team, user: active_user_direct)
+      FactoryBot.create(:team_membership, team: child, user: active_user_descendant)
+
+      expect(team.all_members(include_descendants: true)).to contain_exactly(active_user_antecedent, active_user_direct, active_user_descendant)
     end
   end
 

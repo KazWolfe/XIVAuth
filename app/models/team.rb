@@ -12,6 +12,15 @@ class Team < ApplicationRecord
   def profile
     super || build_profile
   end
+  
+  def active_memberships
+    self.direct_memberships.active
+  end
+  
+  def active_members
+    User.where(id: active_memberships.reselect(:user_id))
+        .reorder(nil)
+  end
 
   # Get all memberships for this team, including ones from inherited teams.
   def antecedent_memberships
@@ -37,7 +46,7 @@ class Team < ApplicationRecord
   end
 
   def descendant_memberships
-    Team::Membership.where(team_id: descendant_team_ids)
+    Team::Membership.where(team_id: descendant_team_ids).active
   end
 
   def descendant_members
@@ -60,7 +69,7 @@ class Team < ApplicationRecord
 
   protected def resolve_antecedent_memberships(admin_only: false, recursing: false)
     base = if recursing
-             admin_only ? self.direct_memberships.admins : self.direct_memberships
+             admin_only ? self.direct_memberships.admins : self.direct_memberships.active
            else
              Team::Membership.none
            end

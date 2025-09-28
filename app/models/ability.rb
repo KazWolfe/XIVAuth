@@ -21,7 +21,7 @@ class Ability
     end
 
     can :show, Team do |t|
-      t.direct_memberships.where(user_id: user.id).any? ||
+      t.direct_memberships.active.where(user_id: user.id).any? ||
       t.antecedent_memberships.where(user_id: user.id).any?
     end
   end

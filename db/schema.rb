@@ -18,7 +18,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "ffxiv_character_refresh_error", ["UNSPECIFIED", "HIDDEN_CHARACTER", "PROFILE_PRIVATE", "NOT_FOUND"]
-  create_enum "team_roles", ["admin", "developer", "member"]
+  create_enum "team_member_roles", ["admin", "developer", "member", "invited", "blocked"]
   create_enum "user_roles", ["developer", "admin"]
 
   create_table "character_bans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -230,7 +230,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
   create_table "team_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "team_id", null: false
     t.uuid "user_id", null: false
-    t.enum "role", default: "member", null: false, enum_type: "team_roles"
+    t.enum "role", default: "member", null: false, enum_type: "team_member_roles"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["team_id"], name: "index_team_memberships_on_team_id"
@@ -250,9 +250,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_202954) do
     t.string "name", null: false
     t.uuid "parent_id"
     t.boolean "inherit_parent_memberships", default: true, null: false
+    t.string "invite_secret"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "verified_at"
+    t.index ["invite_secret"], name: "index_teams_on_invite_secret", unique: true
     t.index ["parent_id"], name: "index_teams_on_parent_id"
   end
 
