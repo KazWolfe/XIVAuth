@@ -18,11 +18,10 @@ Rails.application.routes.draw do
     end
 
     resources :teams, controller: "teams" do
-      resources :invite_links, controller: "teams/invite_links", shallow: true, shallow_path: "teams", shallow_prefix: "team" do
-        get "accept", to: "teams/invite_links#accept", on: :member
-      end
+      resources :invite_links, controller: "teams/invite_links", shallow: true, param: :code,
+                shallow_path: "teams", shallow_prefix: "team"
 
-      get "invite/:code/accept", to: "teams#accept_invite", on: :collection, as: :accept_invite
+      get "join/:code", to: "teams#accept_invite", on: :collection, as: :accept_invite
     end
   end
 

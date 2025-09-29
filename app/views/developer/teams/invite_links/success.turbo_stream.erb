@@ -1,0 +1,23 @@
+<%= turbo_stream.update('remote_modal-content') do %>
+  <div class="modal-header">
+    <h5 class="modal-title">Team Invite Generated</h5>
+  </div>
+  <div class="modal-body">
+    <p>Your team's invite link has been successfully generated. Share the link below to invite new members to your
+      team:</p>
+
+    <div class="input-group mb-3" data-controller="utilities--copy-code">
+      <input type="text" data-utilities--copy-code-target="source" readonly class="form-control"
+             value="<%= accept_invite_developer_teams_url(@invite_link.invite_key) %>" aria-label="Team invite code"
+             onclick="this.select();">
+      <button class="btn btn-outline-secondary" type="button" data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+        <i class="bi bi-clipboard"></i> Copy
+      </button>
+    </div>
+
+    <p>Users with this invite link will be added with the role <%= @invite_link.target_role %>.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+  </div>
+<% end %>

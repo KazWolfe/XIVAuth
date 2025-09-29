@@ -34,4 +34,52 @@
       <p class="text-muted">No subteams.</p>
     <% end %>
   </div>
+  <div class="col-md-6">
+    <div class="d-flex justify-content-between mb-2">
+      <h3 class="">Invite Links</h3>
+      <%= link_to new_developer_team_invite_link_path(team_id: @team.id), class: "btn btn-primary", data: {turbo_stream: true} do %>
+        <i class="bi bi-plus"></i> Create Link
+      <% end %>
+    </div>
+
+    <% if @team.invite_links.any? %>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Invite Key</th>
+            <th>Target Role</th>
+            <th>Restrictions</th>
+            <th><!-- Actions --></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @team.invite_links.each do |link| %>
+            <tr id="invite_link_<%= link.id %>">
+              <td>
+                <code><%= link.invite_key %></code>
+                <i class="bi bi-copy ms-1" title="Copy Invite URL"
+                   onclick='navigator.clipboard.writeText("<%= accept_invite_developer_teams_url(link.invite_key) %>")'></i>
+              </td>
+              <td>
+                <%= link.target_role.titleize %>
+              </td>
+              <td>
+                <% if link.expires_at? %>
+                  Expires in <%= distance_of_time_in_words_to_now(link.expires_at) %> <br/>
+                <% end %>
+                <%= link.usage_count %> of <%= link.usage_limit || "∞" %> uses
+              </td>
+              <td>
+                <%= button_to developer_team_invite_link_path(link), method: :delete, data: { confirm: "Are you sure?", turbo_stream: true }, class: "btn btn-sm btn-danger" do %>
+                  <i class="bi bi-trash"></i>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-muted">No invite links.</p>
+    <% end %>
+  </div>
 </div>
