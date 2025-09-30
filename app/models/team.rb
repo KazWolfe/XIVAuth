@@ -1,4 +1,7 @@
 class Team < ApplicationRecord
+  TEAM_DEPTH_LIMIT = 5
+  TEAM_SUBTEAM_LIMIT = 5
+
   has_one :profile, class_name: "Team::Profile", dependent: :destroy, required: true, autosave: true
 
   belongs_to :parent, class_name: "Team", optional: true
@@ -7,9 +10,19 @@ class Team < ApplicationRecord
   has_many :direct_memberships, class_name: "Team::Membership"
   has_many :direct_members, through: :direct_memberships, source: :user
 
+  accepts_nested_attributes_for :direct_memberships
+
   has_many :invite_links, class_name: "Team::InviteLink", dependent: :destroy
 
   has_many :oauth_applications, class_name: "OAuth::ClientApplication", as: :owner
+
+  validates :name, presence: true
+  validate :validate_subteam_or_has_admin
+
+  validate :team_recursion_control
+
+  before_create { build_profile; true }
+
 
   def profile
     super || build_profile
@@ -24,7 +37,18 @@ class Team < ApplicationRecord
         .reorder(nil)
   end
 
-  # Get all memberships for this team, including ones from inherited teams.
+  def antecedent_team_ids
+    team_ids = []
+    current = self.parent
+
+    while current
+      team_ids << current.id
+      current = current.parent
+    end
+
+    team_ids
+  end
+
   def antecedent_memberships
     self.resolve_antecedent_memberships
   end
@@ -35,7 +59,9 @@ class Team < ApplicationRecord
   end
 
   def descendant_team_ids
-    # Collect descendant team IDs iteratively (exclude self)
+    # teams can't have children without a known self id, so we can be lazy
+    return [] unless self.id.present?
+
     team_ids = []
     frontier = Team.where(parent_id: self.id).ids
 
@@ -93,5 +119,49 @@ class Team < ApplicationRecord
     return false if self.id.nil?
 
     (self.id.gsub("-", "").to_i(16) >> 32) == 0x8000_8f0f_0000
+  end
+
+  private def validate_subteam_or_has_admin
+    return unless self.parent_id.nil?
+
+    # Consider in-memory built memberships (including nested attributes) so validation
+    # works before persistence. Avoid querying only the DB.
+    has_admin = self.direct_memberships.any? { |m| m.role.to_s == "admin" }
+    errors.add(:base, "Root teams must have at least one admin") unless has_admin
+  end
+
+  private def check_team_loop
+    return if self.parent_id.nil? || self.id.nil?
+
+    if self.parent_id == self.id
+      errors.add(:parent_id, "cannot be the same as the team itself")
+      return
+    end
+
+    children = Team.where(parent_id: self.id)
+    while children.any?
+      if children.any? { |t| t.id == self.parent_id }
+        errors.add(:parent_id, "cannot create a recursive hierarchy")
+      end
+
+      children = Team.where(parent_id: children.pluck(:id))
+    end
+  end
+
+  private def team_recursion_control
+    return unless self.parent_id.present?
+
+    # ensure we don't have a loop before doing our recursion checks
+    self.check_team_loop
+    return if errors.any?
+
+    if Team.where(parent_id: self.parent_id).count >= TEAM_SUBTEAM_LIMIT
+      errors.add(:parent_id, "cannot have more than #{TEAM_SUBTEAM_LIMIT} direct subteams")
+    end
+
+    # Disallow depth of n+ (i.e., great-grandchildren)
+    if antecedent_team_ids.length >= TEAM_DEPTH_LIMIT
+      errors.add(:parent_id, "cannot be more than #{TEAM_DEPTH_LIMIT} levels deep")
+    end
   end
 end

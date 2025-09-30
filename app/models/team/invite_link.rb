@@ -1,5 +1,5 @@
 class Team::InviteLink < ApplicationRecord
-  belongs_to :team
+  belongs_to :team, inverse_of: :invite_links
 
   after_initialize :generate_invite_key
 

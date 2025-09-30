@@ -6,8 +6,8 @@ class Team::Membership < ApplicationRecord
   scope :developers, -> { where(role: %i[admin developer]) }
   scope :active, -> { where(role: %i[admin developer member]) }
 
-  belongs_to :team, class_name: "Team"
-  belongs_to :user, class_name: "User"
+  belongs_to :team, class_name: "Team", inverse_of: :direct_memberships
+  belongs_to :user, class_name: "User", inverse_of: :team_memberships
 
   def self.generate_case_for_role_ranking(table_alias = self.table_name)
     mapping = self.roles

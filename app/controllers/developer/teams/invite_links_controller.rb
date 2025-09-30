@@ -1,6 +1,6 @@
 class Developer::Teams::InviteLinksController < ApplicationController
-  before_action :set_team, only: %i[index new create]
-  before_action :set_invite_link, only: %i[show edit update destroy accept_invite]
+  before_action :set_team, only: %i[new create]
+  before_action :set_invite_link, only: %i[destroy accept_invite]
 
   def new
     @invite_link = @team.invite_links.new
@@ -11,16 +11,18 @@ class Developer::Teams::InviteLinksController < ApplicationController
 
     @invite_link = @team.invite_links.new(
       target_role: filtered_params[:target_role],
-      usage_limit: (filtered_params[:usage_limit].present? && filtered_params[:usage_limit].to_i > 0 ?
-                      filtered_params[:usage_limit].to_i : nil),
-      expires_at: (filtered_params[:expires_at].present? && filtered_params[:expires_at].to_i > 0 ?
-                     Time.current + filtered_params[:expires_at].to_i.minutes : nil)
+      usage_limit: (if filtered_params[:usage_limit].present? && filtered_params[:usage_limit].to_i.positive?
+                      filtered_params[:usage_limit].to_i
+                    end),
+      expires_at: (if filtered_params[:expires_at].present? && filtered_params[:expires_at].to_i.positive?
+                     Time.current + filtered_params[:expires_at].to_i.minutes
+                   end)
     )
 
     respond_to do |format|
       if @invite_link.save
         format.html { redirect_to developer_team_path(@team), notice: "Invite link was successfully created." }
-        format.turbo_stream { render 'developer/teams/invite_links/success' }
+        format.turbo_stream { render "developer/teams/invite_links/success" }
       else
         format.html { render :new, status: :unprocessable_entity }
       end

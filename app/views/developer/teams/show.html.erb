@@ -65,7 +65,11 @@
               </td>
               <td>
                 <% if link.expires_at? %>
-                  Expires in <%= distance_of_time_in_words_to_now(link.expires_at) %> <br/>
+                  <% if link.expired? %>
+                    Expired <%= distance_of_time_in_words_to_now(link.expires_at) %> ago <br/>
+                  <% else %>
+                    Expires in <%= distance_of_time_in_words_to_now(link.expires_at) %> <br/>
+                  <% end %>
                 <% end %>
                 <%= link.usage_count %> of <%= link.usage_limit || "∞" %> uses
               </td>
