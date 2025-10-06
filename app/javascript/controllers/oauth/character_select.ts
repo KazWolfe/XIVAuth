@@ -32,7 +32,7 @@ export default class CharacterSelectDropdown extends TomSelectController {
         return "<div class='d-flex flex-row align-items-center'>" +
             `<img src="${data.characterAvatar}" class="me-2 rounded" style="width: 48px; height: 48px;">` +
             `<div class='ps-2'>` +
-            `<span>${escape(data.characterName)}</span><br/>` +
+            `<span class='fs-6'>${escape(data.characterName)}</span><br/>` +
             `<span class='small'>${escape(data.characterWorld)} [${escape(data.characterDatacenter)}]</span>` +
             "</div>" +
             "</div>";
@@ -42,7 +42,7 @@ export default class CharacterSelectDropdown extends TomSelectController {
         return "<div class='d-flex flex-row align-items-center'>" +
             `<img src="${data.characterAvatar}" class="me-2 rounded" style="width: 48px; height: 48px;">` +
             `<div class='ps-2'>` +
-            `<span>${escape(data.characterName)}</span><br/>` +
+            `<span class='fs-6'>${escape(data.characterName)}</span><br/>` +
             `<span class='small'>${escape(data.characterWorld)} [${escape(data.characterDatacenter)}]</span>` +
             "</div>" +
             "</div>";

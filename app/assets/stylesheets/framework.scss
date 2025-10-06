@@ -70,4 +70,6 @@
 @import "./hope-ui-theming/root";
 
 // Libs
-@import 'tom-select/dist/css/tom-select.bootstrap5';
+@import 'tom-select/src/scss/tom-select';
+@import 'tom-select/src/scss/tom-select.bootstrap5';
+@import 'components/tom-select-dark';
