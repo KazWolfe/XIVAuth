@@ -1,10 +1,15 @@
+<% content_for :head_extensions do %>
+  <%= stylesheet_link_tag "special/oauth-consent" %>
+<% end %>
+
+
 <% content_for :page_layout do %>
   <div class="wrapper">
-    <div class="full-backdrop" style="background: url(<%= asset_path('auth_bg.png') %>) no-repeat center center; background-size: cover;"></div>
+    <div class="oauth-consent-backdrop full-backdrop"></div>
     <section class="oauth-content">
       <div class="row m-0 align-items-center justify-content-center vh-100 w-100">
         <div class="col-md-4">
-          <div class="card my-4">
+          <div class="card my-4 frost-background-filter">
             <div class="card-body">
               <%= yield %>
             </div>

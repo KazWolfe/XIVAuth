@@ -1,28 +1,4 @@
-@mixin frosted-bg($image-url-light, $image-url-dark, $blur: 2px, $light-alpha: 0.8, $dark-alpha: 0.65) {
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -10;
-    background-size: cover;
-    background-position: center;
-    filter: blur($blur);
-
-    [data-bs-theme="light"] & {
-      background-image: url(#{$image-url-light});
-      background-blend-mode: lighten;
-      background-color: rgba(255, 255, 255, $light-alpha);
-    }
-    [data-bs-theme="dark"] & {
-      background-image: url(#{$image-url-dark});
-      background-blend-mode: darken;
-      background-color: rgba(0, 0, 0, $dark-alpha);
-    }
-  }
-}
+@import '../xivauth/mixins';
 
 section#hero {
   @include frosted-bg("/backgrounds/burnwall_day.png", "/backgrounds/burnwall_night.png", 1px, 0.8, 0.65);
@@ -51,4 +27,8 @@ section#developers {
     background: rgba(30, 30, 30, 0.35);
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18);
   }
+}
+
+.btn-outline-secondary {
+  backdrop-filter: blur(4px);
 }

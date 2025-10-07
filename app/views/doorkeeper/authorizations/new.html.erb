@@ -31,7 +31,7 @@
       <div id="oauth-permissions">
         <p><%= t('.able_to') %>:</p>
 
-        <ul class="text-info">
+        <ul>
           <% @pre_auth.scopes.each do |scope| %>
             <li>
               <span title="<%= t(:description, scope: ["xivauth", "oauth_scopes", scope], default: "") %>">

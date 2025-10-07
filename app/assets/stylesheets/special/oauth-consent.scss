@@ -1,0 +1,15 @@
+.frost-background-filter {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background 0.3s, border 0.3s;
+
+  [data-bs-theme="light"] & {
+    background-color: var(--bs-card-bg);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  [data-bs-theme="dark"] & {
+    background: rgba(30, 30, 30, 0.80);
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18);
+  }
+}
