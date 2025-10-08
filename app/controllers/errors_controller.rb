@@ -12,9 +12,11 @@ class ErrorsController < ApplicationController
                      request.env, @exception
                    ).status_code
 
-    render "errors/generic", status: @status_code and return unless template_exists? "errors/#{@status_code}"
+    if template_exists? "errors/#{@status_code}"
+      render template: "errors/#{@status_code}", status: @status_code
+    end
 
-    render template: "errors/#{@status_code}", status: @status_code
+    render "errors/generic", status: @status_code, locals: { status: @status_code }
   end
 
   private def set_trace_id
