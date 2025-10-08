@@ -1,7 +1,7 @@
 <% oauth_client = @pre_auth.client.application %>
 <% client_application = oauth_client.application %>
 
-<%= form_tag oauth_authorization_path, method: :post do %>
+<%= form_tag oauth_authorization_path, method: :post, data: { turbo: "false" } do %>
   <main role="main">
 
     <div class="d-flex justify-content-center pad-2 pb-2" style="align-self: center;">
