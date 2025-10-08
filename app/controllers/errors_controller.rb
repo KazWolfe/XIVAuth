@@ -14,6 +14,7 @@ class ErrorsController < ApplicationController
 
     if template_exists? "errors/#{@status_code}"
       render template: "errors/#{@status_code}", status: @status_code
+      return
     end
 
     render "errors/generic", status: @status_code, locals: { status: @status_code }

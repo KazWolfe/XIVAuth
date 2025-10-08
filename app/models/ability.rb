@@ -11,7 +11,7 @@ class Ability
 
     can :manage, ClientApplication do |a|
       if a.owner.is_a?(User)
-        a.owner == user
+        a.owner_id == user.id
       elsif a.owner.is_a?(Team)
         a.owner.direct_memberships.developers.where(user_id: user.id).any? ||
         a.owner.antecedent_memberships.developers.where(user_id: user.id).any?
