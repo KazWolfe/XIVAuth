@@ -30,10 +30,9 @@
           <tr>
             <th scope="row">Supported Algorithms</th>
             <td>
-              <%= @key.supported_algorithms.each
+              <%= sanitize(@key.supported_algorithms.each
                       .map { |a| "<span class='font-monospace'>#{a}</span>" }
-                      .join(", ")
-                      .html_safe %>
+                      .join(", ")) %>
             </td>
           </tr>
 
