@@ -49,6 +49,26 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
     end
   end
 
+  def destroy
+    authorize! :edit, @application
+
+    if @oauth_client.destroy
+      respond_to do |format|
+        format.html { redirect_to developer_application_path(@application), notice: "OAuth client deleted." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html do
+          redirect_to developer_oauth_client_path(@oauth_client),
+                      status: :unprocessable_entity,
+                      error: "Could not delete OAuth client."
+        end
+        format.json { render json: { error: "Could not delete OAuth client." }, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def regenerate
     authorize! :edit, @application
 
