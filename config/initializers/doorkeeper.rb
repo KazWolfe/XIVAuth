@@ -284,10 +284,9 @@ Doorkeeper.configure do
   #
   # force_ssl_in_redirect_uri { |uri| uri.host != 'localhost' }
   force_ssl_in_redirect_uri do |uri|
-    return false if uri.host == "localhost" || uri.host =~ /.*(\.test|\.example|\.localhost|\.invalid)$/
-    return false if (IPAddr.new(uri.host) rescue nil)&.loopback?
-
-    true
+    !(uri.host == "localhost" ||
+      uri.host =~ /.*(\.test|\.example|\.localhost|\.invalid)$/ ||
+      (IPAddr.new(uri.host) rescue nil)&.loopback?)
   end
 
   # Specify what redirect URI's you want to block during Application creation.
