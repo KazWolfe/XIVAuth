@@ -1,5 +1,19 @@
 module OAuth
   class AuthorizationsController < Doorkeeper::AuthorizationsController
+    def new
+      pre_auth.validate  # need to validate first to populate info for preflight
+
+      # Preflight checks
+      @preflight = ::OAuth::PreflightCheck.new(pre_auth)
+
+      unless @preflight.valid?
+        render_preflight_error
+        return
+      end
+
+      super
+    end
+
     def create
       # Cheat to get around needing client-side JavaScript to submit a DELETE.
       # The actual DELETE method still works, so this is in addition to compliance, at least.
@@ -15,6 +29,10 @@ module OAuth
         token.permissible_policy = policy
         token.save!
       end
+    end
+
+    private def render_preflight_error
+      render :preflight_error, status: :bad_request
     end
 
     private def build_permissible_policy

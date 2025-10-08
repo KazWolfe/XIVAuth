@@ -32,6 +32,7 @@
     </table>
   </div>
   <div class="col-md-6">
+    <!--
     <%= form_for @application, url: app_submit_path(@application), as: :client_application, html: { role: 'form' } do |f| %>
       <div class="mb-3 form-check form-switch">
         <%= f.checkbox :private, class: "form-check-input", aria: { describedby: "privateFieldHelp" } %>
@@ -55,10 +56,16 @@
         </div>
       <% end %>
     <% end %>
+    -->
   </div>
   <div class="col-md-12">
-    <h3 class="mb-2">OAuth Credentials</h3>
-    <%= link_to "Add New Credential", new_developer_application_oauth_client_path(@application), class: "btn btn-primary" %>
+    <div class="d-flex justify-content-between mb-2">
+      <h3>OAuth Credentials</h3>
+      <%= link_to new_developer_application_oauth_client_path(@application), class: "btn btn-primary" do %>
+        <i class="bi bi-plus"></i> Add new Credential
+      <% end %>
+    </div>
+
     <table class="table">
       <thead>
       <tr>
