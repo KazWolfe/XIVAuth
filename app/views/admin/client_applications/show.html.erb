@@ -1,86 +1,218 @@
 <div class="row">
-  <div class="col-md-6">
-    <h3>Basic Application Info</h3>
+  <div class="col-md-7">
+    <h3>Client Application</h3>
 
-    <table class="table table-borderless">
-      <tbody>
-      <tr>
-        <th scope="row">App ID</th>
-        <td><code><%= @client_application.id %></code></td>
-      </tr>
-      <tr>
-        <th scope="row">App Name</th>
-        <td>
-          <%= @client_application.name %>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">App Owner</th>
-        <td>
-          <%= render partial: 'admin/_components/user_link', locals: { target: @client_application.owner } %>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Creation Date</th>
-        <td><%= @client_application.created_at %></td>
-      </tr>
-      <tr>
-        <th scope="row">Last Edit Date</th>
-        <td><%= @client_application.updated_at %></td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="col-md-6">
-    <h3>Configuration</h3>
-    <div class="btn-toolbar">
-      <% if false %>
-        <button class="btn btn-warning me-2"><i class="bi bi-patch-minus"></i> Unverify</button>
-      <% else %>
-        <button class="btn btn-primary me-2"><i class="bi bi-patch-plus"></i> Verify</button>
+    <div class="button-toolbar pb-4" id="admin-client-app-maintenance">
+      <%= button_to admin_client_application_path(@client_application), method: :delete,
+                    class: 'btn btn-danger', form_class: 'd-inline-block',
+                    title: 'Permanently delete this application' do %>
+        <i class="bi bi-trash"></i> Delete Application
       <% end %>
-      <button class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
     </div>
 
+    <div class="row">
+      <div class="col-auto">
+        <%= image_tag(@client_application.profile.icon_url, alt: 'App Icon', class: 'rounded', width: 72, height: 72) %>
+      </div>
+      <div class="col">
+        <table class="table table-borderless">
+          <tbody>
+          <tr>
+            <th scope="row">App ID</th>
+            <td class="font-monospace"><code><%= @client_application.id %></code></td>
+          </tr>
+          <tr>
+            <th scope="row">Name</th>
+            <td><%= @client_application.name %></td>
+          </tr>
+          <tr>
+            <th scope="row">Owner</th>
+            <td>
+              <%= render partial: 'admin/_components/user_link', locals: { target: @client_application.owner } %>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Visibility</th>
+            <td>
+              <% if @client_application.private? %>
+                <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Private</span>
+              <% else %>
+                <span class="badge bg-success"><i class="bi bi-unlock-fill"></i> Public</span>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Verification</th>
+            <td>
+              <% if @client_application.verified? %>
+                <span class="text-success"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                <span class="text-muted">at</span> <%= @client_application.verified_at %>
+              <% else %>
+                <span class="text-muted">Not Verified</span>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Created</th>
+            <td><%= @client_application.created_at %></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Updated</th>
+            <td><%= @client_application.updated_at %></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5">
+    <h3>Profile</h3>
     <table class="table table-borderless">
       <tbody>
       <tr>
-        <th scope="row">Confidential App</th>
-        <td><%= @client_application.confidential %></td>
-      </tr>
-      <tr>
-        <th scope="row">OAuth Client ID</th>
+        <th scope="row">Homepage</th>
         <td>
-          <code><%= @client_application.uid %></code>
+          <% if @client_application.profile.homepage_url.present? %>
+            <%= link_to @client_application.profile.homepage_url, @client_application.profile.homepage_url, target: '_blank', rel: 'noopener noreferrer' %>
+          <% else %>
+            <span class="text-muted">None</span>
+          <% end %>
         </td>
       </tr>
-      <% if false # if @client_application.pairwise_key != @client_application.id %>
-        <tr>
-          <th scope="row">Pairwise Key</th>
-          <td>
-            <code><%= @client_application.pairwise_key %></code>
-          </td>
-        </tr>
-      <% end %>
-      <% secret = flash[:application_secret].presence || @client_application.plaintext_secret %>
-      <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
-        <tr>
-          <th scope="row">OAuth Client Secret</th>
-          <td>
-            <code><%= secret %></code>
-          </td>
-        </tr>
-      <% end %>
       <tr>
-        <th scope="row">Approved Scopes</th>
-        <td><code><%= @client_application.scopes %></code></td>
+        <th scope="row">Privacy Policy</th>
+        <td>
+          <% if @client_application.profile.privacy_policy_url.present? %>
+            <%= link_to @client_application.profile.privacy_policy_url, @client_application.profile.privacy_policy_url, target: '_blank', rel: 'noopener noreferrer' %>
+          <% else %>
+            <span class="text-muted">None</span>
+          <% end %>
+        </td>
       </tr>
       <tr>
-        <th scope="row">Redirect URIs</th>
-        <td><%= @client_application.redirect_uri %></td>
+        <th scope="row">Terms of Service</th>
+        <td>
+          <% if @client_application.profile.terms_of_service_url.present? %>
+            <%= link_to @client_application.profile.terms_of_service_url, @client_application.profile.terms_of_service_url, target: '_blank', rel: 'noopener noreferrer' %>
+          <% else %>
+            <span class="text-muted">None</span>
+          <% end %>
+        </td>
       </tr>
       </tbody>
     </table>
   </div>
+
+  <div class="col-md-12">
+    <h4>OAuth Clients</h4>
+    <% if @client_application.oauth_clients.any? %>
+      <table class="table caption-top">
+        <caption><%= @client_application.oauth_clients.count %> total</caption>
+        <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Client ID</th>
+          <th scope="col">Status</th>
+          <th scope="col">Grant Flows</th>
+          <th scope="col">Redirect URIs</th>
+          <th scope="col">Expires</th>
+          <th scope="col">Created</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @client_application.oauth_clients.each do |oc| %>
+          <tr>
+            <td><%= oc.name %></td>
+            <td class="font-monospace"><%= oc.client_id %></td>
+            <td>
+              <% if oc.active? %>
+                <span class="badge bg-success">Active</span>
+              <% elsif oc.expired? %>
+                <span class="badge bg-secondary">Expired</span>
+              <% else %>
+                <span class="badge bg-warning text-dark">Disabled</span>
+              <% end %>
+              <% if oc.confidential? %>
+                <span class="badge bg-primary" title="Confidential Client"><i class="bi bi-shield-lock"></i> Confidential</span>
+              <% else %>
+                <span class="badge bg-info text-dark" title="Public Client">Public</span>
+              <% end %>
+            </td>
+            <td class="font-monospace">
+              <% flows = (oc.grant_flows || []) %>
+              <%= flows.present? ? flows.join(', ') : '—' %>
+            </td>
+            <td>
+              <% uris = (oc.redirect_uris || []) %>
+              <% if uris.present? %>
+                <details>
+                  <summary><%= uris.size %> URI(s)</summary>
+                  <ul class="mb-0">
+                    <% uris.each do |u| %>
+                      <li class="font-monospace"><%= u %></li>
+                    <% end %>
+                  </ul>
+                </details>
+              <% else %>
+                <span class="text-muted">—</span>
+              <% end %>
+            </td>
+            <td><%= oc.expires_at || '—' %></td>
+            <td><%= oc.created_at %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-muted">No OAuth clients configured for this application.</p>
+    <% end %>
+  </div>
+
+  <div class="col-md-12">
+    <h4>Access Control</h4>
+    <% if @client_application.acls.any? %>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Effect</th>
+          <th scope="col">Principal</th>
+          <th scope="col">Include Team Descendants</th>
+          <th scope="col">Created</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @client_application.acls.each do |acl| %>
+          <tr>
+            <td>
+              <% if acl.deny? %>
+                <span class="badge bg-danger">Deny</span>
+              <% else %>
+                <span class="badge bg-success">Allow</span>
+              <% end %>
+            </td>
+            <td>
+              <%= render partial: 'admin/_components/user_link', locals: { target: acl.principal } %>
+              <% if acl.principal.nil? %>
+                <span class="text-muted">Unknown</span>
+              <% end %>
+            </td>
+            <td>
+              <% if acl.principal_type == 'Team' %>
+                <%= acl.include_team_descendants ? 'Yes' : 'No' %>
+              <% else %>
+                <span class="text-muted">N/A</span>
+              <% end %>
+            </td>
+            <td><%= acl.created_at %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-muted">No access control entries. Application is <strong><%= @client_application.private? ? 'private' : 'public' %></strong>.
+      </p>
+    <% end %>
+  </div>
 </div>
+

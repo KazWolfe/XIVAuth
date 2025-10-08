@@ -1,11 +1,17 @@
-<% if target.class.name == "User" %>
+<% if target.is_a?(User) %>
   <%= link_to admin_user_path(target) do %>
     <i class="bi bi-person"></i>
     <%= target.profile.display_name %> (<span class="font-monospace"><%= target.id[-8..] %></span>)
   <% end %>
-<% elsif target.class.name == "Team" %>
+<% elsif target.is_a?(Team) %>
   <%= link_to admin_user_path(target) do %>
     <i class="bi bi-people"></i>
     <%= target.name %> (<span class="font-monospace"><%= target.id[-8..] %></span>)
   <% end %>
+<% elsif target.nil? %>
+  <i class="bi bi-person-x"></i>
+  No Owner
+<% else %>
+  <i class="bi bi-gear"></i>
+  Object: <%= target.inspect %> (<%= target.class.name %>)
 <% end %>
