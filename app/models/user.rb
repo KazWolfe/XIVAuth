@@ -29,7 +29,7 @@ class User < ApplicationRecord
   end
 
   def admin?
-    self.has_role? :admin
+    self.role? :admin
   end
 
   # Check if the user has permission to access developer functions, like the ability to register OAuth applications.

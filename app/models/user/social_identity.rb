@@ -1,7 +1,7 @@
 class User::SocialIdentity < ApplicationRecord
   belongs_to :user
-  validates_uniqueness_of :external_id, scope: [:provider]
-  validates_uniqueness_of :user_id, scope: [:provider, :external_id]
+  validates :external_id, uniqueness: { scope: [:provider] }
+  validates :user_id, uniqueness: { scope: %i[provider external_id] }
 
   alias_attribute :uid, :external_id
 

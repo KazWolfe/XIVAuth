@@ -17,18 +17,18 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     job.report_result("verification_failed_invalid")
   end
 
-  discard_on(FFXIV::LodestoneProfile::LodestoneCharacterHidden) do |job, error|
+  discard_on(FFXIV::LodestoneProfile::LodestoneCharacterHidden) do |job, _error|
     job.report_result("verification_failed_hiddenchara")
   end
 
-  discard_on(FFXIV::LodestoneProfile::LodestoneProfilePrivate) do |job, error|
+  discard_on(FFXIV::LodestoneProfile::LodestoneProfilePrivate) do |job, _error|
     job.report_result("verification_failed_privateprofile")
   end
 
-  retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS, wait: 2.minutes) do |job, error|
+  retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS,
+wait: 2.minutes) do |job, _error|
     job.report_result("verification_failed_codenotfound")
   end
-
 
   # @param [CharacterRegistration] registration A character registration to verify
   def perform(registration)
@@ -44,9 +44,7 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
 
     raise FFXIV::LodestoneProfile::LodestoneCharacterHidden unless lodestone_data.character_visible?
     raise FFXIV::LodestoneProfile::LodestoneProfilePrivate unless lodestone_data.character_profile_visible?
-    unless lodestone_data.valid?
-      raise FFXIV::LodestoneProfile::LodestoneProfileInvalid, lodestone_data.errors
-    end
+    raise FFXIV::LodestoneProfile::LodestoneProfileInvalid, lodestone_data.errors unless lodestone_data.valid?
 
     # We're here, might as well save the character data we just fetched. Waste not!
     character.refresh_from_lodestone(lodestone_data)
@@ -56,11 +54,11 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
       code = match.delete_prefix(CharacterRegistration::VERIFICATION_KEY_PREFIX)
       candidate = CharacterRegistration::VERIFICATION_KEY_PREFIX + Crockford.normalize(code).upcase
 
-      if candidate == registration.verification_key
-        registration.verify!("lodestone_code", clobber: true)
-        self.report_result("verification_success")
-        return
-      end
+      next unless candidate == registration.verification_key
+
+      registration.verify!("lodestone_code", clobber: true)
+      self.report_result("verification_success")
+      return
     end
 
     self.report_result("verification_retry")
@@ -79,6 +77,4 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
       attributes: { method: :morph }
     )
   end
-
-
 end

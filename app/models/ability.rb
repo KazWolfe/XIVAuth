@@ -14,7 +14,7 @@ class Ability
         a.owner_id == user.id
       elsif a.owner.is_a?(Team)
         a.owner.direct_memberships.developers.where(user_id: user.id).any? ||
-        a.owner.antecedent_memberships.developers.where(user_id: user.id).any?
+          a.owner.antecedent_memberships.developers.where(user_id: user.id).any?
       else
         false
       end
@@ -22,12 +22,12 @@ class Ability
 
     can :show, Team do |t|
       t.direct_memberships.active.where(user_id: user.id).any? ||
-      t.antecedent_memberships.where(user_id: user.id).any?
+        t.antecedent_memberships.where(user_id: user.id).any?
     end
 
     can :manage, Team do |t|
       t.direct_memberships.admins.where(user_id: user.id).any? ||
-      t.antecedent_memberships.admins.where(user_id: user.id).any?
+        t.antecedent_memberships.admins.where(user_id: user.id).any?
     end
   end
 end

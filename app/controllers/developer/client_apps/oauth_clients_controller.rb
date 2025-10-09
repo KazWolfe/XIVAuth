@@ -2,7 +2,7 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
   helper Developer::ClientApps::OAuthClientHelper
   layout "portal/page"
 
-  before_action :set_oauth_client, except: [:new, :create]
+  before_action :set_oauth_client, except: %i[new create]
 
   def show; end
 

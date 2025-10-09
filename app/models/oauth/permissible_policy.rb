@@ -17,7 +17,8 @@ class OAuth::PermissiblePolicy < ApplicationRecord
 
   # Check if implicit denial should be used for this policy. The policy will use implicit denial if *any* rule in the
   # policy is set to explicit allow (deny = false).
-  # @param resource_type [String, nil] When set, limit evaluation to this specific type. Used for mixed-resource policies.
+  # @param resource_type [String, nil] When set, limit evaluation to this specific type. Used for mixed-resource 
+  # policies.
   # @return [Boolean] Returns true if implicit-deny mode should be used.
   def implicit_deny?(resource_type: nil)
     search = { deny: false }

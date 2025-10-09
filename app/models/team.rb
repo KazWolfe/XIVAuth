@@ -5,9 +5,9 @@ class Team < ApplicationRecord
   has_one :profile, class_name: "Team::Profile", dependent: :destroy, required: true, autosave: true
 
   belongs_to :parent, class_name: "Team", optional: true
-  has_many :subteams, class_name: "Team", foreign_key: "parent_id", dependent: :destroy
+  has_many :subteams, class_name: "Team", foreign_key: "parent_id", dependent: :destroy, inverse_of: :parent
 
-  has_many :direct_memberships, class_name: "Team::Membership"
+  has_many :direct_memberships, class_name: "Team::Membership", dependent: :destroy
   has_many :direct_members, through: :direct_memberships, source: :user
 
   accepts_nested_attributes_for :direct_memberships

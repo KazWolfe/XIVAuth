@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :client_application_acl, class: 'ClientApplication::AccessControlList' do
+  factory :client_application_acl, class: "ClientApplication::AccessControlList" do
     association :application, factory: :client_application
     association :principal, factory: :team
 

@@ -1,30 +1,24 @@
-# frozen_string_literal: true
+class Developer::TeamsController < ApplicationController
+  layout "portal/page"
+  include Pagy::Backend
 
-module Developer
-  class TeamsController < ApplicationController
-    layout "portal/page"
-    include Pagy::Backend
+  before_action :set_team, only: %i[show edit update destroy regenerate]
 
-    before_action :set_team, only: %i[show edit update destroy regenerate]
+  def index
+    @pagy, @teams = pagy(current_user.teams.order(created_at: :desc), items: 12)
 
-    def index
-      @pagy, @teams = pagy(current_user.teams.order(created_at: :desc), items: 12)
-
-      respond_to do |format|
-        format.html { render :index, layout: "portal/base" }
-        format.json { head :no_content }
-      end
+    respond_to do |format|
+      format.html { render :index, layout: "portal/base" }
+      format.json { head :no_content }
     end
+  end
 
-    def show
+  def show; end
 
-    end
+  private def set_team
+    @team = Team.find(params[:id])
 
-    private def set_team
-      @team = Team.find(params[:id])
-
-      # specifically show RecordNotFound if we can't see it, rather than 403.
-      raise ActiveRecord::RecordNotFound unless can? :show, @team
-    end
+    # specifically show RecordNotFound if we can't see it, rather than 403.
+    raise ActiveRecord::RecordNotFound unless can? :show, @team
   end
 end

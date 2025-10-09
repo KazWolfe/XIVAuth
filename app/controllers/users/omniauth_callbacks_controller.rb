@@ -26,7 +26,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     @user = find_user_by_authdata(auth_data)
 
-    unless @user.present?
+    if @user.blank?
       unless User.omniauth_login_providers.include? @provider
         redirect_to new_user_session_path,
                     alert: "#{@provider.to_s.titleize} accounts cannot be used for authentication."
@@ -99,7 +99,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
 
     email = auth.dig(:info, :email)
-    return nil unless email.present?
+    return nil if email.blank?
 
     existing_user = User.find_for_database_authentication(email: email.downcase)
     existing_user&.add_social_identity(auth)
