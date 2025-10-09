@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     end
 
     if request.host == "eorzea.id"
-      redirect_to "#{request.protocol}xivauth.net", status: :moved_temporarily, allow_other_host: true
+      redirect_to "#{request.protocol}xivauth.net", status: :found, allow_other_host: true
     end
   end
 end
