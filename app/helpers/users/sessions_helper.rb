@@ -16,8 +16,10 @@ module Users::SessionsHelper
       larboard@omega.ai
       securingway@carrot.moon
       conjuringcatgirl@aether.net
-      koana.hhetsarro@studium.sharlayan.edu
+      koana.h@studium.sharlayan.edu
       thirdpromise@tour.tural
+      delion@thavnairiantruth.info
+      aid:msg:alexandria/gov/sphene
     ].sample
   end
 end
