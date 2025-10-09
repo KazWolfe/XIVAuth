@@ -2,6 +2,20 @@
   <h5 class="modal-title">Add Security Key</h5>
 </div>
 <div class="modal-body">
+  <% if !Rails.env.production? || (ENV["APP_ENV"] != "production") %>
+    <div class="alert alert-warning">
+      <div class="container d-flex">
+        <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" aria-hidden="true"></i>
+        <div>
+          <p class="mb-0">
+            <strong>Please retain a backup sign-in method!</strong> Security keys registered here will not be migrated
+            to production.
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <%= render partial: 'users/webauthn_credentials/form',
              locals: { webauthn_credential: @webauthn_credential } %>
 </div>
