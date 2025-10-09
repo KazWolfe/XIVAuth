@@ -87,7 +87,7 @@ Rails.application.routes.draw do
   use_doorkeeper do
     controllers authorizations: "oauth/authorizations"
   end
-  use_doorkeeper_device_authorization_grant do; end
+  use_doorkeeper_device_authorization_grant {}
 
   devise_for :users, controllers: {
     confirmations: "users/confirmations",
@@ -100,7 +100,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get "/sign_up/post_signup", to: "users/registrations#post_signup", as: :post_signup
-    
+
     resources :social_identities, path: "/profile/identities", controller: "users/social_identities", only: [:destroy]
     resources :webauthn_credentials, path: "/profile/webauthn", controller: "users/webauthn_credentials",
 only: %i[new create destroy]

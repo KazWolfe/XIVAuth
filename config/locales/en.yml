@@ -30,9 +30,6 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
-
-en:
   character_registrations:
     refresh_fail_reasons:
       unspecified: "An unknown error occured while refreshing."

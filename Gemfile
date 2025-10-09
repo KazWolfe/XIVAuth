@@ -17,9 +17,9 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 # Frontend/Pipeline things
 gem "cssbundling-rails"
 gem "jsbundling-rails"
+gem "propshaft"
 gem "stimulus-rails"
 gem "turbo-rails"
-gem "propshaft"
 
 # JSON API
 gem "jbuilder"

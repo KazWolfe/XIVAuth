@@ -83,14 +83,14 @@ class Api::V1::CharactersController < Api::V1::ApiController
       sub: @registration.character.lodestone_id,
       pk: @registration.entangled_id,
       iat: issued_at,
-      exp: (issued_at + 10.minutes).to_i,
+      exp: (issued_at + 10.minutes).to_i
     }
 
     payload[:nonce] = params[:nonce] if params[:nonce].present?
 
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
-    unless signing_key.present?
+    if signing_key.blank?
       render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_entity
       return
     end
@@ -104,14 +104,14 @@ class Api::V1::CharactersController < Api::V1::ApiController
   private def load_authorized_characters
     @authorized_registrations = CharacterRegistration.accessible_by(current_ability)
 
-    unless character_manage?
-      @authorized_registrations = @authorized_registrations.verified
+    return if character_manage?
 
-      policy = @doorkeeper_token.permissible_policy
+    @authorized_registrations = @authorized_registrations.verified
 
-      @authorized_registrations = @authorized_registrations.verified.filter do |r|
-        policy.blank? || policy.can_access_resource?(r)
-      end
+    policy = @doorkeeper_token.permissible_policy
+
+    @authorized_registrations = @authorized_registrations.verified.filter do |r|
+      policy.blank? || policy.can_access_resource?(r)
     end
   end
 

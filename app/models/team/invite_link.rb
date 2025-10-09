@@ -10,7 +10,7 @@ class Team::InviteLink < ApplicationRecord
   validates :usage_limit, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validate :validate_expiration
 
-  scope :active, -> {
+  scope :active, lambda {
     where(enabled: true)
       .where("expires_at IS NULL OR expires_at > ?", Time.current)
       .where("usage_limit IS NULL OR usage_count < usage_limit")
@@ -37,7 +37,7 @@ class Team::InviteLink < ApplicationRecord
   end
 
   private def validate_expiration
-    return unless expires_at.present?
+    return if expires_at.blank?
 
     errors.add(:expires_at, "must be in the future") if expires_at <= Time.current
     errors.add(:expires_at, "cannot be more than 1 month in the future") if expires_at > Time.current + 1.month

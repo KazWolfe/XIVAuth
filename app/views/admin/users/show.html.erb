@@ -68,7 +68,7 @@
         <% end %>
       <% end %>
       <%= button_to reset_password_admin_user_path(@user), class: 'btn btn-primary', form_class: 'd-inline-block' do %>
-        <i class="bi bi-envelope"></i> Send Password Reset</button>
+        <i class="bi bi-envelope"></i> Send Password Reset
       <% end %>
       <%= button_to mfa_admin_user_path(@user), method: :delete, class: 'btn btn-primary', form_class: 'd-inline-block',
                     disabled: !@user.requires_mfa? do %>

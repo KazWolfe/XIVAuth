@@ -63,7 +63,7 @@ class Users::WebauthnCredentialsController < ApplicationController
       },
       exclude: current_user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
-        resident_key: "discouraged",
+        resident_key: "discouraged"
         # UV at registration is irrelevant - we can assume the user is already privileged.
       },
       extensions: {

@@ -12,7 +12,7 @@ class OAuth::PreflightCheck
   validate :validate_user_has_characters
   validate :validate_incompatible_scopes
 
-  def initialize(pre_authorization, attributes = {})
+  def initialize(pre_authorization, attributes = { })
     self.pre_authorization = pre_authorization
     super(attributes)
   end
@@ -30,24 +30,21 @@ class OAuth::PreflightCheck
     oauth_client.application
   end
 
-  def scopes
-    pre_authorization.scopes
-  end
+  delegate :scopes, to: :pre_authorization
 
   def validate_user_has_characters
-    return unless pre_authorization.resource_owner.present?
+    return if pre_authorization.resource_owner.blank?
     return unless pre_authorization.resource_owner.respond_to?(:character_registrations)
 
-    if pre_authorization.scopes.include?("character") || pre_authorization.scopes == ["character:all"]
-      if pre_authorization.resource_owner.character_registrations.verified.empty?
-        errors.add(:user_errors, :no_characters)
-      end
-    end
+    return unless pre_authorization.scopes.include?("character") || pre_authorization.scopes == ["character:all"]
+    return unless pre_authorization.resource_owner.character_registrations.verified.empty?
+
+    errors.add(:user_errors, :no_characters)
   end
 
   def validate_incompatible_scopes
-    if scopes.include?("character") && scopes.include?("character:all")
-      errors.add(:app_errors, :incompatible_scopes, message: "cannot use both character and character:all scopes")
-    end
+    return unless scopes.include?("character") && scopes.include?("character:all")
+
+    errors.add(:app_errors, :incompatible_scopes, message: "cannot use both character and character:all scopes")
   end
 end

@@ -113,7 +113,6 @@
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Client ID</th>
-          <th scope="col">Status</th>
           <th scope="col">Grant Flows</th>
           <th scope="col">Redirect URIs</th>
           <th scope="col">Expires</th>
@@ -123,9 +122,8 @@
         <tbody>
         <% @client_application.oauth_clients.each do |oc| %>
           <tr>
-            <td><%= oc.name %></td>
-            <td class="font-monospace"><%= oc.client_id %></td>
             <td>
+              <%= oc.name %>
               <% if oc.active? %>
                 <span class="badge bg-success">Active</span>
               <% elsif oc.expired? %>
@@ -133,15 +131,11 @@
               <% else %>
                 <span class="badge bg-warning text-dark">Disabled</span>
               <% end %>
-              <% if oc.confidential? %>
-                <span class="badge bg-primary" title="Confidential Client"><i class="bi bi-shield-lock"></i> Confidential</span>
-              <% else %>
-                <span class="badge bg-info text-dark" title="Public Client">Public</span>
-              <% end %>
             </td>
+            <td class="font-monospace"><%= oc.client_id %></td>
             <td class="font-monospace">
               <% flows = (oc.grant_flows || []) %>
-              <%= flows.present? ? flows.join(', ') : '—' %>
+              <%= flows.present? ? flows.join(', ') : '-' %>
             </td>
             <td>
               <% uris = (oc.redirect_uris || []) %>
@@ -155,10 +149,10 @@
                   </ul>
                 </details>
               <% else %>
-                <span class="text-muted">—</span>
+                <span class="text-muted">-</span>
               <% end %>
             </td>
-            <td><%= oc.expires_at || '—' %></td>
+            <td><%= oc.expires_at || '-' %></td>
             <td><%= oc.created_at %></td>
           </tr>
         <% end %>

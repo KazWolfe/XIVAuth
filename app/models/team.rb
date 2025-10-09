@@ -21,8 +21,10 @@ class Team < ApplicationRecord
 
   validate :team_recursion_control
 
-  before_create { build_profile; true }
-
+  before_create do
+    build_profile
+    true
+  end
 
   def profile
     super || build_profile
@@ -60,7 +62,7 @@ class Team < ApplicationRecord
 
   def descendant_team_ids
     # teams can't have children without a known self id, so we can be lazy
-    return [] unless self.id.present?
+    return [] if self.id.blank?
 
     team_ids = []
     frontier = Team.where(parent_id: self.id).ids
@@ -149,7 +151,7 @@ class Team < ApplicationRecord
   end
 
   private def team_recursion_control
-    return unless self.parent_id.present?
+    return if self.parent_id.blank?
 
     # ensure we don't have a loop before doing our recursion checks
     self.check_team_loop

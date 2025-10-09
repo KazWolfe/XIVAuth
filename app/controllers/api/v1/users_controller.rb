@@ -21,14 +21,14 @@ class Api::V1::UsersController < Api::V1::ApiController
       sub: @user.id,
       verified: @user.character_registrations.verified.count.positive?,
       iat: issued_at,
-      exp: issued_at + 600,
+      exp: issued_at + 600
     }
 
     payload[:nonce] = params[:nonce] if params[:nonce].present?
 
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
-    unless signing_key.present?
+    if signing_key.blank?
       render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_entity
       return
     end

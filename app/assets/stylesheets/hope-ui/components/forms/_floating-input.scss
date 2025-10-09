@@ -19,7 +19,7 @@
     > .form-control:not(:placeholder-shown),
     > .form-select {
       ~ label {
-        background-color: vvar(--bs-gray-900);
+        background-color: var(--bs-gray-900);
         opacity:1;
       }
     }

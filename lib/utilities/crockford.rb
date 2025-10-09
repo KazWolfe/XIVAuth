@@ -1,14 +1,10 @@
-# frozen_string_literal: true
-
 # Sourced from https://github.com/iain/crockford, under MIT license.
 # Encodes and decodes Crockford's Base32 variation.
 module Crockford
-
   ENCODER = %w[0 1 2 3 4 5 6 7 8 9 A B C D E F G H J K M N P Q R S T V W X Y Z].freeze
   DECODER = ENCODER.each_with_index.to_h.transform_keys(&:to_s).merge({ "I" => 1, "L" => 1, "O" => 0 }).freeze
 
   class << self
-
     def encode_number(number, **kwargs)
       string = number.to_s(2).each_char.reverse_each.each_slice(5).map do |bits|
         ENCODER[bits.reverse.join.to_i(2)]
@@ -55,28 +51,24 @@ module Crockford
       encode_number(SecureRandom.random_number(32**length), split: split, length: length)
     end
 
-    private
-
-    def clean_code(string)
+    private def clean_code(string)
       string.delete("-").upcase
     end
 
-    def format_code(string, length: nil, split: false)
+    private def format_code(string, length: nil, split: false)
       string = string.rjust(length, "0") if length
 
       if split
         string = string
-                   .each_char
-                   .reverse_each
-                   .each_slice(split)
-                   .map { |segment| segment.reverse.join }
-                   .reverse
-                   .join("-")
+                 .each_char
+                 .reverse_each
+                 .each_slice(split)
+                 .map { |segment| segment.reverse.join }
+                 .reverse
+                 .join("-")
       end
 
       string
     end
-
   end
-
 end

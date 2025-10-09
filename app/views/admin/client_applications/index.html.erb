@@ -3,7 +3,7 @@
 <table class="table">
   <thead>
   <tr>
-    <th scope="col">App ID</th>
+    <th scope="col" width="128">ID Fragment</th>
     <th scope="col">App Name</th>
     <th scope="col">Owner</th>
   </tr>
@@ -11,8 +11,8 @@
   <tbody>
   <% @client_applications.each do |app| %>
     <tr>
-      <td><%= link_to app.id, admin_client_application_path(app) %></td>
-      <td><%= app.name %></td>
+      <td class="font-monospace"><%= app.id[-8..] %></td>
+      <td><%= link_to app.name, admin_client_application_path(app) %></td>
       <td>
         <%= render partial: 'admin/_components/user_link', locals: { target: app.owner } %>
       </td>
