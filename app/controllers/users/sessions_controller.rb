@@ -45,7 +45,7 @@ class Users::SessionsController < Devise::SessionsController
       User.find_by(email: user_params[:email])
     elsif user_params[:webauthn_response].present?
       cred = WebAuthn::Credential.from_get(JSON.parse(user_params[:webauthn_response]))
-      User.find(cred.user_handle)
+      User.find_by_webauthn_id(cred.user_handle)
     elsif session.dig("mfa")
       User.find(session["mfa"]["user_id"])
     else

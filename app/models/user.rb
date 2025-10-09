@@ -16,6 +16,7 @@ class User < ApplicationRecord
 
   has_many :webauthn_credentials, class_name: "User::WebauthnCredential", dependent: :destroy
   has_one :totp_credential, class_name: "User::TotpCredential", dependent: :destroy
+  validates :webauthn_id, uniqueness: true
 
   has_one :profile, class_name: "User::Profile", dependent: :destroy, required: true, autosave: true
   validates_associated :profile

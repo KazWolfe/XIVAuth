@@ -1,5 +1,7 @@
 class Users::WebauthnCredentialsController < ApplicationController
   def new
+    current_user.update(webauthn_id: WebAuthn.generate_user_id) unless current_user.webauthn_id
+
     @webauthn_credential = User::WebauthnCredential.new
     @challenge = build_registration_challenge
   end
@@ -57,7 +59,7 @@ class Users::WebauthnCredentialsController < ApplicationController
   private def build_registration_challenge
     create_options = WebAuthn::Credential.options_for_create(
       user: {
-        id: current_user.id,
+        id: current_user.webauthn_id,
         display_name: current_user.email,
         name: current_user.email
       },
