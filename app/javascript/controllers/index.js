@@ -4,11 +4,11 @@
 
 import { application } from "./application"
 
+import Devise__LoginFormController from "./devise/login_form_controller"
+application.register("devise--login-form", Devise__LoginFormController)
+
 import Devise__PasswordStrengthController from "./devise/password_strength_controller"
 application.register("devise--password-strength", Devise__PasswordStrengthController)
-
-import Devise__Webauthn__ConditionalController from "./devise/webauthn/conditional_controller"
-application.register("devise--webauthn--conditional", Devise__Webauthn__ConditionalController)
 
 import Devise__Webauthn__MfaController from "./devise/webauthn/mfa_controller"
 application.register("devise--webauthn--mfa", Devise__Webauthn__MfaController)
@@ -19,6 +19,15 @@ application.register("devise--webauthn--registration", Devise__Webauthn__Registr
 import Form__TextarrayController from "./form/textarray_controller"
 application.register("form--textarray", Form__TextarrayController)
 
+import Form__TurnstileController from "./form/turnstile_controller"
+application.register("form--turnstile", Form__TurnstileController)
+
+import Oauth__CharacterSelectController from "./oauth/character_select_controller"
+application.register("oauth--character-select", Oauth__CharacterSelectController)
+
+import Oauth__IdentitySelectController from "./oauth/identity_select_controller"
+application.register("oauth--identity-select", Oauth__IdentitySelectController)
+
 import Toasts__ToastController from "./toasts/toast_controller"
 application.register("toasts--toast", Toasts__ToastController)
 
@@ -27,12 +36,3 @@ application.register("utilities--copy-code", Utilities__CopyCodeController)
 
 import Utilities__RemoteModalController from "./utilities/remote_modal_controller"
 application.register("utilities--remote-modal", Utilities__RemoteModalController)
-
-import Oauth__CharacterSelect from './oauth/character_select'
-application.register('oauth--character-select', Oauth__CharacterSelect)
-
-import Oauth__IdentitySelect from './oauth/identity_select'
-application.register('oauth--identity-select', Oauth__IdentitySelect)
-
-import TurnstileController from "./form/turnstile_controller";
-application.register("form--turnstile", TurnstileController);

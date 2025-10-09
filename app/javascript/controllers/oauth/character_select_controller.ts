@@ -1,8 +1,8 @@
 import {RecursivePartial, TomOption, TomSettings} from "tom-select/dist/types/types";
 import {escape_html} from "tom-select/src/utils";
-import TomSelectController from "../form/tomselect_controller";
+import TomSelectController from "../form/tomselect_controller_base";
 
-export default class CharacterSelectDropdown extends TomSelectController {
+export default class CharacterSelectDropdownContoller extends TomSelectController {
     get user_settings() {
         let settings: RecursivePartial<TomSettings> = {
             render: {
