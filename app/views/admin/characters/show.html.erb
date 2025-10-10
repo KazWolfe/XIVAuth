@@ -1,150 +1,152 @@
-<div class="row">
-  <div class="col">
-    <h3>Character Info</h3>
-    <div class="button-toolbar pb-4">
-      <%= button_to refresh_admin_character_path(@character.lodestone_id), class: 'btn btn-primary',
-                    form_class: 'd-inline-block' do %>
-        <i class="bi bi-arrow-repeat"></i> Force Lodestone Refresh
-      <% end %>
-      <% if @character.ban.nil? %>
-        <%= button_to new_admin_character_ban_path(@character.lodestone_id), method: 'get', class: 'btn btn-danger',
-                      form_class: 'd-inline-block', data: { turbo_stream: "remote_modal" } do %>
-          <i class="bi bi-slash-circle"></i> Ban
-        <% end %>
-      <% else %>
-        <%= button_to admin_character_ban_path(@character.lodestone_id), method: 'delete', class: 'btn btn-secondary',
-                      form_class: 'd-inline-block' do %>
-          <i class="bi bi-slash-circle"></i> Unban
-        <% end %>
-      <% end %>
-      <%= button_to admin_character_path(@character.lodestone_id), method: 'delete', class: 'btn btn-danger',
-                    form_class: 'd-inline-block' do %>
-        <i class="bi bi-trash"></i> Delete
-      <% end %>
-    </div>
+<%= content_for(:page_header) do %>
+  <h1>Manage Character</h1>
+<% end %>
 
-    <% if @character.ban.present? %>
-      <div class="alert alert-danger">
-        <h5 class="alert-heading"><i class="bi bi-slash-circle"></i> Character Banned</h5>
-        <p class="mb-1">This character may not be registered by end users without admin authorization.</p>
-        <p class="mb-0">
-          <strong>Ban Reason:</strong> <%= @character.ban.reason %><br>
-          <strong>Ban Time:</strong> <%= @character.ban.created_at %>
-        </p>
-      </div>
-    <% end %>
-    <div class="row">
-      <div class="col-sm-3">
-        <%= image_tag @character.portrait_url, class: "img-fluid rounded", title: "Portrait image of #{@character.name}" %>
-      </div>
-      <div class="col">
-        <table class="table table-borderless">
-          <tbody>
-          <tr>
-            <th scope="row">XIVAuth ID</th>
-            <td><code><%= @character.id %></code></td>
-          </tr>
-          <tr>
-            <th scope="row">Lodestone ID</th>
-            <td>
-              <%= link_to @character.lodestone_id, @character.lodestone_url %>
-            </td>
-          </tr>
-
-          <tr>
-            <th scope="row">Character Name</th>
-            <td>
-              <%= @character.name %>
-            </td>
-          </tr>
-
-          <tr>
-            <th scope="row">Home World</th>
-            <td><%= @character.home_world %> [<%= @character.data_center %>]</td>
-          </tr>
-
-          <% if @verified_registration.present? %>
-            <tr>
-              <th scope="row">Verified Owner</th>
-              <td><%= link_to @verified_registration.user.profile.display_name, admin_user_path(@verified_registration.user) %></td>
-            </tr>
-            <tr>
-              <th scope="row">Claiming Verification Key</th>
-              <td class="font-monospace"><%= @verified_registration.verification_key %></td>
-            </tr>
-            <tr>
-              <th scope="row">Verification Type</th>
-              <td><%= @verified_registration.verification_type.titleize %></td>
-            </tr>
+<div class="row g-4">
+  <div class="col-lg-12">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-person-bounding-box me-2"></i>Character Info</h4>
+        <div class="d-flex flex-wrap gap-2">
+          <%= button_to refresh_admin_character_path(@character.lodestone_id), class: 'btn btn-primary', form_class: 'd-inline-block' do %>
+            <i class="bi bi-arrow-repeat"></i> Force Lodestone Refresh
           <% end %>
-
-          <tr>
-            <th scope="row">Creation Date</th>
-            <td><%= @character.created_at %></td>
-          </tr>
-          <tr>
-            <th scope="row">Last Updated (Lodestone Sync)</th>
-            <td><%= @character.updated_at %></td>
-          </tr>
-          </tbody>
-        </table>
+          <% if @character.ban.nil? %>
+            <%= button_to new_admin_character_ban_path(@character.lodestone_id), method: 'get', class: 'btn btn-danger', form_class: 'd-inline-block', data: { turbo_stream: "remote_modal" } do %>
+              <i class="bi bi-slash-circle"></i> Ban
+            <% end %>
+          <% else %>
+            <%= button_to admin_character_ban_path(@character.lodestone_id), method: 'delete', class: 'btn btn-secondary', form_class: 'd-inline-block' do %>
+              <i class="bi bi-slash-circle"></i> Unban
+            <% end %>
+          <% end %>
+          <%= button_to admin_character_path(@character.lodestone_id), method: 'delete', class: 'btn btn-danger', form_class: 'd-inline-block' do %>
+            <i class="bi bi-trash"></i> Delete
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <% if @character.ban.present? %>
+          <div class="alert alert-danger mb-4">
+            <h5 class="alert-heading mb-1"><i class="bi bi-slash-circle"></i> Character Banned</h5>
+            <div class="mb-1">This character may not be registered by end users without admin authorization.</div>
+            <div class="mb-0">
+              <strong>Ban Reason:</strong> <%= @character.ban.reason %><br>
+              <strong>Ban Time:</strong> <%= @character.ban.created_at %>
+            </div>
+          </div>
+        <% end %>
+        <div class="row g-3 align-items-center">
+          <div class="col-sm-3">
+            <%= image_tag @character.portrait_url, class: "img-fluid rounded border", title: "Portrait image of #{@character.name}" %>
+          </div>
+          <div class="col">
+            <table class="table table-borderless mb-0">
+              <tbody>
+                <tr>
+                  <th scope="row">XIVAuth ID</th>
+                  <td><code><%= @character.id %></code></td>
+                </tr>
+                <tr>
+                  <th scope="row">Lodestone ID</th>
+                  <td class="font-monospace">
+                    <%= link_to @character.lodestone_id, @character.lodestone_url %>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Character Name</th>
+                  <td><%= @character.name %></td>
+                </tr>
+                <tr>
+                  <th scope="row">Home World</th>
+                  <td><%= @character.home_world %> [<%= @character.data_center %>]</td>
+                </tr>
+                <% if @verified_registration.present? %>
+                  <tr>
+                    <th scope="row">Verified Owner</th>
+                    <td>
+                      <%= render partial: 'admin/_components/user_link', locals: { target: @verified_registration.user } %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Claiming Verification Key</th>
+                    <td class="font-monospace"><%= @verified_registration.verification_key %></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Verification Type</th>
+                    <td><%= @verified_registration.verification_type.titleize %></td>
+                  </tr>
+                <% end %>
+                <tr>
+                  <th scope="row">Creation Date</th>
+                  <td><%= @character.created_at %></td>
+                </tr>
+                <tr>
+                  <th scope="row">Last Updated (Lodestone Sync)</th>
+                  <td><%= @character.updated_at %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
-
   </div>
-  <div class="col-md-12">
-    <h4>Claiming Users</h4>
-    <button class="btn btn-outline-primary"><i class="bi bi-person-add"></i> Add Registration</button>
-    <% if @character.character_registrations.count > 0 %>
-      <table class="table caption-top">
-        <thead>
-        <tr>
-          <th scope="col">User</th>
-          <th scope="col">Verification Key</th>
-          <th scope="col">Created At</th>
-          <th scope="col">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% @character.character_registrations.each do |registration| %>
-          <tr>
-            <td>
-              <span>
-                <%= render partial: 'admin/_components/user_link', locals: { target: registration.user } %>
-              </span>
-              <% if registration.verified? %>
-                <i class="bi bi-patch-check-fill text-success" title="Verified Owner"></i>
-              <% end %>
-            </td>
-            <td class="font-monospace"><%= registration.verification_key %></td>
-            <td><%= registration.created_at %></td>
-            <td>
-              <%= button_to admin_character_registration_path(registration), method: :delete,
-                            form_class: "d-inline-block", class: "btn btn-outline-danger",
-                            title: "Delete Registration" do %>
-                <i class="bi bi-trash"></i>
-              <% end %>
-              <% if registration.verified? %>
-                <%= button_to verify_admin_character_registration_path(registration), method: :delete,
-                              form_class: "d-inline-block", class: "btn btn-outline-danger",
-                              title: "Force Unverify" do %>
-                  <i class="bi bi-patch-minus"></i>
+  <div class="col-12">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i>Claiming Users</h4>
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-outline-primary"><i class="bi bi-person-add"></i> Add Registration</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <% if @character.character_registrations.any? %>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table">
+                <tr>
+                  <th scope="col">User</th>
+                  <th scope="col">Verification Key</th>
+                  <th scope="col">Created At</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @character.character_registrations.each do |registration| %>
+                  <tr>
+                    <td>
+                      <span><%= render partial: 'admin/_components/user_link', locals: { target: registration.user } %></span>
+                      <% if registration.verified? %>
+                        <i class="bi bi-patch-check-fill text-success ms-1"></i>
+                      <% end %>
+                    </td>
+                    <td class="font-monospace"><%= registration.verification_key %></td>
+                    <td><%= registration.created_at %></td>
+                    <td class="d-flex flex-wrap gap-1">
+                      <%= button_to admin_character_registration_path(registration), method: :delete, form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm", title: "Delete Registration" do %>
+                        <i class="bi bi-trash"></i>
+                      <% end %>
+                      <% if registration.verified? %>
+                        <%= button_to verify_admin_character_registration_path(registration), method: :delete, form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm", title: "Force Unverify" do %>
+                          <i class="bi bi-patch-minus"></i>
+                        <% end %>
+                      <% else %>
+                        <% b_class = @character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
+                        <%= button_to verify_admin_character_registration_path(registration), params: {force: true}, form_class: "d-inline-block", class: "btn btn-sm #{b_class}", title: "Force Verify", disabled: @character.verified? do %>
+                          <i class="bi bi-patch-plus"></i>
+                        <% end %>
+                      <% end %>
+                    </td>
+                  </tr>
                 <% end %>
-              <% else %>
-                <% b_class =  @character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
-                <%= button_to verify_admin_character_registration_path(registration), params: {force: true},
-                              form_class: "d-inline-block", class: "btn #{b_class}",
-                              title: "Force Verify", disabled: @character.verified? do %>
-                  <i class="bi bi-patch-plus"></i>
-                <% end %>
-              <% end %>
-            </td>
-          </tr>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted mb-0">No registrations found for this character.</p>
         <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p>No registrations found for this character.</p>
-    <% end %>
+      </div>
+    </div>
   </div>
 </div>

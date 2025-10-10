@@ -1,209 +1,262 @@
-<div class="row">
-  <div class="col-md-6">
-    <h3>Basic User Info</h3>
-
-    <div class="button-toolbar pb-4" id="admin-user-maintenance">
+<% content_for(:page_header) do %>
+  <div>
+    <h1>User Management</h1>
+  </div>
+  <div>
+    <div class="d-flex justify-content-end mb-3">
       <%= button_to admin_user_path(@user), method: :delete,
                     class: 'btn btn-danger', form_class: 'd-inline-block', disabled: delete_block_reason != nil,
                     title: delete_block_reason || "Permanently delete this user" do %>
         <i class="bi bi-person-x"></i> Delete User
       <% end %>
     </div>
+  </div>
+<% end %>
 
-    <table class="table table-borderless">
-      <tbody>
-      <tr>
-        <th scope="row">User ID</th>
-        <td><code><%= @user.id %></code></td>
-      </tr>
-      <tr>
-        <th scope="row">Display Name</th>
-        <td><%= @user.profile.display_name %></td>
-      </tr>
-      <tr>
-        <th scope="row">Roles</th>
-        <td>
-          <% if @user.admin? %><span class="badge bg-danger"><i class="bi bi-lightning-fill"></i> ADMIN</span>
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i>Basic User Info</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-borderless mb-0">
+          <tbody>
+          <tr>
+            <th scope="row">User ID</th>
+            <td><code><%= @user.id %></code></td>
+          </tr>
+          <tr>
+            <th scope="row">Display Name</th>
+            <td><%= @user.profile.display_name %></td>
+          </tr>
+          <tr>
+            <th scope="row">Roles</th>
+            <td class="d-flex gap-2">
+              <% if @user.admin? %><span class="badge bg-danger"><i class="bi bi-lightning-fill"></i> ADMIN</span>
+              <% end %>
+              <% if @user.developer? %><span class="badge bg-primary"><i class="bi bi-code-slash"></i> Developer</span>
+              <% end %>
+              <% if false %><span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Banned</span>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Email Address</th>
+            <td>
+              <%= @user.email %>
+              <% if @user.confirmed? %>
+                <i class="bi bi-envelope-check text-success ms-1" title="Email Verified"></i>
+              <% end %>
+            </td>
+          </tr>
+          <% if @user.pending_reconfirmation? %>
+            <tr>
+              <th scope="row">Pending Email</th>
+              <td><%= @user.unconfirmed_email %></td>
+            </tr>
           <% end %>
-          <% if @user.developer? %><span class="badge bg-primary"><i class="bi bi-code-slash"></i> Developer</span>
-          <% end %>
-          <% if false %><span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Banned</span>
-          <% end %>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Email Address</th>
-        <td>
-          <%= @user.email %>
-          <% if @user.confirmed? %>
-            <i class="bi bi-envelope-check text-success" title="Email Verified"></i>
-          <% end %>
-        </td>
-      </tr>
-      <% if @user.pending_reconfirmation? %>
-        <th scope="row">Pending Email</th>
-        <td>
-          <%= @user.unconfirmed_email %>
-        </td>
-      <% end %>
-      <tr>
-        <th scope="row">Creation Date</th>
-        <td><%= @user.created_at %></td>
-      </tr>
-      <tr>
-        <th scope="row">Last Edit Date</th>
-        <td><%= @user.updated_at %></td>
-      </tr>
-      </tbody>
-    </table>
+          <tr>
+            <th scope="row">Creation Date</th>
+            <td><%= l(@user.created_at, format: :long) %></td>
+          </tr>
+          <tr>
+            <th scope="row">Last Edit Date</th>
+            <td><%= l(@user.updated_at, format: :long) %></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <div class="col-md-6">
-    <h3>Security</h3>
-
-    <div class="button-toolbar pb-2" id="admin-user-security">
-      <% if @user.pending_reconfirmation? || !@user.confirmed? %>
-        <%= button_to confirm_admin_user_path(@user), class: 'btn btn-primary', form_class: 'd-inline-block' do %>
-          <i class="bi bi-envelope-plus"></i> Skip Email Confirmation
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h4 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Security</h4>
+      </div>
+      <div class="card-body">
+        <% unless @user.has_password? %>
+          <div class="alert alert-warning d-flex align-items-center py-2 mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span>
+              <strong>User does not have password set.</strong>
+              They will only be able to log in with a social identity.
+            </span>
+          </div>
         <% end %>
-      <% end %>
-      <%= button_to reset_password_admin_user_path(@user), class: 'btn btn-primary', form_class: 'd-inline-block' do %>
-        <i class="bi bi-envelope"></i> Send Password Reset
-      <% end %>
-      <%= button_to mfa_admin_user_path(@user), method: :delete, class: 'btn btn-primary', form_class: 'd-inline-block',
-                    disabled: !@user.requires_mfa? do %>
-        <i class="bi bi-unlock"></i> Remove MFA
-      <% end %>
+        <div class="mb-4 d-flex flex-wrap gap-2">
+          <% if @user.pending_reconfirmation? || !@user.confirmed? %>
+            <%= button_to confirm_admin_user_path(@user), class: 'btn btn-outline-primary', form_class: 'd-inline-block', title: 'Skip Email Confirmation' do %>
+              <i class="bi bi-envelope-plus"></i> Skip Email Confirmation
+            <% end %>
+          <% end %>
+          <%= button_to reset_password_admin_user_path(@user), class: 'btn btn-outline-primary', form_class: 'd-inline-block', title: 'Send Password Reset' do %>
+            <i class="bi bi-envelope"></i> Send Password Reset
+          <% end %>
+          <%= button_to mfa_admin_user_path(@user), method: :delete, class: 'btn btn-outline-danger', form_class: 'd-inline-block',
+                        disabled: !@user.requires_mfa?, title: 'Remove MFA' do %>
+            <i class="bi bi-unlock"></i> Remove MFA
+          <% end %>
+        </div>
+        <div class="mb-4">
+          <h6 class="fw-semibold mb-2">Multi-Factor Authentication (MFA)</h6>
+          <div class="mb-2">
+            <span class="fw-semibold">TOTP:</span>
+            <% if @user.totp_credential.present? %>
+              <span class="badge bg-success ms-1">Enabled</span>
+              <span class="ms-2 text-muted small">(<%= @user.totp_credential.otp_backup_codes.count %> backup codes left)</span>
+            <% else %>
+              <span class="badge bg-secondary ms-1">Disabled</span>
+            <% end %>
+          </div>
+          <div class="mb-2">
+            <span class="fw-semibold">WebAuthn:</span>
+            <% if @user.webauthn_credentials.any? %>
+              <span class="badge bg-success ms-1">Registered</span>
+            <% else %>
+              <span class="badge bg-secondary ms-1">None</span>
+            <% end %>
+          </div>
+          <% if @user.webauthn_credentials.any? %>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <thead class="table">
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Sign Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @user.webauthn_credentials.each do |cred| %>
+                  <tr>
+                    <td><%= cred.nickname %></td>
+                    <td><%= cred.sign_count %></td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% end %>
+        </div>
+        <!-- Social Identities -->
+        <h5 class="mt-4 mb-2"><i class="bi bi-people me-1"></i>Social Identities</h5>
+        <% if @user.social_identities.any? %>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle mb-0">
+              <thead class="table">
+              <tr>
+                <th scope="col" aria-label="Identity Provider"></th>
+                <th scope="col">Name</th>
+                <th scope="col">External ID</th>
+                <th scope="col">Linked</th>
+                <th scope="col">Last Used</th>
+                <th scope="col">Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @user.social_identities.each do |ident| %>
+                <tr>
+                  <th scope="row">
+                    <i class="fab fa-<%= ident.provider %> fa-fw" title="<%= ident.provider.titleize %>"></i></th>
+                  <td><%= ident.friendly_name %></td>
+                  <td><code><%= ident.external_id %></code></td>
+                  <td><%= dotiw_hover ident.created_at %></td>
+                  <td><%= dotiw_hover ident.last_used_at %></td>
+                  <td>
+                    <button class="btn btn-outline-danger btn-sm" title="Unlink Identity"><i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted">No linked social identities.</p>
+        <% end %>
+      </div>
     </div>
-
-    <h4>Social Identities</h4>
-    <table class="table">
-      <thead>
-      <tr>
-        <th scope="col" aria-label="Identity Provider"></th>
-        <th scope="col">Name</th>
-        <th scope="col">External ID</th>
-        <th scope="col">Linked</th>
-        <th scope="col">Last Used</th>
-        <th scope="col">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @user.social_identities.each do |ident| %>
-        <tr>
-          <th scope="row"><i class="fab fa-<%= ident.provider %> fa-fw" title="<%= ident.provider.titleize %>"></i></th>
-          <td><%= ident.friendly_name %></td>
-          <td><%= ident.external_id %></td>
-          <td><%= dotiw_hover ident.created_at %></td>
-          <td><%= dotiw_hover ident.last_used_at %></td>
-          <td>
-            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
-          </td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
-
-    <h4>MFA Credentials</h4>
-    <p>
-      TOTP Enabled:
-      <% if @user.totp_credential.present? %>
-        Yes (<%= @user.totp_credential.otp_backup_codes.count %> backup codes remaining)
-      <% else %>
-        No
-      <% end %>
-    </p>
-    <table class="table">
-      <thead>
-      <tr>
-        <th scope="col">Type</th>
-        <th scope="col">Name</th>
-        <th scope="col">Sign Count</th>
-        <th scope="col">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @user.webauthn_credentials.each do |cred| %>
-        <tr>
-          <td>WebAuthn</td>
-          <td><%= cred.nickname %></td>
-          <td><%= cred.sign_count %></td>
-          <td>N/A</td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
   </div>
 
-  <div class="col-md-12">
-    <h3>Character Registrations</h3>
-    <table class="table caption-top">
-      <caption><%= @user.character_registrations.verified.count %> verified, <%= @user.character_registrations.count %>
-        total
-      </caption>
-      <thead>
-      <tr>
-        <th scope="col" width="48"></th>
-        <th scope="col">Lodestone ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Server</th>
-        <th scope="col">Verified At</th>
-        <th scope="col">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @cregs.each do |registration| %>
-        <% character = registration.character %>
-        <tr>
-          <td><%= image_tag character.avatar_url, width: 36, class: "rounded" %></td>
-          <td>
-            <%= link_to character.lodestone_id, admin_character_path(character.lodestone_id) %>
-            <% if registration.verified? %>
-              <i class="bi bi-patch-check-fill text-success" title="Verified Character"></i>
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i>Character Registrations</h4>
+      </div>
+      <div class="card-body">
+        <div class="mb-2 text-muted small">
+          <%= @user.character_registrations.verified.count %> verified, <%= @user.character_registrations.count %> total
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table">
+            <tr>
+              <th scope="col" class="col-1"></th>
+              <th scope="col">Lodestone ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Server</th>
+              <th scope="col">Verified At</th>
+              <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @cregs.each do |registration| %>
+              <% character = registration.character %>
+              <tr>
+                <td><%= image_tag character.avatar_url, width: 36, class: "rounded border" %></td>
+                <td>
+                  <%= link_to character.lodestone_id, admin_character_path(character.lodestone_id) %>
+                  <% if registration.verified? %>
+                    <i class="bi bi-patch-check-fill text-success ms-1" title="Verified Character"></i>
+                  <% end %>
+                </td>
+                <td><%= character.name %></td>
+                <td><%= character.home_with_datacenter %></td>
+                <td>
+                  <% if registration.verified_at %>
+                    <span class="badge bg-success"><%= l(registration.verified_at, format: :short) %></span>
+                  <% elsif character.verified? %>
+                    <span class="badge bg-secondary">Verified by <%= link_to character.verified_owner.profile.display_name, admin_user_path(character.verified_owner) %></span>
+                  <% else %>
+                    <span class="badge bg-warning text-dark">Not Verified!</span>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="d-flex flex-wrap gap-1">
+                    <%= button_to admin_character_registration_path(registration), method: :delete,
+                                  form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm",
+                                  title: "Delete Registration" do %>
+                      <i class="bi bi-trash"></i>
+                    <% end %>
+                    <% if registration.verified? %>
+                      <%= button_to verify_admin_character_registration_path(registration), method: :delete,
+                                    form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm",
+                                    title: "Force Unverify" do %>
+                        <i class="bi bi-patch-minus"></i>
+                      <% end %>
+                    <% else %>
+                      <% b_class = character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
+                      <%= button_to verify_admin_character_registration_path(registration), params: { force: true },
+                                    form_class: "d-inline-block", class: "btn btn-sm #{b_class}",
+                                    title: "Force Verify", disabled: character.verified? do %>
+                        <i class="bi bi-patch-plus"></i>
+                      <% end %>
+                    <% end %>
+                    <%= button_to refresh_admin_character_path(character.lodestone_id),
+                                  form_class: "d-inline-block", class: "btn btn-outline-primary btn-sm",
+                                  title: "Refresh Character" do %>
+                      <i class="bi bi-arrow-repeat"></i>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
             <% end %>
-          </td>
-          <td><%= character.name %></td>
-          <td><%= character.home_with_datacenter %></td>
-          <td>
-            <% if registration.verified_at %>
-              <%= registration.verified_at %>
-            <% elsif character.verified? %>
-              Verified
-              by <%= link_to character.verified_owner.profile.display_name, admin_user_path(character.verified_owner) %>
-            <% else %>
-              Not Verified!
-            <% end %>
-          </td>
-          <td>
-            <%= button_to admin_character_registration_path(registration), method: :delete,
-                          form_class: "d-inline-block", class: "btn btn-outline-danger",
-                          title: "Delete Registration" do %>
-              <i class="bi bi-trash"></i>
-            <% end %>
-            <% if registration.verified? %>
-              <%= button_to verify_admin_character_registration_path(registration), method: :delete,
-                            form_class: "d-inline-block", class: "btn btn-outline-danger",
-                            title: "Force Unverify" do %>
-                <i class="bi bi-patch-minus"></i>
-              <% end %>
-            <% else %>
-              <% b_class = character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
-              <%= button_to verify_admin_character_registration_path(registration), params: { force: true },
-                            form_class: "d-inline-block", class: "btn #{b_class}",
-                            title: "Force Verify", disabled: character.verified? do %>
-                <i class="bi bi-patch-plus"></i>
-              <% end %>
-            <% end %>
-            <%= button_to refresh_admin_character_path(character.lodestone_id),
-                          form_class: "d-inline-block", class: "btn btn-outline-primary",
-                          title: "Refresh Character" do %>
-              <i class="bi bi-arrow-repeat"></i>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
-    <%== pagy_bootstrap_nav(@pagy_cregs) if @pagy_cregs.pages > 1 %>
+            </tbody>
+          </table>
+        </div>
+        <%== pagy_bootstrap_nav(@pagy_cregs) if @pagy_cregs.pages > 1 %>
+      </div>
+    </div>
   </div>
 </div>

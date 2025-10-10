@@ -2,6 +2,7 @@ class Admin::UsersController < Admin::AdminController
   include Pagy::Backend
 
   before_action :set_user, except: %i[index]
+  layout "portal/base"
 
   def index
     @pagy, @users = pagy(User.order(created_at: :desc))
