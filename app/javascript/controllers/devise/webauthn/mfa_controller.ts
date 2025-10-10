@@ -2,7 +2,7 @@ import {WebauthnControllerBase} from "../webauthn_base";
 import * as WebAuthnJSON from "@github/webauthn-json";
 
 export default class WebauthnMFAController extends WebauthnControllerBase {
-    async authenticate(event) {
+    async authenticate(event: PointerEvent) {
         console.warn("AUTHENTICATION REQUEST RECEIVED!!!")
         event.preventDefault();
 
@@ -16,7 +16,7 @@ export default class WebauthnMFAController extends WebauthnControllerBase {
         
         if (credential) {
             this.responseTarget.value = JSON.stringify(credential);
-            event.target.form.submit();
+            (event.target as HTMLButtonElement).form?.submit();
         }
     }
 }

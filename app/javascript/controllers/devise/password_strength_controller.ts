@@ -7,12 +7,24 @@ export default class PasswordStrengthController extends Controller {
         minScore: Number,
     }
 
-    static STRENGTH_NAMES = {
-        0 : "Extremely Weak",
-        1 : "Very Weak",
-        2 : "Weak",
-        3 : "Decent",
-        4 : "Strong"
+    declare readonly passwordTarget: HTMLInputElement;
+    declare readonly confirmTarget: HTMLInputElement;
+    declare readonly tipsTarget: HTMLUListElement;
+    declare readonly warningTarget: HTMLDivElement;
+    declare readonly crackTimeTarget: HTMLDivElement;
+    declare readonly meterInnerTarget: HTMLDivElement;
+    declare readonly meterTarget: HTMLDivElement;
+    declare readonly strengthTarget: HTMLDivElement;
+
+    declare minScoreValue: number;
+    declare readonly hasMinScoreValue: boolean;
+
+    static STRENGTH_NAMES: { [key: number]: string } = {
+        0: "Extremely Weak",
+        1: "Very Weak",
+        2: "Weak",
+        3: "Decent",
+        4: "Strong"
     }
 
     connect() {
@@ -24,9 +36,9 @@ export default class PasswordStrengthController extends Controller {
         this.onConfirm();
 
         if (this.passwordTarget.value === "") {
-            this.strengthTarget.parentElement.classList.add('d-none');
+            this.strengthTarget.parentElement?.classList.add('d-none');
         } else {
-            this.strengthTarget.parentElement.classList.remove('d-none');
+            this.strengthTarget.parentElement?.classList.remove('d-none');
         }
 
         let result = zxcvbn(this.passwordTarget.value);
@@ -73,22 +85,22 @@ export default class PasswordStrengthController extends Controller {
         }
     }
 
-    scoreGaugeClass(score) {
+    scoreGaugeClass(score: number) {
         if (score === 4 || (score > this.minScoreValue)) return `bg-success`;
         return (score < this.minScoreValue) ? `bg-danger` : `bg-warning`;
     }
 
-    scoreTextClass(score) {
+    scoreTextClass(score: number) {
         if (score === 4 || (score > this.minScoreValue)) return 'text-success';
         return (score < this.minScoreValue) ? 'text-danger' : 'text-warning-emphasis';
     }
 
-    strengthPercentage(guessCount) {
+    strengthPercentage(guessCount: number) {
         // calculated such that a password of score 3 (10^8) will be in the middle.
         return Math.min(guessCount * (1 / 16) * 100, 100);
     }
 
-    strengthName(score) {
+    strengthName(score: number) {
         if (score < this.minScoreValue) return "Too Weak";
 
         return `${PasswordStrengthController.STRENGTH_NAMES[score]} Password`;

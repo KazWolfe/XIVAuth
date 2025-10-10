@@ -111,7 +111,6 @@ export default class LoginFormController extends Controller {
 
     private async checkConditionalMediation() {
         return window.PublicKeyCredential?.isConditionalMediationAvailable ||
-            (await window.PublicKeyCredential?.isConditionalMediationAvailable()) ||
-            navigator.credentials.conditionalMediationSupported;
+            (await window.PublicKeyCredential?.isConditionalMediationAvailable());
     }
 }

@@ -3,7 +3,7 @@ import * as WebAuthnJSON from "@github/webauthn-json";
 
 
 export default class WebauthnRegistrationController extends WebauthnControllerBase {
-    async register(event) {
+    async register(event: SubmitEvent) {
         event.preventDefault();
 
         // FIXME: Bug in certain password managers where they don't support toJSON on the response.
@@ -15,6 +15,6 @@ export default class WebauthnRegistrationController extends WebauthnControllerBa
         // let credential = await navigator.credentials.create({publicKey: discovery}) as PublicKeyCredential | null;
 
         this.responseTarget.value = JSON.stringify(credential);
-        event.target.submit();
+        (event.target as HTMLFormElement).submit();
     }
 }

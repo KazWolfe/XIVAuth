@@ -13,7 +13,7 @@ export default class TextArrayController extends Controller {
         this.calculateDisables();
 
         this.templateElement = this.inputTargets[0].cloneNode(true) as HTMLDivElement;
-        this.templateElement.querySelector("input").value = "";
+        this.templateElement.querySelector("input")!.value = "";
         for (let child of this.templateElement.children) {
             if (child.getAttribute("data-nocopy") != null) {
                 child.remove();
@@ -23,7 +23,7 @@ export default class TextArrayController extends Controller {
 
     addNewField() {
         let lastNode = this.inputTargets[this.inputTargets.length - 1];
-        let clone = this.templateElement.cloneNode(true) as HTMLDivElement;
+        let clone = this.templateElement!.cloneNode(true) as HTMLDivElement;
 
         if (lastNode) {
             let parent = lastNode.parentElement as HTMLDivElement;
@@ -38,18 +38,17 @@ export default class TextArrayController extends Controller {
 
     removeField(event: MouseEvent) {
         let target = event.currentTarget as HTMLButtonElement;
-        let parent = target.parentElement;
-        target.parentElement.remove();
+        target.parentElement!.remove();
         this.calculateDisables();
     }
 
     calculateDisables() {
         let inputCount = this.inputTargets.length;
         if (inputCount == 1) {
-            this.inputTargets[0].querySelector('button[name="deleteRow"]').setAttribute("disabled", "disabled");
+            this.inputTargets[0].querySelector('button[name="deleteRow"]')!.setAttribute("disabled", "disabled");
         } else {
             this.inputTargets.forEach((input) => {
-                input.querySelector("button[name=\"deleteRow\"]").removeAttribute("disabled");
+                input.querySelector("button[name=\"deleteRow\"]")!.removeAttribute("disabled");
             })
         }
     }
