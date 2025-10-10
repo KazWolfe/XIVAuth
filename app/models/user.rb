@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   has_many :webauthn_credentials, class_name: "User::WebauthnCredential", dependent: :destroy
   has_one :totp_credential, class_name: "User::TotpCredential", dependent: :destroy
-  validates :webauthn_id, uniqueness: true
+  validates :webauthn_id, uniqueness: true, allow_nil: true
 
   has_one :profile, class_name: "User::Profile", dependent: :destroy, required: true, autosave: true
   validates_associated :profile
@@ -71,6 +71,10 @@ class User < ApplicationRecord
 
     super
   end
+
+  # def skip_password_complexity?
+  #   false
+  # end
 
   def associated_teams
     # Start with direct team memberships
