@@ -5,4 +5,9 @@ class User::WebauthnCredential < ApplicationRecord
   validates :public_key, presence: true
   validates :nickname, presence: true, uniqueness: { scope: :user_id }
   validates :sign_count, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validate :validate_user_has_webauthn_id
+
+  def validate_user_has_webauthn_id
+    errors.add(:user, "does not have a webauthn id") unless user.webauthn_id
+  end
 end
