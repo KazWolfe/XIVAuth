@@ -68,7 +68,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # The path used after sign up for inactive accounts.
   def after_inactive_sign_up_path_for(resource)
-    stored_location_for(resource) || new_user_session_path
+    new_user_session_path
   end
 
   protected def check_registration_allowed
@@ -85,6 +85,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     resource.validate
     set_minimum_password_length
 
+    flash[:error] = "Captcha verification failed, please try again."
     render :new, status: :unprocessable_entity
   end
 
