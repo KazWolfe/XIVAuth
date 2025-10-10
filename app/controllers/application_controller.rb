@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   end
 
   private def redirect_to_new_domain
-    if request.host == "edge.xivauth.net"
+    if request.host == "edge.xivauth.net" || request.host == "www.xivauth.net"
       redirect_to "#{request.protocol}xivauth.net#{request.fullpath}", status: :moved_permanently, allow_other_host: true
     end
 
