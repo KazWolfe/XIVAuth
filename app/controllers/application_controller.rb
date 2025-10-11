@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   private def set_sentry_context
     sentry_frontend_data = {
       environment: ENV["APP_ENV"] || Rails.env,
-      dsn: Rails.application.credentials.dig(:sentry, :dsn),
+      dsn: Rails.application.credentials.dig(:sentry, :dsn) || "https://d26e06e98289421f9eb53d5d892ab660@o4505361640325120.ingest.us.sentry.io/4505361641504768",
       user: nil
     }
 
@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
       sentry_frontend_data[:user] = {
         id: current_user.id,
         email: current_user.email,
-        name: current_user.display_name
+        username: current_user.display_name
       }
 
       Sentry.set_user(id: current_user.id) if user_signed_in?

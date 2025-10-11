@@ -1,19 +1,19 @@
 import * as Sentry from "@sentry/browser";
 
+
+// Borrowed from https://github.com/odichat/odichat/blob/main/app/javascript/sentry.js
 class SentryDebugger {
+    feedbackWidget?: any;
+
     setup() {
-        if (window.gon.sentry == null || window.gon.sentry.dsn == null) {
+        const sentryData = window.gon.sentry;
+
+        if (sentryData == null || sentryData.dsn == null) {
             return;
         }
 
-        const sentryData = window.gon.sentry;
-
         if (sentryData.user) {
-            Sentry.setUser({
-                id: sentryData.user.id,
-                email: sentryData.user.email,
-                username: sentryData.user.username,
-            });
+            Sentry.setUser(sentryData.user);
         }
 
         Sentry.init({
@@ -22,6 +22,7 @@ class SentryDebugger {
             sendDefaultPii: true,
             integrations: [
                 Sentry.feedbackIntegration({
+                    autoInject: false,
                     colorScheme: "system",
                     useSentryUser: {
                         name: "username",
@@ -30,6 +31,22 @@ class SentryDebugger {
                 }),
             ]
         });
+
+        this.feedbackWidget = Sentry.getFeedback();
+        this.mountWidget();
+
+        document.addEventListener("turbo:render", () => {
+            requestAnimationFrame(this.mountWidget.bind(this));
+        })
+    }
+
+    mountWidget() {
+        if (this.feedbackWidget == null) {
+            return;
+        }
+
+        this.feedbackWidget.remove();
+        this.feedbackWidget.createWidget();
     }
 }
 
