@@ -1,13 +1,13 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
-  before_action :set_sentry_context, if: Rails.env.production?
+  before_action :set_sentry_context
 
   before_action :redirect_to_new_domain
 
   private def set_sentry_context
     sentry_frontend_data = {
       environment: ENV["APP_ENV"] || Rails.env,
-      dsn: Sentry.configuration.dsn,
+      dsn: Rails.application.credentials.dig(:sentry, :dsn),
       user: nil
     }
 
