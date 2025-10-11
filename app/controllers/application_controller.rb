@@ -1,21 +1,27 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
-  before_action :set_gon_context
-  before_action :set_sentry_context
+  before_action :set_sentry_context, if: Rails.env.production?
 
   before_action :redirect_to_new_domain
 
   private def set_sentry_context
-    return unless user_signed_in?
-    Sentry.set_user(id: current_user.id)
-  end
+    sentry_frontend_data = {
+      environment: ENV["APP_ENV"] || Rails.env,
+      dsn: Sentry.configuration.dsn,
+      user: nil
+    }
 
-  private def set_gon_context
     if user_signed_in?
-      gon.push({ user: { id: current_user.id, email: current_user.email, name: current_user.display_name } })
+      sentry_frontend_data[:user] = {
+        id: current_user.id,
+        email: current_user.email,
+        name: current_user.display_name
+      }
+
+      Sentry.set_user(id: current_user.id) if user_signed_in?
     end
 
-    gon.push({ env: ENV["APP_ENV"] || Rails.env })
+    gon.push({ sentry: sentry_frontend_data })
   end
 
   private def redirect_to_new_domain

@@ -2,22 +2,23 @@ import * as Sentry from "@sentry/browser";
 
 class SentryDebugger {
     setup() {
-        if (window.gon.env == "development") {
+        if (window.gon.sentry == null || window.gon.sentry.dsn == null) {
             return;
         }
 
-        if (window.gon.user) {
+        const sentryData = window.gon.sentry;
+
+        if (sentryData.user) {
             Sentry.setUser({
-                id: window.gon.user.id,
-                email: window.gon.user.email,
-                username: window.gon.user.name,
+                id: sentryData.user.id,
+                email: sentryData.user.email,
+                username: sentryData.user.username,
             });
         }
 
         Sentry.init({
-            dsn: "https://d26e06e98289421f9eb53d5d892ab660@o4505361640325120.ingest.us.sentry.io/4505361641504768",
-            // Setting this option to true will send default PII data to Sentry.
-            // For example, automatic IP address collection on events
+            dsn: sentryData.dsn,
+            environment: sentryData.environment,
             sendDefaultPii: true,
             integrations: [
                 Sentry.feedbackIntegration({
@@ -37,11 +38,14 @@ declare global {
         Sentry: typeof Sentry;
 
         gon: {
-            env: string;
-            user?: {
-                id: string;
-                email: string;
-                name: string;
+            sentry?: {
+                dsn: string;
+                environment: string;
+                user?: {
+                    id: number;
+                    email: string;
+                    username: string;
+                }
             }
         }
     }
