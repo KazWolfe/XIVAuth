@@ -135,3 +135,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "gon", "~> 6.5"

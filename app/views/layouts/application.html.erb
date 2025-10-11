@@ -6,6 +6,8 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
+  <%= Gon::Base.render_data %>
+
   <% if content_for(:head_extensions_before) %>
     <%= yield(:head_extensions_before) %>
   <% end %>
@@ -20,7 +22,6 @@
   <% if content_for(:head_extensions) %>
     <%= yield(:head_extensions) %>
   <% end %>
-
 </head>
 
 <body class="d-flex flex-column min-vh-100">

@@ -52,6 +52,10 @@ class User < ApplicationRecord
     self.encrypted_password.present?
   end
 
+  def display_name
+    profile.display_name
+  end
+
   def avatar_url
     gravatar_url(144)
   end
