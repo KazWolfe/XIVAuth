@@ -1,43 +1,55 @@
-<h1>ADMIN - User Management</h1>
+<% content_for(:page_header) do %>
+  <div>
+    <h1>User Management</h1>
+  </div>
+<% end %>
 
-<table class="table">
-  <thead>
-  <tr>
-    <th scope="col" width="128">ID Fragment</th>
-    <th scope="col">Display Name</th>
-    <th scope=""></th>
-    <th scope="col">Characters</th>
-    <th scope="col">Verified?</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @users.each do |user| %>
-    <tr>
-      <td class="font-monospace"><%= user.id[-8..] %></td>
-      <td><%= link_to user.profile.display_name, admin_user_path(user) %></td>
-      <td>
-        <% if user.developer? %>
-          <i class="bi bi-code-slash" title="Developer Access"></i>
-        <% end %>
-        <% if user.social_identities.count.positive? %>
-          <i class="bi bi-globe2" title="External IdP"></i>
-        <% end %>
-        <% unless user.confirmed? %>
-          <i class="bi bi-envelope-exclamation-fill text-warning" title="Email Unverified"></i>
-        <% end %>
-        <% if user.admin? %>
-          <i class="bi bi-key" title="System Administrator"></i>
-        <% end %>
-      </td>
-      <td>
-        <%= user.character_registrations.count %>
-      </td>
-      <td>
-        <%= user.character_registrations.verified.count.positive? ? "Yes" : "No" %>
-      </td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col" width="128">ID Fragment</th>
+            <th scope="col">Display Name</th>
+            <th scope=""></th>
+            <th scope="col">Characters</th>
+            <th scope="col">Verified?</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td class="font-monospace"><%= user.id[-8..] %></td>
+              <td><%= link_to user.profile.display_name, admin_user_path(user) %></td>
+              <td>
+                <% if user.developer? %>
+                  <i class="bi bi-code-slash" title="Developer Access"></i>
+                <% end %>
+                <% if user.social_identities.count.positive? %>
+                  <i class="bi bi-globe2" title="External IdP"></i>
+                <% end %>
+                <% unless user.confirmed? %>
+                  <i class="bi bi-envelope-exclamation-fill text-warning" title="Email Unverified"></i>
+                <% end %>
+                <% if user.admin? %>
+                  <i class="bi bi-key" title="System Administrator"></i>
+                <% end %>
+              </td>
+              <td>
+                <%= user.character_registrations.count %>
+              </td>
+              <td>
+                <%= user.character_registrations.verified.count.positive? ? "Yes" : "No" %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
 
-<%== pagy_bootstrap_nav(@pagy) %>
+        <%== pagy_bootstrap_nav(@pagy) %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,24 +1,59 @@
-<h1>ADMIN - Client Application Management</h1>
+<% content_for(:page_header) do %>
+  <div>
+    <h1>Client Application Management</h1>
+  </div>
+<% end %>
 
-<table class="table">
-  <thead>
-  <tr>
-    <th scope="col" width="128">ID Fragment</th>
-    <th scope="col">App Name</th>
-    <th scope="col">Owner</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @client_applications.each do |app| %>
-    <tr>
-      <td class="font-monospace"><%= app.id[-8..] %></td>
-      <td><%= link_to app.name, admin_client_application_path(app) %></td>
-      <td>
-        <%= render partial: 'admin/_components/user_link', locals: { target: app.owner } %>
-      </td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
-
-<%== pagy_bootstrap_nav(@pagy) %>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <table class="table">
+          <thead>
+          <tr>
+            <th></th>
+            <th scope="col">ID Fragment</th>
+            <th scope="col">App Name</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Visibility</th>
+            <th scope="col">Verified?</th>
+            <th scope="col">Created</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @client_applications.each do |app| %>
+            <tr>
+              <td>
+                <% if app.profile&.icon_url.present? %>
+                  <%= image_tag app.profile.icon_url, class: "rounded", size: 28, alt: "App Icon" %>
+                <% end %>
+              </td>
+              <td class="font-monospace"><%= app.id[-8..] %></td>
+              <td><%= link_to app.name, admin_client_application_path(app) %></td>
+              <td>
+                <%= render partial: 'admin/_components/user_link', locals: { target: app.owner } %>
+              </td>
+              <td>
+                <% if app.private? %>
+                  <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Private</span>
+                <% else %>
+                  <span class="badge bg-success"><i class="bi bi-unlock-fill"></i> Public</span>
+                <% end %>
+              </td>
+              <td>
+                <% if app.verified? %>
+                  <span class="text-success"><i class="bi bi-patch-check-fill"></i> Verified</span>
+                <% else %>
+                  <span class="text-muted"><i class="bi bi-patch-exclamation"></i> Unverified</span>
+                <% end %>
+              </td>
+              <td><%= app.created_at.strftime('%Y-%m-%d') %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+        <%== pagy_bootstrap_nav(@pagy) %>
+      </div>
+    </div>
+  </div>
+</div>
