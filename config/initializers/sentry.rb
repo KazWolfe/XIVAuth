@@ -7,8 +7,12 @@ Sentry.init do |config|
   config.instrumenter = :otel if defined?(OpenTelemetry) && defined?(Sentry::OpenTelemetry)
 
   config.enable_tracing = true
-  config.traces_sample_rate = 1.0
-  config.profiles_sample_rate = 1.0
+  config.traces_sample_rate = 0.1
+  config.profiles_sample_rate = 0.1
 
   config.enabled_patches += [:sidekiq_cron]
+
+  config.enable_logs = true
 end
+
+SemanticLogger.add_appender(appender: :sentry_ruby)

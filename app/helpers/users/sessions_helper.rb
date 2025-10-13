@@ -19,7 +19,8 @@ module Users::SessionsHelper
       koana.h@studium.sharlayan.edu
       thirdpromise@tour.tural
       delion@thavnairiantruth.info
-      aid:msg:alexandria/gov/sphene
+      aid:msg:gov/sphene
+      aid:msg:gov/knighthood/o.velona
     ].sample
   end
 end
