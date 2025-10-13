@@ -7,6 +7,8 @@ export default class RemoteModalController extends Controller {
     connect() {
         this.modal = new Modal(this.element);
         this.modal.show();
+
+        this.element.addEventListener('hide.bs.modal', this.cleanup.bind(this));
     }
 
     hideBeforeRender(event: Modal.Event) {
@@ -19,5 +21,10 @@ export default class RemoteModalController extends Controller {
 
     isOpen(): boolean {
         return this.element.classList.contains("show");
+    }
+
+    cleanup() {
+        // destroy the parent turbo frame
+        this.element.parentElement?.remove();
     }
 }

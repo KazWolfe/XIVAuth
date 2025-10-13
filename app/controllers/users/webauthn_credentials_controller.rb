@@ -51,7 +51,7 @@ class Users::WebauthnCredentialsController < ApplicationController
 
   private def render_new_form_again(status: :unprocessable_entity)
     render status: status,
-           turbo_stream: turbo_stream.update("remote_modal-content", partial: "users/webauthn_credentials/modal")
+           turbo_stream: turbo_stream.update("register_webauthn_modal-content", partial: "users/webauthn_credentials/modal")
   end
 
   private def create_params

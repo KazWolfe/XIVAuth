@@ -24,7 +24,7 @@
   <% end %>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" id="body">
 <%= render 'layouts/components/env_watermark' %>
 
 <% if content_for(:page_layout) %>
@@ -35,8 +35,6 @@
     <%= yield %>
   </div>
 <% end %>
-
-<%= turbo_frame_tag "remote_modal", target: "_top" %>
 
 <div class="toast-container p-3 top-0 end-0" id="toasts">
   <%= render partial: "layouts/components/toasts/flashy_toasts" %>

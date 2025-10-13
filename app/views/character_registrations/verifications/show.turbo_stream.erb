@@ -1,4 +1,4 @@
-<%= turbo_stream.update 'character-verification-modal-container' do %>
+<%= turbo_stream.append 'body' do %>
   <%= render 'layouts/components/remote_modal', title: 'Verify Character', content_tag: ":content",
              modal_id: "character-verification-modal:#{@character_registration.id}" do %>
     <div class="modal-header">

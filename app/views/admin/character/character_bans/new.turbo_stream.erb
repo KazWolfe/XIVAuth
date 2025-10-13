@@ -1,5 +1,5 @@
-<%= turbo_stream.replace "remote_modal" do %>
-  <%= render 'layouts/components/remote_modal', title: "Ban #{@character.name}" do %>
+<%= turbo_stream.append "body" do %>
+  <%= render 'layouts/components/remote_modal', title: "Ban #{@character.name}", modal_id: "ban_character_modal" do %>
     <%= render 'admin/character/character_bans/form' %>
   <% end %>
 <% end %>

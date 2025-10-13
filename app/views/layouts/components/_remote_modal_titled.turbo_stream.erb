@@ -1,9 +1,9 @@
-<%= render "remote_modal" do %>
+<%= render "remote_modal", modal_id: local_assigns[:modal_id] do %>
   <div class="modal-header">
     <h4 class="modal-title"><%= title %></h4>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
-  <div class="modal-body remote_modal_body" id="remote_modal_body">
+  <div class="modal-body remote_modal_body" id="<%= local_assigns[:modal_id] || "remote_modal" %>-body">
     <%= yield %>
   </div>
 <% end %>
