@@ -12,11 +12,9 @@
   </div>
 <% end %>
 
-<div class="row">
+<div class="row" id="character_registrations">
   <% @character_registrations.each do |character_registration| %>
-    <div class="col-md-6 col-xl-4 mb-2">
-      <%= render 'character_card', character_registration: character_registration %>
-    </div>
+    <%= render 'character_card', character_registration: character_registration %>
   <% end %>
 </div>
 

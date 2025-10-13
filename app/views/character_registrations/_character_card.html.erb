@@ -1,58 +1,60 @@
 <% character = character_registration.character %>
 
-<div class="card" id="<%= dom_id character_registration %>">
-  <div class="card-body">
-    <div class="d-flex flex-row align-items-center">
-      <img src="<%= image_url character.avatar_url %>" class="rounded m-2"
-           alt="Headshot of <%= character.name %>" width="96" height="96">
-      <div class="ps-2">
-        <h5 class="card-title">
-          <%= character.name %>
-          <% if character_registration.verified? %>
-            <i class="bi bi-patch-check-fill text-success" title="Verified since <%= character_registration.verified_at %>"></i>
-          <% end %>
-        </h5>
-        <p class="card-subtitle"><%= character.home_with_datacenter %></p>
-        <p class="mb-0">Lodestone ID
-          <%= link_to "#{character.lodestone_id}", character_registration.lodestone_url, class: "text-reset font-monospace" %>
-        </p>
-        <% if character.refresh_fail_reason.present? %>
+<div class="col-md-6 col-xl-4 mb-2" id="<%= dom_id character_registration %>">
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex flex-row align-items-center">
+        <img src="<%= image_url character.avatar_url %>" class="rounded m-2"
+             alt="Headshot of <%= character.name %>" width="96" height="96">
+        <div class="ps-2">
+          <h5 class="card-title">
+            <%= character.name %>
+            <% if character_registration.verified? %>
+              <i class="bi bi-patch-check-fill text-success" title="Verified since <%= character_registration.verified_at %>"></i>
+            <% end %>
+          </h5>
+          <p class="card-subtitle"><%= character.home_with_datacenter %></p>
+          <p class="mb-0">Lodestone ID
+            <%= link_to "#{character.lodestone_id}", character_registration.lodestone_url, class: "text-reset font-monospace" %>
+          </p>
+          <% if character.refresh_fail_reason.present? %>
           <span class="text-warning-emphasis" title="<%= I18n.t "character_registrations.refresh_fail_reasons.#{character.refresh_fail_reason}" %>">
             <span class="bi bi-exclamation-triangle-fill"></span> Refresh failed!
           </span>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="card-footer">
-    <div class="btn-toolbar float-end" role="toolbar" aria-label="Character Actions">
-      <% unless character_registration.verified? %>
-        <%= link_to character_registration_verify_path(character_registration), class: "btn btn-success me-2", data: { turbo_stream: "remote_modal" } do %>
-          <i class="bi bi-patch-check"></i> Verify
+    <div class="card-footer">
+      <div class="btn-toolbar float-end" role="toolbar" aria-label="Character Actions">
+        <% unless character_registration.verified? %>
+          <%= link_to character_registration_verify_path(character_registration), class: "btn btn-success me-2", data: { turbo_stream: "remote_modal" } do %>
+            <i class="bi bi-patch-check"></i> Verify
+          <% end %>
         <% end %>
-      <% end %>
-      <div class="dropdown">
-        <button class="btn btn-outline-secondary dropdown-toggle px-3" type="button" id="actionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-gear-fill"></i>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="actionsDropdown">
-          <% if character.stale? %>
-            <%= button_to character_registration_refresh_path(character_registration), class: 'dropdown-item' do %>
-              <i class="bi bi-arrow-clockwise"></i> Refresh Character
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle px-3" type="button" id="actionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-gear-fill"></i>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="actionsDropdown">
+            <% if character.stale? %>
+              <%= button_to character_registration_refresh_path(character_registration), class: 'dropdown-item' do %>
+                <i class="bi bi-arrow-clockwise"></i> Refresh Character
+              <% end %>
             <% end %>
-          <% end %>
-          <% # TODO: Remove unverify button. %>
-          <% if character_registration.verified? %>
-            <%= button_to character_registration_verify_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
-              <i class="bi bi-patch-minus"></i> Unverify Character
+            <% # TODO: Remove unverify button. %>
+            <% if character_registration.verified? %>
+              <%= button_to character_registration_verify_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
+                <i class="bi bi-patch-minus"></i> Unverify Character
+              <% end %>
             <% end %>
-          <% end %>
-          <li>
-            <%= button_to character_registration_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
-              <i class="bi bi-trash"></i> Delete Character
-            <% end %>
-          </li>
-        </ul>
+            <li>
+              <%= button_to character_registration_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
+                <i class="bi bi-trash"></i> Delete Character
+              <% end %>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

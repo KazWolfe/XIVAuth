@@ -67,7 +67,9 @@ class CharacterRegistrationsController < ApplicationController
       format.html do
         redirect_to character_registrations_path, notice: "Character registration was successfully destroyed."
       end
-      format.turbo_stream { }
+      format.turbo_stream do
+        # handled in the model now...
+      end
     end
   end
 

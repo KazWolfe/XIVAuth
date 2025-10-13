@@ -31,7 +31,9 @@ class CharacterRegistration < ApplicationRecord
   validate :character_not_banned, unless: :skip_ban_check, on: :create
   validate :owner_can_create, on: :create
 
-  after_save :broadcast_card_update
+  after_create :broadcast_card_create
+  after_update :broadcast_card_update
+  after_destroy :broadcast_card_destroy
 
   scope :verified, -> { where.not(verified_at: nil) }
   scope :unverified, -> { where(verified_at: nil) }
@@ -100,11 +102,26 @@ class CharacterRegistration < ApplicationRecord
     self.character.lodestone_url(self.extra_data.fetch("region", nil))
   end
 
+  def broadcast_card_create
+    broadcast_append_to(
+      "UserStream:#{user.id}", :character_registrations,
+      target: "character_registrations",
+      partial: "character_registrations/character_card",
+    )
+  end
+
   def broadcast_card_update
     broadcast_replace_to(
       "UserStream:#{user.id}", :character_registrations,
       target: "character_registration_#{self.id}",
       partial: "character_registrations/character_card"
+    )
+  end
+
+  def broadcast_card_destroy
+    broadcast_remove_to(
+      "UserStream:#{user.id}", :character_registrations,
+      target: "character_registration_#{self.id}"
     )
   end
 
