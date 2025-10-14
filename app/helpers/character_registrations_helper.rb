@@ -6,8 +6,10 @@ module CharacterRegistrationsHelper
 
   def extract_data(id_or_url)
     if (res = LODESTONE_URL_REGEX.match(id_or_url))
-      res.named_captures.deep_symbolize_keys
+      return res.named_captures.deep_symbolize_keys
     end
+
+    return {}
   end
 
   def can_add_characters?
