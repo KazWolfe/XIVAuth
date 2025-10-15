@@ -1,6 +1,7 @@
 import {Controller} from "@hotwired/stimulus";
 import * as WebAuthnJSON from "@github/webauthn-json";
 import RenderParameters = Turnstile.RenderParameters;
+import {PublicKeyCredentialWithAssertionJSON} from "@github/webauthn-json";
 
 export default class LoginFormController extends Controller {
     static targets = ["webauthnChallenge", "webauthnResponse", "actionButton"];
@@ -46,21 +47,17 @@ export default class LoginFormController extends Controller {
             return;
         }
 
-        // FIXME: Bug in certain password managers where they don't support toJSON on the response.
-        let discoveredCredential = await WebAuthnJSON.get({
-            "signal": this.discoveryAbortController.signal,
-            "publicKey": JSON.parse(this.webauthnChallengeTarget.value),
-            "mediation": "conditional",
-        });
-
-        // let discoveryOpts = PublicKeyCredential.parseRequestOptionsFromJSON({
-        //    ...JSON.parse(this.challengeTarget.value),
-        //
-        //    "mediation": "conditional",
-        //    "signal": this.discoveryAbortController.signal,
-        // });
-        //
-        // let discoveredCredential = await navigator.credentials.get({publicKey: discoveryOpts}) as PublicKeyCredential;
+        let discoveredCredential: PublicKeyCredentialWithAssertionJSON;
+        try {
+            // FIXME: Bug in certain password managers where they don't support toJSON on the response.
+            discoveredCredential = await WebAuthnJSON.get({
+                "signal": this.discoveryAbortController.signal,
+                "publicKey": JSON.parse(this.webauthnChallengeTarget.value),
+                "mediation": "conditional",
+            });
+        } catch (e: unknown) {
+            return;
+        }
 
         if (discoveredCredential) {
             this.webauthnResponseTarget.value = JSON.stringify(discoveredCredential);

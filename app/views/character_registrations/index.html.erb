@@ -5,7 +5,7 @@
   </div>
   <div>
     <% if can_add_characters? %>
-      <%= link_to new_character_registration_path, class: "btn btn-primary" do %>
+      <%= button_to new_character_registration_path, class: "btn btn-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
         <i class="bi bi-plus"></i> Add Character
       <% end %>
     <% end %>

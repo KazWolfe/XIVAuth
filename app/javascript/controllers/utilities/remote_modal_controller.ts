@@ -11,6 +11,10 @@ export default class RemoteModalController extends Controller {
         this.element.addEventListener('hide.bs.modal', this.cleanup.bind(this));
     }
 
+    disconnect() {
+        this.modal?.dispose();
+    }
+
     hideBeforeRender(event: Modal.Event) {
         if (this.isOpen()) {
             event.preventDefault();
@@ -24,7 +28,10 @@ export default class RemoteModalController extends Controller {
     }
 
     cleanup() {
-        // destroy the parent turbo frame
-        this.element.parentElement?.remove();
+        const parentEl = this.element.parentElement;
+
+        if (parentEl && parentEl.tagName.toLowerCase() == "turbo-frame") {
+            parentEl.remove();
+        }
     }
 }

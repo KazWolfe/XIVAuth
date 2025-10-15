@@ -36,8 +36,10 @@ class CharacterRegistrationsController < ApplicationController
         format.html do
           redirect_to character_registrations_path, notice: "Character registration was successfully created."
         end
+        format.turbo_stream { render turbo_stream: turbo_stream.remove("register_character_modal") }
       else
         format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render_new_form_again }
       end
     end
   end
@@ -112,7 +114,8 @@ class CharacterRegistrationsController < ApplicationController
 
   private def render_new_form_again(status: :unprocessable_entity)
     render status: status,
-           turbo_stream: turbo_stream.update("register_character_modal-content",
-                                             partial: "portal/characters/partials/new_character_form")
+           turbo_stream: turbo_stream.update("register_character_modal_body",
+                                             partial: "character_registrations/registration_form",
+                                             locals: { character_registration: @character_registration })
   end
 end

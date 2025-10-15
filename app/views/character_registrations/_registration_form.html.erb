@@ -10,9 +10,11 @@
                         placeholder: "id" %>
     <%= form.label :character_ref, "Lodestone ID or URL" %>
     <% if character_registration.errors.present? %>
-      <div class="invalid-feedback">
-        <%= character_registration.errors.full_messages.join("\n") %>
-      </div>
+      <ul class="invalid-feedback list-unstyled">
+        <% character_registration.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
     <% end %>
   </div>
 
