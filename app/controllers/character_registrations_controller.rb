@@ -114,8 +114,8 @@ class CharacterRegistrationsController < ApplicationController
 
   private def render_new_form_again(status: :unprocessable_entity)
     render status: status,
-           turbo_stream: turbo_stream.update("register_character_modal_body",
-                                             partial: "character_registrations/registration_form",
+           turbo_stream: turbo_stream.update("register_character_modal-content",
+                                             partial: "character_registrations/registration_form_modal",
                                              locals: { character_registration: @character_registration })
   end
 end

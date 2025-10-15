@@ -1,11 +1,6 @@
 <%= turbo_stream.append "body" do %>
   <%= render 'layouts/components/remote_modal', title: 'Add Character', modal_id: "register_character_modal" do %>
-    <div class="modal-header">
-      <h5 class="modal-title">Add New Character</h5>
-    </div>
-    <div class="modal-body" id="register_character_modal_body">
-      <%= render partial: 'character_registrations/registration_form',
+      <%= render partial: 'character_registrations/registration_form_modal',
                  locals: { character_registration: @character_registration } %>
-    </div>
   <% end %>
 <% end %>

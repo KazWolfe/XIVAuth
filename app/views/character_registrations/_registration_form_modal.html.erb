@@ -1,0 +1,34 @@
+<%= form_with(model: character_registration) do |form| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Register Character</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+
+  <div class="modal-body">
+    <p>
+      To register a character, please paste in either the character's Lodestone ID or a link to the character to add.
+    </p>
+
+    <div class="form-floating mb-3">
+      <%= form.text_field :character_ref,
+                          class: "form-control #{"is-invalid" if character_registration.errors.present?}",
+                          pattern: CharacterRegistrationsHelper::LODESTONE_URL_REGEX,
+                          placeholder: "id" %>
+      <%= form.label :character_ref, "Lodestone ID or URL" %>
+      <% if character_registration.errors.present? %>
+        <ul class="invalid-feedback list-unstyled">
+          <% character_registration.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <div>
+      <%= form.submit "Register Character", class: "btn btn-primary" %>
+      <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </div>
+<% end %>
