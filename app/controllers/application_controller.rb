@@ -1,10 +1,10 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
-  before_action :set_sentry_context
+  before_action :set_observability_context
 
   before_action :redirect_to_new_domain
 
-  private def set_sentry_context
+  private def set_observability_context
     sentry_frontend_data = {
       environment: ENV["APP_ENV"] || Rails.env,
       dsn: Rails.application.credentials.dig(:sentry, :dsn) || "https://d26e06e98289421f9eb53d5d892ab660@o4505361640325120.ingest.us.sentry.io/4505361641504768",
@@ -18,7 +18,8 @@ class ApplicationController < ActionController::Base
         username: current_user.display_name
       }
 
-      Sentry.set_user(id: current_user.id, username: current_user.display_name) if user_signed_in?
+      Sentry.set_user(id: current_user.id, username: current_user.display_name)
+      LogContext.add(user: { id: current_user.id, username: current_user.display_name })
     end
 
     gon.push({ sentry: sentry_frontend_data })

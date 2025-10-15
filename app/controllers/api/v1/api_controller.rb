@@ -2,7 +2,7 @@ class Api::V1::ApiController < ActionController::API
   # There are no "open" API calls; everything must require at least authorization.
   before_action :doorkeeper_authorize!
   before_action :load_token
-  before_action :set_sentry_context, if: proc { Rails.env.production? }
+  before_action :set_observability_context
 
   respond_to :json
 
@@ -20,19 +20,20 @@ class Api::V1::ApiController < ActionController::API
     @doorkeeper_token = doorkeeper_token
   end
 
-  private def set_sentry_context
+  private def set_observability_context
     return unless doorkeeper_token
 
     ctx = {
-      application_id: doorkeeper_token.application_id,
-      scopes: doorkeeper_token.scopes
+      client_id: doorkeeper_token.application_id,
+      scopes: doorkeeper_token.scopes,
     }
 
     if current_user.present?
-      Sentry.set_user(id: current_user.id)
-      ctx[:user_id] = current_user.id
+      Sentry.set_user(id: current_user.id, username: current_user.display_name)
+      LogContext.add(user: { id: current_user.id, username: current_user.display_name })
     end
 
     Sentry.set_context("oauth_application", ctx)
+    LogContext.add(oauth_application: ctx)
   end
 end

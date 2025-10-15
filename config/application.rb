@@ -18,6 +18,10 @@ module App
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.eager_load_paths << Rails.root.join("lib/contextual_logger")
+
+    # don't log to file by default.
+    config.rails_semantic_logger.add_file_appender = false
 
     config.action_controller.include_all_helpers = false
 

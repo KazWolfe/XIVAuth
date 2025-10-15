@@ -1,5 +1,7 @@
 require "active_support/core_ext/integer/time"
 
+require "contextual_logger/formatters/color_formatter"
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -94,4 +96,5 @@ Rails.application.configure do
   config.web_console.allowed_ips = %w[10.0.0.0/8 127.0.0.0/8 172.16.0.0/12 192.168.0.0/16 ::/64]
 
   config.log_level = ENV["LOG_LEVEL"]&.downcase&.strip&.to_sym || :debug
+  SemanticLogger.add_appender(io: $stdout, formatter: ContextualLogger::Formatters::ColorFormatter.new)
 end
