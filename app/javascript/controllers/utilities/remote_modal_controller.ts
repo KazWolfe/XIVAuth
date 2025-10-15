@@ -2,25 +2,24 @@ import { Controller } from "@hotwired/stimulus"
 import { Modal } from "bootstrap"
 
 export default class RemoteModalController extends Controller {
+    static targets = [ "remoteCloseTrigger" ];
+
     private modal?: Modal;
 
     connect() {
         this.modal = new Modal(this.element);
         this.modal.show();
 
-        this.element.addEventListener('hide.bs.modal', this.cleanup.bind(this));
+        this.element.addEventListener('hidden.bs.modal', this.cleanup.bind(this));
+    }
+
+    remoteCloseTriggerTargetConnected() {
+        console.debug("Server requested we close the modal.");
+        this.modal?.hide();
     }
 
     disconnect() {
         this.modal?.dispose();
-    }
-
-    hideBeforeRender(event: Modal.Event) {
-        if (this.isOpen()) {
-            event.preventDefault();
-            this.element.addEventListener('hidden.bs.modal', event.detail.resume);
-            this.modal!.hide();
-        }
     }
 
     isOpen(): boolean {
