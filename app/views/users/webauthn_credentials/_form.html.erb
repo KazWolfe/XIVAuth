@@ -2,7 +2,7 @@
               data: { controller: "devise--webauthn--registration", action: "devise--webauthn--registration#register" }) do |f| %>
   <div class="form-floating mb-3">
     <%= f.text_field :nickname, class: "form-control", placeholder: "nickname" %>
-    <%= f.label :character_key, "Security Key Nickname" %>
+    <%= f.label :nickname, "Security Key Nickname" %>
   </div>
 
   <%= f.hidden_field :challenge, value: @challenge.to_json, disabled: true, data: { "devise--webauthn--registration-target": 'challenge' } %>

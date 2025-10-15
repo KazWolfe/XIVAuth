@@ -37,7 +37,7 @@ export default class LoginFormController extends Controller {
     }
 
     async disconnect() {
-        this.discoveryAbortController.abort();
+        this.discoveryAbortController.abort("disconnect");
         super.disconnect();
     }
 
@@ -70,12 +70,12 @@ export default class LoginFormController extends Controller {
     }
 
     webauthnAbort() {
-        this.discoveryAbortController.abort();
+        this.discoveryAbortController.abort("passwordLogin");
     }
 
     async webauthnManualDiscovery() {
         // stop conditional first, we don't need it anymore.
-        this.discoveryAbortController.abort();
+        this.discoveryAbortController.abort("manualWebauthn");
 
         // FIXME: Bug in certain password managers where they don't support toJSON on the response.
         let discoveredCredential = await WebAuthnJSON.get({

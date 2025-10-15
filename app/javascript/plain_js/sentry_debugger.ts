@@ -26,7 +26,7 @@ class SentryDebugger {
                     colorScheme: "system",
                     useSentryUser: {
                         name: "username",
-                        email: "email",
+                        email: "feedback_email",
                     },
                 }),
             ]

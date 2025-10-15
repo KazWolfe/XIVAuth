@@ -68,8 +68,9 @@ class Users::WebauthnCredentialsController < ApplicationController
       },
       exclude: current_user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
+        # Discourage resident keys to prevent yubikey pain.
+        # UV for registration is irrelevant - assume the user is authorized.
         resident_key: "discouraged"
-        # UV at registration is irrelevant - we can assume the user is already privileged.
       },
       extensions: {
         cred_props: true

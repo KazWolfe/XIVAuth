@@ -14,11 +14,11 @@ class ApplicationController < ActionController::Base
     if user_signed_in?
       sentry_frontend_data[:user] = {
         id: current_user.id,
-        email: current_user.email,
+        feedback_email: current_user.email,
         username: current_user.display_name
       }
 
-      Sentry.set_user(id: current_user.id) if user_signed_in?
+      Sentry.set_user(id: current_user.id, username: current_user.display_name) if user_signed_in?
     end
 
     gon.push({ sentry: sentry_frontend_data })

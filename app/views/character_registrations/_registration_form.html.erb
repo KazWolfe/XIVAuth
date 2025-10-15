@@ -4,11 +4,11 @@
   </p>
 
   <div class="form-floating mb-3">
-    <%= form.text_field :character_key,
+    <%= form.text_field :character_ref,
                         class: "form-control #{"is-invalid" if character_registration.errors.present?}",
                         pattern: CharacterRegistrationsHelper::LODESTONE_URL_REGEX,
                         placeholder: "id" %>
-    <%= form.label :character_key, "Lodestone ID or URL" %>
+    <%= form.label :character_ref, "Lodestone ID or URL" %>
     <% if character_registration.errors.present? %>
       <div class="invalid-feedback">
         <%= character_registration.errors.full_messages.join("\n") %>

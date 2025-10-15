@@ -18,7 +18,7 @@ class CharacterRegistrationsController < ApplicationController
 
   # POST /character_registrations or /character_registrations.json
   def create
-    lodestone_data = helpers.extract_data(character_registration_params[:character_key])
+    lodestone_data = helpers.extract_data(character_registration_params[:character_ref])
     ffxiv_character = FFXIV::Character.for_lodestone_id(lodestone_data[:lodestone_id])
 
     @character_registration = CharacterRegistration.new(
@@ -107,7 +107,7 @@ class CharacterRegistrationsController < ApplicationController
   # Only allow a list of trusted parameters through.
   private def character_registration_params
     params.require(:character_registration)
-          .permit(:character_key)
+          .permit(:character_ref)
   end
 
   private def render_new_form_again(status: :unprocessable_entity)

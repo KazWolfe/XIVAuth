@@ -26,7 +26,7 @@ class CharacterRegistration < ApplicationRecord
   validates :verification_type, presence: true, if: -> { self.verified? }
   validates :verification_type, absence: true, unless: -> { self.verified? }
 
-  attr_accessor :skip_ban_check, :character_key
+  attr_accessor :skip_ban_check, :character_ref
 
   validate :character_not_banned, unless: :skip_ban_check, on: :create
   validate :owner_can_create, on: :create
