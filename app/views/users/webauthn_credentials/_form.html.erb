@@ -1,5 +1,7 @@
 <%= form_with(model: webauthn_credential, method: :post, url: webauthn_credentials_path,
               data: { controller: "devise--webauthn--registration", action: "devise--webauthn--registration#register" }) do |f| %>
+  <div class="alert alert-warning d-none" role="alert" id="webauthnAlertFailure" data-devise--webauthn--registration-target="feedback"></div>
+
   <div class="form-floating mb-3">
     <%= f.text_field :nickname, class: "form-control", placeholder: "nickname" %>
     <%= f.label :nickname, "Security Key Nickname" %>
