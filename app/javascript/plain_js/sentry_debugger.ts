@@ -26,7 +26,6 @@ class SentryDebugger {
                     colorScheme: "system",
                     useSentryUser: {
                         name: "username",
-                        email: "feedback_email",
                     },
                 }),
             ]
@@ -60,7 +59,6 @@ declare global {
                 environment: string;
                 user?: {
                     id: number;
-                    email: string;
                     username: string;
                 }
             }

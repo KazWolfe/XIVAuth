@@ -7,19 +7,17 @@ class ApplicationController < ActionController::Base
   private def set_observability_context
     sentry_frontend_data = {
       environment: ENV["APP_ENV"] || Rails.env,
-      dsn: Rails.application.credentials.dig(:sentry, :dsn) || "https://d26e06e98289421f9eb53d5d892ab660@o4505361640325120.ingest.us.sentry.io/4505361641504768",
-      user: nil
+      dsn: Rails.application.credentials.dig(:sentry, :dsn),
+      user: { }
     }
 
     if user_signed_in?
-      sentry_frontend_data[:user] = {
-        id: current_user.id,
-        feedback_email: current_user.email,
-        username: current_user.display_name
-      }
+      user_meta = { id: current_user.id, username: current_user.display_name }
 
-      Sentry.set_user(id: current_user.id, username: current_user.display_name)
-      LogContext.add(user: { id: current_user.id, username: current_user.display_name })
+      sentry_frontend_data[:user] = user_meta
+
+      Sentry.set_user(user_meta)
+      LogContext.add(user: user_meta)
     end
 
     gon.push({ sentry: sentry_frontend_data })
