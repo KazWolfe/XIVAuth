@@ -1,74 +1,199 @@
-<div class="border-bottom mb-4">
-  <h1>View <%= @oauth_client.name %></h1>
-</div>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="btn-toolbar gap-2 mb-4">
-      <%= link_to developer_application_path(@application), class: 'btn btn-primary' do %>
-        <i class="bi bi-back"></i> Return to App
-      <% end %>
-      <%= button_to developer_oauth_client_path(@oauth_client), method: :delete, class: "btn btn-danger",
+<% content_for(:page_header) do %>
+  <div>
+    <h1>Edit OAuth Client</h1>
+    <h4 class="mt-1 text-muted">
+      <%= link_to @application.name, developer_application_path(@application) %> &gt; <%= @oauth_client.name %>
+    </h4>
+  </div>
+  <div>
+    <div class="btn-toolbar gap-2">
+      <%= button_to developer_oauth_client_path(@oauth_client), method: :delete, class: "btn btn-outline-danger",
                     data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
-        <i class="bi bi-trash"></i> Delete OAuth Credential
+        <i class="bi bi-trash"></i> Delete Credential
       <% end %>
     </div>
-    <table class="table">
-      <tbody>
-      <tr>
-        <th scope="row">Client ID</th>
-        <td><code><%= @oauth_client.uid %></code></td>
-      </tr>
-      <tr>
-        <th scope="row">Client Secret</th>
-        <td>
-          <% if @oauth_client.needs_secret? %>
-            <% secret = flash[:application_secret].presence || @oauth_client.plaintext_secret %>
-            <% unless secret.blank? && Doorkeeper.config.application_secret_hashed? %>
-              <code><%= secret %></code><br>
-              <small>Warning: This is the only time this secret will be shown. Please ensure it is saved now.</small>
-            <% end %>
-            <%= button_to regenerate_secret_developer_oauth_client_path(@oauth_client), class: 'btn btn-primary' do %>
-              <i class="bi bi-arrow-clockwise"></i> Regenerate
-            <% end %>
-          <% else %>
-            <p>This client does not support secrets.</p>
-          <% end %>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Scopes</th>
-        <td>
-          <% if @oauth_client.scopes.present? %>
-            <ul>
-              <% @oauth_client.scopes.each do |scope| %>
-                <li><%= t("xivauth.oauth_scopes.#{scope}.friendly", default: scope) %></li>
-              <% end %>
-            </ul>
-          <% else %>
-            <span class="bg-light font-italic text-uppercase text-muted"><%= t('.not_defined') %></span>
-          <% end %>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Grant Flows</th>
-        <td><%= @oauth_client.grant_flows.blank? ? "Any" : @oauth_client.grant_flows.join(", ") %></td>
-      <tr>
-        <th scope="row">Confidential App</th>
-        <td>
-          <code class="bg-light" id="confidential"><%= @oauth_client.confidential? %></code>
-        </td>
-      </tr>
-      </tbody>
-    </table>
   </div>
-  <div class="col-md-6">
-    <h3>Redirect URIs</h3>
-    <%= form_with model: @oauth_client, url: developer_oauth_client_path(@oauth_client) do |form| %>
-      <%= render partial: 'layouts/components/form_elements/textarray',
-                 locals: { form: form, values: @oauth_client.redirect_uris,
-                           field_type: "url", field_name: "oauth_client[redirect_uris]", add_button_text: "Add URI" } %>
-      <%= form.submit %>
+<% end %>
+
+<div class="row">
+  <!-- Left: Client Details -->
+  <div class="col-lg-6">
+    <%= form_for @oauth_client, url: developer_oauth_client_path(@oauth_client), as: :oauth_client, html: { role: 'form' } do |f| %>
+      <div class="card mb-4">
+        <div class="card-header d-flex align-items-center">
+          <i class="bi bi-info-circle me-2"></i>
+          <h5 class="mb-0">Client Details</h5>
+        </div>
+        <div class="card-body">
+          <% if @oauth_client.errors.any? %>
+            <div class="alert alert-danger" role="alert"><%= t('doorkeeper.applications.form.error') %></div>
+          <% end %>
+
+          <!-- Name -->
+          <div class="mb-3">
+            <label class="form-label" for="oauth_client_name">Name</label>
+            <div class="input-group">
+              <%= f.text_field :name, id: 'oauth_client_name', class: 'form-control', required: true, placeholder: 'My OAuth Credential' %>
+            </div>
+          </div>
+
+          <!-- Client ID -->
+          <div class="mb-3">
+            <label class="form-label" for="client_id_value">Client ID</label>
+            <div class="input-group" data-controller="utilities--copy-code">
+              <input type="text" class="form-control font-monospace" value="<%= @oauth_client.uid %>" id="client_id_value" readonly
+                     data-utilities--copy-code-target="source" onclick="this.select();">
+              <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy client ID"
+                      data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Client Secret -->
+          <div class="mb-3">
+            <label class="form-label" for="client_secret_value">Client Secret</label>
+            <% secret = flash[:application_secret].presence || @oauth_client.plaintext_secret %>
+            <% if secret.present? %>
+              <div class="alert alert-warning py-2 mb-2">
+                This secret is shown only once. Store it somewhere safe.
+              </div>
+            <% end %>
+
+            <div class="input-group mb-2" data-controller="utilities--copy-code">
+              <% if secret.present? %>
+                <input type="text" class="form-control font-monospace" value="<%= secret %>" id="client_secret_value" readonly
+                       data-utilities--copy-code-target="source" onclick="this.select();">
+                <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy client secret"
+                        data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              <% elsif @oauth_client.needs_secret? %>
+                <input type="password" class="form-control font-monospace pe-none" value="Hidden for security" id="client_secret_value" readonly
+                       aria-label="Client Secret (hidden)">
+                <button class="btn btn-outline-secondary" type="button" title="Hidden for security" aria-label="Copy client secret"
+                        disabled aria-disabled="true" data-utilities--copy-code-target="button">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              <% else %>
+                <input type="text" class="form-control font-monospace" value="Not required for selected flows" id="client_secret_value" readonly
+                       aria-label="Client Secret (not required)">
+                <button class="btn btn-outline-secondary" type="button" title="Not required" aria-label="Copy client secret"
+                        disabled aria-disabled="true" data-utilities--copy-code-target="button">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              <% end %>
+            </div>
+
+            <% if @oauth_client.needs_secret? %>
+              <%= button_tag type: :submit, name: :regenerate_secret, value: 1, class: 'btn btn-outline-primary btn-sm' do %>
+                <i class="bi bi-arrow-clockwise"></i> Regenerate Secret
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <%= f.submit t('doorkeeper.applications.buttons.submit'), class: 'btn btn-primary' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Right: Redirect URIs -->
+  <div class="col-lg-6">
+    <%= form_for @oauth_client, url: developer_oauth_client_path(@oauth_client), as: :oauth_client, html: { role: 'form' } do |f| %>
+      <div class="card mb-4">
+        <div class="card-header d-flex align-items-center">
+          <i class="bi bi-link-45deg me-2"></i>
+          <h5 class="mb-0">Redirect URIs</h5>
+        </div>
+        <div class="card-body">
+          <% if @oauth_client.errors.any? %>
+            <div class="alert alert-danger" role="alert"><%= t('doorkeeper.applications.form.error') %></div>
+          <% end %>
+          <p class="text-secondary small mb-2">Add one or more callback URLs for authorization. For non-redirect flows (e.g., client credentials, device code) this may be optional.</p>
+          <div class="mb-3 row">
+            <div class="col-sm-12">
+              <%= render partial: 'layouts/components/form_elements/textarray',
+                         locals: { form: f, values: @oauth_client.redirect_uris,
+                                   field_type: "url", field_name: "oauth_client[redirect_uris]", add_button_text: "Add URI" } %>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <%= f.submit t('doorkeeper.applications.buttons.submit'), class: 'btn btn-primary' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Full width: Client Settings -->
+  <div class="col-12">
+    <%= form_for @oauth_client, url: developer_oauth_client_path(@oauth_client), as: :oauth_client, html: { role: 'form' } do |f| %>
+      <div class="card mb-4">
+        <div class="card-header d-flex align-items-center">
+          <i class="bi bi-sliders me-2"></i>
+          <h5 class="mb-0">Client Settings</h5>
+        </div>
+        <div class="card-body">
+          <% if @oauth_client.errors.any? %>
+            <div class="alert alert-danger" role="alert"><%= t('doorkeeper.applications.form.error') %></div>
+          <% end %>
+
+          <!-- Scopes -->
+          <h6 class="mt-0">Scopes</h6>
+          <p class="text-secondary small mb-2">Select only the scopes your integration needs. Fewer scopes build trust.</p>
+          <div class="mb-3 row">
+            <div class="col-sm-12">
+              <%= hidden_field_tag 'oauth_client[scopes][]', '' %>
+              <%= render partial: 'developer/client_apps/oauth_clients/scope_tree',
+                         locals: { scopes: listable_scopes, selected_scopes: @oauth_client.scopes, nested: false, parent_id: "scope" } %>
+            </div>
+          </div>
+
+          <!-- Grant Flows -->
+          <h6 class="mt-4">Grant Flows</h6>
+          <p class="text-secondary small mb-2">Choose which OAuth 2.0 flows this credential can use. Leave all unchecked to allow any enabled flow.</p>
+
+          <!-- Confidential Client Toggle inside Grant Flows -->
+          <div class="mb-3 row">
+            <div class="col-sm-12">
+              <div class="form-check form-switch">
+                <%= f.check_box :confidential, class: 'form-check-input', id: 'oauth_client_confidential' %>
+                <%= f.label :confidential, 'Confidential Client', class: 'form-check-label' %>
+              </div>
+              <div class="form-text text-secondary">
+                <%= t('doorkeeper.applications.help.confidential') %>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <div class="col-sm-12">
+              <%= hidden_field_tag 'oauth_client[grant_flows][]', '' %>
+              <% Doorkeeper.configuration.enabled_grant_flows.each do |flow| %>
+                <% flow_name = (flow.respond_to?(:name) ? flow.name : flow) %>
+                <div class="form-check mb-2">
+                  <%= check_box_tag("oauth_client[grant_flows][]", flow_name, @oauth_client.grant_flows&.include?(flow_name), id: "grant_flow_#{flow_name}", class: 'form-check-input') %>
+                  <label class="form-check-label" for="grant_flow_<%= flow_name %>">
+                    <strong><%= t("xivauth.grant_flows.#{flow_name}.friendly") %></strong>
+                    (<code><%= flow_name %></code>)
+                  </label>
+                  <div class="form-text text-secondary">
+                    <%= t("xivauth.grant_flows.#{flow_name}.description") %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <%= link_to t('doorkeeper.applications.buttons.cancel'), developer_application_path(@application), class: 'btn btn-outline-secondary me-2' %>
+            <%= f.submit t('doorkeeper.applications.buttons.submit'), class: 'btn btn-primary' %>
+          </div>
+        </div>
+      </div>
     <% end %>
   </div>
 </div>

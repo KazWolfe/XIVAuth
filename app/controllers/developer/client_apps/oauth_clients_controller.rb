@@ -1,6 +1,6 @@
 class Developer::ClientApps::OAuthClientsController < ApplicationController
   helper Developer::ClientApps::OAuthClientHelper
-  layout "portal/page"
+  layout "portal/base"
 
   before_action :set_oauth_client, except: %i[new create]
 
@@ -10,9 +10,19 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
     authorize! :edit, @application
 
     updates = filtered_params
-    updates[:redirect_uris] = updates[:redirect_uris].compact_blank
+    # Normalize array params by removing blank entries for keys that are present in this submission only
+    [:redirect_uris, :grant_flows, :scopes].each do |key|
+      if updates.has_key?(key)
+        updates[key] = (updates[key] || []).compact_blank
+      end
+    end
 
     @oauth_client.update(updates)
+
+    if params[:regenerate_secret].present?
+      @oauth_client.renew_secret
+      flash[:application_secret] = @oauth_client.plaintext_secret
+    end
 
     if @oauth_client.save
       respond_to do |format|
@@ -42,6 +52,8 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
 
     if @oauth_client.save
       flash[:notice] = "OAuth client created successfully."
+      flash[:application_secret] = @oauth_client.plaintext_secret
+
       redirect_to developer_oauth_client_path(@oauth_client)
     else
       flash.now[:error] = "Could not create OAuth client."
@@ -78,7 +90,7 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
       flash[:application_secret] = @oauth_client.plaintext_secret
 
       respond_to do |format|
-        format.html { redirect_to developer_oauth_client_path(@application), notice: "Secret regenerated!" }
+        format.html { redirect_to developer_oauth_client_path(@oauth_client), notice: "Secret regenerated!" }
         format.json { render json: @oauth_client, as_owner: true }
       end
     else

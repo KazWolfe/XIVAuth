@@ -57,8 +57,15 @@
             <tr id="invite_link_<%= link.id %>">
               <td>
                 <code><%= link.invite_key %></code>
-                <i class="bi bi-copy ms-1" title="Copy Invite URL"
-                   onclick='navigator.clipboard.writeText("<%= accept_invite_developer_teams_url(link.invite_key) %>")'></i>
+                <div data-controller="utilities--copy-code" class="d-inline-block align-middle">
+                  <input type="hidden" data-utilities--copy-code-target="source"
+                         value="<%= accept_invite_developer_teams_url(link.invite_key) %>">
+                  <button class="btn btn-outline-secondary btn-sm ms-1" type="button" title="Copy Invite URL"
+                          aria-label="Copy Invite URL" data-action="utilities--copy-code#copy"
+                          data-utilities--copy-code-target="button">
+                    <i class="bi bi-copy"></i>
+                  </button>
+                </div>
               </td>
               <td>
                 <%= link.target_role.titleize %>
