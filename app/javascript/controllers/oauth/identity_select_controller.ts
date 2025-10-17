@@ -13,12 +13,9 @@ export default class IdentitySelectDropdownController extends TomSelectControlle
                 'remove_button': {
                     title: 'Remove this item'
                 },
-                'checkbox_options': {
-                    'checkedClassNames':   ['ts-checked'],
-                    'uncheckedClassNames': ['ts-unchecked'],
-                }
+                'clear_button': {},
             },
-            searchField: ["identityName", "identityProvider"]
+            searchField: ["identityName", "identityProvider"],
         };
     }
 
@@ -41,5 +38,20 @@ export default class IdentitySelectDropdownController extends TomSelectControlle
         render += "</div>"
 
         return render;
+    }
+
+    onItemAdd(value: (string | number), item: HTMLDivElement): void {
+        if (value == "_all") {
+            this.tomSelect!.clear(true);
+
+            let items: string[] = [];
+            for (let option of Object.values(this.tomSelect!.options)) {
+                if (option.value != "_all") {
+                    items.push(option.value);
+                }
+            }
+
+            this.tomSelect!.addItems(items);
+        }
     }
 }

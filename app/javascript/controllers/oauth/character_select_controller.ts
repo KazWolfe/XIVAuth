@@ -18,10 +18,7 @@ export default class CharacterSelectDropdownContoller extends TomSelectControlle
                 'remove_button': {
                     title: 'Remove this item'
                 },
-                'checkbox_options': {
-                    'checkedClassNames':   ['ts-checked'],
-                    'uncheckedClassNames': ['ts-unchecked'],
-                }
+                'clear_button': {},
             };
         }
 
