@@ -8,4 +8,8 @@ module ApplicationHelper
   def commit_hash
     ENV["COMMIT_HASH"] || ENV["HEROKU_SLUG_COMMIT"] || nil
   end
+
+  def lower_environment?
+    !Rails.env.production? || (ENV["APP_ENV"] != "production")
+  end
 end
