@@ -12,6 +12,14 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     raise error
   end
 
+  discard_on(ActiveJob::DeserializationError) do |job, error|
+    if error.cause&.is_a?(ActiveRecord::RecordNotFound)
+      logger.warn("CharacterRegistration is missing - was it deleted?", error: error.cause)
+    end
+
+    raise(error)
+  end
+
   discard_on(FFXIV::LodestoneProfile::LodestoneProfileInvalid) do |job, error|
     logger.error("Invalid profile", error: error)
     job.report_result("verification_failed_invalid")
@@ -32,11 +40,6 @@ wait: 2.minutes) do |job, _error|
 
   # @param [CharacterRegistration] registration A character registration to verify
   def perform(registration)
-    if registration.nil?
-      logger.warn "CharacterRegistration is missing! Was it deleted?"
-      return
-    end
-
     character = registration.character
 
     if registration.verified?
