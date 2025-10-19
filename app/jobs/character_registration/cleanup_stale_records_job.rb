@@ -8,6 +8,6 @@ class CharacterRegistration::CleanupStaleRecordsJob < ApplicationJob
   def do_cleanup(cutoff = 7.days.ago)
     CharacterRegistration.where(verified_at: nil)
                          .where(created_at: ..cutoff)
-                         .in_batches(&:delete_all)
+                         .in_batches(&:destroy_all)
   end
 end

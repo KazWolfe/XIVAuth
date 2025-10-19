@@ -9,6 +9,6 @@ class Users::CleanupUnconfirmedUsersJob < ApplicationJob
   def do_cleanup(cutoff = 14.days.ago)
     User.where(confirmed_at: nil)
         .where(created_at: ..cutoff)
-        .in_batches(&:delete_all)
+        .in_batches(&:destroy_all)
   end
 end
