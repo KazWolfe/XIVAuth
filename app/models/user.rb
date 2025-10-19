@@ -11,6 +11,8 @@ class User < ApplicationRecord
 
   default_scope { order(created_at: :asc) }
 
+  validates :email, exclusion: { in: Users::SessionsHelper::RANDOM_NPC_EMAILS, message: " is an NPC's email.... Nice try." }
+
   has_many :social_identities, class_name: "User::SocialIdentity", dependent: :destroy
   has_many :character_registrations, dependent: :destroy
 

@@ -16,6 +16,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     super
+  rescue Postmark::InactiveRecipientError
+    flash.now[:error] = "The email address you entered was rejected by our MTA. This is likely because the email " +
+                        "provided hard-bounced marked emails from Postmark as spam, or is invalid."
+
+    resource.errors.add(:email, "was rejected by our email provider.")
+
+    resource.destroy
+    respond_with resource
+  rescue Postmark::InvalidEmailRequestError
+    resource.errors.add(:email, "is not a valid email address.")
+
+    resource.destroy
+    respond_with resource
   end
 
   # GET /resource/edit
@@ -92,7 +105,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   private def set_layout
     if action_name == "new" || action_name == "create"
       "login/signin"
-    elsif action_name == "edit" 
+    elsif action_name == "edit"
       "portal/base"
     else
       "portal/page"

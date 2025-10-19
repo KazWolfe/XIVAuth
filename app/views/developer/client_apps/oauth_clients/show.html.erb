@@ -53,7 +53,7 @@
           <!-- Client Secret -->
           <div class="mb-3">
             <label class="form-label" for="client_secret_value">Client Secret</label>
-            <% secret = flash[:application_secret].presence || @oauth_client.plaintext_secret %>
+            <% secret = @oauth_client.plaintext_secret || flash[:application_secret].presence %>
             <% if secret.present? %>
               <div class="alert alert-warning py-2 mb-2">
                 This secret is shown only once. Store it somewhere safe.

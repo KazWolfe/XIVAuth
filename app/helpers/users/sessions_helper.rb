@@ -1,6 +1,5 @@
 module Users::SessionsHelper
-  def eegg_random_npc_email
-    %w[
+  RANDOM_NPC_EMAILS = %w[
       raubahn@syndicate.uldah.gov
       mbloefhiswyn@lanoscea.gov
       kan.e.senna@gridania.gov
@@ -21,6 +20,9 @@ module Users::SessionsHelper
       delion@thavnairiantruth.info
       aid:msg:gov/sphene
       aid:msg:gov/knighthood/o.velona
-    ].sample
+    ]
+
+  def eegg_random_npc_email
+    RANDOM_NPC_EMAILS.sample
   end
 end

@@ -41,13 +41,13 @@ Rails.application.configure do
   routes.default_url_options[:host] = ENV["APP_URL"] || "http://localhost:3000"
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
   config.action_mailer.default_url_options = {
     host: routes.default_url_options[:host]
   }
 
-  # config.action_mailer.delivery_method = :postmark
+  config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = {
     api_token: Rails.application.credentials.dig(:postmark, :api_token)
   }
