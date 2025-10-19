@@ -12,7 +12,7 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     raise error
   end
 
-  rescue_from(ActiveJob::DeserializationError) do |job, error|
+  rescue_from(ActiveJob::DeserializationError) do |error|
     if error.cause&.is_a?(ActiveRecord::RecordNotFound)
       logger.warn("CharacterRegistration is missing - was it deleted?", error: error.cause)
       next
