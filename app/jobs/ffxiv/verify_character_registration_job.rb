@@ -32,6 +32,11 @@ wait: 2.minutes) do |job, _error|
 
   # @param [CharacterRegistration] registration A character registration to verify
   def perform(registration)
+    unless registration.present?
+      logger.warn "CharacterRegistration #{registration.id} is missing! Was it deleted?"
+      return
+    end
+
     character = registration.character
 
     if registration.verified?
