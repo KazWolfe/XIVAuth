@@ -21,9 +21,13 @@ class ClientApplication < ApplicationRecord
   end
 
   def usable_by?(user)
-    return true if owner.nil? || !self.private?
+    return true unless self.private?
     return true if owner.is_a?(User) && owner == user
-    return true if owner.is_a?(Team) && owner.direct_members.include?(user)
+
+    if owner.is_a?(Team)
+      return true if owner.direct_members.include?(user)
+      return true if owner.antecedent_memberships.admins.where(user_id: user.id).exists?
+    end
 
     user_match = acls.find_by(principal: user)
     if user_match

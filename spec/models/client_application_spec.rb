@@ -4,15 +4,36 @@ RSpec.describe ClientApplication, type: :model do
   describe '#usable_by?' do
     let!(:random_user) { FactoryBot.create(:user) }
 
-    context 'public application' do
+    context 'public applications' do
       it 'allows access for any user' do
         app = FactoryBot.create(:client_application, owner:  FactoryBot.create(:user), private: false)
 
         expect(app.usable_by?(random_user)).to be true
       end
+
+      it 'does not evaluate ACL entries' do
+        app = FactoryBot.create(:client_application, owner:  FactoryBot.create(:user), private: false)
+        FactoryBot.create(:client_application_acl, application: app, principal: random_user, deny: true)
+
+        expect(app.usable_by?(random_user)).to be true
+      end
     end
 
-    context 'owned by a user' do
+    context 'unowned application (private)' do
+      it "does not allow access without ACL rules" do
+        app = FactoryBot.create(:client_application, owner:  nil, private: true)
+        expect(app.usable_by?(random_user)).to be false
+      end
+
+      it "evaluates ACL rules" do
+        app = FactoryBot.create(:client_application, owner:  nil, private: true)
+        FactoryBot.create(:client_application_acl, application: app, principal: random_user, deny: false)
+
+        expect(app.usable_by?(random_user)).to be true
+      end
+    end
+
+    context 'owned by a user (private)' do
       it 'allows access for the owning user even when private' do
         owner = FactoryBot.create(:user)
         app = FactoryBot.create(:client_application, owner: owner, private: true)
@@ -34,9 +55,17 @@ RSpec.describe ClientApplication, type: :model do
 
         expect(app.usable_by?(random_user)).to be true
       end
+
+      it "allows the owner even with ACL deny rules" do
+        owner = FactoryBot.create(:user)
+        app = FactoryBot.create(:client_application, owner: owner, private: true)
+        FactoryBot.create(:client_application_acl, application: app, principal: owner, deny: true)
+
+        expect(app.usable_by?(owner)).to be true
+      end
     end
 
-    context 'owned by a team' do
+    context 'owned by a team (private)' do
       it 'allows access for direct team members even when private' do
         team = FactoryBot.create(:team)
         user = FactoryBot.create(:user)
@@ -56,6 +85,39 @@ RSpec.describe ClientApplication, type: :model do
         FactoryBot.create(:client_application_acl, application: app, principal: user, deny: true)
 
         expect(app.usable_by?(user)).to be true
+      end
+
+      it "does not allow access for other users when private" do
+        team = FactoryBot.create(:team)
+        FactoryBot.create(:team_membership, team: team, user: FactoryBot.create(:user))
+        app = FactoryBot.create(:client_application, owner: team, private: true)
+
+        expect(app.usable_by?(random_user)).to be false
+      end
+
+      it "allows the owning team members even with ACL deny rules" do
+        team = FactoryBot.create(:team)
+        user = FactoryBot.create(:user)
+        FactoryBot.create(:team_membership, team: team, user: user)
+
+        app = FactoryBot.create(:client_application, owner: team, private: true)
+        FactoryBot.create(:client_application_acl, application: app, principal: team, deny: true)
+
+        expect(app.usable_by?(user)).to be true
+      end
+
+      it "allows admins of the owning parent team access ignoring ACL" do
+        parent_team = FactoryBot.create(:team)
+        admin_user = FactoryBot.create(:user)
+        FactoryBot.create(:team_membership, team: parent_team, user: admin_user, role: 'admin')
+
+        child_team = FactoryBot.create(:team, parent: parent_team)
+        child_user = FactoryBot.create(:user)
+        FactoryBot.create(:team_membership, team: child_team, user: child_user)
+
+        app = FactoryBot.create(:client_application, owner: child_team, private: true)
+
+        expect(app.usable_by?(admin_user)).to be true
       end
     end
 
@@ -172,6 +234,20 @@ RSpec.describe ClientApplication, type: :model do
           FactoryBot.create(:client_application_acl, application: app, principal: child_team, deny: true, include_team_descendants: true)
 
           expect(app.usable_by?(grandchild_member)).to be false
+        end
+      end
+
+      describe "ACL robustness" do
+        it "properly skips a missing team reference" do
+          missing_team = FactoryBot.create(:team)
+          FactoryBot.create(:team_membership, team: missing_team, user: random_user)
+
+          FactoryBot.create(:client_application_acl, application: app, principal: missing_team, deny: false)
+          expect(app.usable_by?(random_user)).to be true
+
+          missing_team.destroy!
+
+          expect(app.usable_by?(random_user)).to be false
         end
       end
     end
