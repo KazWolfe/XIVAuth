@@ -38,7 +38,7 @@ class JwtSigningKey < ApplicationRecord
 
   def active?
     enabled? && !expired?
-    a  end
+  end
 
   def self.jwks
     jwk_set = []

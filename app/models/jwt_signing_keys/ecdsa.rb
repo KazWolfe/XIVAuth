@@ -10,7 +10,7 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
 
   # @param [OpenSSL::PKey::EC] key The RSA private key to store.
   def private_key=(key)
-    self[:private_key] = key.export(nil)
+    self[:private_key] = key.to_pem
     self[:public_key] = key.public_to_pem
 
     key_params[:curve] = key.public_key&.group&.curve_name
@@ -43,6 +43,6 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
   def self.preferred_key_for_algorithm(algorithm_name)
     curves = JWT::JWA::Ecdsa::NAMED_CURVES.filter { |_, c| c[:algorithm] == algorithm_name }
 
-    active.where("key_params->'curve' ?| array[:curves]", curves.keys).first
+    active.where("key_params->>'curve' IN (?)", curves.keys).first
   end
 end

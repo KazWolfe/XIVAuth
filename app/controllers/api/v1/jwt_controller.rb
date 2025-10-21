@@ -52,6 +52,13 @@ class Api::V1::JwtController < Api::V1::ApiController
       validation_params[:aud] = "https://xivauth.net/applications/#{issuer_id}"
     end
 
+    # Validate on-behalf-of authorized party for keys issued via other clients.
+    # Used when client A (azp) requests a JWT intended for client B (aud).
+    # Validation only takes place from Client B.
+    if decoded_jwt[0]["azp"].present? && doorkeeper_token&.application.present?
+      # TODO
+    end
+
     begin
       validated_jwt = JWT.decode(body, signing_key.jwk.verify_key, true,
                                  algorithms: signing_key.supported_algorithms,
