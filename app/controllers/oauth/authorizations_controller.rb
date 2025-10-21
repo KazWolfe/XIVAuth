@@ -24,10 +24,12 @@ module OAuth
       token = @authorize_response.auth.token
       if token.respond_to? :permissible_policy
         policy = build_permissible_policy
-        policy.save!
+        if policy.rules.present?
+          policy.save!
 
-        token.permissible_policy = policy
-        token.save!
+          token.permissible_policy = policy
+          token.save!
+        end
       end
     end
 

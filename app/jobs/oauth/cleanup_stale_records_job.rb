@@ -24,7 +24,7 @@ class OAuth::CleanupStaleRecordsJob < ApplicationJob
 
   def clean_permissible_policies
     OAuth::PermissiblePolicy.left_outer_joins(:access_tokens, :access_grants)
-                           .where(oauth_access_tokens: { id: nil }, oauth_access_grants: { id: nil })
-                           .in_batches(&:destroy_all)
+                            .where(oauth_access_tokens: { id: nil }, oauth_access_grants: { id: nil })
+                            .in_batches(&:destroy_all)
   end
 end
