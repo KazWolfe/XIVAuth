@@ -113,6 +113,8 @@ class Api::V1::CharactersController < Api::V1::ApiController
     @authorized_registrations = @authorized_registrations.verified.filter do |r|
       policy.blank? || policy.can_access_resource?(r)
     end
+
+    @authorized_registrations = CharacterRegistration.where(id: @authorized_registrations.map(&:id))
   end
 
   private def set_character

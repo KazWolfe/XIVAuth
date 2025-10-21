@@ -3,12 +3,12 @@ require "support/without_detailed_exceptions"
 
 RSpec.describe "Api::V1::CharactersControllers", type: :request do
   let(:user) { FactoryBot.create(:user) }
-  let(:client_application) { FactoryBot.create(:oauth_client_application) }
+  let(:oauth_client) { FactoryBot.create(:oauth_client) }
   let(:character) { FactoryBot.create(:ffxiv_character) }
 
   context "using the character:all scope" do
     let(:oauth_token) do
-      OAuth::AccessToken.create(application: client_application, resource_owner: user, scopes: "character:all")
+      OAuth::AccessToken.create(application: oauth_client, resource_owner: user, scopes: "character:all")
     end
 
     context "GET /characters" do
@@ -136,7 +136,7 @@ RSpec.describe "Api::V1::CharactersControllers", type: :request do
 
   context "using the character:manage scope" do
     let(:oauth_token) do
-      OAuth::AccessToken.create(application: client_application, resource_owner: user, scopes: "character:manage")
+      OAuth::AccessToken.create(application: oauth_client, resource_owner: user, scopes: "character:manage")
     end
 
     context "GET /characters" do
