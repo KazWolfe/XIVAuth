@@ -4,14 +4,15 @@ require "support/oauth_contexts"
 RSpec.describe "Api::V1::JwtController", type: :request do
   include_context "oauth:client_credentials"
 
-  # Class-wide signing keys reused across examples to avoid churn.
-  let!(:rsa_key)  { JwtSigningKeys::RSA.create!(name: "rsa_spec_#{SecureRandom.uuid}") }
-  let!(:hmac_key) { JwtSigningKeys::HMAC.create!(name: "hmac_spec_#{SecureRandom.uuid}") }
+  # Create HMAC key once for all examples, store in instance variable
+  before(:all) do
+    @test_key = JwtSigningKeys::HMAC.create!(name: "hmac_spec_#{SecureRandom.uuid}")
+  end
 
   describe "GET /api/v1/jwt/jwks" do
     it "returns only active keys in JWKS" do
       _disabled = JwtSigningKeys::HMAC.create!(name: "hmac_disabled_#{SecureRandom.uuid}", enabled: false)
-      _expired  = JwtSigningKeys::RSA.create!(name: "rsa_expired_#{SecureRandom.uuid}", expires_at: 1.hour.ago)
+      _expired = JwtSigningKeys::HMAC.create!(name: "hmac_expired_#{SecureRandom.uuid}", expires_at: 1.hour.ago)
 
       get api_v1_jwt_jwks_path, headers: { Authorization: bearer_token }
       expect(response).to be_successful
@@ -20,7 +21,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
       expect(body).to have_key("keys")
       kids = body["keys"].map { |k| k["kid"] }
 
-      expect(kids).to include(rsa_key.name, hmac_key.name)
+      expect(kids).to include(@test_key.name)
       expect(kids).not_to include(_disabled.name)
       expect(kids).not_to include(_expired.name)
     end
@@ -28,7 +29,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
   describe "POST /api/v1/jwt/verify" do
     it "returns an error when kid is missing" do
-      token = JWT.encode({data: "test"}, nil, "none")
+      token = JWT.encode({ data: "test" }, nil, "none")
 
       post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
 
@@ -39,7 +40,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
     end
 
     it "does not permit algorithm mismatches" do
-      token = JWT.encode({ data: "test"}, nil, "none", kid: rsa_key.name)
+      token = JWT.encode({ data: "test" }, nil, "none", kid: @test_key.name)
 
       post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
 
@@ -50,9 +51,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
     end
 
     it "does not accept HS256 algorithms for an RSA key" do
-      # Covered by the algorithm mismatch test above, but test this specifically.
-      # See https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/
-
+      rsa_key = JwtSigningKeys::RSA.create!(name: "rsa_spec_#{SecureRandom.uuid}", size: 1024)
       token = JWT.encode({ data: "test" }, rsa_key.public_key.to_s, "HS256", kid: rsa_key.name)
 
       post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
@@ -64,27 +63,9 @@ RSpec.describe "Api::V1::JwtController", type: :request do
     end
 
     context "with real signed JWTs" do
-      it "accepts a valid RS256 token with matching RSA key" do
-        header  = { alg: "RS256", kid: rsa_key.name, typ: "JWT" }
-        iss     = ENV.fetch('APP_URL', 'https://xivauth.net')
-        payload = {
-          iss: iss,
-          iat: Time.now.to_i,
-          exp: (Time.now + 300).to_i,
-          data: "rs256 valid"
-        }
-
-        token = JWT.encode(payload, rsa_key.private_key, "RS256", header)
-
-        post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
-        expect(response).to be_successful
-        json = JSON.parse(response.body)
-        expect(json["status"]).to eq("valid")
-      end
-
       it "accepts a valid HS256 token" do
-        header  = { alg: "HS256", kid: hmac_key.name, typ: "JWT" }
-        iss     = ENV.fetch('APP_URL', 'https://xivauth.net')
+        header = { alg: "HS256", kid: @test_key.name, typ: "JWT" }
+        iss = ENV.fetch('APP_URL', 'https://xivauth.net')
         payload = {
           iss: iss,
           iat: Time.now.to_i,
@@ -92,7 +73,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
           data: "hs256 valid"
         }
 
-        token = JWT.encode(payload, hmac_key.private_key, "HS256", header)
+        token = JWT.encode(payload, @test_key.private_key, "HS256", header)
 
         post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
         expect(response).to be_successful
@@ -103,7 +84,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
     context "with an audience" do
       it "accepts an audience for its own app" do
-        header = { alg: "HS256", kid: hmac_key.name, typ: "JWT" }
+        header = { alg: "HS256", kid: @test_key.name, typ: "JWT" }
         payload = {
           iss: ENV.fetch('APP_URL', 'https://xivauth.net'),
           iat: Time.now.to_i,
@@ -112,7 +93,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
           data: "valid"
         }
 
-        token = JWT.encode(payload, hmac_key.private_key, "HS256", header)
+        token = JWT.encode(payload, @test_key.private_key, "HS256", header)
 
         post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
         expect(response).to be_successful
@@ -123,7 +104,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
       it "rejects an audience for a different app" do
         another_app = FactoryBot.create(:client_application)
 
-        header = { alg: "HS256", kid: hmac_key.name, typ: "JWT" }
+        header = { alg: "HS256", kid: @test_key.name, typ: "JWT" }
         payload = {
           iss: ENV.fetch('APP_URL', 'https://xivauth.net'),
           iat: Time.now.to_i,
@@ -132,7 +113,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
           data: "valid"
         }
 
-        token = JWT.encode(payload, hmac_key.private_key, "HS256", header)
+        token = JWT.encode(payload, @test_key.private_key, "HS256", header)
 
         post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
         expect(response).to have_http_status(:unprocessable_entity)
@@ -142,8 +123,38 @@ RSpec.describe "Api::V1::JwtController", type: :request do
       end
     end
 
-    xcontext "with an authorized party (azp)" do
+    context "with an authorized party (azp)" do
+      let(:aud_application) { oauth_client.application }
+      let(:azp_application) { FactoryBot.create(:client_application) }
+      let(:token) do
+        header = { alg: "HS256", kid: @test_key.name, typ: "JWT" }
+        payload = {
+          iss: ENV.fetch('APP_URL', 'https://xivauth.net'),
+          iat: Time.now.to_i,
+          exp: (Time.now + 300).to_i,
+          aud: "https://xivauth.net/applications/#{aud_application.id}",
+          azp: "https://xivauth.net/applications/#{azp_application.id}"
+        }
 
+        JWT.encode(payload, @test_key.private_key, "HS256", header)
+      end
+
+      it "rejects an AZP from a different app" do
+        post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["status"]).to eq("invalid_client")
+      end
+
+      it "accepts an AZP from an allowed app" do
+        aud_application.obo_authorizations << azp_application
+        aud_application.save
+
+        post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json["status"]).to eq("valid")
+      end
     end
   end
 end

@@ -55,26 +55,31 @@ class Api::V1::JwtController < Api::V1::ApiController
     # Validate on-behalf-of authorized party for keys issued via other clients.
     # Used when client A (azp) requests a JWT intended for client B (aud).
     # Validation only takes place from Client B.
-    if decoded_jwt[0]["azp"].present? && doorkeeper_token&.application.present?
-      # TODO
+    if decoded_jwt[0]["azp"].present?
+      extracted_id = decoded_jwt[0]["azp"].split("/").last
+
+      unless doorkeeper_token.application.application.obo_authorizations.exists?(extracted_id)
+        raise JWT::InvalidAudError, "Authorized party is not permitted to request a token for this audience."
+      end
+
+      validation_params[:azp] = "https://xivauth.net/applications/#{extracted_id}"
     end
 
-    begin
-      validated_jwt = JWT.decode(body, signing_key.jwk.verify_key, true,
-                                 algorithms: signing_key.supported_algorithms,
-                                 **validation_params)
+    validated_jwt = JWT.decode(body, signing_key.jwk.verify_key, true,
+                               algorithms: signing_key.supported_algorithms,
+                               **validation_params)
 
-      render json: { status: "valid", jwt_head: validated_jwt[1], jwt_body: validated_jwt[0] }
-    rescue JWT::ExpiredSignature => e
-      render json: { status: "expired", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
-             status: :unprocessable_entity
-    rescue JWT::InvalidAudError => e
-      render json: { status: "invalid_client", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
-             status: :unprocessable_entity
-    rescue JWT::DecodeError => e
-      render json: { status: "invalid", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
-             status: :unprocessable_entity
-    end
+    render json: { status: "valid", jwt_head: validated_jwt[1], jwt_body: validated_jwt[0] }
+
+  rescue JWT::ExpiredSignature => e
+    render json: { status: "expired", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+           status: :unprocessable_entity
+  rescue JWT::InvalidAudError => e
+    render json: { status: "invalid_client", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+           status: :unprocessable_entity
+  rescue JWT::DecodeError => e
+    render json: { status: "invalid", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+           status: :unprocessable_entity
   end
 
   def jwks

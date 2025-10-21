@@ -86,6 +86,20 @@ class Api::V1::CharactersController < Api::V1::ApiController
       exp: (issued_at + 10.minutes).to_i
     }
 
+    my_app_id = doorkeeper_token.application&.application_id
+    if params[:obo_id].present?
+      audience_app = ClientApplication.find(params[:obo_id])
+      if audience_app.obo_authorizations.exists?(my_app_id)
+        payload[:aud] = "https://xivauth.net/applications/#{audience_app.id}"
+        payload[:azp] = "https://xivauth.net/applications/#{my_app_id}"
+      else
+        render json: { error: "Application is not permitted to request a token for the specified app." }, status: :forbidden
+        return
+      end
+    else
+      payload[:aud] = "https://xivauth.net/applications/#{my_app_id}"
+    end
+
     payload[:nonce] = params[:nonce] if params[:nonce].present?
 
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM

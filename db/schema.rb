@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_10_052626) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_21_213238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -69,6 +69,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_052626) do
     t.datetime "expires_at"
     t.index ["application_id"], name: "index_client_application_oauth_clients_on_application_id"
     t.index ["client_id"], name: "index_client_application_oauth_clients_on_client_id", unique: true
+  end
+
+  create_table "client_application_obo_authorizations", id: false, force: :cascade do |t|
+    t.uuid "audience_id", null: false
+    t.uuid "authorized_party_id", null: false
+    t.index ["audience_id"], name: "index_client_application_obo_authorizations_on_audience_id"
+    t.index ["authorized_party_id"], name: "idx_on_authorized_party_id_2afcfbe007"
   end
 
   create_table "client_application_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -331,6 +338,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_052626) do
   add_foreign_key "character_registrations", "ffxiv_characters", column: "character_id"
   add_foreign_key "client_application_access_control_lists", "client_applications", column: "application_id"
   add_foreign_key "client_application_oauth_clients", "client_applications", column: "application_id"
+  add_foreign_key "client_application_obo_authorizations", "client_applications", column: "audience_id"
+  add_foreign_key "client_application_obo_authorizations", "client_applications", column: "authorized_party_id"
   add_foreign_key "client_application_profiles", "client_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "client_application_oauth_clients", column: "application_id"
   add_foreign_key "oauth_access_grants", "oauth_permissible_policies", column: "permissible_policy_id"

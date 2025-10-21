@@ -9,6 +9,11 @@ class ClientApplication < ApplicationRecord
   has_many :acls, class_name: "ClientApplication::AccessControlList", dependent: :destroy,
            foreign_key: :application_id, inverse_of: :application
 
+  has_and_belongs_to_many :obo_authorizations, class_name: "ClientApplication",
+                          join_table: "client_application_obo_authorizations",
+                          foreign_key: "audience_id",
+                          association_foreign_key: "authorized_party_id"
+
   validates_associated :profile
   accepts_nested_attributes_for :profile, update_only: true
 

@@ -252,4 +252,33 @@ RSpec.describe ClientApplication, type: :model do
       end
     end
   end
+
+  describe '#obo_authorizations' do
+    it "allows an app to grant an On-Behalf-Of authorization to another app" do
+      first = FactoryBot.create(:client_application)
+      second = FactoryBot.create(:client_application)
+      first.obo_authorizations << second
+
+      expect(first.obo_authorizations).to include(second)
+      expect(second.obo_authorizations).to_not include(first)
+
+      expect(first).to be_valid
+      expect(second).to be_valid
+
+      expect(first.obo_authorizations.exists?(second.id)).to be true
+    end
+
+    it "allows circular OBO grants" do
+      first = FactoryBot.create(:client_application)
+      second = FactoryBot.create(:client_application)
+      first.obo_authorizations << second
+      second.obo_authorizations << first
+
+      expect(first.obo_authorizations).to include(second)
+      expect(second.obo_authorizations).to include(first)
+
+      expect(first).to be_valid
+      expect(second).to be_valid
+    end
+  end
 end
