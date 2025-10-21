@@ -1,14 +1,20 @@
 class OAuth::PermissiblePolicy < ApplicationRecord
   has_many :rules, class_name: "OAuth::PermissibleRule", foreign_key: "policy_id",
-                   dependent: :destroy, autosave: true, inverse_of: :policy
+           dependent: :destroy, autosave: true, inverse_of: :policy
+
+  has_many :access_tokens, class_name: "OAuth::AccessToken", foreign_key: "permissible_policy_id",
+           inverse_of: :permissible_policy
+
+  has_many :access_grants, class_name: "OAuth::AccessGrant", foreign_key: "permissible_policy_id",
+           inverse_of: :permissible_policy
 
   # Determine if the specified resource can be accessed or not.
   # @param fallback [Boolean, nil] Specify a fallback behavior if an explicit rule was not found.
   def can_access_resource?(resource, fallback: nil)
     resource_rules = rules.where(resource:)
 
-    return false if resource_rules.where(deny: true).count.positive?
-    return true if resource_rules.where(deny: false).count.positive?
+    return false if resource_rules.where(deny: true).exists?
+    return true if resource_rules.where(deny: false).exists?
 
     return fallback unless fallback.nil?
 
@@ -24,6 +30,6 @@ class OAuth::PermissiblePolicy < ApplicationRecord
     search = { deny: false }
     search[:resource_type] = resource_type if resource_type.present?
 
-    rules.where(search).count.positive?
+    rules.where(search).exists?
   end
 end

@@ -4,6 +4,7 @@ class OAuth::CleanupStaleRecordsJob < ApplicationJob
   def perform(*)
     clean_access_grants
     clean_access_tokens
+    clean_permissible_policies
   end
 
   def clean_access_grants(cutoff = 24.hours.ago)
@@ -19,5 +20,11 @@ class OAuth::CleanupStaleRecordsJob < ApplicationJob
                       .where.not(expires_in: nil)
                       .where("(created_at + expires_in * INTERVAL '1 second') < ?", cutoff)
                       .in_batches(&:destroy_all)
+  end
+
+  def clean_permissible_policies
+    OAuth::PermissiblePolicy.left_outer_joins(:access_tokens, :access_grants)
+                           .where(oauth_access_tokens: { id: nil }, oauth_access_grants: { id: nil })
+                           .in_batches(&:destroy_all)
   end
 end
