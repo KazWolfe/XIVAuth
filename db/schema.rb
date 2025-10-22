@@ -74,6 +74,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_21_213238) do
   create_table "client_application_obo_authorizations", id: false, force: :cascade do |t|
     t.uuid "audience_id", null: false
     t.uuid "authorized_party_id", null: false
+    t.index ["audience_id", "authorized_party_id"], name: "idx_on_audience_id_authorized_party_id_eaac01738f", unique: true
     t.index ["audience_id"], name: "index_client_application_obo_authorizations_on_audience_id"
     t.index ["authorized_party_id"], name: "idx_on_authorized_party_id_2afcfbe007"
   end

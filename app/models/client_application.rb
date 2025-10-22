@@ -9,10 +9,17 @@ class ClientApplication < ApplicationRecord
   has_many :acls, class_name: "ClientApplication::AccessControlList", dependent: :destroy,
            foreign_key: :application_id, inverse_of: :application
 
+  # Apps permitted to request a JWT on behalf of this app.
   has_and_belongs_to_many :obo_authorizations, class_name: "ClientApplication",
                           join_table: "client_application_obo_authorizations",
                           foreign_key: "audience_id",
                           association_foreign_key: "authorized_party_id"
+
+  # Apps that this app can request a JWT for.
+  has_and_belongs_to_many :obo_authorized_by, class_name: "ClientApplication",
+                          join_table: "client_application_obo_authorizations",
+                          foreign_key: "authorized_party_id",
+                          association_foreign_key: "audience_id"
 
   validates_associated :profile
   accepts_nested_attributes_for :profile, update_only: true

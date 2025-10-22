@@ -7,6 +7,8 @@
 /dataSources/
 /dataSources.xml
 /dataSources.local.xml
+/data_source_mapping.xml
+/remote-mappings.xml
 
 # thanks, ai
 /copilot*.xml
