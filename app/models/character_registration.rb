@@ -98,8 +98,9 @@ class CharacterRegistration < ApplicationRecord
     Base64.urlsafe_encode64(hmac, padding: false)
   end
 
-  def lodestone_url
-    self.character.lodestone_url(self.extra_data.fetch("region", nil))
+  def lodestone_url(region: nil)
+    region ||= self.extra_data.fetch("region", nil)
+    self.character.lodestone_url(region)
   end
 
   def broadcast_card_create
