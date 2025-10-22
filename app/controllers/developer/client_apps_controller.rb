@@ -1,5 +1,5 @@
 class Developer::ClientAppsController < ApplicationController
-  layout "portal/page"
+  layout "portal/base"
   include Pagy::Backend
   helper Doorkeeper::DashboardHelper
 
@@ -94,6 +94,6 @@ class Developer::ClientAppsController < ApplicationController
 
   private def application_params
     params.require(:client_application)
-          .permit(:name, :private)
+          .permit(:name, :private, profile_attributes: [:homepage_url, :privacy_policy_url, :terms_of_service_url])
   end
 end

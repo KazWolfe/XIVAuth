@@ -2,109 +2,187 @@
   <div>
     <h1>Edit App: <%= @application.name %></h1>
   </div>
-<% end %>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="btn-toolbar gap-2 mb-4">
-      <%= link_to edit_developer_application_path(@application), class: 'btn btn-primary' do %>
-        <i class="bi bi-pencil"></i> Edit App
-      <% end %>
+  <div>
+    <div class="btn-toolbar gap-2">
       <%= button_to developer_application_path(@application), method: :delete, class: "btn btn-danger",
                     data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
         <i class="bi bi-trash"></i> Delete App
       <% end %>
     </div>
-    <h3 class="mb-2">App Profile</h3>
-    <table class="table">
-      <tbody>
-      <tr>
-        <th scope="row">
-          <abbr title="Used for entangled IDs and privacy features.">App ID</abbr>
-        </th>
-        <td><code><%= @application.id %></code></td>
-      </tr>
-      <tr>
-        <th scope="row">App Privacy</th>
-        <td><%= @application.private ? "Private (ACL Enabled)" : "Public (ACL Disabled)" %></td>
-      </tr>
-      </tbody>
-    </table>
   </div>
-  <div class="col-md-6">
-    <!--
-    <%= form_for @application, url: app_submit_path(@application), as: :client_application, html: { role: 'form' } do |f| %>
-      <div class="mb-3 form-check form-switch">
-        <%= f.checkbox :private, class: "form-check-input", aria: { describedby: "privateFieldHelp" } %>
-        <%= f.label :private, "Private App" %>
-        <p class="form-text" id="privateFieldHelp">
-          Private apps require users be listed in the app's Access Control List (ACL) to use it.
-        </p>
-      </div>
-      <%= f.fields_for :profile, @application.profile do |pf| %>
-        <div class="form-floating mb-2">
-          <%= pf.text_field :homepage_url, class: "form-control", placeholder: "https://xivauth.net/" %>
-          <%= pf.label :homepage_url, "Homepage URL" %>
-        </div>
-        <div class="form-floating mb-2">
-          <%= pf.text_field :privacy_policy_url, class: "form-control", placeholder: "https://xivauth.net/privacy" %>
-          <%= pf.label :privacy_policy_url, "Privacy Policy URL" %>
-        </div>
-        <div class="form-floating mb-2">
-          <%= pf.text_field :terms_of_service_url, class: "form-control", placeholder: "https://xivauth.net/terms" %>
-          <%= pf.label :terms_of_service_url, "Terms of Service URL" %>
-        </div>
-      <% end %>
-    <% end %>
-    -->
-  </div>
+<% end %>
+
+<div class="row">
   <div class="col-md-12">
-    <div class="d-flex justify-content-between mb-2">
-      <h3>OAuth Credentials</h3>
-      <%= link_to new_developer_application_oauth_client_path(@application), class: "btn btn-primary" do %>
-        <i class="bi bi-plus"></i> Add new Credential
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3 class="mb-0"><i class="bi bi-file-text"></i> App Profile</h3>
+      </div>
+      <%= form_for @application, url: developer_application_path(@application), method: :patch do |f| %>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <%= f.label :name, "App Name", class: "form-label fw-semibold" %>
+                <%= f.text_field :name, class: "form-control", placeholder: "My Awesome App", required: true %>
+                <div class="form-text">The name of your application as it appears to users.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold" for="application_id">App ID</label>
+                <div class="input-group" data-controller="utilities--copy-code">
+                  <input type="text" class="form-control font-monospace" id="application_id" value="<%= @application.id %>" readonly
+                         data-utilities--copy-code-target="source" onclick="this.select();">
+                  <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy application ID"
+                          data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+                    <i class="bi bi-clipboard"></i>
+                  </button>
+                </div>
+                <div class="form-text">Used for entangled IDs and privacy features. This cannot be changed.</div>
+              </div>
+
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <%= f.check_box :private, class: "form-check-input", role: "switch" %>
+                  <%= f.label :private, "Private App", class: "form-check-label fw-semibold" %>
+                </div>
+                <div class="form-text">Private apps can only be used by the owners and permitted users.</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <%= f.fields_for :profile, @application.profile do |pf| %>
+                <div class="mb-3">
+                  <%= pf.label :homepage_url, "Homepage URL", class: "form-label fw-semibold" %>
+                  <%= pf.url_field :homepage_url, class: "form-control" %>
+                  <div class="form-text">The main website for your application.</div>
+                </div>
+
+                <div class="mb-3">
+                  <%= pf.label :privacy_policy_url, "Privacy Policy URL", class: "form-label fw-semibold" %>
+                  <%= pf.url_field :privacy_policy_url, class: "form-control" %>
+                  <div class="form-text">Link to your application's privacy policy.</div>
+                </div>
+
+                <div class="mb-3">
+                  <%= pf.label :terms_of_service_url, "Terms of Service URL", class: "form-label fw-semibold" %>
+                  <%= pf.url_field :terms_of_service_url, class: "form-control" %>
+                  <div class="form-text">Link to your application's terms of service.</div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer bg-transparent d-flex justify-content-end border-top">
+          <%= f.submit "Save Changes", class: "btn btn-primary px-4" %>
+        </div>
       <% end %>
     </div>
+  </div>
+  <div class="col-md-12">
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="d-flex justify-content-between mb-2 align-items-center">
+          <h3><i class="bi bi-plug"></i> OAuth Credentials</h3>
+          <%= link_to new_developer_application_oauth_client_path(@application), class: "btn btn-primary" do %>
+            <i class="bi bi-plus"></i> Add new Credential
+          <% end %>
+        </div>
+      </div>
 
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Credentials</th>
-        <th>Credential Age</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @application.oauth_clients.each do |client| %>
-        <tr>
-          <td>
-            <%= link_to client.name, developer_oauth_client_path(client) %>
-            <% if client.active? %>
-              <span class="badge bg-success">Active</span>
-            <% elsif client.expired? %>
-              <span class="badge bg-warning">Expired</span>
-            <% else %>
-              <span class="badge bg-gray">Disabled</span>
-            <% end %>
-          </td>
-          <td>
-            <strong>Client ID:</strong> <span class="font-monospace"><%= client.client_id %></span><br>
-            <strong>Client Secret:</strong> <span class="font-monospace">REDACTED</span>
-          </td>
-          <td>
-            <%= distance_of_time_in_words_to_now(client.created_at).capitalize %> <br>
-            <% if client.expires_at.present? && !client.expired? %>
-              <small class="text-muted">Expires in <%= distance_of_time_in_words_to_now(client.expires_at) %></small>
-            <% elsif client.expires_at.present? && client.expired? %>
-              <small class="text-warning">Expired <%= distance_of_time_in_words_to_now(client.expires_at) %> ago</small>
-            <% else %>
-              <small class="text-muted">Never expires</small>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Credentials</th>
+            <th>Credential Age</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @application.oauth_clients.each do |client| %>
+            <tr>
+              <td>
+                <%= link_to client.name, developer_oauth_client_path(client) %>
+                <% if client.active? %>
+                  <span class="badge bg-success">Active</span>
+                <% elsif client.expired? %>
+                  <span class="badge bg-warning">Expired</span>
+                <% else %>
+                  <span class="badge bg-gray">Disabled</span>
+                <% end %>
+              </td>
+              <td>
+                <strong>Client ID:</strong> <span class="font-monospace"><%= client.client_id %></span><br>
+                <strong>Client Secret:</strong> <span class="font-monospace">REDACTED</span>
+              </td>
+              <td>
+                <%= distance_of_time_in_words_to_now(client.created_at).capitalize %> <br>
+                <% if client.expires_at.present? && !client.expired? %>
+                  <small class="text-muted">Expires
+                    in <%= distance_of_time_in_words_to_now(client.expires_at) %></small>
+                <% elsif client.expires_at.present? && client.expired? %>
+                  <small class="text-warning">Expired <%= distance_of_time_in_words_to_now(client.expires_at) %>
+                    ago</small>
+                <% else %>
+                  <small class="text-muted">Never expires</small>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="d-flex justify-content-between mb-2 align-items-center">
+          <h3><i class="bi bi-passport"></i> On-Behalf-Of Authorizations</h3>
+          <button class="btn btn-primary" disabled>Add</button>
+        </div>
+        <p class="text-muted small">
+          Apps listed below have been granted permission to request JWT attestations on behalf of this application. JWT
+          attestations generated by these apps will have the Audience (<code>aud</code>) field set to this app's ID, and
+          the Authorized Party (<code>azp</code>) field set to the ID of the app that requested the JWT.
+        </p>
+      </div>
+      <div class="card-body">
+        <% if @application.obo_authorizations.any? %>
+        <% else %>
+          <div class="text-center">
+            No authorizations added.<br>
+            To request one, please contact an XIVAuth developer.
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card mb-4">
+      <div class="card-header">
+        <div class="d-flex justify-content-between mb-2 align-items-center">
+          <h3><i class="bi bi-shield-shaded"></i> Access Control List</h3>
+          <button class="btn btn-primary" disabled>Add Entry</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <% if !@application.private? %>
+          <div class="text-center">
+            Public apps do not yet support ACLs.
+          </div>
+        <% elsif @application.acls.any? %>
+          <p>ACL entries here...</p>
+        <% else %>
+          <div class="text-center">
+            No ACL entries added.<br>
+            To add users or teams, please contact an XIVAuth developer.
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
