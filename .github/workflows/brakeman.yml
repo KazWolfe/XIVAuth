@@ -1,0 +1,40 @@
+name: Brakeman Scan
+
+on:
+  push:
+    branches: [ "main", "ci-testing" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '26 20 * * 4'
+
+permissions:
+  contents: read
+
+jobs:
+  brakeman-scan:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    name: Brakeman Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Scan
+        continue-on-error: true
+        run: |
+          bundle exec brakeman -f sarif -o tmp/testresults/brakeman.sarif.json .
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: tmp/testresults/brakeman.sarif.json

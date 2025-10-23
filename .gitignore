@@ -26,6 +26,11 @@ yarn-error.log
 !/tmp/storage/
 !/tmp/storage/.keep
 
+# ignore test coverage results, but keep the directory.
+/tmp/testresults/*
+!/tmp/testresults/
+!/tmp/testresults/.keep
+
 /public/assets
 
 # Ignore master key for decrypting credentials and more.
