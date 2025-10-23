@@ -4,6 +4,8 @@ class JwtSigningKey < ApplicationRecord
   encrypts :private_key
 
   validates :name, presence: true
+  validates :type, presence: true
+
   validates :private_key, presence: true
 
   default_scope { order(created_at: :desc) }
@@ -29,7 +31,7 @@ class JwtSigningKey < ApplicationRecord
   end
 
   def supported_algorithms
-    []
+    raise NoMethodError, "Must be implemented by subclass"
   end
 
   def expired?

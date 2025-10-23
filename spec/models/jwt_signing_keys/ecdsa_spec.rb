@@ -17,6 +17,10 @@ RSpec.describe JwtSigningKeys::ECDSA, type: :model do
       # calculated. So, we'll just shunt it into working.
       expect(subject.public_key.public_key&.to_bn).to eq(subject.private_key.public_key.to_bn)
     end
+
+    it "reports supported algorithms" do
+      expect(subject.supported_algorithms).to contain_exactly("ES256")
+    end
   end
 
   context "ActiveRecord shenanigans" do
@@ -52,17 +56,16 @@ RSpec.describe JwtSigningKeys::ECDSA, type: :model do
     it "allows setting a curve on creation" do
       ec_key = described_class.new(name: "curve_override_test", curve: "secp384r1")
       expect(ec_key.curve).to eq("secp384r1")
+
+      # sanity tests
+      expect(ec_key.public_key.group&.curve_name).to eq("secp384r1")
+      expect(ec_key.supported_algorithms).to contain_exactly("ES384")
     end
 
-    it "validates that a curve is supported" do
-      # this is very improper, but eh.
+    it "blocks creation of curves not supported by the JWT lib" do
+      # P112 curves are not supported per RFC 7518, but OpenSSL can create them.
 
-      jwt_supported_curves = JWT::JWA::Ecdsa::NAMED_CURVES.keys
-      openssl_supported_curves = OpenSSL::PKey::EC.builtin_curves.map { |k| k[0] }.uniq
-      test_curves = openssl_supported_curves - jwt_supported_curves
-      pending("No unsupported curves on this platform!") if test_curves.empty?
-
-      ec_key = described_class.new(name: "invalid_curve_test", curve: test_curves.sample)
+      ec_key = described_class.new(name: "invalid_curve_test", curve: "secp112r1")
       expect(ec_key).to be_invalid
     end
   end

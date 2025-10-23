@@ -15,6 +15,10 @@ RSpec.describe JwtSigningKeys::RSA, type: :model do
     it "has a public key that matches the private key" do
       expect(subject.public_key.to_pem(nil)).to eq(subject.private_key.public_key.to_pem(nil))
     end
+
+    it "reports supported algorithms" do
+      expect(subject.supported_algorithms).to contain_exactly("PS256", "PS384", "PS512", "RS256", "RS384", "RS512")
+    end
   end
 
   context "ActiveRecord shenanigans" do

@@ -95,4 +95,9 @@ RSpec.describe JwtSigningKey, type: :model do
       expect(JwtSigningKey.preferred_key_for_algorithm("foo.bar")).to be_nil
     end
   end
+
+  it "raises NoMethodError for supported_algorithms in base class" do
+    key = JwtSigningKey.new(name: "base_test_#{SecureRandom.uuid}")
+    expect { key.supported_algorithms }.to raise_error(NoMethodError, /Must be implemented by subclass/)
+  end
 end

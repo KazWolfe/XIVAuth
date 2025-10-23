@@ -14,6 +14,10 @@ RSpec.describe JwtSigningKeys::Ed25519, type: :model do
     it "has a public key that matches the private key" do
       expect(subject.public_key.to_bytes).to eq(subject.private_key.verify_key.to_bytes)
     end
+
+    it "reports supported algorithms" do
+      expect(subject.supported_algorithms).to contain_exactly("Ed25519", "EdDSA")
+    end
   end
 
   context "ActiveRecord shenanigans" do

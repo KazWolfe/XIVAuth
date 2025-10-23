@@ -31,4 +31,8 @@ RSpec.describe JwtSigningKeys::HMAC, type: :model do
     hm_key = described_class.new(name: "size test", size: 64)
     expect(hm_key.size).to eq(64)
   end
+
+  it "reports supported algorithms" do
+    expect(subject.supported_algorithms).to contain_exactly("HS256", "HS384", "HS512")
+  end
 end
