@@ -79,7 +79,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 
-  if defined?(RSpecJunitFormatter)
-    config.add_formatter("RSpecJunitFormatter", "tmp/testresults/rspec.xml")
+  if Gem.loaded_specs.has_key?('rspec_junit_formatter')
+    config.add_formatter("RspecJunitFormatter", "tmp/testresults/rspec.xml")
   end
 end
