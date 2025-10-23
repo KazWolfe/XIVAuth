@@ -8,9 +8,22 @@
       <div class="card-header">
         <h3 class="h5 mb-0">Profile Information</h3>
       </div>
-      <div class="card-body">
-        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+        <div class="card-body">
           <%= render "devise/shared/error_messages", resource: resource %>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold" for="user_id">User ID</label>
+            <div class="input-group" data-controller="utilities--copy-code">
+              <input type="text" class="form-control font-monospace" id="user_id" value="<%= resource.id %>" readonly
+                     data-utilities--copy-code-target="source" onclick="this.select();">
+              <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy application ID"
+                      data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+            <div class="form-text">The persistent identifier for your user. This cannot be changed.</div>
+          </div>
 
           <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
             <div class="alert alert-warning d-flex align-items-center" role="alert">
@@ -20,24 +33,23 @@
           <% end %>
 
           <div class="mb-3">
-            <%= f.label :email, class: "form-label" %>
+            <%= f.label :email, class: "form-label fw-semibold" %>
             <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
           </div>
 
           <%= f.fields_for :profile do |pf| %>
             <div class="mb-3">
-              <%= pf.label :display_name, class: 'form-label' %>
+              <%= pf.label :display_name, class: 'form-label fw-semibold' %>
               <%= pf.text_field :display_name, class: 'form-control' %>
             </div>
           <% end %>
 
           <% pwd_open = resource.errors[:password].present? || resource.errors[:password_confirmation].present? %>
-          <!-- Change Password accordion (flush) -->
           <div class="accordion accordion-flush mb-3" id="settingsAccordion">
             <div class="accordion-item">
               <h2 class="accordion-header" id="headingChangePassword">
                 <button class="accordion-button <%= 'collapsed' unless pwd_open %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChangePassword" aria-expanded="<%= pwd_open %>" aria-controls="collapseChangePassword">
-                  <i class="bi bi-shield-lock me-2"></i> Change password (optional)
+                  <i class="bi bi-shield-lock me-2"></i> Change password
                 </button>
               </h2>
               <div id="collapseChangePassword" class="accordion-collapse collapse <%= 'show' if pwd_open %>" aria-labelledby="headingChangePassword" data-bs-parent="#settingsAccordion">
@@ -45,7 +57,7 @@
                   <!-- Password strength controller wrapper -->
                   <div data-controller="devise--password-strength" data-devise--password-strength-min-score-value="<%= User.min_password_score %>">
                     <div class="mb-3">
-                      <%= f.label :password, "New password", class: "form-label mb-1" %>
+                      <%= f.label :password, "New password", class: "form-label fw-semibold mb-1" %>
                       <%= f.password_field :password, autocomplete: "new-password", class: "form-control", aria: { describedby: (@minimum_password_length ? "passwordHelp passwordLengthHelp" : "passwordHelp") },
                                            data: { "action": 'input->devise--password-strength#calc', "devise--password-strength-target": 'password' } %>
                       <div class="form-text text-secondary pt-1">
@@ -63,7 +75,7 @@
                     </div>
 
                     <div class="mb-0">
-                      <%= f.label :password_confirmation, "Confirm new password", class: "form-label mb-1" %>
+                      <%= f.label :password_confirmation, "Confirm new password", class: "form-label fw-semibold mb-1" %>
                       <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", aria: { describedby: "passwordConfirmationHelp" },
                                            data: { "action": "input->devise--password-strength#onConfirm", "devise--password-strength-target": 'confirm' } %>
                     </div>
@@ -74,16 +86,15 @@
           </div>
 
           <div class="mb-3">
-            <%= f.label :current_password, class: "form-label" %>
+            <%= f.label :current_password, class: "form-label fw-semibold" %>
             <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control", aria: { describedby: "currentPasswordHelp" } %>
             <div id="currentPasswordHelp" class="form-text">We need your current password to confirm your changes.</div>
           </div>
-
-          <div class="d-grid d-sm-flex gap-2">
-            <%= f.submit "Update", class: "btn btn-primary" %>
-          </div>
-        <% end %>
-      </div>
+        </div>
+        <div class="card-footer bg-transparent d-flex justify-content-end">
+          <%= f.submit "Save Changes", class: "btn btn-primary" %>
+        </div>
+      <% end %>
     </div>
   </div>
 
@@ -189,7 +200,8 @@
                   <td>
                     <%= cred.nickname %><br>
                     <small>
-                      Last used: <%= cred.last_used_at.present? ? distance_of_time_in_words_to_now(cred.last_used_at) + " ago" : "never" %>
+                      Last
+                      used: <%= cred.last_used_at.present? ? distance_of_time_in_words_to_now(cred.last_used_at) + " ago" : "never" %>
                     </small>
                   </td>
                   <td class="text-end">

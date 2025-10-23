@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div class="card-footer">
+    <div class="card-footer bg-transparent">
       <div class="btn-toolbar float-end" role="toolbar" aria-label="Character Actions">
         <% unless character_registration.verified? %>
           <%= link_to character_registration_verify_path(character_registration), class: "btn btn-success me-2", data: { turbo_stream: "remote_modal" } do %>
