@@ -78,4 +78,8 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  if defined?(RSpecJunitFormatter)
+    config.add_formatter("RSpecJunitFormatter", "tmp/testresults/rspec.xml")
+  end
 end

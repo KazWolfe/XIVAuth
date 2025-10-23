@@ -58,6 +58,8 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
+  routes.default_url_options[:host] = "http://test.xivauth.net"
+
   # Fake encryption for DB
   config.active_record.encryption.primary_key = "testing"
   config.active_record.encryption.deterministic_key = "testing"

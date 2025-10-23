@@ -5,8 +5,7 @@ Sentry.init do |config|
 
   # set the instrumenter to use OpenTelemetry instead of Sentry
   config.instrumenter = :otel if defined?(OpenTelemetry) && defined?(Sentry::OpenTelemetry)
-
-  config.enable_tracing = true
+  
   config.traces_sample_rate = 0.1
   config.profiles_sample_rate = 0.1
 

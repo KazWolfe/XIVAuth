@@ -1,9 +1,9 @@
 require 'simplecov'
-require 'simplecov_json_formatter'
+require 'simplecov-cobertura'
 
 SimpleCov.formatters = [
   SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::JSONFormatter
+  SimpleCov::Formatter::CoberturaFormatter
 ]
 
 SimpleCov.start 'rails' do

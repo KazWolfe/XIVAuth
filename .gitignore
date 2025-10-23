@@ -30,6 +30,7 @@ yarn-error.log
 /tmp/testresults/*
 !/tmp/testresults/
 !/tmp/testresults/.keep
+coverage/
 
 /public/assets
 
