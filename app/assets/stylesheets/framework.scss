@@ -1,22 +1,8 @@
-@import "bootstrap/scss/mixins/banner";
-
-@include bsBanner("");
-
 @import "./hope-ui/helper/fonts";
-// Configuration
-@import "bootstrap/scss/functions";
 
-// Hopeui Design system
-@import "./hope-ui/variables";
-@import "./hope-ui/variables-dark";
-@import "./hope-ui/variables/index";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/maps";
-@import "bootstrap/scss/mixins";
+@import 'framework_core';
+
 @import "bootstrap/scss/utilities";
-
-// Custom Mixin And Helper
-@import "./hope-ui/helper/mixins";
 @import "./hope-ui/helper/reboot";
 
 // Layout & components

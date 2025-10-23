@@ -1,7 +1,12 @@
 <% character = character_registration.character %>
+<% card_state = if character_registration.verified?
+                    "ok"
+                  elsif character.refresh_fail_reason.present?
+                    "warning"
+                  end %>
 
 <div class="col-md-6 col-xl-4 mb-2" id="<%= dom_id character_registration %>">
-  <div class="card">
+  <div class="card stateful-card-border" data-state="<%= card_state || "" %>">
     <div class="card-body">
       <div class="d-flex flex-row align-items-center">
         <img src="<%= image_url character.avatar_url %>" class="rounded m-2"
