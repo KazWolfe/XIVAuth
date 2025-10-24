@@ -37,36 +37,41 @@ class Users::SessionsController < Devise::SessionsController
 
     # recall all the new session things
     generate_discoverable_challenge
-    render :new, status: :unprocessable_entity
-  end
-
-  def find_user
-    if user_params[:email].present?
-      User.find_by(email: user_params[:email])
-    elsif user_params[:webauthn_response].present?
-      cred = WebAuthn::Credential.from_get(JSON.parse(user_params[:webauthn_response]))
-      User.find_by_webauthn_id(cred.user_handle)
-    elsif session.dig("mfa")
-      User.find(session["mfa"]["user_id"])
-    else
-      nil
-    end
+    render :new, status: :unprocessable_content 
   end
 
   def evaluate_login_flow
-    @user ||= find_user
-    self.resource = @user
-
     if user_params[:webauthn_response].present?
-      authenticate_via_passkey(user_params[:webauthn_response])
-    elsif self.resource&.valid_password?(user_params[:password]) && self.resource&.requires_mfa?
-      reset_mfa_attempt!
-      prompt_for_mfa(status_code: :unprocessable_entity)  # turbo hack.
+      cred = WebAuthn::Credential.from_get(JSON.parse(user_params[:webauthn_response]))
+      @user = User.find_by_webauthn_id(cred.user_handle)
+      self.resource = @user
+
+      if self.resource
+        authenticate_via_passkey(user_params[:webauthn_response])
+      else
+        logger.warn("WebAuthn login attempt with an unknown user_handle.")
+        self.flash.now[:alert] = "Security key presented is not registered."
+
+        self.resource = resource_class.new
+        render :new, status: :unprocessable_content 
+
+        return
+      end
+    elsif user_params[:email].present?
+      @user = User.find_by(email: user_params[:email])
+      self.resource = @user
+
+      if self.resource&.valid_password?(user_params[:password]) && self.resource&.requires_mfa?
+        reset_mfa_attempt!
+        prompt_for_mfa(status_code: :unprocessable_content )
+      else
+        # implicit; use devise default flow (password only)
+      end
     elsif session["mfa"]
-      # active mfa session
+      @user = User.find(session["mfa"]["user_id"])
+      self.resource = @user
+
       authenticate_with_mfa
-    else
-      # implicit; use devise default flow (password only)
     end
   end
 

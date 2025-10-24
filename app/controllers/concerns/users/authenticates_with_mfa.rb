@@ -57,7 +57,7 @@ module Users::AuthenticatesWithMFA
 
   private def handle_mfa_failure(method, message: nil)
     flash.now[:alert] = "MFA authentication via #{method} failed: #{message}"
-    prompt_for_mfa(status_code: :unprocessable_entity)
+    prompt_for_mfa(status_code: :unprocessable_content )
   end
 
   def mfa_params

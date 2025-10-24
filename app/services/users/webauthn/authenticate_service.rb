@@ -11,7 +11,7 @@ class Users::Webauthn::AuthenticateService
 
   def execute(**verification_arguments)
     response_credential = WebAuthn::Credential.from_get(JSON.parse(@device_response))
-    stored_credential = @user.webauthn_credentials.find_by(external_id: response_credential.id)
+    stored_credential = @user.webauthn_credentials.find_by!(external_id: response_credential.id)
 
     response_credential.verify(@challenge,
                                public_key: stored_credential.public_key,
