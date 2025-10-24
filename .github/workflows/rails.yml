@@ -45,7 +45,7 @@ jobs:
           RAILS_ENV: test
         run: |
           corepack enable
-          corepack prepare yarn@stable --activate
+          corepack prepare yarn@1.22.22 --activate
           yarn install --frozen-lockfile
 
       - name: Cache node modules (yarn)

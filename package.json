@@ -24,6 +24,7 @@
     "tom-select": "^2.4.3",
     "zxcvbn": "^4.4.2"
   },
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets",
     "build:css": "sass ./app/assets/stylesheets/:./app/assets/builds/ --embed-sources --load-path=node_modules"
