@@ -29,19 +29,57 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install JS dependencies & build frontend
+        env:
+          RAILS_ENV: test
+        run: |
+          corepack enable
+          corepack prepare yarn@stable --activate
+          yarn install --frozen-lockfile
+
+      - name: Cache node modules (yarn)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/yarn
+            ~/.config/yarn
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Precompile assets
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        run: |
+          bin/rails css:build || true
+          bin/rails js:build || true
+          bundle exec rails assets:precompile
+
       - name: Set up database schema
         run: bin/rails db:schema:load
+
       - name: Run tests
         run: bundle exec rspec --color --format documentation
+
       - name: Upload test results to Codecov
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./tmp/testresults/rspec.xml
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
