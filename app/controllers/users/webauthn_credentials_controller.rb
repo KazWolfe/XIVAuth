@@ -34,7 +34,7 @@ class Users::WebauthnCredentialsController < ApplicationController
       else
         respond_to do |format|
           format.turbo_stream { render_new_form_again }
-          format.html { render :new, status: :unprocessable_entity }
+          format.html { render :new, status: :unprocessable_content }
         end
       end
     rescue WebAuthn::Error => e
@@ -42,14 +42,14 @@ class Users::WebauthnCredentialsController < ApplicationController
 
       respond_to do |format|
         format.turbo_stream { render_new_form_again }
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_content }
       end
     ensure
       session.delete(:webauthn_register_challenge)
     end
   end
 
-  private def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_content)
     render status: status,
            turbo_stream: turbo_stream.update("register_webauthn_modal-content", partial: "users/webauthn_credentials/modal")
   end

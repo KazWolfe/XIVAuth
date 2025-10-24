@@ -8,7 +8,7 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
           flash[:error] = "Character was already verified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
         end
-        format.json { render json: { error: "Character already verified." }, status: :unprocessable_entity }
+        format.json { render json: { error: "Character already verified." }, status: :unprocessable_content }
       end
 
       return
@@ -39,7 +39,7 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
       end
     else
       respond_to do |format|
-        format.json { head :unprocessable_entity }
+        format.json { head :unprocessable_content }
         format.html do
           flash[:error] = "Failed to enqueue verification job?!"
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
@@ -55,7 +55,7 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
           flash[:error] = "Character was already unverified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
         end
-        format.json { render json: { error: "Character not verified." }, status: :unprocessable_entity }
+        format.json { render json: { error: "Character not verified." }, status: :unprocessable_content }
       end
 
       return
@@ -77,7 +77,7 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
           flash[:error] = "Character could not be unverified."
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
         end
-        format.json { head :unprocessable_entity }
+        format.json { head :unprocessable_content }
       end
     end
   end
@@ -97,7 +97,7 @@ class Admin::CharacterRegistrationsController < Admin::AdminController
           flash[:error] = "Character registration could not be deleted??"
           redirect_back fallback_location: admin_character_path(@registration.character.lodestone_id)
         end
-        format.json { head :unprocessable_entity }
+        format.json { head :unprocessable_content }
       end
     end
   end

@@ -23,7 +23,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     if @registration.save
       render :show, status: :created, location: @registration
     else
-      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -35,7 +35,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     if @registration.save
       render :show, status: :ok, location: @registration
     else
-      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -65,7 +65,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     if @registration.save
       head status: :no_content
     else
-      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -105,7 +105,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
     if signing_key.blank?
-      render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_entity
+      render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_content
       return
     end
 

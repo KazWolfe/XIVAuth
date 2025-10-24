@@ -31,7 +31,7 @@ class Api::V1::JwtController < Api::V1::ApiController
     decoded_jwt = JWT.decode(body, nil, false)
     key_name = decoded_jwt[1]["kid"]
     if key_name.blank?
-      render json: { status: "error", error: "No kid specified - cannot verify" }, status: :unprocessable_entity
+      render json: { status: "error", error: "No kid specified - cannot verify" }, status: :unprocessable_content
       return
     end
 
@@ -73,13 +73,13 @@ class Api::V1::JwtController < Api::V1::ApiController
 
   rescue JWT::ExpiredSignature => e
     render json: { status: "expired", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
-           status: :unprocessable_entity
+           status: :unprocessable_content
   rescue JWT::InvalidAudError => e
     render json: { status: "invalid_client", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
-           status: :unprocessable_entity
+           status: :unprocessable_content
   rescue JWT::DecodeError => e
     render json: { status: "invalid", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
-           status: :unprocessable_entity
+           status: :unprocessable_content
   end
 
   def jwks

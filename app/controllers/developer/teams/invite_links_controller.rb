@@ -24,7 +24,7 @@ class Developer::Teams::InviteLinksController < ApplicationController
         format.html { redirect_to developer_team_path(@team), notice: "Invite link was successfully created." }
         format.turbo_stream { render "developer/teams/invite_links/success" }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_content }
       end
     end
   end

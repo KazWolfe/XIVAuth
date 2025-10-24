@@ -111,7 +111,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
       post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = JSON.parse(response.body)
       expect(json["status"]).to eq("error")
       expect(json["error"]).to match(/No kid specified/i)
@@ -122,7 +122,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
       post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = JSON.parse(response.body)
 
       expect(json["status"]).to eq("invalid")
@@ -133,7 +133,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
       post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = JSON.parse(response.body)
 
       expect(json["status"]).to eq("invalid")
@@ -193,7 +193,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
         token = JWT.encode(payload, @test_key.private_key, "HS256", header)
 
         post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         json = JSON.parse(response.body)
         expect(json["status"]).to eq("invalid_client")
@@ -218,7 +218,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
       it "rejects an AZP from a different app" do
         post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json["status"]).to eq("invalid_client")
       end

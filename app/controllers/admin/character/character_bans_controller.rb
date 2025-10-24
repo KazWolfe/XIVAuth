@@ -44,7 +44,7 @@ class Admin::Character::CharacterBansController < Admin::AdminController
     params.require(:character_ban).permit(:reason)
   end
 
-  private def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_content)
     render status: status,
            turbo_stream: turbo_stream.update("ban_character_modal-content",
                                              partial: "admin/character/character_bans/form")

@@ -38,7 +38,7 @@ class CharacterRegistrationsController < ApplicationController
         end
         format.turbo_stream { render 'character_registrations/close_modal' }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_content }
         format.turbo_stream { render_new_form_again }
       end
     end
@@ -54,7 +54,7 @@ class CharacterRegistrationsController < ApplicationController
           redirect_to character_registrations_path, notice: "Character registration was successfully updated."
         end
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_content }
       end
     end
   end
@@ -112,7 +112,7 @@ class CharacterRegistrationsController < ApplicationController
           .permit(:character_ref)
   end
 
-  private def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_content)
     render status: status,
            turbo_stream: turbo_stream.update("register_character_modal-content",
                                              partial: "character_registrations/registration_form_modal",

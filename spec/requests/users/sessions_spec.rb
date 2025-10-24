@@ -84,14 +84,14 @@ RSpec.describe "Users::SessionsController", type: :request do
       it "fails to sign in with wrong password" do
         post user_session_path, params: login_params(password: "WrongPassword123!")
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Invalid Email or password.")
       end
 
       it "fails to sign in with non-existent email" do
         post user_session_path, params: login_params(email: "nonexistent@example.test")
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Invalid Email or password.")
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe "Users::SessionsController", type: :request do
       it "rejects the login attempt" do
         post user_session_path, params: login_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("Captcha")
       end
     end
@@ -146,7 +146,7 @@ RSpec.describe "Users::SessionsController", type: :request do
       it "rejects invalid TOTP code" do
         post user_session_path, params: mfa_params(otp_attempt: "000000")
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("invalid") | include("failed")
         expect(session["mfa"]).to be_present
       end
@@ -175,7 +175,7 @@ RSpec.describe "Users::SessionsController", type: :request do
       it "prompts for MFA with WebAuthn challenge" do
         post user_session_path, params: login_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(session["mfa"]).to be_present
         expect(session["mfa"]["webauthn_challenge"]).to be_present
       end
@@ -210,7 +210,7 @@ RSpec.describe "Users::SessionsController", type: :request do
 
         post user_session_path, params: mfa_params(webauthn_response: assertion_response.to_json)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("failed") | include("WebAuthn")
         expect(session["mfa"]).to be_present
       end
@@ -223,7 +223,7 @@ RSpec.describe "Users::SessionsController", type: :request do
 
         post user_session_path, params: mfa_params(webauthn_response: assertion_response.to_json)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(session["mfa"]).to be_present
       end
     end
@@ -259,7 +259,7 @@ RSpec.describe "Users::SessionsController", type: :request do
 
       post user_session_path, params: { user: { webauthn_response: assertion_response.to_json } }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("WebAuthn::UserVerifiedVerificationError")
     end
 
@@ -278,7 +278,7 @@ RSpec.describe "Users::SessionsController", type: :request do
         }
       }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("WebAuthn::ChallengeVerificationError")
     end
 
@@ -294,7 +294,7 @@ RSpec.describe "Users::SessionsController", type: :request do
 
       post user_session_path, params: { user: { webauthn_response: assertion_response.to_json } }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Security key presented is not registered.")
     end
 
@@ -310,7 +310,7 @@ RSpec.describe "Users::SessionsController", type: :request do
 
       post user_session_path, params: { user: { webauthn_response: assertion_response.to_json } }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Security key presented is not registered.")
     end
 

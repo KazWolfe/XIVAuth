@@ -50,7 +50,7 @@ class Users::TotpCredentialsController < ApplicationController
 
     unless @totp_credential.validate_and_consume_otp_or_backup!(otp_attempt)
       @totp_credential.errors.add(:otp_attempt, "was invalid")
-      render status: :unprocessable_entity,
+      render status: :unprocessable_content,
              turbo_stream: turbo_stream.update("remove_totp_modal-content", partial: "users/totp_credentials/destroy_modal")
 
       return
@@ -65,7 +65,7 @@ class Users::TotpCredentialsController < ApplicationController
     redirect_to edit_user_registration_path
   end
 
-  private def render_new_form_again(status: :unprocessable_entity)
+  private def render_new_form_again(status: :unprocessable_content)
     render status: status,
            turbo_stream: turbo_stream.update("register_totp_modal-content", partial: "users/totp_credentials/new_modal")
   end

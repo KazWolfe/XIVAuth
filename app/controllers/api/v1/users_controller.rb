@@ -29,7 +29,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
     signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
     if signing_key.blank?
-      render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_entity
+      render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_content
       return
     end
 

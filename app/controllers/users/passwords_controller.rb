@@ -39,6 +39,6 @@ class Users::PasswordsController < Devise::PasswordsController
     return if cloudflare_turnstile_ok?
 
     self.resource = resource_class.new
-    render :new, status: :unprocessable_entity
+    render :new, status: :unprocessable_content
   end
 end

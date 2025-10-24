@@ -99,7 +99,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     set_minimum_password_length
 
     flash[:error] = "Captcha verification failed, please try again."
-    render :new, status: :unprocessable_entity
+    render :new, status: :unprocessable_content
   end
 
   private def set_layout

@@ -38,11 +38,11 @@ class Developer::ClientAppsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new, status: :unprocessable_content }
         format.json do
           errors = @application.errors.full_messages
 
-          render json: { errors: }, status: :unprocessable_entity
+          render json: { errors: }, status: :unprocessable_content
         end
       end
     end
@@ -75,7 +75,7 @@ class Developer::ClientAppsController < ApplicationController
         format.json do
           errors = @application.errors.full_messages
 
-          render json: { errors: errors }, status: :unprocessable_entity
+          render json: { errors: errors }, status: :unprocessable_content
         end
       end
     end

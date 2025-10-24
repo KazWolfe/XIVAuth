@@ -57,7 +57,7 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
       redirect_to developer_oauth_client_path(@oauth_client)
     else
       flash.now[:error] = "Could not create OAuth client."
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -73,10 +73,10 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
       respond_to do |format|
         format.html do
           redirect_to developer_oauth_client_path(@oauth_client),
-                      status: :unprocessable_entity,
+                      status: :unprocessable_content,
                       error: "Could not delete OAuth client."
         end
-        format.json { render json: { error: "Could not delete OAuth client." }, status: :unprocessable_entity }
+        format.json { render json: { error: "Could not delete OAuth client." }, status: :unprocessable_content }
       end
     end
   end
@@ -97,7 +97,7 @@ class Developer::ClientApps::OAuthClientsController < ApplicationController
       respond_to do |format|
         format.html do
           redirect_to developer_application_path(@application),
-                      status: :unprocessable_entity,
+                      status: :unprocessable_content,
                       error: "Could not regenerate app secret."
         end
         format.json { render json: @oauth_client, as_owner: true }
