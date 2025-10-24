@@ -72,7 +72,7 @@ jobs:
         run: bin/rails db:schema:load
 
       - name: Run tests
-        run: bundle exec rspec --color --format documentation
+        run: bundle exec rspec --force-color --format documentation
 
       - name: Upload test results to Codecov
         uses: codecov/test-results-action@v1
@@ -87,16 +87,23 @@ jobs:
           files: ./tmp/testresults/coverage/coverage.xml
 
   lint:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+
       - name: Generate binstubs
         run: bundle binstubs rubocop
-      - name: Lint Ruby files
-        run: bin/rubocop --parallel
+
+      - name: Run rubocop with reviewdog
+        uses: reviewdog/action-rubocop@v2.22.0
+        with:
+          reporter: github-pr-review
+          only_changed: true
+          skip_install: true
+          use_bundler: true
