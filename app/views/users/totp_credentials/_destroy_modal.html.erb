@@ -6,7 +6,7 @@
     In order to remove your TOTP credential, you must authenticate with it one last time. If you no longer have access
     to your credential, you may use a backup code.
   </p>
-  <%= form_with(model: @totp_credential, method: :delete, url: totp_credential_path) do |f| %>
+  <%= form_with(model: @totp_credential, method: :delete, url: user_totp_credential_path) do |f| %>
     <div class="mb-3">
       <%= f.label :otp_attempt, "Current OTP Code", class: "form-label" %>
       <%= f.text_field :otp_attempt, placeholder: "123456", class: "form-control" %>

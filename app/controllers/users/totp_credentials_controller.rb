@@ -62,7 +62,7 @@ class Users::TotpCredentialsController < ApplicationController
       flash[:error] = "TOTP credential could not be removed."
     end
 
-    redirect_to edit_user_registration_path
+    redirect_to edit_user_path
   end
 
   private def render_new_form_again(status: :unprocessable_content)

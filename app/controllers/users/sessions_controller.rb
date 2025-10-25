@@ -32,7 +32,7 @@ class Users::SessionsController < Devise::SessionsController
     return unless user_params[:webauthn_response].present? || user_params[:password].present?
     return if cloudflare_turnstile_ok?
 
-    self.flash.now[:alert] = "Captcha verification failed, please try again."
+    self.flash.now[:alert] = "CAPTCHA verification failed. Please try again."
     self.resource = resource_class.new sign_in_params
 
     # recall all the new session things

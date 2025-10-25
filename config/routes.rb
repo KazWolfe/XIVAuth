@@ -89,21 +89,43 @@ Rails.application.routes.draw do
   end
   use_doorkeeper_device_authorization_grant {}
 
-  devise_for :users, controllers: {
-    confirmations: "users/confirmations",
-    omniauth_callbacks: "users/omniauth_callbacks",
-    passwords: "users/passwords",
-    registrations: "users/registrations",
-    sessions: "users/sessions",
-    unlocks: "users/unlocks"
-  }
+  devise_for :users, path: "auth", only: [:omniauth_callbacks],
+             controllers: {
+               omniauth_callbacks: "users/omniauth_callbacks",
+             }
 
   devise_scope :user do
-    get "/sign_up/post_signup", to: "users/registrations#post_signup", as: :post_signup
+    scope :auth do
+      get "login", to: "users/sessions#new", as: :new_user_session
+      post "login", to: "users/sessions#create", as: :user_session
+      delete "logout", to: "users/sessions#destroy", as: :destroy_user_session
 
-    resources :social_identities, path: "/profile/identities", controller: "users/social_identities", only: [:destroy]
-    resources :webauthn_credentials, path: "/profile/webauthn", controller: "users/webauthn_credentials",
-only: %i[new create destroy]
-    resource :totp_credential, path: "/profile/totp", controller: "users/totp_credentials", only: %i[new create destroy]
+      get "register", to: "users/registrations#new", as: :new_user_registration
+      post "register", to: "users/registrations#create", as: :user_registration
+      get "register/post_signup", to: "users/registrations#post_signup", as: :user_post_registration
+      get "register/confirm", to: "users/confirmations#show", as: :user_confirmation
+
+      get "recovery", to: "users/recovery#new", as: :begin_user_recovery
+      post "recovery", to: "users/recovery#create", as: :user_recovery
+
+      get "recovery/password", to: "users/passwords#edit", as: :reset_user_password
+      put "recovery/password", to: "users/passwords#update"
+    end
+
+    scope "users" do
+      # TODO: Remove eventually. Deprecated routes that might still be active via emails.
+
+      get "password/edit", to: "users/passwords#edit"
+      get "confirmation", to: "users/confirmations#show"
+    end
+
+    resource :profile, as: "user", only: %i[update destroy], controller: "users/registrations" do
+      get "/", to: "users/registrations#edit", as: :edit
+
+      resources :social_identities, path: "identities", controller: "users/social_identities", only: [:destroy]
+      resources :webauthn_credentials, path: "webauthn", controller: "users/webauthn_credentials",
+                only: %i[new create destroy]
+      resource :totp_credential, path: "totp", controller: "users/totp_credentials", only: %i[new create destroy]
+    end
   end
 end

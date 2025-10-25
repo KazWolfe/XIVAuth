@@ -1,11 +1,9 @@
-<h2 class="mb-4">Reset Password</h2>
+<h2 class="mb-4">Recover Account</h2>
 
-<p>We get it, passwords are hard to remember (or your password manager messed up).</p>
-<p>Enter your account's email address below and we'll send you an email if it's registered to an account.</p>
+<p>Forgot your password or never got a confirmation email? No problem.</p>
+<p>Enter your email address, and we'll kick a Moogle in your general direction to figure out what went wrong.</p>
 
-<%= form_for(resource, as: resource_name, url: reset_user_password_path(resource_name), html: { method: :post }, data: { controller: "form--turnstile" }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-
+<%= form_for(@user, as: :user, url: user_recovery_path, html: { method: :post }, data: { controller: "form--turnstile" }) do |f| %>
   <div class="form-group field">
     <%= f.label :email, class: "form-label" %><br/>
     <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: eegg_random_npc_email %>
@@ -19,5 +17,3 @@
     <%= link_to "Back To Login", new_user_session_path, class: "btn btn-secondary col" %>
   </div>
 <% end %>
-
-<%= render "devise/shared/links" %>

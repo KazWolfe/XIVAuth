@@ -14,7 +14,7 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
           <li>
-            <a class="dropdown-item" href="<%= edit_user_registration_path %>">
+            <a class="dropdown-item" href="<%= edit_user_path %>">
               <i class="bi bi-person me-2"></i> Profile
             </a>
             <%= link_to destroy_user_session_path, class: "dropdown-item text-danger", data: { "turbo-method": :delete } do %>

@@ -6,7 +6,7 @@ class Users::SocialIdentitiesController < ApplicationController
 
     @identity.destroy
 
-    redirect_to edit_user_registration_path, notice: "Identity was removed."
+    redirect_to edit_user_path, notice: "Identity was removed."
   end
 
   private def load_identity

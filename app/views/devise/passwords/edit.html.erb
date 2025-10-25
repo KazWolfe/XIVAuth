@@ -1,25 +1,42 @@
-<h2>Change your password</h2>
+<h2 class="mb-4">Reset Password</h2>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+<%= form_for(resource, as: resource_name, url: reset_user_password_path, html: { method: :put }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
   <%= f.hidden_field :reset_password_token %>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em><br />
-    <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "new-password" %>
+  <div data-controller="devise--password-strength" data-devise--password-strength-min-score-value="<%= User.min_password_score %>">
+    <div class="form-group field mb-2">
+      <%= f.label :password, class: "form-label" %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
+                           data: {
+                             "action": 'input->devise--password-strength#calc',
+                             "devise--password-strength-target": 'password'
+                           } %>
+
+      <div class="form-text text-secondary pt-1">
+        <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-devise--password-strength-target="meter">
+          <div class="progress-bar bg-primary" data-devise--password-strength-target="meterInner"></div>
+        </div>
+        <p class="mb-0 d-none">
+          <strong class="text-secondary" data-devise--password-strength-target="strength">Unknown</strong> -
+          <span data-devise--password-strength-target="crackTime"></span>
+          <abbr title="Calculated at 1000 guesses/second">to crack</abbr>
+        </p>
+        <ul class="list-unstyled mb-0" data-devise--password-strength-target="tips"></ul>
+      </div>
+    </div>
+
+    <div class="form-group field mb-2">
+      <%= f.label :password_confirmation %><br/>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",
+                           data: {
+                             "action": "input->devise--password-strength#onConfirm",
+                             "devise--password-strength-target": 'confirm'
+                           } %>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Change my password" %>
+  <div class="form-group d-grid d-md-flex mt-4 gap-2 mb-1">
+    <%= f.submit "Update Password", class: "btn btn-primary col-md-12" %>
   </div>
 <% end %>
-
-<%= render "devise/shared/links" %>

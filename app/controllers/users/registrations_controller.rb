@@ -17,9 +17,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     super
   rescue Postmark::InactiveRecipientError
-    flash.now[:error] = "The email address you entered was rejected by our MTA. This is likely because the email " +
-                        "provided hard-bounced marked emails from Postmark as spam, or is invalid."
-
+    flash.now[:error] = render_to_string(partial: "devise/mailer/mta_error")
     resource.errors.add(:email, "was rejected by our email provider.")
 
     resource.destroy
@@ -98,7 +96,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     resource.validate
     set_minimum_password_length
 
-    flash[:error] = "Captcha verification failed, please try again."
+    flash[:alert] = "CAPTCHA verification failed. Please try again."
     render :new, status: :unprocessable_content
   end
 

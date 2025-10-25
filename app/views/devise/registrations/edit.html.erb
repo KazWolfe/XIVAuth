@@ -140,7 +140,7 @@
                   <td><%= identity.friendly_name %></td>
                   <td class="font-monospace"><%= identity.external_id %></td>
                   <td class="text-end">
-                    <%= button_to social_identity_path(identity), method: :delete, class: "btn btn-sm btn-danger" do %>
+                    <%= button_to user_social_identity_path(identity), method: :delete, class: "btn btn-sm btn-danger" do %>
                       <i class="bi bi-trash" aria-hidden="true"></i>
                       <span class="visually-hidden">Unlink <%= identity.provider.humanize %> identity</span>
                     <% end %>
@@ -170,16 +170,16 @@
       <div class="card-body">
         <div class="btn-toolbar gap-2 mb-3" role="toolbar">
           <% if resource.totp_credential.present? %>
-            <%= button_to totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
+            <%= button_to user_totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
               <i class="bi bi-calculator"></i> Remove OTP Code
             <% end %>
           <% else %>
-            <%= button_to new_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+            <%= button_to new_user_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
               <i class="bi bi-calculator"></i> Add OTP Code
             <% end %>
           <% end %>
 
-          <%= button_to new_webauthn_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+          <%= button_to new_user_webauthn_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
             <i class="bi bi-usb-drive"></i> Add Security Key
           <% end %>
         </div>
@@ -205,7 +205,7 @@
                     </small>
                   </td>
                   <td class="text-end">
-                    <%= button_to webauthn_credential_path(cred), method: :delete, class: "btn btn-sm btn-danger" do %>
+                    <%= button_to user_webauthn_credential_path(cred), method: :delete, class: "btn btn-sm btn-danger" do %>
                       <i class="bi bi-trash" aria-hidden="true"></i>
                       <span class="visually-hidden">Remove security key <%= cred.nickname %></span>
                     <% end %>

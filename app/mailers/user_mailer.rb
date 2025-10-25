@@ -6,8 +6,8 @@ class UserMailer < Devise::Mailer
   def reset_password_instructions(record, token, opts = nil)
     self.template_model = {
       email: record.email,
-      action_url: edit_password_url(record, reset_password_token: token),
-      new_reset_url: new_user_password_url,
+      action_url: reset_user_password_url(reset_password_token: token),
+      new_reset_url: user_recovery_url,
       link_ttl: Devise.reset_password_within.inspect
     }
 
@@ -22,7 +22,7 @@ class UserMailer < Devise::Mailer
 
     self.template_model = {
       email: record.email,
-      action_url: confirmation_url(record, confirmation_token: token)
+      action_url: user_confirmation_url(confirmation_token: token)
     }
 
     mail to: record.email, postmark_template_alias: "welcome"
@@ -31,7 +31,7 @@ class UserMailer < Devise::Mailer
   def reconfirmation_instructions(record, token, opts = nil)
     self.template_model = {
       email: record.unconfirmed_email,
-      action_url: confirmation_url(record, confirmation_token: token)
+      action_url: user_confirmation_url(record, confirmation_token: token)
     }
 
     mail to: record.unconfirmed_email, postmark_template_alias: "reconfirmation"

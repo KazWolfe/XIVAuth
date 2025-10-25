@@ -13,7 +13,7 @@ class Users::WebauthnCredentialsController < ApplicationController
     credential = current_user.webauthn_credentials.find(params[:id])
     credential.destroy
 
-    redirect_to edit_user_registration_path, notice: "Credential was removed."
+    redirect_to edit_user_path, notice: "Credential was removed."
   end
 
   def create
@@ -30,7 +30,7 @@ class Users::WebauthnCredentialsController < ApplicationController
       )
 
       if @webauthn_credential.save
-        redirect_to edit_user_registration_path
+        redirect_to edit_user_path
       else
         respond_to do |format|
           format.turbo_stream { render_new_form_again }

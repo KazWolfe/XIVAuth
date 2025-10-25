@@ -11,6 +11,16 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  def callback
+    @provider = params[:provider]
+
+    unless User.omniauth_providers.include? @provider
+      raise "Unknown OAuth provider: #{@provider}"
+    end
+
+    common
+  end
+
   private def common
     return sso_bind_identity if user_signed_in?
 
@@ -56,7 +66,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session["devise.oauth.data"] = auth_data.except(:extra)
 
       msg = @user.errors.full_messages.join("\n")
-      redirect_to new_user_registration_url, alert: msg
+      redirect_to new_user_registration_path, alert: msg
     end
   end
 
@@ -66,10 +76,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if identity.user == current_user
         identity.merge_auth_hash(auth_data)
 
-        redirect_to edit_user_registration_path, alert: "This social identity already exists on your account! " \
+        redirect_to edit_user_path, alert: "This social identity already exists on your account! " \
                                                         "Information about this identity has been updated."
       else
-        redirect_to edit_user_registration_path, alert: "This social identity is already used on another account. " \
+        redirect_to edit_user_path, alert: "This social identity is already used on another account. " \
                                                         "Please delete it from that account first."
       end
 
@@ -80,9 +90,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     if identity.save
       set_flash_message(:notice, :success, kind: auth_data["provider"].camelize) if is_navigational_format?
-      redirect_to edit_user_registration_path
+      redirect_to edit_user_path
     else
-      redirect_to edit_user_registration_path, alert: identity.errors.full_messages.join("\n")
+      redirect_to edit_user_path, alert: identity.errors.full_messages.join("\n")
     end
   end
 

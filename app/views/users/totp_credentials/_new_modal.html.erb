@@ -13,7 +13,7 @@
     Can't scan? Your OTP secret is: <br>
     <code><%= @totp_credential.otp_secret %></code>
   </p>
-  <%= form_with(model: @totp_credential, method: :post, url: totp_credential_path, data: {"turbo-frame": "_top"}) do |f| %>
+  <%= form_with(model: @totp_credential, method: :post, url: user_totp_credential_path, data: {"turbo-frame": "_top"}) do |f| %>
 
     <div class="mb-3">
       <%= f.label :otp_attempt, "Current OTP Code", class: "form-label" %>

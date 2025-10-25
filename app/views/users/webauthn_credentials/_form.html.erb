@@ -1,4 +1,4 @@
-<%= form_with(model: webauthn_credential, method: :post, url: webauthn_credentials_path,
+<%= form_with(model: webauthn_credential, method: :post, url: user_webauthn_credentials_path,
               data: { controller: "devise--webauthn--registration", action: "devise--webauthn--registration#register" }) do |f| %>
   <div class="alert alert-warning d-none" role="alert" id="webauthnAlertFailure" data-devise--webauthn--registration-target="feedback"></div>
 
