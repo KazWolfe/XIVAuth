@@ -6,10 +6,12 @@ class FFXIV::LodestoneProfile
   class LodestoneProfilePrivate < LodestoneProfileInvalid; end
 
   ROOT_URL = "https://na.finalfantasyxiv.com/lodestone".freeze
-  DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
-    "Chrome/104.0.0.0 Safari/537.36".freeze
-  MOBILE_USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, " \
-    "like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1".freeze
+  DESKTOP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) " \
+    "Chrome/141.0.0.0 Safari/537.36 (compatible; XIVAuth-Verifier/1.0; +https://xivauth.net/)"
+  MOBILE_USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 " \
+    "(KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1 " \
+    "(compatible; XIVAuth-Verifier/1.0; +https://xivauth.net/)".freeze
+  XIVAUTH_SCRAPE_HEADER = "XIVAuth 1.0 Lodestone Parser - operations@xivauth.net".freeze
 
   FREE_TRIAL_LEVEL_CAP = 70
   FAILURE_REASONS = [ :unspecified, :hidden_character, :profile_private, :not_found ]
@@ -28,7 +30,7 @@ class FFXIV::LodestoneProfile
     @id = lodestone_id
 
     url = [ROOT_URL, "character", lodestone_id].compact.join("/")
-    @request = Faraday.new(headers: { user_agent: DESKTOP_USER_AGENT }).get(url)
+    @request = Faraday.new(headers: { user_agent: DESKTOP_USER_AGENT, x_blame: XIVAUTH_SCRAPE_HEADER }).get(url)
     @doc = Nokogiri::HTML.parse(@request.body)
 
     @last_parsed = Time.now

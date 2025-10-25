@@ -9,7 +9,7 @@ class Users::ConfirmationsController < ApplicationController
     @user = User.confirm_by_token(params[:confirmation_token])
 
     if @user.errors.empty?
-      set_flash_message!(:notice, :confirmed)
+      flash[:notice] = "Your account has been confirmed. Welcome to XIVAuth!"
       redirect_to stored_location_for(@user) || character_registrations_path
     else
       redirect_to user_recovery_path, alert: @user.errors.full_messages.join("\n")
