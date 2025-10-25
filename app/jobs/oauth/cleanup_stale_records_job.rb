@@ -8,23 +8,32 @@ class OAuth::CleanupStaleRecordsJob < ApplicationJob
   end
 
   def clean_access_grants(cutoff = 24.hours.ago)
-    OAuth::AccessGrant.where(revoked_at: ..cutoff).in_batches(&:destroy_all)
+    OAuth::AccessGrant.where(revoked_at: ..cutoff)
+                      .tap { |rel| logger.info("Scheduling #{rel.count} revoked AccessGrants for deletion.") }
+                      .in_batches(&:destroy_all)
+
     OAuth::AccessGrant.where.not(expires_in: nil)
                       .where("(created_at + expires_in * INTERVAL '1 second') < ?", cutoff)
+                      .tap { |rel| logger.info("Scheduling #{rel.count} expired AccessGrants for deletion.") }
                       .in_batches(&:destroy_all)
   end
 
   def clean_access_tokens(cutoff = 7.days.ago)
-    OAuth::AccessToken.where(revoked_at: ..cutoff).in_batches(&:destroy_all)
+    OAuth::AccessToken.where(revoked_at: ..cutoff)
+                      .tap { |rel| logger.info("Scheduling #{rel.count} revoked AccessTokens for deletion.") }
+                      .in_batches(&:destroy_all)
+
     OAuth::AccessToken.where(refresh_token: nil)
                       .where.not(expires_in: nil)
                       .where("(created_at + expires_in * INTERVAL '1 second') < ?", cutoff)
+                      .tap { |rel| logger.info("Scheduling #{rel.count} expired AccessTokens for deletion.") }
                       .in_batches(&:destroy_all)
   end
 
   def clean_permissible_policies
     OAuth::PermissiblePolicy.left_outer_joins(:access_tokens, :access_grants)
                             .where(oauth_access_tokens: { id: nil }, oauth_access_grants: { id: nil })
+                            .tap { |rel| logger.info("Scheduling #{rel.count} orphaned PermissiblePolicies for deletion.") }
                             .in_batches(&:destroy_all)
   end
 end
