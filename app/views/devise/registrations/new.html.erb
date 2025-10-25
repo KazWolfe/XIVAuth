@@ -12,7 +12,7 @@
   <%= f.fields_for :profile do |pf| %>
     <div class="form-group field mb-2">
       <%= pf.label :display_name, class: 'form-label' %>
-      <%= pf.text_field :display_name, class: 'form-control' %>
+      <%= pf.text_field :display_name, class: 'form-control', autocomplete: 'nickname' %>
       <div class="form-text">
         The Display Name is given to apps you sign in to, as well as shown on any apps you create. It can be changed
         at any time.

@@ -40,7 +40,7 @@
           <%= f.fields_for :profile do |pf| %>
             <div class="mb-3">
               <%= pf.label :display_name, class: 'form-label fw-semibold' %>
-              <%= pf.text_field :display_name, class: 'form-control' %>
+              <%= pf.text_field :display_name, class: 'form-control', autocomplete: 'nickname' %>
             </div>
           <% end %>
 
