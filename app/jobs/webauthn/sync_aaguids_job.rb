@@ -1,4 +1,4 @@
-class Webauthn::SyncAaguidsJob
+class Webauthn::SyncAaguidsJob < ApplicationJob
   queue_as :cronjobs
 
   def perform(*)
