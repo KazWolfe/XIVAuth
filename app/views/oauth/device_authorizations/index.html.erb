@@ -1,0 +1,26 @@
+<%= form_tag oauth_device_authorizations_authorize_path, method: :post, data: { turbo: "false" } do %>
+  <div class="card-header bg-transparent">
+    <h3 class="text-center pb-2">Device Activation</h3>
+
+    <div class="d-flex justify-content-center pad-2 pb-2 align-self-center align-items-center">
+      <span>Signed in as <b><%= current_user.display_name %></b></span>
+      <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-30 rounded ms-2" %>
+    </div>
+  </div>
+  <div class="card-body">
+    <main role="main">
+      <p class="text-center">
+        Please enter the code displayed by your device.
+      </p>
+
+      <div class="form-group row justify-content-center">
+        <div class="col-auto">
+          <%= text_field_tag(:user_code, params[:user_code], class: 'form-control text-center font-monospace', size: 16) %>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="card-footer bg-transparent d-flex justify-content-end">
+    <%= submit_tag("Authorize", class: 'btn btn-primary') %>
+  </div>
+<% end %>

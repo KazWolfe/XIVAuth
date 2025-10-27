@@ -1,52 +1,54 @@
 <% client_application = @preflight.client_application %>
+<div class="card-body">
+  <main role="main">
+    <div class="d-flex justify-content-center pad-2 pb-2" style="align-self: center;">
+      <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-50 rounded align-self-center", width: 72 %>
+      <span class="px-2 align-self-center"><i class="bi bi-three-dots"></i></span>
+      <%= image_tag client_application.profile.icon_url, class: "img-fluid avatar avatar-50 rounded   align-self-center", width: 72 %>
+    </div>
 
-<main role="main">
-  <div class="d-flex justify-content-center pad-2 pb-2" style="align-self: center;">
-    <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-50 rounded align-self-center", width: 72 %>
-    <span class="px-2 align-self-center"><i class="bi bi-three-dots"></i></span>
-    <%= image_tag client_application.profile.icon_url, class: "img-fluid avatar avatar-50 rounded   align-self-center", width: 72 %>
-  </div>
-
-  <h4 class="text-center text-danger">
-    Can't connect to <%= client_application.name %>
-    <% if client_application.verified? %>
-      <i class="bi bi-patch-check-fill text-success" title="App verified by XIVAuth"></i>
-    <% end %>
-  </h4>
-  <p class="text-center text-muted small">by
-    <% case client_application.owner %>
-    <% when User %>
-      <i class="bi bi-person-fill"></i> <%= client_application.owner.profile.display_name %>
-    <% else
-         nil %>
-    <% end %>
-  </p>
-
-  <% if @preflight.errors[:app_errors].any? %>
-    <p>The application has been improperly configured and needs to be corrected. Identified problems:</p>
-    <li>
-      <% @preflight.errors[:app_errors].each do |error| %>
-        <p>App <%= error %></p>
+    <h4 class="text-center text-danger">
+      Can't connect to <%= client_application.name %>
+      <% if client_application.verified? %>
+        <i class="bi bi-patch-check-fill text-success" title="App verified by XIVAuth"></i>
       <% end %>
-    </li>
-  <% elsif @preflight.errors[:user_errors].any? %>
-    <p>
-      Your XIVAuth account cannot log in to this app at this time. Please correct the problems listed below and try your
-      request again.
+    </h4>
+    <p class="text-center text-muted small">by
+      <% case client_application.owner %>
+      <% when User %>
+        <i class="bi bi-person-fill"></i> <%= client_application.owner.profile.display_name %>
+      <% else
+           nil %>
+      <% end %>
     </p>
 
-    <ul class="list-unstyled mb-0">
-      <% @preflight.errors.where(:user_errors).each do |error| %>
-        <% if lookup_context.template_exists?("user_#{error.type}",  ['doorkeeper/authorizations/preflight_errors'], true) %>
-          <%= render partial: "doorkeeper/authorizations/preflight_errors/user_#{error.type}" %>
-        <% else %>
-          <%= render partial: "doorkeeper/authorizations/preflight_errors/generic", locals: { error_title: "Precondition failed", error_message: error.message} %>
+    <% if @preflight.errors[:app_errors].any? %>
+      <p>The application has been improperly configured and needs to be corrected. Identified problems:</p>
+      <li>
+        <% @preflight.errors[:app_errors].each do |error| %>
+          <p>App <%= error %></p>
         <% end %>
-      <% end %>
-    </ul>
-  <% end %>
+      </li>
+    <% elsif @preflight.errors[:user_errors].any? %>
+      <p>
+        Your XIVAuth account cannot log in to this app at this time. Please correct the problems listed below and try
+        your
+        request again.
+      </p>
 
-  <div class="d-flex justify-content-center mt-5">
-    <a href="/" class="btn btn-primary">Back to Safety</a>
-  </div>
-</main>
+      <ul class="list-unstyled mb-0">
+        <% @preflight.errors.where(:user_errors).each do |error| %>
+          <% if lookup_context.template_exists?("user_#{error.type}", ['doorkeeper/authorizations/preflight_errors'], true) %>
+            <%= render partial: "doorkeeper/authorizations/preflight_errors/user_#{error.type}" %>
+          <% else %>
+            <%= render partial: "doorkeeper/authorizations/preflight_errors/generic", locals: { error_title: "Precondition failed", error_message: error.message } %>
+          <% end %>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div class="d-flex justify-content-center mt-5">
+      <a href="/" class="btn btn-primary">Back to Safety</a>
+    </div>
+  </main>
+</div>

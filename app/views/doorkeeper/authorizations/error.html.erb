@@ -1,24 +1,27 @@
-<main role="main">
-  <h4 class="text-center mb-4 text-danger">Configuration Error</h4>
+<div class="card-body">
+  <main role="main">
+    <h4 class="text-center mb-4 text-danger">Configuration Error</h4>
 
-  <p>XIVAuth was unable to handle the provided OAuth request. The error encountered is below.</p>
+    <p>XIVAuth was unable to handle the provided OAuth request. The error encountered is below.</p>
 
-  <p class="font-monospace">
-    <%= (respond_to?(:error_response) ? error_response : @pre_auth.error_response).body[:error_description] %>
-  </p>
-
-  <% if @pre_auth.client %>
-    <p>
-      Please contact the developer of <strong><%= @pre_auth.client.application.application.name %></strong> to report
-      this issue or request further assistance.
+    <p class="font-monospace">
+      <%= (respond_to?(:error_response) ? error_response : @pre_auth.error_response).body[:error_description] %>
     </p>
-  <% else %>
-    <p>
-      Please contact the developer of the app you are trying to use to report this issue or request further assistance.
-    </p>
-  <% end %>
 
-  <div class="d-flex justify-content-center">
-    <a href="/" class="btn btn-primary">Back to Safety</a>
-  </div>
-</main>
+    <% if @pre_auth.client %>
+      <p>
+        Please contact the developer of <strong><%= @pre_auth.client.application.application.name %></strong> to report
+        this issue or request further assistance.
+      </p>
+    <% else %>
+      <p>
+        Please contact the developer of the app you are trying to use to report this issue or request further
+        assistance.
+      </p>
+    <% end %>
+
+    <div class="d-flex justify-content-center">
+      <a href="/" class="btn btn-primary">Back to Safety</a>
+    </div>
+  </main>
+</div>

@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/KazWolfe/doorkeeper-device_authorization_grant.git
+  revision: f84062469900890461b1f03d9c37960236413321
+  ref: f84062469900890461b1f03d9c37960236413321
+  specs:
+    doorkeeper-device_authorization_grant (1.1.0)
+      doorkeeper (~> 5.5)
+
+GIT
   remote: https://github.com/modosc/cloudflare-rails.git
   revision: de969fe7e9fe6a4205934393b461383ca7634513
   ref: de969fe7e9fe6a4205934393b461383ca7634513
@@ -146,8 +154,6 @@ GEM
     docile (1.4.1)
     doorkeeper (5.8.2)
       railties (>= 5)
-    doorkeeper-device_authorization_grant (1.0.3)
-      doorkeeper (~> 5.5)
     drb (2.2.3)
     erb (5.1.1)
     erubi (1.13.1)
@@ -601,7 +607,7 @@ DEPENDENCIES
   devise-two-factor (~> 6.1)
   devise_zxcvbn (~> 6.0.0)
   doorkeeper (~> 5.8.0)
-  doorkeeper-device_authorization_grant (~> 1.0.3)
+  doorkeeper-device_authorization_grant!
   factory_bot_rails (~> 6.5)
   faker (~> 3.4)
   faraday (~> 2.9)

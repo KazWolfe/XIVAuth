@@ -57,7 +57,9 @@ gem "omniauth-twitch", "~> 1.2.0"
 
 # Outbound OAuth2
 gem "doorkeeper", "~> 5.8.0"
-gem "doorkeeper-device_authorization_grant", "~> 1.0.3"
+gem "doorkeeper-device_authorization_grant",
+    github: "KazWolfe/doorkeeper-device_authorization_grant",
+    ref: "f84062469900890461b1f03d9c37960236413321"
 
 # Feature flags
 gem "flipper", "~> 1.3"

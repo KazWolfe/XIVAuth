@@ -6,7 +6,7 @@ Doorkeeper::DeviceAuthorizationGrant.configure do
   # device_code_expires_in 300
 
   # Customizable reference to the DeviceGrant model.
-  # device_grant_class 'Doorkeeper::DeviceAuthorizationGrant::DeviceGrant'
+  device_grant_class 'OAuth::DeviceGrant'
 
   # Reference to a model (or class) for user code generation.
   #
