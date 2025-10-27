@@ -11,7 +11,7 @@ module Users::AuthenticatesViaPasskey
     verifier = Users::Webauthn::AuthenticateService.new(@user, response_data, challenge_data)
 
     # see CVE-2020-8236 for why we need UV.
-    verifier.execute(user_verification: true)
+    verifier.execute(discoverable: true)
 
     sign_in(:user, @user)
   rescue WebAuthn::Error => e

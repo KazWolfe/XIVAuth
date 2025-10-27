@@ -190,6 +190,7 @@
             <table class="table table-sm align-middle">
               <thead>
               <tr>
+                <th scope="col" style="width: 0;"></th>
                 <th scope="col">Nickname</th>
                 <th scope="col" class="text-end"></th>
               </tr>
@@ -198,11 +199,32 @@
               <% resource.webauthn_credentials.each do |cred| %>
                 <tr>
                   <td>
-                    <%= cred.nickname %><br>
-                    <small>
+                    <% if cred.device_class.present? %>
+                      <%= image_tag cred.device_class.icon_dark, style: "width: 2.5rem; height: 2.5rem;", class: "mx-2" %>
+                    <% elsif cred.resident_key? %>
+                      <i class="bi bi-fingerprint mx-2" style="font-size: 2.5rem"></i>
+                    <% else %>
+                      <i class="bi bi-usb-drive mx-2" style="font-size: 2.5rem"></i>
+                    <% end %>
+                  </td>
+                  <td>
+                    <div>
+                      <%= cred.nickname %>
+                      <% if cred.resident_key? %>
+                        <span class="badge bg-success"><i class="bi bi-fingerprint"></i> Passkey</span>
+                      <% else %>
+                        <span class="badge bg-secondary"><i class="bi bi-usb-drive"></i> MFA Only</span>
+                      <% end %>
+                    </div>
+                    <% if cred.device_class.present? %>
+                      <div class="small">
+                        Type: <%= cred.device_class.name %>
+                      </div>
+                    <% end %>
+                    <div class="small">
                       Last
                       used: <%= cred.last_used_at.present? ? distance_of_time_in_words_to_now(cred.last_used_at) + " ago" : "never" %>
-                    </small>
+                    </div>
                   </td>
                   <td class="text-end">
                     <%= button_to user_webauthn_credential_path(cred), method: :delete, class: "btn btn-sm btn-danger" do %>

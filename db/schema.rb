@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_27_061355) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_27_201213) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -299,12 +299,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_061355) do
   end
 
   create_table "user_webauthn_credentials", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "aaguid"
     t.datetime "created_at", null: false
     t.string "external_id", null: false
     t.datetime "last_used_at"
     t.string "nickname", null: false
     t.string "public_key", null: false
+    t.jsonb "raw_data"
+    t.boolean "resident_key", default: false, null: false
     t.integer "sign_count", default: 0, null: false
+    t.string "transports", array: true
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.index ["external_id"], name: "index_user_webauthn_credentials_on_external_id", unique: true
@@ -335,6 +339,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_061355) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
+  end
+
+  create_table "webauthn_device_classes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "icon_dark"
+    t.text "icon_light"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "character_registrations", "ffxiv_characters", column: "character_id"

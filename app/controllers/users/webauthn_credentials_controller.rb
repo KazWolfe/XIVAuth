@@ -17,7 +17,8 @@ class Users::WebauthnCredentialsController < ApplicationController
   end
 
   def create
-    recovered_credential = WebAuthn::Credential.from_create(JSON.parse(create_params[:credential]))
+    credential_json = JSON.parse(create_params[:credential])
+    recovered_credential = WebAuthn::Credential.from_create(credential_json)
 
     begin
       recovered_credential.verify(session[:webauthn_register_challenge])
@@ -26,7 +27,11 @@ class Users::WebauthnCredentialsController < ApplicationController
         external_id: recovered_credential.id,
         public_key: recovered_credential.public_key,
         nickname: create_params[:nickname],
-        sign_count: recovered_credential.sign_count
+        sign_count: recovered_credential.sign_count,
+        transports: recovered_credential.response&.transports,
+        aaguid: recovered_credential.response&.aaguid,
+        resident_key: recovered_credential.client_extension_outputs&.dig("credProps", "rk") || false,
+        raw_data: credential_json,
       )
 
       if @webauthn_credential.save
@@ -72,6 +77,7 @@ class Users::WebauthnCredentialsController < ApplicationController
         # UV for registration is irrelevant - assume the user is authorized.
         resident_key: "discouraged"
       },
+      attestation: "indirect",
       extensions: {
         cred_props: true
       }
