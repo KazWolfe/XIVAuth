@@ -77,7 +77,7 @@ class Users::WebauthnCredentialsController < ApplicationController
         # UV for registration is irrelevant - assume the user is authorized.
         resident_key: "discouraged"
       },
-      attestation: "indirect",  # nice to have for UX but not necessary.
+      attestation: "none",
       extensions: {
         cred_props: true
       }
