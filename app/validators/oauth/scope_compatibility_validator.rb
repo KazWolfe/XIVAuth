@@ -9,7 +9,7 @@ class OAuth::ScopeCompatibilityValidator < ActiveModel::Validator
 
     invalid_scopes.each do |problem|
       record.errors.add(target_field, :incompatible_scopes,
-                        message: "cannot request the following scopes together: #{problem.join(', ')}")
+                        message: "cannot request mutually exclusive scopes: #{problem.join(', ')}")
     end
   end
 

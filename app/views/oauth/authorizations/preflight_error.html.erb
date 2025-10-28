@@ -6,8 +6,7 @@
   <main role="main">
     <% if @preflight.errors[:oauth_client].any? %>
       <p>
-        The application has been improperly configured and needs to be corrected. The following misconfigurations have
-        been identified.
+        The request submitted by the OAuth client is invalid and cannot be completed.
       </p>
       <ul>
         <% @preflight.errors[:oauth_client].each do |error| %>
@@ -19,7 +18,10 @@
           </li>
         <% end %>
       </ul>
-      <p class="text-warning">Please contact the developer of this app to resolve this problem.</p>
+      <p>
+        If you are a developer of this application, please verify your request parameters and try again. If you
+        are not a developer, please contact them for support and include this message.
+      </p>
     <% elsif @preflight.errors[:user].any? %>
       <p>
         Your XIVAuth account cannot log in to this app at this time. Please correct the problems listed below and try
