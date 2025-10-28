@@ -23,3 +23,7 @@
     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
   </div>
 <% end %>
+
+<%= turbo_stream.replace('mfa-settings') do %>
+  <%= render partial: 'devise/registrations/sections/mfa_settings', locals: { resource: current_user } %>
+<% end %>

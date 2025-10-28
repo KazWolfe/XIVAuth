@@ -6,9 +6,11 @@
     Scan the below QR code using an authenticator app like Google Authenticator or Authy, then enter the currently
     displayed code to enable two-factor authentication.
   </p>
-  <p class="text-center">
-    <%= qr_code_svg(@totp_credential.otp_provisioning_uri) %>
-  </p>
+  <div class="text-center">
+    <div class="d-inline-block px-4 py-4 d-inline-block bg-white">
+      <%= qr_code_svg(@totp_credential.otp_provisioning_uri) %>
+    </div>
+  </div>
   <p class="small text-center">
     Can't scan? Your OTP secret is: <br>
     <code><%= @totp_credential.otp_secret %></code>

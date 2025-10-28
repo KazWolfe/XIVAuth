@@ -1,6 +1,7 @@
 class Users::TotpCredentialsController < ApplicationController
   def new
     if current_user.totp_credential&.otp_enabled
+      redirect_to edit_user_path, error: "TOTP has already been enabled."
       return
     end
 
@@ -36,6 +37,10 @@ class Users::TotpCredentialsController < ApplicationController
       render_new_form_again
       return
     end
+
+    # flash so we can update ui
+    @totp_credential.save
+    current_user.reload
 
     session.delete(:staged_totp_secret)
   end
