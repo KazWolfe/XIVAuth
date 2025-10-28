@@ -9,7 +9,7 @@ class OAuth::DeviceCodesController < ::Doorkeeper::DeviceAuthorizationGrant::Dev
     @request = strategy.request
 
     # Scope validation
-    invalid_scopes = OAuth::GrantValidators::IncompatibleScopes.find_incompatible_scopes(@request.scopes)
+    invalid_scopes = OAuth::ScopeCompatibilityValidator.find_incompatible_scopes(@request.scopes)
     unless invalid_scopes.empty?
       rep = invalid_scopes.map { |s| s.join(",") }.join(" | ")
       render status: :unprocessable_content, json: {

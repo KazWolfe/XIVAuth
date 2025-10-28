@@ -1,19 +1,14 @@
 class OAuth::DevicePreflightCheck
   include ActiveModel::API
 
-  attr_accessor :device_grant
+  attr_accessor :device_grant, :user
   private :device_grant=
-
-  attr_accessor :user
   private :user=
-
-  private attr_accessor :user_errors
-  private attr_accessor :app_errors
-
+  
   validates :device_grant, presence: true
 
-  validate :validate_user_has_characters
-  validate :validate_incompatible_scopes
+  validates_with OAuth::CharacterOwnershipValidator, target_field: :user
+  validates_with OAuth::ScopeCompatibilityValidator, target_field: :oauth_client
 
   def initialize(device_grant, user, attributes = {})
     self.device_grant = device_grant
@@ -21,34 +16,13 @@ class OAuth::DevicePreflightCheck
     super(attributes)
   end
 
+  delegate :scopes, to: :device_grant
+
   def oauth_client
     device_grant.application
   end
 
   def client_application
     oauth_client.application
-  end
-
-  delegate :scopes, to: :device_grant
-
-  def validate_user_has_characters
-    # Preflight will fail on request without this...
-    return if device_grant.resource_owner.blank?
-
-    return unless device_grant.resource_owner.respond_to?(:character_registrations)
-
-    return unless device_grant.scopes.include?("character") || device_grant.scopes == ["character:all"]
-    return unless device_grant.resource_owner.character_registrations.verified.empty?
-
-    errors.add(:user_errors, :no_characters)
-  end
-
-  def validate_incompatible_scopes
-    invalid_scopes = OAuth::GrantValidators::IncompatibleScopes.find_incompatible_scopes(scopes)
-
-    invalid_scopes.each do |problem|
-      errors.add(:app_errors, :incompatible_scopes,
-                 message: "cannot request the following scopes together: #{problem.join(', ')}")
-    end
   end
 end
