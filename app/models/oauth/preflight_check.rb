@@ -12,7 +12,7 @@ class OAuth::PreflightCheck
   validate :validate_user_has_characters
   validate :validate_incompatible_scopes
 
-  def initialize(pre_authorization, attributes = { })
+  def initialize(pre_authorization, attributes = {})
     self.pre_authorization = pre_authorization
     super(attributes)
   end
@@ -43,8 +43,11 @@ class OAuth::PreflightCheck
   end
 
   def validate_incompatible_scopes
-    return unless scopes.include?("character") && scopes.include?("character:all")
+    invalid_scopes = OAuth::GrantValidators::IncompatibleScopes.find_incompatible_scopes(scopes)
 
-    errors.add(:app_errors, :incompatible_scopes, message: "cannot use both character and character:all scopes")
+    invalid_scopes.each do |problem|
+      errors.add(:app_errors, :incompatible_scopes,
+                 message: "cannot request the following scopes together: #{problem.join(', ')}")
+    end
   end
 end

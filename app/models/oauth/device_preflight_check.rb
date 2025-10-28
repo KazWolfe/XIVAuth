@@ -15,12 +15,11 @@ class OAuth::DevicePreflightCheck
   validate :validate_user_has_characters
   validate :validate_incompatible_scopes
 
-  def initialize(device_grant, user, attributes = { })
+  def initialize(device_grant, user, attributes = {})
     self.device_grant = device_grant
     self.user = user
     super(attributes)
   end
-
 
   def oauth_client
     device_grant.application
@@ -45,8 +44,11 @@ class OAuth::DevicePreflightCheck
   end
 
   def validate_incompatible_scopes
-    return unless scopes.include?("character") && scopes.include?("character:all")
+    invalid_scopes = OAuth::GrantValidators::IncompatibleScopes.find_incompatible_scopes(scopes)
 
-    errors.add(:app_errors, :incompatible_scopes, message: "cannot use both character and character:all scopes")
+    invalid_scopes.each do |problem|
+      errors.add(:app_errors, :incompatible_scopes,
+                 message: "cannot request the following scopes together: #{problem.join(', ')}")
+    end
   end
 end

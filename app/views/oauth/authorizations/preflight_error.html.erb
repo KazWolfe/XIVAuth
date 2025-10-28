@@ -5,12 +5,16 @@
 <div class="card-body">
   <main role="main">
     <% if @preflight.errors[:app_errors].any? %>
-      <p>The application has been improperly configured and needs to be corrected. Identified problems:</p>
-      <li>
+      <p>
+        The application has been improperly configured and needs to be corrected. The following misconfigurations have
+        been identified.
+      </p>
+      <ul>
         <% @preflight.errors[:app_errors].each do |error| %>
-          <p>App <%= error %></p>
+          <li>App <%= error %></li>
         <% end %>
-      </li>
+      </ul>
+      <p class="text-warning">Please contact the developer of this app to resolve this problem.</p>
     <% elsif @preflight.errors[:user_errors].any? %>
       <p>
         Your XIVAuth account cannot log in to this app at this time. Please correct the problems listed below and try
