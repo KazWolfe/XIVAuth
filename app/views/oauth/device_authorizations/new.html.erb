@@ -3,37 +3,16 @@
 
 <div id="oauth-consent-ui">
   <%= form_tag oauth_device_authorizations_authorize_path, method: :post do %>
+    <%= render partial: 'oauth/authorizations/auth_card_header',
+               locals: { client_application: client_application, action_prefix: "Connect to" } %>
+
     <div class="card-body">
       <main role="main">
-
-        <div class="d-flex justify-content-center pad-2 pb-2" style="align-self: center;">
-          <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-50 rounded align-self-center", width: 72 %>
-          <span class="px-2 align-self-center"><i class="bi bi-three-dots"></i></span>
-          <%= image_tag client_application.profile.icon_url, class: "img-fluid avatar avatar-50 rounded   align-self-center", width: 72 %>
-        </div>
-
-        <h4 class="text-center">
-          Connect to <%= client_application.name %>
-          <% if client_application.verified? %>
-            <i class="bi bi-patch-check-fill text-success" title="App verified by XIVAuth"></i>
-          <% end %>
-        </h4>
-        <p class="text-center text-muted small">by
-          <% case client_application.owner %>
-          <% when User %>
-            <i class="bi bi-person-fill"></i> <%= client_application.owner.profile.display_name %>
-          <% when Team %>
-            <i class="bi bi-people"></i> <%= client_application.owner.name %>
-          <% else
-               nil %>
-          <% end %>
-        </p>
-
         <p><%= client_application.name %> wants to use your XIVAuth account to log in.</p>
 
         <% if model.scopes.count > 0 %>
           <div id="oauth-permissions">
-            <p><%= t('.able_to') %>:</p>
+            <p>This app is requesting permission to:</p>
 
             <ul>
               <% model.scopes.each do |scope| %>
@@ -43,11 +22,11 @@
               </span>
                   <% case scope %>
                   <% when 'character' %>
-                    <%= render 'doorkeeper/authorizations/scope_selectors/character' %>
+                    <%= render 'oauth/authorizations/scope_selectors/character' %>
                   <% when 'character:all' %>
-                    <%= render 'doorkeeper/authorizations/scope_selectors/character_all' %>
+                    <%= render 'oauth/authorizations/scope_selectors/character_all' %>
                   <% when 'user:social' %>
-                    <%= render 'doorkeeper/authorizations/scope_selectors/social_identity' %>
+                    <%= render 'oauth/authorizations/scope_selectors/social_identity' %>
                   <% else
                        nil %>
                   <% end %>

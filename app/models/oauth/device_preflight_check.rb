@@ -33,7 +33,9 @@ class OAuth::DevicePreflightCheck
   delegate :scopes, to: :device_grant
 
   def validate_user_has_characters
+    # Preflight will fail on request without this...
     return if device_grant.resource_owner.blank?
+
     return unless device_grant.resource_owner.respond_to?(:character_registrations)
 
     return unless device_grant.scopes.include?("character") || device_grant.scopes == ["character:all"]

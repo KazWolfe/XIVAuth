@@ -1,0 +1,82 @@
+<% oauth_client = @pre_auth.client.application %>
+<% client_application = oauth_client.application %>
+
+<%= form_tag oauth_authorization_path, method: :post, data: { turbo: "false" } do %>
+  <%= render partial: 'auth_card_header', locals: { client_application: client_application, action_prefix: "Connect to" } %>
+  <div class="card-body">
+    <main role="main">
+      <p><%= client_application.name %> wants to use your XIVAuth account to log in.</p>
+
+      <% if @pre_auth.scopes.count > 0 %>
+        <div id="oauth-permissions">
+          <p>This app is requesting permission to:</p>
+
+          <ul>
+            <% @pre_auth.scopes.each do |scope| %>
+              <li>
+              <span title="<%= t(:description, scope: ["xivauth", "oauth_scopes", scope], default: "") %>">
+                <%= t(:consent, scope: ["xivauth", "oauth_scopes", scope], default: scope.humanize.titleize) %>
+              </span>
+                <% case scope %>
+                <% when 'character' %>
+                  <%= render 'oauth/authorizations/scope_selectors/character' %>
+                <% when 'character:all' %>
+                  <%= render 'oauth/authorizations/scope_selectors/character_all' %>
+                <% when 'user:social' %>
+                  <%= render 'oauth/authorizations/scope_selectors/social_identity' %>
+                <% else
+                     nil %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= hidden_field_tag :client_id, @pre_auth.client.uid, id: nil %>
+      <%= hidden_field_tag :redirect_uri, @pre_auth.redirect_uri, id: nil %>
+      <%= hidden_field_tag :state, @pre_auth.state, id: nil %>
+      <%= hidden_field_tag :response_type, @pre_auth.response_type, id: nil %>
+      <%= hidden_field_tag :response_mode, @pre_auth.response_mode, id: nil %>
+      <%= hidden_field_tag :scope, @pre_auth.scope, id: nil %>
+      <%= hidden_field_tag :code_challenge, @pre_auth.code_challenge, id: nil %>
+      <%= hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method, id: nil %>
+    </main>
+  </div>
+  <div class="card-footer bg-transparent pt-0">
+    <div class="actions d-flex gap-2">
+      <%= button_tag t('doorkeeper.authorizations.buttons.deny'), type: "submit",
+                     class: 'btn btn-outline-danger btn-lg col-6',
+                     name: 'disposition', value: 'deny' %>
+      <%= button_tag t('doorkeeper.authorizations.buttons.authorize'), type: "submit",
+                     class: 'btn btn-success btn-lg col-6',
+                     name: 'disposition', value: 'authorize' %>
+    </div>
+
+    <div class="text-muted text-center small mt-3">
+      <ul class="list-unstyled list-inline pipe-separated-items">
+        <% if client_application.profile.homepage_url %>
+          <li>
+            <a href="<%= client_application.profile.homepage_url %>" target="_blank" rel="noopener noreferrer">
+              App Homepage
+            </a>
+          </li>
+        <% end %>
+        <% if client_application.profile.terms_of_service_url %>
+          <li>
+            <a href="<%= client_application.profile.terms_of_service_url %>" target="_blank" rel="noopener noreferrer">
+              App Terms of Service
+            </a>
+          </li>
+        <% end %>
+        <% if client_application.profile.privacy_policy_url %>
+          <li>
+            <a href="<%= client_application.profile.privacy_policy_url %>" target="_blank" rel="noopener noreferrer">
+              App Privacy Policy
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>

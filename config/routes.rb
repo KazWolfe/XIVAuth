@@ -88,6 +88,7 @@ Rails.application.routes.draw do
     controllers authorizations: "oauth/authorizations"
   end
   use_doorkeeper_device_authorization_grant do
+    controller device_codes: "oauth/device_codes"
     controller device_authorizations: "oauth/device_authorizations"
   end
   get "/oauth/device/complete", to: "oauth/device_authorizations#complete", as: :oauth_device_authorizations_complete

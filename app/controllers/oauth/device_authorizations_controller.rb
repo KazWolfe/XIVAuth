@@ -40,6 +40,7 @@ class OAuth::DeviceAuthorizationsController < ::Doorkeeper::DeviceAuthorizationG
   end
 
   def authorize
+    # Ew.
     if params["disposition"] == "find"
       redirect_to oauth_device_authorizations_index_path(user_code: user_code)
       return
@@ -98,6 +99,6 @@ class OAuth::DeviceAuthorizationsController < ::Doorkeeper::DeviceAuthorizationG
   end
 
   private def render_preflight_error
-    render "doorkeeper/authorizations/preflight_error", status: :bad_request
+    render "oauth/authorizations/preflight_error", status: :bad_request
   end
 end
