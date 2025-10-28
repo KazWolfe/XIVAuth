@@ -4,11 +4,11 @@
       <h3 class="text-center pb-2">Device Activation</h3>
 
       <div class="d-flex justify-content-center pad-2 pb-2 align-self-center align-items-center">
+        <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-30 rounded me-2" %>
         <span>Signed in as <b><%= current_user.display_name %></b></span>
-        <%= image_tag current_user.avatar_url, class: "img-fluid avatar avatar-30 rounded ms-2" %>
       </div>
     </div>
-    <div class="card-body">
+    <div class="card-body pb-0">
       <main role="main">
         <p class="text-center">
           Please enter the code displayed by your device.
@@ -21,9 +21,9 @@
         </div>
       </main>
     </div>
-    <div class="card-footer bg-transparent d-flex justify-content-end">
+    <div class="card-footer bg-transparent d-grid">
       <%= button_tag "Authorize", type: "submit",
-                     class: 'btn btn-outline-danger btn-lg col-6',
+                     class: 'btn btn-success btn-lg d-block',
                      name: 'disposition', value: 'find' %>
     </div>
   <% end %>

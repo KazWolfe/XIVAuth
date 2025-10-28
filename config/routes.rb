@@ -90,6 +90,7 @@ Rails.application.routes.draw do
   use_doorkeeper_device_authorization_grant do
     controller device_authorizations: "oauth/device_authorizations"
   end
+  get "/oauth/device/complete", to: "oauth/device_authorizations#complete", as: :oauth_device_authorizations_complete
 
   devise_for :users, path: "auth", only: [:omniauth_callbacks],
              controllers: {
