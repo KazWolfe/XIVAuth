@@ -8,8 +8,11 @@ class Doorkeeper::PermissiblePolicyCloner
     when Doorkeeper::OAuth::ClientCredentialsRequest
       # No permissible policy exists for this case; just skip.
       return
+    when Doorkeeper::DeviceAuthorizationGrant::OAuth::DeviceAuthorizationRequest
+      # No policy has been created yet, so nothing to do.
+      return
     when Doorkeeper::DeviceAuthorizationGrant::OAuth::DeviceCodeRequest
-      original = request.grant
+      original = request.device_grant
     else
       # Throw an exception so that we don't leak a response without an appropriate permissible policy.
       raise "Unknown authorization strategy: #{request}"

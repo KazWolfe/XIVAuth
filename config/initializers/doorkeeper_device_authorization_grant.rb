@@ -11,9 +11,8 @@ Doorkeeper::DeviceAuthorizationGrant.configure do
   # Reference to a model (or class) for user code generation.
   #
   # It must implement a `.generate` method, which can be invoked without
-  # arguments, to obtain a String user code value.
-  #
-  # user_code_generator 'Doorkeeper::DeviceAuthorizationGrant::OAuth::Helpers::UserCode'
+  # arguments to obtain a String user code value.
+  user_code_generator 'OAuth::CrockfordCodeGenerator'
 
   # A Proc returning the end-user verification URI on the authorization server.
   # verification_uri ->(host_name) do
