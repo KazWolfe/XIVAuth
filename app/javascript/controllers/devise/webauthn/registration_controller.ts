@@ -4,19 +4,22 @@ import {PublicKeyCredentialWithAssertionJSON, PublicKeyCredentialWithAttestation
 
 
 export default class WebauthnRegistrationController extends WebauthnControllerBase {
-    static targets = ["challenge", "response", "feedback"];
+    static targets = ["challenge", "response", "feedback", "requestResidentKey"];
 
     declare readonly feedbackTarget: HTMLDivElement;
+    declare readonly requestResidentKeyTarget: HTMLInputElement;
 
     async register(event: SubmitEvent) {
         event.preventDefault();
 
         let credential: PublicKeyCredentialWithAttestationJSON;
 
+        let challenge = this.buildRegistrationRequest(this.requestResidentKeyTarget.checked ? "required" : "discouraged");
+
         try {
             // FIXME: Bug in certain password managers where they don't support toJSON on the response.
             credential = await WebAuthnJSON.create({
-                "publicKey": JSON.parse(this.challengeTarget.value)
+                "publicKey": challenge
             });
         } catch (err: unknown) {
             if (err instanceof DOMException && err.name === "NotAllowedError") {
@@ -38,5 +41,20 @@ export default class WebauthnRegistrationController extends WebauthnControllerBa
 
         this.responseTarget.value = JSON.stringify(credential);
         (event.target as HTMLFormElement).submit();
+    }
+
+    async toggleResidentKey(event: InputEvent) {
+        const target = event.target as HTMLInputElement;
+        const updatedChallenge = this.buildRegistrationRequest(target.checked ? "preferred" : "discouraged");
+
+        this.challengeTarget.value = JSON.stringify(updatedChallenge);
+    }
+
+    private buildRegistrationRequest(residentKey: ("discouraged" | "preferred" | "required")) {
+        let challenge = JSON.parse(this.challengeTarget.value);
+        challenge["authenticatorSelection"] ||= {};
+        challenge["authenticatorSelection"]["residentKey"] = residentKey;
+
+        return challenge;
     }
 }
