@@ -390,6 +390,11 @@ Doorkeeper.configure do
   # @return [Boolean] `true` if allow or `false` if forbid the request
   #
   allow_grant_flow_for_client do |grant_flow, client|
+    # DAG wanted to use the full URI for some reason.
+    if grant_flow == Doorkeeper::DeviceAuthorizationGrant::OAuth::DEVICE_CODE
+      grant_flow = "device_code"
+    end
+
     client.grant_flows.blank? || client.grant_flows.include?(grant_flow)
   end
 

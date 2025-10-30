@@ -173,7 +173,7 @@
             <div class="col-sm-12">
               <%= hidden_field_tag 'oauth_client[grant_flows][]', '' %>
               <% Doorkeeper.configuration.enabled_grant_flows.each do |flow| %>
-                <% flow_name = (flow.respond_to?(:name) ? flow.name : flow) %>
+                <% flow_name = (flow.respond_to?(:name) ? flow.name.to_s : flow) %>
                 <div class="form-check mb-2">
                   <%= check_box_tag("oauth_client[grant_flows][]", flow_name, @oauth_client.grant_flows&.include?(flow_name), id: "grant_flow_#{flow_name}", class: 'form-check-input') %>
                   <label class="form-check-label" for="grant_flow_<%= flow_name %>">
