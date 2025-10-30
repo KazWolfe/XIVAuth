@@ -36,7 +36,10 @@ class CharacterRegistrationsController < ApplicationController
         format.html do
           redirect_to character_registrations_path, notice: "Character registration was successfully created."
         end
-        format.turbo_stream { render 'character_registrations/close_modal' }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.append("register_character_modal-content",
+                                                   partial: "layouts/components/remote_modal_close")
+        end
       else
         format.html { render :new, status: :unprocessable_content }
         format.turbo_stream { render_new_form_again }

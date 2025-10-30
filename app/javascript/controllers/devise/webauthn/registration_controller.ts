@@ -10,6 +10,11 @@ export default class WebauthnRegistrationController extends WebauthnControllerBa
     declare readonly requestResidentKeyTarget: HTMLInputElement;
 
     async register(event: SubmitEvent) {
+        if (this.responseTarget.value != "") {
+            // The webauthn credential has already been grabbed, so no more waiting.
+            return;
+        }
+
         event.preventDefault();
 
         let credential: PublicKeyCredentialWithAttestationJSON;
@@ -40,7 +45,7 @@ export default class WebauthnRegistrationController extends WebauthnControllerBa
         }
 
         this.responseTarget.value = JSON.stringify(credential);
-        (event.target as HTMLFormElement).submit();
+        (event.target as HTMLFormElement).requestSubmit();
     }
 
     async toggleResidentKey(event: InputEvent) {

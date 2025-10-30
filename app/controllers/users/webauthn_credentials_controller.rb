@@ -11,9 +11,23 @@ class Users::WebauthnCredentialsController < ApplicationController
 
   def destroy
     credential = current_user.webauthn_credentials.find(params[:id])
-    credential.destroy
 
-    redirect_to edit_user_path, notice: "Credential was removed."
+    if credential.destroy
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("mfa-settings", partial: "devise/registrations/sections/mfa_settings",
+                                 locals: { resource: current_user })
+          ]
+        end
+        format.html { redirect_to edit_user_path, notice: "Credential was removed." }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream { }
+        format.html { redirect_to edit_user_path, error: "Credential could not be deleted." }
+      end
+    end
   end
 
   def create
@@ -35,7 +49,16 @@ class Users::WebauthnCredentialsController < ApplicationController
       )
 
       if @webauthn_credential.save
-        redirect_to edit_user_path
+        respond_to do |format|
+          format.turbo_stream do
+            render turbo_stream: [
+              turbo_stream.replace("mfa-settings", partial: "devise/registrations/sections/mfa_settings",
+                                   locals: { resource: current_user }),
+              turbo_stream.append("register_webauthn_modal-content", partial: "layouts/components/remote_modal_close")
+            ]
+          end
+          format.html { redirect_to edit_user_path, notice: "Credential was added." }
+        end
       else
         respond_to do |format|
           format.turbo_stream { render_new_form_again }
@@ -55,8 +78,11 @@ class Users::WebauthnCredentialsController < ApplicationController
   end
 
   private def render_new_form_again(status: :unprocessable_content)
+    @challenge = build_registration_challenge
+
     render status: status,
-           turbo_stream: turbo_stream.update("register_webauthn_modal-content", partial: "users/webauthn_credentials/modal")
+           turbo_stream: turbo_stream.update("register_webauthn_modal-content",
+                                             partial: "users/webauthn_credentials/modal")
   end
 
   private def create_params
