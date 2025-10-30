@@ -39,7 +39,7 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 #
 # preload_app!
 
-on_worker_boot do
+before_worker_boot do
   # Re-open appenders after forking the process
   SemanticLogger.reopen
 end
