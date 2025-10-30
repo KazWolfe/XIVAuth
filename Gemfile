@@ -99,8 +99,7 @@ gem "pagy", "~> 9.3"
 
 group :production do
   # Handle Cloudflare IPs in our X-Forwarded-For chain
-  # FIXME: Convert to 7.0 once updated on RubyGems
-  gem "cloudflare-rails", github: "modosc/cloudflare-rails", ref: "de969fe7e9fe6a4205934393b461383ca7634513"
+  gem "cloudflare-rails", "~> 7.0"
 end
 
 group :development, :test do

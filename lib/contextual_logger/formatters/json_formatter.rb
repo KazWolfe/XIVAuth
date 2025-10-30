@@ -1,4 +1,4 @@
-require 'semantic_logger'
+require "semantic_logger"
 
 module ContextualLogger
   module Formatters
