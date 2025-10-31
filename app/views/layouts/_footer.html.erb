@@ -5,11 +5,21 @@
       <br class="d-xxl-none">
       Not associated with Square Enix.
     </p>
-    <% if commit_hash.present? %>
-      <p class="mb-0">Build
-        <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
-      </p>
-    <% end %>
+    <ul class="list-unstyled list-inline pipe-separated-items">
+      <% if commit_hash.present? %>
+        <li class="mb-0">Build
+          <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
+        </li>
+      <% end %>
+      <% case hosting_provider %>
+      <% when :heroku %>
+        <li>Running on Heroku</li>
+      <% when :railway %>
+        <li>Running on <a href="https://railway.com?referralCode=8aVs5S">Railway</a></li>
+      <% when Symbol %>
+        <li>Running on <%= hosting_provider.to_s.titleize %></li>
+      <% end %>
+    </ul>
   </div>
 
   <% if !Rails.env.production? || (ENV["APP_ENV"] != "production") %>
