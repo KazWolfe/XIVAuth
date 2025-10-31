@@ -6,7 +6,7 @@ module ApplicationHelper
   end
 
   def commit_hash
-    ENV["COMMIT_HASH"] || ENV["HEROKU_SLUG_COMMIT"] || nil
+    ENV["COMMIT_HASH"] || ENV["RAILWAY_GIT_COMMIT_SHA"] || ENV["HEROKU_SLUG_COMMIT"] || nil
   end
 
   def lower_environment?
