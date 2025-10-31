@@ -89,7 +89,7 @@ Rails.application.configure do
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     $stdout.sync = true
-    config.semantic_logger.add_appender(io: $stdout, formatter: config.rails_semantic_logger.format)
+    config.semantic_logger.add_appender(io: $stdout, formatter: ContextualLogger::Formatters::JsonFormatter.new)
   end
 
   # Do not dump schema after migrations.
