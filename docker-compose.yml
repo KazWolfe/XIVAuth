@@ -3,6 +3,7 @@ services:
     image: kazwolfe/xivauth:latest
     build:
       context: .
+      target: dev
     command: "bin/dev"
     env_file:
       - development.env
