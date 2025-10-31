@@ -43,48 +43,54 @@
           <div class="col">
             <table class="table table-borderless mb-0">
               <tbody>
+              <tr>
+                <th scope="row">XIVAuth ID</th>
+                <td><code><%= @character.id %></code></td>
+              </tr>
+              <tr>
+                <th scope="row">Lodestone ID</th>
+                <td class="font-monospace">
+                  <%= link_to @character.lodestone_id, @character.lodestone_url %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Character Name</th>
+                <td><%= @character.name %></td>
+              </tr>
+              <tr>
+                <th scope="row">Home World</th>
+                <td><%= @character.home_world %> [<%= @character.data_center %>]</td>
+              </tr>
+              <% if @verified_registration.present? %>
                 <tr>
-                  <th scope="row">XIVAuth ID</th>
-                  <td><code><%= @character.id %></code></td>
-                </tr>
-                <tr>
-                  <th scope="row">Lodestone ID</th>
-                  <td class="font-monospace">
-                    <%= link_to @character.lodestone_id, @character.lodestone_url %>
+                  <th scope="row">Verified Owner</th>
+                  <td>
+                    <%= render partial: 'admin/_components/user_link', locals: { target: @verified_registration.user } %>
                   </td>
                 </tr>
                 <tr>
-                  <th scope="row">Character Name</th>
-                  <td><%= @character.name %></td>
+                  <th scope="row">Claiming Verification Key</th>
+                  <td class="font-monospace"><%= @verified_registration.verification_key %></td>
                 </tr>
                 <tr>
-                  <th scope="row">Home World</th>
-                  <td><%= @character.home_world %> [<%= @character.data_center %>]</td>
+                  <th scope="row">Verification Type</th>
+                  <td><%= @verified_registration.verification_type.titleize %></td>
                 </tr>
-                <% if @verified_registration.present? %>
-                  <tr>
-                    <th scope="row">Verified Owner</th>
-                    <td>
-                      <%= render partial: 'admin/_components/user_link', locals: { target: @verified_registration.user } %>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Claiming Verification Key</th>
-                    <td class="font-monospace"><%= @verified_registration.verification_key %></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Verification Type</th>
-                    <td><%= @verified_registration.verification_type.titleize %></td>
-                  </tr>
-                <% end %>
+              <% end %>
+              <% if @character.refresh_fail_reason.present? %>
                 <tr>
-                  <th scope="row">Creation Date</th>
-                  <td><%= @character.created_at %></td>
+                  <th scope="row">Last Refresh Failure</th>
+                  <td><%= I18n.t "character_registrations.refresh_fail_reasons.#{@character.refresh_fail_reason}" %></td>
                 </tr>
-                <tr>
-                  <th scope="row">Last Updated (Lodestone Sync)</th>
-                  <td><%= @character.updated_at %></td>
-                </tr>
+              <% end %>
+              <tr>
+                <th scope="row">Creation Date</th>
+                <td><%= @character.created_at %></td>
+              </tr>
+              <tr>
+                <th scope="row">Last Updated (Lodestone Sync)</th>
+                <td><%= @character.updated_at %></td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -105,41 +111,41 @@
           <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
               <thead class="table">
-                <tr>
-                  <th scope="col">User</th>
-                  <th scope="col">Verification Key</th>
-                  <th scope="col">Created At</th>
-                  <th scope="col">Actions</th>
-                </tr>
+              <tr>
+                <th scope="col">User</th>
+                <th scope="col">Verification Key</th>
+                <th scope="col">Created At</th>
+                <th scope="col">Actions</th>
+              </tr>
               </thead>
               <tbody>
-                <% @character.character_registrations.each do |registration| %>
-                  <tr>
-                    <td>
-                      <span><%= render partial: 'admin/_components/user_link', locals: { target: registration.user } %></span>
-                      <% if registration.verified? %>
-                        <i class="bi bi-patch-check-fill text-success ms-1"></i>
+              <% @character.character_registrations.each do |registration| %>
+                <tr>
+                  <td>
+                    <span><%= render partial: 'admin/_components/user_link', locals: { target: registration.user } %></span>
+                    <% if registration.verified? %>
+                      <i class="bi bi-patch-check-fill text-success ms-1"></i>
+                    <% end %>
+                  </td>
+                  <td class="font-monospace"><%= registration.verification_key %></td>
+                  <td><%= registration.created_at %></td>
+                  <td class="d-flex flex-wrap gap-1">
+                    <%= button_to admin_character_registration_path(registration), method: :delete, form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm", title: "Delete Registration" do %>
+                      <i class="bi bi-trash"></i>
+                    <% end %>
+                    <% if registration.verified? %>
+                      <%= button_to verify_admin_character_registration_path(registration), method: :delete, form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm", title: "Force Unverify" do %>
+                        <i class="bi bi-patch-minus"></i>
                       <% end %>
-                    </td>
-                    <td class="font-monospace"><%= registration.verification_key %></td>
-                    <td><%= registration.created_at %></td>
-                    <td class="d-flex flex-wrap gap-1">
-                      <%= button_to admin_character_registration_path(registration), method: :delete, form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm", title: "Delete Registration" do %>
-                        <i class="bi bi-trash"></i>
+                    <% else %>
+                      <% b_class = @character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
+                      <%= button_to verify_admin_character_registration_path(registration), params: { force: true }, form_class: "d-inline-block", class: "btn btn-sm #{b_class}", title: "Force Verify", disabled: @character.verified? do %>
+                        <i class="bi bi-patch-plus"></i>
                       <% end %>
-                      <% if registration.verified? %>
-                        <%= button_to verify_admin_character_registration_path(registration), method: :delete, form_class: "d-inline-block", class: "btn btn-outline-danger btn-sm", title: "Force Unverify" do %>
-                          <i class="bi bi-patch-minus"></i>
-                        <% end %>
-                      <% else %>
-                        <% b_class = @character.verified? ? 'btn-outline-secondary' : 'btn-outline-primary' %>
-                        <%= button_to verify_admin_character_registration_path(registration), params: {force: true}, form_class: "d-inline-block", class: "btn btn-sm #{b_class}", title: "Force Verify", disabled: @character.verified? do %>
-                          <i class="bi bi-patch-plus"></i>
-                        <% end %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
               </tbody>
             </table>
           </div>

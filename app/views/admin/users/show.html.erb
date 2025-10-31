@@ -210,6 +210,10 @@
                   <% if registration.verified? %>
                     <i class="bi bi-patch-check-fill text-success ms-1" title="Verified Character"></i>
                   <% end %>
+                  <% if character.refresh_fail_reason.present? %>
+                    <i class="bi bi-exclamation-circle text-warning ms-1"
+                       title="<%= I18n.t "character_registrations.refresh_fail_reasons.#{character.refresh_fail_reason}" %>"></i>
+                  <% end %>
                 </td>
                 <td><%= character.name %></td>
                 <td><%= character.home_with_datacenter %></td>

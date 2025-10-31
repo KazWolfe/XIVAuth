@@ -1,11 +1,3 @@
-<% turnstile_challenge_id = "turnstile-challenge-#{SecureRandom.alphanumeric(10)}" %>
-<script>
-  function handleTurnstileInteractiveCheck() {
-    const turnstileChallenge = document.getElementById("<%= turnstile_challenge_id %>");
-    turnstileChallenge.className += " pt-2";
-  }
-</script>
-<%= cloudflare_turnstile id: turnstile_challenge_id, action: local_assigns[:action] || "generic",
-                         data: { appearance: local_assigns[:appearance] || "always",
-                                 before_interactive_callback: "handleTurnstileInteractiveCheck"
+<%= cloudflare_turnstile action: local_assigns[:action] || "generic",
+                         data: { appearance: local_assigns[:appearance] || "always", turnstile_temporary: true
                          } %>

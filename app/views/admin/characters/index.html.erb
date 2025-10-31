@@ -33,6 +33,9 @@
                 <% if character.ban.present? %>
                   <i class="bi bi-slash-circle text-danger" title="Banned Character"></i>
                 <% end %>
+                <% if character.refresh_fail_reason.present? %>
+                  <i class="bi bi-exclamation-circle text-warning" title="<%= I18n.t "character_registrations.refresh_fail_reasons.#{character.refresh_fail_reason}" %>"></i>
+                <% end %>
               </td>
               <td><%= character.home_with_datacenter %></td>
               <td><%= character.character_registrations.count %></td>

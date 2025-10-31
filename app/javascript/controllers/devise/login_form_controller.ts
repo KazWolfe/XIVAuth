@@ -12,34 +12,27 @@ export default class LoginFormController extends Controller {
 
     private discoveryAbortController: AbortController = new AbortController();
 
-    async connect() {
-        console.log("Login form connected.", this);
+    async initialize() {
+        console.debug("Login form initialized", this);
 
+        // bind turnstile to turbo so we can update things
         const turnstileEl = this.element.querySelector('.cf-turnstile') as HTMLElement;
-        let turnstileElData = Object.assign({}, turnstileEl.dataset) as unknown as RenderParameters;
-        turnstileElData.callback = this.handleTurnstileSuccess.bind(this);
+        turnstileEl.addEventListener("turbo:morph-element", this.initializeTurnstileChallenge.bind(this));
 
-        this.actionButtonTargets?.forEach(button => {
-            if (button.innerText.trim().length > 0) {
-                button.setAttribute("data-original-text", button.innerText);
-                button.innerText = "Waiting for captcha...";
-            }
+        this.initializeTurnstileChallenge();
+    }
 
-            if (button.value.trim().length > 0) {
-                button.setAttribute("data-original-value", button.value);
-                button.value = "Waiting for captcha...";
-            }
+    async connect() {
+        console.debug("Login form connected.");
 
-            button.disabled = true;
-            button.classList.add('disabled');
-        });
-
-        turnstile.render(turnstileEl, turnstileElData);
+        this.discoveryAbortController = new AbortController();
     }
 
     async disconnect() {
         this.discoveryAbortController.abort("disconnect");
         super.disconnect();
+
+        console.debug("Login form disconnected.");
     }
 
     async webauthnRunConditional() {
@@ -85,7 +78,36 @@ export default class LoginFormController extends Controller {
         }
     }
 
-    private handleTurnstileSuccess() {
+    private initializeTurnstileChallenge() {
+        const turnstileEl = this.element.querySelector('.cf-turnstile') as HTMLElement;
+        let turnstileElData = Object.assign({}, turnstileEl.dataset) as unknown as RenderParameters;
+        turnstileElData["before-interactive-callback"] = this.onTurnstileNeedsInteractive.bind(this);
+        turnstileElData.callback = this.onTurnstileSuccess.bind(this);
+
+        this.actionButtonTargets?.forEach(button => {
+            if (button.innerText.trim().length > 0) {
+                button.setAttribute("data-original-text", button.innerText);
+                button.innerText = "Waiting for captcha...";
+            }
+
+            if (button.value.trim().length > 0) {
+                button.setAttribute("data-original-value", button.value);
+                button.value = "Waiting for captcha...";
+            }
+
+            button.disabled = true;
+            button.classList.add('disabled');
+        });
+
+        turnstile.render(turnstileEl, turnstileElData);
+    }
+
+    private onTurnstileNeedsInteractive() {
+        const turnstileEl = this.element.querySelector('.cf-turnstile') as HTMLElement;
+        turnstileEl.classList.add('pt-2');
+    }
+
+    private onTurnstileSuccess() {
         this.webauthnRunConditional().then(); // faf
 
         this.actionButtonTargets?.forEach(button => {
@@ -104,6 +126,12 @@ export default class LoginFormController extends Controller {
                 button.removeAttribute("data-original-value");
             }
         })
+    }
+
+    private onTurboMorph(event: HTMLElement) {
+        console.log("Turbo morph event detected.", event);
+
+        this.initializeTurnstileChallenge();
     }
 
     private async checkConditionalMediation() {
