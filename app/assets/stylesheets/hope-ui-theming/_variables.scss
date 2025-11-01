@@ -69,3 +69,10 @@ $custom-colors: (
   ),
 
 ) !default;
+
+// XIVAUTH OVERRIDES
+$link-decoration:                         underline;
+$link-hover-decoration:                   underline;
+
+$input-placeholder-color:                 var(--#{$prefix}secondary-color) !default;
+// END XIVAUTH OVERRIDES
