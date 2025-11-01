@@ -1,7 +1,6 @@
-class ErrorsController < ApplicationController
-  skip_before_action :authenticate_user!
+class ErrorsController < ActionController::Base
+  helper ApplicationHelper
   before_action :set_trace_id
-
   layout "error"
 
   def show
@@ -12,12 +11,26 @@ class ErrorsController < ApplicationController
                      request.env, @exception
                    ).status_code
 
+    # Return a specific error page for any response, if it exists
     if template_exists? "errors/#{@status_code}"
-      render template: "errors/#{@status_code}", status: @status_code
+      render "errors/#{@status_code}", status: @status_code
       return
     end
 
-    render "errors/generic", status: @status_code, locals: { status: @status_code }
+    # Fallback to a generic error page that matches the requested format, if it exists
+    if template_exists? "errors/generic"
+      render "errors/generic", status: @status_code, locals: { status: @status_code }
+      return
+    end
+
+    # Fallback to a specific error page via HTML, if it exists
+    if template_exists? "errors/#{@status_code}", formats: [:html]
+      render "errors/#{@status_code}", status: @status_code, formats: [:html]
+      return
+    end
+
+    # Fallback to a generic error page via HTML
+    render "errors/generic", status: @status_code, locals: { status: @status_code }, formats: [:html]
   end
 
   private def set_trace_id
