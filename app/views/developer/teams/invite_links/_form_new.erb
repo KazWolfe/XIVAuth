@@ -11,7 +11,7 @@
         ["10 uses", "10"],
         ["25 uses", "25"],
         ["No limit", -1]
-      ], class: "form-control form-select" %>
+      ], {}, class: "form-control form-select" %>
     </div>
 
     <div class="mb-3">
@@ -27,7 +27,8 @@
 
     <div class="mb-3">
       <%= f.label :target_role, "Target Role", class: "form-label" %>
-      <%= f.select :target_role, [["Member", "member"], ["Developer", "developer"], ["Admin", "admin"]] %>
+      <%= f.select :target_role, [["Member", "member"], ["Developer", "developer"], ["Admin", "admin"]], {},
+                   class: "form-control form-select" %>
     </div>
 
     <%= f.submit "Generate Invite", class: "btn btn-primary" %>

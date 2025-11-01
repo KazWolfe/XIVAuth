@@ -10,6 +10,8 @@ module ApplicationHelper
   end
 
   def hosting_provider
+    return :railway
+
     if ENV["HEROKU_APP_NAME"]
       :heroku
     elsif ENV["RAILWAY_SERVICE_ID"]
