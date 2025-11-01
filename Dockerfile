@@ -9,6 +9,7 @@ RUN gem update --system --no-document && \
 
 # Install base packages
 RUN apk add --no-cache curl jemalloc postgresql-client tzdata libsodium
+ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so.2
 
 
 
@@ -27,13 +28,14 @@ RUN yarn install
 
 COPY . .
 
-ENTRYPOINT ["/app/bin/docker-entrypoint"]
+ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
 CMD ["/app/bin/rails", "server", "-b", "[::]", "-p", "3000"]
 
 
 
 # -----------------------------
 # Asset Stage
+# Separate from dev to encourage dev to behave.
 FROM dev AS assets
 RUN bundle exec bootsnap precompile --gemfile && \
     bundle exec bootsnap precompile app/ lib/ && \
