@@ -12,3 +12,8 @@ Rails.application.config.assets.paths << Rails.root.join("node_modules/@fortawes
 # application.ts, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
+
+Rails.application.config.assets.integrity_hash_algorithm = "sha256"
+Rails.application.config.public_file_server.headers = {
+  "Cache-Control" => "public, max-age=#{1.month.to_i}"
+}
