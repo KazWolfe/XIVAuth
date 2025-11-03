@@ -56,6 +56,10 @@ RUN  bundle clean --force && \
 # Release Image
 FROM base AS release
 
+ENV BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_WITHOUT="development:test" \
+    RAILS_ENV="production"
+
 COPY --from=precompile "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=precompile /app /app
 
