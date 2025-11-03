@@ -2,11 +2,13 @@ require 'contextual_logger/middleware'
 require 'contextual_logger/formatters/json_formatter'
 require 'contextual_logger/formatters/color_formatter'
 
+SemanticLogger.application = "XIVAuth"
+SemanticLogger.environment = ENV["APP_ENV"] || Rails.env.to_s
+
 # default log formatter
 Rails.application.middleware.insert_before RailsSemanticLogger::Rack::Logger, ::ContextualLogger::Middleware
 
-
-
+# --------------
 # FIXME: PATCH FOR RAILS 8.1 BELOW
 
 LAST_TESTED_VERSION = '4.18.0'

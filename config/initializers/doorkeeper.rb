@@ -1,4 +1,5 @@
 require "doorkeeper/permissible_policy_cloner"
+require "doorkeeper/grant_data_attacher"
 
 # frozen_string_literal: true
 
@@ -435,6 +436,7 @@ Doorkeeper.configure do
   #
   after_successful_strategy_response do |request, response|
     Doorkeeper::PermissiblePolicyCloner.clone(request, response)
+    Doorkeeper::GrantDataAttacher.attach(request, response)
   end
 
   # Hook into Authorization flow in order to implement Single Sign Out

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_27_201213) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_03_020028) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -171,6 +171,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_201213) do
     t.string "resource_owner_type"
     t.datetime "revoked_at"
     t.string "scopes"
+    t.string "source_grant_flow"
     t.string "token", null: false
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["permissible_policy_id"], name: "index_oauth_access_tokens_on_permissible_policy_id"

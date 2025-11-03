@@ -118,6 +118,11 @@ en:
         invalid_grant: 'The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.'
         unsupported_grant_type: 'The authorization grant type is not supported by the authorization server.'
 
+        # Device Grant token errors
+        authorization_pending: 'This device code has not yet been authorized by an end user.'
+        slow_down: 'The client is polling too quickly and must slow down.'
+        expired_token: 'This device code has expired or authorization was denied. Please try again.'
+
         invalid_token:
           revoked: "The access token was revoked"
           expired: "The access token expired"
