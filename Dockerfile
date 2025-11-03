@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.19
+
 ARG RUBY_VERSION=3.4.7
 FROM ruby:${RUBY_VERSION}-alpine AS base
 
@@ -8,7 +10,7 @@ RUN gem update --system --no-document && \
     gem install -N bundler foreman
 
 # Install base packages
-RUN apk add --no-cache curl jemalloc postgresql-client tzdata libsodium
+RUN apk add --no-cache curl jemalloc postgresql-client tzdata libsodium libpq
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so.2
 
 
@@ -34,12 +36,19 @@ CMD ["/app/bin/rails", "server", "-b", "[::]", "-p", "3000"]
 
 
 # -----------------------------
-# Asset Stage
-# Separate from dev to encourage dev to behave.
-FROM dev AS assets
-RUN bundle exec bootsnap precompile --gemfile && \
-    bundle exec bootsnap precompile app/ lib/ && \
-    RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bundle exec rake assets:precompile
+# Precompile (Prod Prep) Stage
+# Remove dev dependencies, precompile assets, etc.
+FROM dev AS precompile
+
+ENV BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_WITHOUT="development:test" \
+    RAILS_ENV="production"
+
+RUN  bundle clean --force && \
+     bundle exec bootsnap precompile --gemfile && \
+     bundle exec bootsnap precompile app/ lib/ && \
+     RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bundle exec rake assets:precompile && \
+     rm -rf node_modules/
 
 
 
@@ -47,16 +56,10 @@ RUN bundle exec bootsnap precompile --gemfile && \
 # Release Image
 FROM base AS release
 
-RUN apk add --no-cache libpq
-COPY --from=assets "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --from=assets /app /app
+COPY --from=precompile "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=precompile /app /app
 
-ENV BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_WITHOUT="development:test" \
-    RAILS_ENV="production"
-
-RUN bundle clean --force && \
-    addgroup --system --gid 1000 appsrv && \
+RUN addgroup --system --gid 1000 appsrv && \
     adduser --system appsrv --uid 1000 --ingroup appsrv --home /home/appsrv --shell /bin/sh appsrv && \
     chown -R 1000:1000 db log storage tmp
 USER 1000:1000
