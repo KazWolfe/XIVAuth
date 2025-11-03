@@ -11,7 +11,6 @@ RUN gem update --system --no-document && \
 
 # Install base packages
 RUN apk add --no-cache curl jemalloc postgresql-client tzdata libsodium libpq
-ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so.2
 
 
 
