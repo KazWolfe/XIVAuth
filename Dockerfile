@@ -55,7 +55,8 @@ ENV BUNDLE_DEPLOYMENT="1" \
     BUNDLE_WITHOUT="development:test" \
     RAILS_ENV="production"
 
-RUN addgroup --system --gid 1000 appsrv && \
+RUN bundle clean --force && \
+    addgroup --system --gid 1000 appsrv && \
     adduser --system appsrv --uid 1000 --ingroup appsrv --home /home/appsrv --shell /bin/sh appsrv && \
     chown -R 1000:1000 db log storage tmp
 USER 1000:1000
