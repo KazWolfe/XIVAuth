@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_03_052433) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_03_223303) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_052433) do
     t.string "grant_flows", default: [], array: true
     t.string "name", null: false
     t.string "redirect_uris", default: [], array: true
-    t.string "scopes", array: true
+    t.string "scopes", default: [], null: false, array: true
     t.datetime "updated_at", null: false
     t.index ["application_id"], name: "index_client_application_oauth_clients_on_application_id"
     t.index ["client_id"], name: "index_client_application_oauth_clients_on_client_id", unique: true
@@ -152,7 +152,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_052433) do
     t.uuid "resource_owner_id", null: false
     t.string "resource_owner_type", null: false
     t.datetime "revoked_at"
-    t.string "scopes", array: true
+    t.string "scopes", default: [], null: false, array: true
     t.string "token", null: false
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["permissible_policy_id"], name: "index_oauth_access_grants_on_permissible_policy_id"
@@ -170,7 +170,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_052433) do
     t.uuid "resource_owner_id"
     t.string "resource_owner_type"
     t.datetime "revoked_at"
-    t.string "scopes", array: true
+    t.string "scopes", default: [], null: false, array: true
     t.string "source_grant_flow"
     t.string "token", null: false
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
@@ -189,7 +189,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_052433) do
     t.uuid "permissible_policy_id"
     t.uuid "resource_owner_id"
     t.string "resource_owner_type"
-    t.string "scopes", array: true
+    t.string "scopes", default: [], null: false, array: true
     t.string "user_code"
     t.index ["application_id"], name: "index_oauth_device_grants_on_application_id"
     t.index ["device_code"], name: "index_oauth_device_grants_on_device_code", unique: true
