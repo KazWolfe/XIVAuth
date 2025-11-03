@@ -9,6 +9,8 @@ class ClientApplication::OAuthClient < ApplicationRecord
   alias_attribute :uid, :client_id
   alias_attribute :secret, :client_secret
 
+  validate :validate_internal_scopes, if: :scopes_changed?
+
   def redirect_uri
     self.redirect_uris.join("\n")
   end
@@ -31,5 +33,11 @@ class ClientApplication::OAuthClient < ApplicationRecord
   def needs_secret?
     (self.confidential? && (self.grant_flows&.include?("authorization_code") || self.grant_flows&.empty?)) ||
       self.grant_flows&.include?("client_credentials")
+  end
+
+  def validate_internal_scopes
+    self.scopes.select { |s| s.starts_with? "internal" }.each do |scope|
+      errors.add(:scopes, :internal_scope, message: "cannot include internal scope: #{scope}")
+    end
   end
 end
