@@ -105,7 +105,7 @@ RSpec.describe "Users::SessionsController", type: :request do
         post user_session_path, params: login_params
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(response.body).to include("Captcha")
+        expect(response.body).to include("CAPTCHA")
       end
     end
 

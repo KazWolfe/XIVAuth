@@ -28,6 +28,16 @@ client_app.oauth_clients.find_or_create_by!(client_id: "superapp") do |client|
   client.confidential = true
   client.redirect_uri = "http://127.0.0.1:3030/oauth/redirect"
   client.scopes = Doorkeeper.configuration.scopes
+  client.grant_flows = %w[authorization_code client_credentials]
+end
+
+client_app.oauth_clients.find_or_create_by!(client_id: "superapp_public") do |client|
+  client.id = "00000000-0000-8000-8f00-1741dec02898"
+  client.name = "Seeded Non-Confidential Client"
+  client.client_secret = "superapp_public_1741dec02898"
+  client.confidential = false
+  client.scopes = Doorkeeper.configuration.scopes
+  client.grant_flows = %w[authorization_code device_grant]
 end
 
 JwtSigningKeys::RSA.find_or_create_by(name: "dev_rsa")

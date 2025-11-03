@@ -1,5 +1,7 @@
 class ClientApplication::OAuthClient < ApplicationRecord
   include ::Doorkeeper::Orm::ActiveRecord::Mixins::Application
+  include OAuth::ScopesAsArray
+
   self.table_name = "client_application_oauth_clients" # HACK: Doorkeeper wants to override this.
 
   belongs_to :application, class_name: "ClientApplication", touch: true

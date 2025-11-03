@@ -64,4 +64,7 @@ Rails.application.configure do
   config.active_record.encryption.primary_key = "testing"
   config.active_record.encryption.deterministic_key = "testing"
   config.active_record.encryption.key_derivation_salt = "testing"
+
+  # Don't spam log by default.
+  config.log_level = ENV["LOG_LEVEL"]&.downcase&.strip&.to_sym || :info
 end

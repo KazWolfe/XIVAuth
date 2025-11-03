@@ -130,6 +130,7 @@ Rails.application.routes.draw do
       resources :webauthn_credentials, path: "webauthn", controller: "users/webauthn_credentials",
                 only: %i[new create destroy]
       resource :totp_credential, path: "totp", controller: "users/totp_credentials", only: %i[new create destroy]
+      resources :oauth_authorizations, path: "authorizations", controller: "users/oauth_authorizations", only: %i[index destroy]
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_03_020028) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_03_052433) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_020028) do
     t.string "grant_flows", default: [], array: true
     t.string "name", null: false
     t.string "redirect_uris", default: [], array: true
-    t.string "scopes"
+    t.string "scopes", array: true
     t.datetime "updated_at", null: false
     t.index ["application_id"], name: "index_client_application_oauth_clients_on_application_id"
     t.index ["client_id"], name: "index_client_application_oauth_clients_on_client_id", unique: true
@@ -152,7 +152,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_020028) do
     t.uuid "resource_owner_id", null: false
     t.string "resource_owner_type", null: false
     t.datetime "revoked_at"
-    t.string "scopes", default: "", null: false
+    t.string "scopes", array: true
     t.string "token", null: false
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["permissible_policy_id"], name: "index_oauth_access_grants_on_permissible_policy_id"
@@ -170,7 +170,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_020028) do
     t.uuid "resource_owner_id"
     t.string "resource_owner_type"
     t.datetime "revoked_at"
-    t.string "scopes"
+    t.string "scopes", array: true
     t.string "source_grant_flow"
     t.string "token", null: false
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
@@ -189,7 +189,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_020028) do
     t.uuid "permissible_policy_id"
     t.uuid "resource_owner_id"
     t.string "resource_owner_type"
-    t.string "scopes", default: "", null: false
+    t.string "scopes", array: true
     t.string "user_code"
     t.index ["application_id"], name: "index_oauth_device_grants_on_application_id"
     t.index ["device_code"], name: "index_oauth_device_grants_on_device_code", unique: true
@@ -263,6 +263,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_020028) do
     t.datetime "updated_at", null: false
     t.datetime "verified_at"
     t.index ["parent_id"], name: "index_teams_on_parent_id"
+  end
+
+  create_table "test", id: false, force: :cascade do |t|
+    t.uuid "application_id"
+    t.string "client_id"
+    t.string "client_secret"
+    t.boolean "confidential"
+    t.datetime "created_at"
+    t.boolean "enabled"
+    t.datetime "expires_at"
+    t.string "grant_flows", array: true
+    t.uuid "id"
+    t.string "name"
+    t.string "redirect_uris", array: true
+    t.string "scopes", array: true
+    t.datetime "updated_at"
   end
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

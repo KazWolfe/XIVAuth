@@ -27,6 +27,9 @@ class User < ApplicationRecord
   has_many :team_memberships, class_name: "Team::Membership", dependent: :destroy
   has_many :teams, through: :team_memberships, source: :team
 
+  has_many :oauth_authorizations, class_name: "OAuth::AccessToken", foreign_key: "resource_owner_id",
+           inverse_of: :resource_owner, dependent: :destroy
+
   def profile
     super || build_profile
   end

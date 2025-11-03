@@ -1,0 +1,32 @@
+<% content_for(:page_header) do %>
+  <div>
+    <h1>My Authorizations</h1>
+    <p>Manage apps you've previously authorized.</p>
+  </div>
+<% end %>
+
+<div class="row">
+  <table class="table table-responsive">
+    <thead>
+      <tr>
+        <th scope="col">App Name</th>
+        <th scope="col">Authorized At</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @authorizations.each do |authorization| %>
+      <tr>
+        <td>
+          <%= authorization.application.application.name %><br>
+          <small>Client: <%= authorization.application.name %></small>
+        </td>
+        <td><%= authorization.created_at.strftime("%b %d, %Y") %></td>
+        <td>
+          <%= link_to "Revoke", user_oauth_authorization_path(authorization), method: :delete, data: { confirm: "Are you sure?" } %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

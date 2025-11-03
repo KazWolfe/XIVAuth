@@ -1,5 +1,10 @@
 class OAuth::AccessToken < ApplicationRecord
   include ::Doorkeeper::Orm::ActiveRecord::Mixins::AccessToken
+  include OAuth::ScopesAsArray
+
+  scope :active, -> { where(revoked_at: nil).not_expired }
+
+  scope :persistent, -> { where("? = ANY(scopes)", "refresh") }
 
   # The permissible policy associated with this access token. Can be null if there's no policy.
   # Will be destroyed alongside this access token (slight smell - this is used elsewhere *but* this is the only model

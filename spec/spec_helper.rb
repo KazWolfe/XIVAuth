@@ -82,4 +82,6 @@ RSpec.configure do |config|
   if Gem.loaded_specs.has_key?('rspec_junit_formatter')
     config.add_formatter("RspecJunitFormatter", "tmp/testresults/rspec.xml")
   end
+
+  config.add_formatter("progress")
 end
