@@ -1,9 +1,9 @@
-<div class="modal-header">
-  <h5 class="modal-title">Ban <%= @character.name %></h5>
-</div>
-<div class="modal-body">
-  <%= form_with model: @ban, url: admin_character_ban_path(@character.lodestone_id), method: :post do |f| %>
-
+<%= form_with model: @ban, url: admin_character_ban_path(@character.lodestone_id), method: :post do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Ban <%= @character.name %></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
     <div class="mb-3">
       <%= f.label :reason, "Ban Reason", class: "form-label" %>
       <%= f.text_area :reason, placeholder: "A compelling reason to ban this character...", class: "form-control" %>
@@ -17,7 +17,9 @@
         and prevent it from being registered again, this should only be used in exceptional circumstances such as abuse.
       </p>
     </div>
-
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary-secondary" data-bs-dismiss="modal">Close</button>
     <%= f.submit "Ban Character", class: "btn btn-primary" %>
-  <% end %>
-</div>
+  </div>
+<% end %>

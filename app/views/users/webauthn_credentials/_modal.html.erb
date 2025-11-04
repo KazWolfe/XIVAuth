@@ -2,6 +2,7 @@
               data: { controller: "devise--webauthn--registration", action: "devise--webauthn--registration#register" }) do |f| %>
   <div class="modal-header">
     <h5 class="modal-title">Add Security Key</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
     <div class="alert alert-warning d-none" role="alert" id="webauthnAlertFailure" data-devise--webauthn--registration-target="feedback"></div>
@@ -29,7 +30,7 @@
       </div>
     </div>
   </div>
-  <div class="modal-footer border-top-0">
+  <div class="modal-footer">
     <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Cancel</button>
     <%= f.submit "Register Security Key", class: "btn btn-primary" %>
   </div>
