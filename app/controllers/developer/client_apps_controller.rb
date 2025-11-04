@@ -1,6 +1,6 @@
 class Developer::ClientAppsController < ApplicationController
   layout "portal/base"
-  include Pagy::Backend
+  include Pagy::Method
   helper Doorkeeper::DashboardHelper
 
   before_action :set_application, only: %i[show edit update destroy regenerate]

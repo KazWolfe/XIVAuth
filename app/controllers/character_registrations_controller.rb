@@ -1,5 +1,5 @@
 class CharacterRegistrationsController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Method
 
   layout "portal/page"
   before_action :set_character_registration, only: %i[show destroy]

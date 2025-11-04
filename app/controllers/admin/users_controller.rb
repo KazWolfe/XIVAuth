@@ -1,5 +1,5 @@
 class Admin::UsersController < Admin::AdminController
-  include Pagy::Backend
+  include Pagy::Method
 
   before_action :set_user, except: %i[index]
   layout "portal/base"
@@ -9,7 +9,7 @@ class Admin::UsersController < Admin::AdminController
   end
 
   def show
-    @pagy_cregs, @cregs = pagy(@user.character_registrations, page_param: :page_cr, items: 10)
+    @pagy_cregs, @cregs = pagy(@user.character_registrations, page_key: "page_cr", items: 10)
   end
 
   def destroy

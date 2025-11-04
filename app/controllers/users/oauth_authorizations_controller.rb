@@ -2,7 +2,7 @@
 
 class Users::OAuthAuthorizationsController < ApplicationController
   layout "portal/page"
-  include Pagy::Backend
+  include Pagy::Method
 
   def index
     @pagy, @authorizations = pagy(current_user.oauth_authorizations.active, items: 10)

@@ -1,5 +1,5 @@
 class Admin::ClientApplicationsController < Admin::AdminController
-  include Pagy::Backend
+  include Pagy::Method
   layout "portal/base"
 
   before_action :set_app, only: %i[show destroy]

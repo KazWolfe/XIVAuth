@@ -95,7 +95,7 @@ gem "stackprof", "~> 0.2"
 gem "rexml", "~> 3.4.2"
 
 # Helpers
-gem "pagy", "~> 9.3"
+gem "pagy", "~> 43.0"
 
 group :production do
   # Handle Cloudflare IPs in our X-Forwarded-For chain

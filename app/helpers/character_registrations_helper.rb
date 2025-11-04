@@ -1,6 +1,4 @@
 module CharacterRegistrationsHelper
-  include Pagy::Frontend
-
   # A more relaxed regex variant meant for just grabbing data from things.
   LODESTONE_URL_REGEX = %r{((https?://)?(?<region>[a-z]{2})\.finalfantasyxiv\.com/lodestone/character/)?(?<lodestone_id>\d+)(/.*)?}
 

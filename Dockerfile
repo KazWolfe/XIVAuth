@@ -5,7 +5,8 @@ FROM ruby:${RUBY_VERSION}-alpine AS base
 
 WORKDIR /app
 
-ENV BUNDLE_PATH="/usr/local/bundle"
+ENV BUNDLE_PATH="/usr/local/bundle" \
+    PATH="/app/bin:$PATH"
 RUN gem update --system --no-document && \
     gem install -N bundler foreman
 
@@ -37,6 +38,7 @@ CMD ["/app/bin/rails", "server", "-b", "[::]", "-p", "3000"]
 # -----------------------------
 # Precompile (Prod Prep) Stage
 # Remove dev dependencies, precompile assets, etc.
+# Uses the dev image as everything we need is already there, and can be stripped out easily.
 FROM dev AS precompile
 
 ENV BUNDLE_DEPLOYMENT="1" \
@@ -46,7 +48,7 @@ ENV BUNDLE_DEPLOYMENT="1" \
 RUN  bundle clean --force && \
      bundle exec bootsnap precompile --gemfile && \
      bundle exec bootsnap precompile app/ lib/ && \
-     RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bundle exec rake assets:precompile && \
+     SECRET_KEY_BASE_DUMMY=1 bundle exec rake assets:precompile && \
      rm -rf node_modules/
 
 
@@ -55,6 +57,7 @@ RUN  bundle clean --force && \
 # Release Image
 FROM base AS release
 
+# Duplicated from above as the release stage doesn't inherit this.
 ENV BUNDLE_DEPLOYMENT="1" \
     BUNDLE_WITHOUT="development:test" \
     RAILS_ENV="production"

@@ -1,6 +1,6 @@
 class Developer::TeamsController < ApplicationController
   layout "portal/page"
-  include Pagy::Backend
+  include Pagy::Method
 
   before_action :set_team, only: %i[show edit update destroy regenerate]
 
