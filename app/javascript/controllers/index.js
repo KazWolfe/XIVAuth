@@ -36,3 +36,6 @@ application.register("utilities--copy-code", Utilities__CopyCodeController)
 
 import Utilities__RemoteModalController from "./utilities/remote_modal_controller"
 application.register("utilities--remote-modal", Utilities__RemoteModalController)
+
+import Utilities__HoverDtController from "./utilities/hover_dt_controller"
+application.register("utilities--hover-dt", Utilities__HoverDtController)

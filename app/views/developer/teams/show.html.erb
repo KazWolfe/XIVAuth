@@ -73,10 +73,17 @@
               <td>
                 <% if link.expires_at? %>
                   <% if link.expired? %>
-                    Expired <%= distance_of_time_in_words_to_now(link.expires_at) %> ago <br/>
+                    Expired
+                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%=link.expires_at.to_i %>">
+                      <%= distance_of_time_in_words_to_now(link.expires_at) %> ago
+                    </span>
                   <% else %>
-                    Expires in <%= distance_of_time_in_words_to_now(link.expires_at) %> <br/>
+                    Expires
+                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%=link.expires_at.to_i %>">
+                      in <%= distance_of_time_in_words_to_now(link.expires_at) %>
+                    </span>
                   <% end %>
+                  <br/>
                 <% end %>
                 <%= link.usage_count %> of <%= link.usage_limit || "∞" %> uses
               </td>

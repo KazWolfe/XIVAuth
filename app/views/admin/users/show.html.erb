@@ -161,8 +161,16 @@
                     <i class="fab fa-<%= ident.provider %> fa-fw" title="<%= ident.provider.titleize %>"></i></th>
                   <td><%= ident.friendly_name %></td>
                   <td><code><%= ident.external_id %></code></td>
-                  <td><%= dotiw_hover ident.created_at %></td>
-                  <td><%= dotiw_hover ident.last_used_at %></td>
+                  <td>
+                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= ident.created_at.to_i %>">
+                      <%= distance_of_time_in_words_to_now(ident.created_at) %> ago
+                    </span>
+                  </td>
+                  <td>
+                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= ident.last_used_at.to_i %>">
+                      <%= distance_of_time_in_words_to_now(ident.last_used_at) %> ago
+                    </span>
+                  </td>
                   <td>
                     <button class="btn btn-outline-danger btn-sm" title="Unlink Identity"><i class="bi bi-trash"></i>
                     </button>

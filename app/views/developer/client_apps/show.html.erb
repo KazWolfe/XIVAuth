@@ -119,13 +119,24 @@
                 <strong>Client Secret:</strong> <span class="font-monospace">REDACTED</span>
               </td>
               <td>
-                <%= distance_of_time_in_words_to_now(client.created_at).capitalize %> <br>
+                <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.created_at.to_i %>">
+                  <%= distance_of_time_in_words_to_now(client.created_at).capitalize %>
+                </span> <br/>
+
                 <% if client.expires_at.present? && !client.expired? %>
-                  <small class="text-muted">Expires
-                    in <%= distance_of_time_in_words_to_now(client.expires_at) %></small>
+                  <small class="text-muted">
+                    Expires
+                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.expires_at.to_i %>">
+                      in <%= distance_of_time_in_words_to_now(client.expires_at) %>
+                    </span>
+                  </small>
                 <% elsif client.expires_at.present? && client.expired? %>
-                  <small class="text-warning">Expired <%= distance_of_time_in_words_to_now(client.expires_at) %>
-                    ago</small>
+                  <small class="text-warning">
+                    Expired
+                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.expires_at.to_i %>">
+                      <%= distance_of_time_in_words_to_now(client.expires_at) %> ago
+                    </span>
+                  </small>
                 <% else %>
                   <small class="text-muted">Never expires</small>
                 <% end %>
