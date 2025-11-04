@@ -117,7 +117,7 @@ class FFXIV::LodestoneProfile
   def character_profile_visible?
     unless (is_visible = !@doc.at_css(".character__content")&.text&.include?("This character's profile is private."))
       errors.add(:id, "Specified character's profile information is private.")
-      self.failure_reason = :private_profile
+      self.failure_reason = :profile_private
     end
 
     is_visible
