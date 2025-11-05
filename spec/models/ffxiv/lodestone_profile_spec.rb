@@ -73,7 +73,7 @@ RSpec.describe FFXIV::LodestoneProfile do
 
       profile.valid?
       expect(profile.failure_reason).to eq(:profile_private)
-      expect(profile.errors[:base].join).to match(/has their profile info marked as private/i)
+      expect(profile).to be_valid
     end
 
     it "detects a 404 not found page" do

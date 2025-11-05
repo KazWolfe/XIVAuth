@@ -103,7 +103,7 @@ class FFXIV::LodestoneProfile
   end
 
   def portrait
-    return @portrait if defined?(@portrait)
+    return @portrait if @portrait.present?
 
     node = @doc.at_css(".character__detail__image > a > img") || @doc.at_css(".character__detail__image img")
     @portrait = node&.[]("src")
@@ -112,6 +112,8 @@ class FFXIV::LodestoneProfile
       # Fallback because we have predictable URLs.
       @portrait = avatar.sub("fc0.jpg", "fl0.jpg")
     end
+    
+    @portrait
   end
 
   def avatar
