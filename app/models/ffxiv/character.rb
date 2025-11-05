@@ -37,11 +37,11 @@ class FFXIV::Character < ApplicationRecord
   end
 
   def refresh_fail_reason
-    super&.downcase&.to_sym
+    super&.downcase&.to_sym || nil
   end
 
   def refresh_fail_reason=(reason)
-    super(reason.to_s.upcase)
+    super(reason&.to_s&.upcase || nil)
   end
 
   def refresh_from_lodestone(lodestone_data = nil)
@@ -49,7 +49,7 @@ class FFXIV::Character < ApplicationRecord
 
     @lodestone_data = lodestone_data || FFXIV::LodestoneProfile.new(lodestone_id)
     unless @lodestone_data.valid?
-      self.refresh_fail_reason = @lodestone_data.failure_reason || :unspecified
+      self.refresh_fail_reason = @lodestone_data.failure_reason
       return
     end
 
@@ -58,6 +58,9 @@ class FFXIV::Character < ApplicationRecord
     self.data_center = @lodestone_data.datacenter
     self.avatar_url = @lodestone_data.avatar
     self.portrait_url = @lodestone_data.portrait
+
+    # clear or otherwise handle non-"critical" cases
+    self.refresh_fail_reason = @lodestone_data.failure_reason
   end
 
   def self.for_lodestone_id(lodestone_id)

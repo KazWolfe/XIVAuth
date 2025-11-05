@@ -21,7 +21,7 @@ class CharacterRegistration < ApplicationRecord
                           if: -> { !verified_at.nil? },
                           message: "has already been verified." }
 
-  validates_associated :character, message: "could not be found or is invalid."
+  validate :validate_linked_character
 
   validates :verification_type, presence: true, if: -> { self.verified? }
   validates :verification_type, absence: true, unless: -> { self.verified? }
@@ -140,5 +140,15 @@ class CharacterRegistration < ApplicationRecord
 
     errors.add(:character, :banned,
                message: "cannot be registered directly. Please contact an XIVAuth developer.")
+  end
+
+  private def validate_linked_character
+    return if character&.validate
+
+    if (base_errors = character.errors.where(:base))
+      errors.add(:character, :invalid, message: base_errors.first.message)
+    else
+      errors.add(:character, :invalid, message: "could not be found or processed.")
+    end
   end
 end

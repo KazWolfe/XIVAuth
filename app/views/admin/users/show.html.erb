@@ -167,9 +167,13 @@
                     </span>
                   </td>
                   <td>
-                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= ident.last_used_at.to_i %>">
-                      <%= distance_of_time_in_words_to_now(ident.last_used_at) %> ago
-                    </span>
+                    <% if ident.last_used_at.present? %>
+                      <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= ident.last_used_at.to_i %>">
+                        <%= distance_of_time_in_words_to_now(ident.last_used_at) %> ago
+                      </span>
+                    <% else %>
+                      <span>Never</span>
+                    <% end %>
                   </td>
                   <td>
                     <button class="btn btn-outline-danger btn-sm" title="Unlink Identity"><i class="bi bi-trash"></i>

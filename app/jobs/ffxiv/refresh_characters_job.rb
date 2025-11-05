@@ -4,8 +4,8 @@ class FFXIV::RefreshCharactersJob < ApplicationJob
   # @param [Array<FFXIV::Character>] characters A list of characters to update in this job run
   def perform(*characters, force_refresh: false)
     characters.each do |character|
-      if !force_refresh && !character.stale?
-        logger.info "Skipping refresh of character #{character.lodestone_id}, they're already fresh."
+      if !character.stale? && !force_refresh
+         logger.info "Skipping refresh of character #{character.lodestone_id}, they're not stale"
         next
       end
 
