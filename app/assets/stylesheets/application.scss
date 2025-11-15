@@ -16,6 +16,22 @@
 
 // Header image styling moved to navbar.scss
 
+// Sticky footer layout
+.main-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  .content-inner {
+    flex: 1 0 auto;
+  }
+}
+
+// For simple container layouts (non-portal pages)
+body > .container:not(.toast-container) {
+  flex: 1 0 auto;
+}
+
 .full-backdrop {
   overflow-x: hidden;
   position: fixed;
