@@ -15,6 +15,50 @@
     color: white;
   }
 
+  // Navbar links and dropdown triggers
+  .navbar-nav {
+    .nav-link {
+      color: rgba(255, 255, 255, 0.8);
+
+      &:hover {
+        color: white;
+      }
+
+      h6 {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+
+  // Dropdown menu - also dark to match navbar
+  .dropdown-menu {
+    background-color: #2a2d30;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    .dropdown-item {
+      color: rgba(255, 255, 255, 0.8);
+
+      &:hover,
+      &:focus {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      &.text-danger {
+        color: #ff6b6b !important;
+
+        &:hover {
+          color: white !important;
+          background-color: rgba(255, 107, 107, 0.2);
+        }
+      }
+
+      i {
+        color: inherit;
+      }
+    }
+  }
+
   .sidebar-toggle {
     display: none;
     cursor: pointer;
