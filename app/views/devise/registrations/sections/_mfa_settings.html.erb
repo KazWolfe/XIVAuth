@@ -1,7 +1,10 @@
 <div class="col-md-6" id="mfa-settings">
   <div class="card h-100">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h3 class="h5 mb-0">Multi-Factor Authentication</h3>
+      <div class="d-flex align-items-center">
+        <i class="bi bi-shield-lock me-2 text-primary fs-5" aria-hidden="true"></i>
+        <h3 class="h5 mb-0">Multi-Factor Authentication</h3>
+      </div>
       <% if resource.requires_mfa? %>
         <span class="badge bg-success">MFA Enabled</span>
       <% else %>

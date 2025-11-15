@@ -6,7 +6,10 @@
   <div class="col-md-6">
     <div class="card h-100">
       <div class="card-header">
-        <h3 class="h5 mb-0">Profile Information</h3>
+        <div class="d-flex align-items-center">
+          <i class="bi bi-person-circle me-2 text-primary fs-5" aria-hidden="true"></i>
+          <h2 class="h5 mb-0">Profile Information</h2>
+        </div>
       </div>
       <%= form_for(resource, as: resource_name, url: user_path(resource_name), html: { method: :put }) do |f| %>
         <div class="card-body">
@@ -101,7 +104,10 @@
   <div class="col-md-6">
     <div class="card h-100">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="h5 mb-0">Linked Accounts</h3>
+        <div class="d-flex align-items-center">
+          <i class="bi bi-link-45deg me-2 text-primary fs-5" aria-hidden="true"></i>
+          <h2 class="h5 mb-0">Linked Accounts</h2>
+        </div>
         <%- if devise_mapping.omniauthable? %>
           <div class="dropdown">
             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -151,7 +157,12 @@
             </table>
           </div>
         <% else %>
-          <p class="text-muted mb-0">No linked social identities yet.</p>
+          <div class="text-center py-4">
+            <i class="bi bi-link-45deg text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
+            <p class="text-muted mb-0 mt-2">
+              No linked identities yet. Link an account for faster sign-in and app integration features.
+            </p>
+          </div>
         <% end %>
       </div>
     </div>
@@ -162,7 +173,10 @@
   <div class="col-md-6">
     <div class="card border border-danger h-100">
       <div class="card-header bg-opacity-10">
-        <h3 class="h5 mb-0 text-danger">Danger Zone</h3>
+        <div class="d-flex align-items-center">
+          <i class="bi bi-exclamation-triangle-fill me-2 text-danger fs-5" aria-hidden="true"></i>
+          <h2 class="h5 mb-0 text-danger">Danger Zone</h2>
+        </div>
       </div>
       <div class="card-body">
         <p class="text-muted">Deleting your account is irreversible. All data associated with your account will be
