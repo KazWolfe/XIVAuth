@@ -1,13 +1,18 @@
 // Custom navbar and header implementation using Bootstrap 5 patterns
 // Replaces Hope UI iq-navbar and iq-banner
 
-// Top navbar
+// Top navbar (always dark mode to match sidebar)
 .navbar {
-  background-color: var(--bs-tertiary-bg);
-  border-bottom: 1px solid var(--bs-border-color);
+  background-color: #1a1d20;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
 
   .navbar-inner {
     padding: 0 calc(var(--bs-gutter-x, 0.75rem) * 2);
+  }
+
+  .navbar-brand {
+    color: white;
   }
 
   .sidebar-toggle {
