@@ -34,19 +34,15 @@
     }
   }
 
-  // Enhanced card footer
+  // Card header and footer default to transparent with no borders
+  .card-header {
+    background-color: transparent;
+    border-bottom: none;
+  }
+
   .card-footer {
-    border-top-color: var(--bs-border-color);
-
-    [data-bs-theme="light"] & {
-      background: rgba(248, 249, 250, 0.5);
-      backdrop-filter: blur(4px);
-    }
-
-    [data-bs-theme="dark"] & {
-      background: rgba(26, 29, 33, 0.5);
-      backdrop-filter: blur(4px);
-    }
+    background-color: transparent;
+    border-top: none;
   }
 }
 
