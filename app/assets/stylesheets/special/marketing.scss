@@ -14,6 +14,8 @@ section#developers {
 }
 
 .marketing-card {
+  position: relative;
+  isolation: isolate;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background 0.3s, border 0.3s;
@@ -42,7 +44,7 @@ section#developers {
 
     // Tilt effect on icon badge
     .rounded-circle {
-      transform: rotate(-8deg) scale(1.05);
+      transform: rotate(8deg) scale(1.05);
     }
   }
 
