@@ -13,11 +13,22 @@
 
   // Subtle gradient overlays for primary buttons
   &.btn-primary {
-    background: linear-gradient(
-      135deg,
-      var(--bs-primary),
-      var(--bs-primary-border-subtle)
-    );
+    [data-bs-theme="light"] & {
+      background: linear-gradient(
+        var(--gradient-angle),
+        var(--bs-primary),
+        color-mix(in srgb, var(--bs-primary) 70%, white)
+      );
+    }
+
+    [data-bs-theme="dark"] & {
+      background: linear-gradient(
+        var(--gradient-angle),
+        var(--bs-primary),
+        var(--bs-primary-border-subtle)
+      );
+    }
+
     border: none;
 
     &:hover {
@@ -33,11 +44,22 @@
   }
 
   &.btn-success {
-    background: linear-gradient(
-      135deg,
-      var(--bs-success),
-      var(--bs-success-border-subtle)
-    );
+    [data-bs-theme="light"] & {
+      background: linear-gradient(
+        var(--gradient-angle),
+        var(--bs-success),
+        color-mix(in srgb, var(--bs-success) 70%, white)
+      );
+    }
+
+    [data-bs-theme="dark"] & {
+      background: linear-gradient(
+        var(--gradient-angle),
+        var(--bs-success),
+        var(--bs-success-border-subtle)
+      );
+    }
+
     border: none;
 
     &:hover {
@@ -72,11 +94,22 @@
   transition: all 0.2s ease-in-out;
 
   &.bg-success {
-    background: linear-gradient(
-      135deg,
-      var(--bs-success),
-      var(--bs-success-border-subtle)
-    ) !important;
+    [data-bs-theme="light"] & {
+      background: linear-gradient(
+        var(--gradient-angle),
+        var(--bs-success),
+        color-mix(in srgb, var(--bs-success) 70%, white)
+      ) !important;
+    }
+
+    [data-bs-theme="dark"] & {
+      background: linear-gradient(
+        var(--gradient-angle),
+        var(--bs-success),
+        var(--bs-success-border-subtle)
+      ) !important;
+    }
+
     box-shadow: 0 2px 4px rgba(var(--bs-success-rgb), 0.2);
   }
 
