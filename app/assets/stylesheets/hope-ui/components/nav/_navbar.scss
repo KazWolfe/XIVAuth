@@ -5,6 +5,17 @@
         padding: 0 calc(var(--bs-gutter-x, .75rem) * 2);
     }
 
+    .navbar-nav {
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            z-index: 1000;
+        }
+    }
+
     .search-input {
         width: auto;
 
