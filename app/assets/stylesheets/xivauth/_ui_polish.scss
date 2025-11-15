@@ -2,27 +2,13 @@
 
 // Enhanced button styling
 .btn {
-  transition: all 0.2s ease-in-out;
+  transition: all 0.15s ease-in-out;
   position: relative;
-  overflow: hidden;
 
-  // Ripple effect preparation
-  &::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-  }
-
-  &:active::before {
-    width: 300px;
-    height: 300px;
+  // Subtle pressed effect
+  &:active {
+    transform: scale(0.98);
+    transition-duration: 0.05s;
   }
 
   // Subtle gradient overlays for primary buttons
@@ -38,6 +24,12 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.3);
     }
+
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 6px rgba(var(--bs-primary-rgb), 0.4);
+      filter: brightness(0.95);
+    }
   }
 
   &.btn-success {
@@ -52,13 +44,23 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(var(--bs-success-rgb), 0.3);
     }
+
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 6px rgba(var(--bs-success-rgb), 0.4);
+      filter: brightness(0.95);
+    }
   }
 
   &.btn-outline-secondary {
-    transition: all 0.2s ease-in-out;
+    transition: all 0.15s ease-in-out;
 
     &:hover {
       transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
     }
   }
 }
