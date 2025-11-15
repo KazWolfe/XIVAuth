@@ -53,30 +53,6 @@
   position: relative;
   overflow: hidden;
 
-  &[data-state="ok"] {
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(
-        90deg,
-        var(--bs-success),
-        var(--bs-success-bg-subtle)
-      );
-      opacity: 0.3;
-      pointer-events: none;
-    }
-  }
-
-  // Enhanced verified badge animation
-  .bi-patch-check-fill {
-    display: inline-block;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
   // Avatar enhancement
   img.rounded {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
