@@ -1,8 +1,10 @@
 .nav {
     background: var(--bs-gray-900);
+    overflow: visible; // Ensure dropdown menus aren't clipped
 
     .navbar-inner {
         padding: 0 calc(var(--bs-gutter-x, .75rem) * 2);
+        overflow: visible; // Ensure dropdown menus aren't clipped
     }
 
     .navbar-nav {
@@ -374,7 +376,10 @@
         .navbar-collapse {
             .navbar-nav {
                 li {
-                    position: static;
+                    // Don't use position: static for dropdowns - it breaks Bootstrap's positioning
+                    &:not(.dropdown) {
+                        position: static;
+                    }
 
                     .sub-drop {
                         &.dropdown-menu {
