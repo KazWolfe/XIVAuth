@@ -2,75 +2,16 @@
   border-top-style: solid;
   border-top-width: 4px;
   border-top-color: var(--bs-secondary);
-  position: relative;
 
-  // Subtle glow effect for verified cards
   &[data-state="ok"] {
     border-top-color: var(--bs-success);
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(var(--bs-success-rgb), 0.4),
-        transparent
-      );
-      animation: shimmer 3s ease-in-out infinite;
-    }
   }
 
   &[data-state="warning"] {
-    border-top-color: var(--bs-warning);
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(var(--bs-warning-rgb), 0.4),
-        transparent
-      );
-      animation: shimmer 3s ease-in-out infinite;
-    }
+    border-top-color: var(--bs-warning)
   }
 
   &[data-state="error"] {
     border-top-color: var(--bs-danger);
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(var(--bs-danger-rgb), 0.4),
-        transparent
-      );
-      animation: shimmer 3s ease-in-out infinite;
-    }
-  }
-}
-
-@keyframes shimmer {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
   }
 }
