@@ -8,8 +8,8 @@
   border-color: var(--bs-border-color);
 
   // Subtle blur effect on all cards
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
   // Light gradient overlay for depth
   [data-bs-theme="light"] & {

@@ -7,7 +7,6 @@
 
   .header-content {
     position: relative;
-    z-index: 1;
     padding: calc(var(--bs-gutter-x, 1rem) * 2);
     min-height: 215px;
     display: flex;
@@ -20,7 +19,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: var(--bs-border-radius-lg);
     overflow: hidden;
 
     img {
