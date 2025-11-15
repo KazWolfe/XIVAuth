@@ -7,6 +7,10 @@
   // Subtle border enhancement
   border-color: var(--bs-border-color);
 
+  // Subtle blur effect on all cards
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
   // Light gradient overlay for depth
   [data-bs-theme="light"] & {
     background: linear-gradient(
