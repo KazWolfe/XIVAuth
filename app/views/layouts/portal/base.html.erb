@@ -6,22 +6,22 @@
   <% end %>
 
   <main class="main-content">
-    <div class="position-relative iq-banner">
-      <%= render 'layouts/portal/navigation/topbar' %>
-      <div class="iq-navbar-header" style="height: 215px">
-        <div class="container-fluid iq-container">
+    <%= render 'layouts/portal/navigation/topbar' %>
+    <div class="page-header">
+      <div class="header-content">
+        <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
-              <div class="flex-wrap d-flex justify-content-between align-items-center text-heading-color">
+              <div class="flex-wrap d-flex justify-content-between align-items-center">
                 <%= yield(:page_header) %>
               </div>
             </div>
           </div>
         </div>
-        <div class="iq-header-img"></div>
       </div>
+      <div class="header-img"></div>
     </div>
-    <div class="container-fluid content-inner mt-n5 py-0">
+    <div class="container-fluid content-inner py-0">
       <%= content_for?(:portal_page_content) ?  yield(:portal_page_content) : yield %>
     </div>
 

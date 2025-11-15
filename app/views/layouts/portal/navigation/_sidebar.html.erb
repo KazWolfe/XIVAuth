@@ -1,13 +1,12 @@
-<nav class="sidebar sidebar-default sidebar-white sidebar-base navs-rounded">
-  <div class="sidebar-header d-flex align-items-center justify-content-start">
-    <a class="navbar-brand pride-brand" href="/">XIVAuth</a>
-    <div class="d-xl-none sidebar-toggle" data-toggle="sidebar" data-active="true">
-      <i class="icon bi bi-x"></i>
-    </div>
+<nav class="sidebar bg-dark">
+  <div class="sidebar-header">
+    <a class="pride-brand" href="/">XIVAuth</a>
+    <button class="sidebar-toggle" data-toggle="sidebar" type="button">
+      <i class="bi bi-x"></i>
+    </button>
   </div>
-  <div class="sidebar-body pt-0">
-    <div class="sidebar-list">
-      <ul id="sidebar-menu" class="navbar-nav iq-main-menu">
+  <div class="sidebar-body">
+    <ul id="sidebar-menu" class="navbar-nav">
 
         <li class="nav-item static-item">
           <a class="nav-link static-item disabled" href="#" tabindex="-1">
@@ -97,9 +96,9 @@
             </ul>
           </li>
         <% end %>
-      </ul>
-    </div>
+    </ul>
   </div>
   <div class="sidebar-footer">
   </div>
 </nav>
+<div class="sidebar-backdrop" data-toggle="sidebar"></div>

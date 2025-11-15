@@ -14,9 +14,11 @@ section#developers {
 }
 
 .marketing-card {
+  position: relative;
+  isolation: isolate;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: background 0.3s, border 0.3s;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background 0.3s, border 0.3s;
 
   [data-bs-theme="light"] & {
     background: rgba(255, 255, 255, 0.25);
@@ -26,6 +28,29 @@ section#developers {
   [data-bs-theme="dark"] & {
     background: rgba(30, 30, 30, 0.35);
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18);
+  }
+
+  // Hover lift effect
+  &:hover {
+    transform: translateY(-4px);
+
+    [data-bs-theme="light"] & {
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    [data-bs-theme="dark"] & {
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    // Tilt effect on icon badge
+    .rounded-circle {
+      transform: rotate(8deg) scale(1.05);
+    }
+  }
+
+  // Icon badge styling
+  .rounded-circle {
+    transition: transform 0.3s ease-in-out;
   }
 }
 

@@ -6,10 +6,35 @@
 @import "xivauth/env_watermark";
 @import "xivauth/branding/pride_logo";
 @import "xivauth/mixins";
+@import "xivauth/sidebar";
+@import "xivauth/navbar";
 
-.iq-header-img {
-  border-radius: unset !important;
-  z-index: -10 !important;
+// Modern UI enhancements
+@import "xivauth/animations";
+@import "xivauth/cards";
+@import "xivauth/ui_polish";
+
+// Header image styling moved to navbar.scss
+
+// UI polish variables
+:root {
+  --gradient-angle: 135deg;
+}
+
+// Sticky footer layout
+.main-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  .content-inner {
+    flex: 1 0 auto;
+  }
+}
+
+// For simple container layouts (non-portal pages)
+body > .container:not(.toast-container) {
+  flex: 1 0 auto;
 }
 
 .full-backdrop {
@@ -59,7 +84,7 @@
     background-image: url("/backgrounds/s9_commerce.png");
 }
 
-.iq-header-img {
+.header-img {
   @include frosted-bg("/backgrounds/burnwall_day.png", "/backgrounds/burnwall_night.png", 1px, 0.8, 0.65);
 
   &::before {

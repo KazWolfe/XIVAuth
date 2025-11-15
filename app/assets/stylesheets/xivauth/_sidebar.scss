@@ -1,0 +1,288 @@
+// Custom sidebar implementation using Bootstrap 5 patterns
+// Replaces Hope UI sidebar with vanilla Bootstrap approach
+
+// CSS variables for sidebar configuration
+:root {
+  --sidebar-width: 260px;
+  --sidebar-mini-width: 80px;
+  --sidebar-transition: all 0.3s ease-in-out;
+}
+
+// Sidebar base styles
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  width: var(--sidebar-width);
+  background-color: var(--bs-dark-rgb);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  transition: var(--sidebar-transition);
+  display: flex;
+  flex-direction: column;
+  color: rgba(255, 255, 255, 0.8);
+
+  .sidebar-header {
+    padding: 1.125rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
+    .navbar-brand {
+      margin: 0;
+      color: white;
+    }
+
+    .sidebar-toggle {
+      display: none;
+      cursor: pointer;
+      background: var(--bs-primary);
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: none;
+      transition: all 0.15s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+        background: var(--bs-primary);
+        filter: brightness(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      i {
+        font-size: 1.25rem;
+        line-height: 1;
+      }
+    }
+  }
+
+  .sidebar-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.5rem 0;
+  }
+
+  .sidebar-footer {
+    flex-shrink: 0;
+    padding: 1rem;
+  }
+
+  // Navigation menu styles
+  .navbar-nav {
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+
+    .nav-item {
+      margin: 2px 0;
+      padding-right: 1rem;
+
+      &.static-item {
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        .nav-link {
+          padding: 0.5rem 1rem 0;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.5);
+          cursor: default;
+          pointer-events: none;
+
+          &:hover {
+            background-color: transparent;
+          }
+        }
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem 0.5rem 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        border-radius: var(--bs-border-radius);
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;
+        text-decoration: none;
+
+        i {
+          flex-shrink: 0;
+          width: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .item-name {
+          margin-left: 1rem;
+          flex: 1;
+        }
+
+        .right-icon {
+          margin-left: auto;
+          transition: transform 0.2s ease-in-out;
+        }
+
+        &:hover {
+          color: white;
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        &.active {
+          color: var(--bs-primary);
+          background-color: rgba(255, 255, 255, 0.15);
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          margin-left: -1rem;
+          padding-left: 2rem;
+        }
+
+        &[aria-expanded="true"] .right-icon {
+          transform: rotate(90deg);
+        }
+      }
+    }
+
+    // Sub-menu styles
+    .sub-nav {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      padding-left: 1rem;
+
+      .nav-item {
+        padding-left: 1rem;
+
+        .nav-link {
+          padding: 0.4rem 1rem;
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    hr.hr-horizontal {
+      margin: 0.5rem 1rem;
+      opacity: 0.1;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Main content with sidebar (use ~ for general sibling since backdrop is in between)
+.sidebar ~ .main-content {
+  margin-left: var(--sidebar-width);
+  transition: var(--sidebar-transition);
+}
+
+// Mini sidebar mode (collapsed)
+.sidebar.sidebar-mini {
+  --sidebar-width: var(--sidebar-mini-width);
+
+  .sidebar-header {
+    .navbar-brand {
+      font-size: 0;
+
+      &::first-letter {
+        font-size: 1.25rem;
+      }
+    }
+  }
+
+  .navbar-nav {
+    .nav-item {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+
+      &.static-item {
+        text-align: center;
+
+        .nav-link {
+          justify-content: center;
+          padding: 0.5rem;
+
+          span {
+            display: none;
+          }
+        }
+      }
+
+      .nav-link {
+        padding: 0.5rem;
+        justify-content: center;
+
+        .item-name,
+        .right-icon {
+          display: none;
+        }
+
+        i {
+          margin: 0;
+        }
+      }
+    }
+
+    .sub-nav {
+      display: none;
+    }
+  }
+}
+
+// Responsive behavior
+@media (max-width: 1199.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+
+    &.show {
+      transform: translateX(0);
+    }
+
+    .sidebar-header {
+      .sidebar-toggle {
+        display: flex;
+      }
+    }
+  }
+
+  .sidebar ~ .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar.sidebar-mini ~ .main-content {
+    margin-left: 0;
+  }
+
+  // Backdrop for mobile
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+
+    &.show {
+      display: block;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .sidebar ~ .main-content {
+    .navbar-brand {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,76 @@
+// Custom navbar and header implementation using Bootstrap 5 patterns
+// Replaces Hope UI iq-navbar and iq-banner
+
+// Page header banner
+.page-header {
+  position: relative;
+
+  .header-content {
+    position: relative;
+    padding: calc(var(--bs-gutter-x, 1rem) * 2);
+    min-height: 215px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: -10;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+// Content that follows the header
+.page-header + .content-inner {
+  margin-top: -3rem;
+}
+
+// Navbar sidebar toggle button
+.navbar .sidebar-toggle {
+  cursor: pointer;
+  background: var(--bs-primary);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: var(--bs-primary);
+    filter: brightness(1.1);
+    box-shadow: 0 2px 8px rgba(var(--bs-primary-rgb), 0.3);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  i {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+}
+
+// Responsive navbar toggle
+@media (max-width: 1199.98px) {
+  .navbar {
+    .sidebar-toggle {
+      display: flex;
+    }
+  }
+}

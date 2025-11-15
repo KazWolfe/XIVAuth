@@ -1,0 +1,148 @@
+// Enhanced card styling with modern polish
+
+.card {
+  // Smooth transitions for all card interactions
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  // Subtle border enhancement
+  border-color: var(--bs-border-color);
+
+  // Subtle blur effect on all cards
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  // Light gradient overlay for depth
+  [data-bs-theme="light"] & {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.7),
+      rgba(248, 249, 250, 0.5)
+    );
+  }
+
+  [data-bs-theme="dark"] & {
+    background: linear-gradient(
+      to bottom,
+      rgba(33, 37, 41, 0.95),
+      rgba(26, 29, 33, 0.98)
+    );
+  }
+
+  // Opt-in hover effect for interactive cards
+  &.card-animated:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    [data-bs-theme="dark"] & {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  // Card header and footer default to transparent with no borders
+  .card-header {
+    background-color: transparent;
+    border-bottom: none;
+  }
+
+  .card-footer {
+    background-color: transparent;
+    border-top: none;
+  }
+}
+
+// Character card specific enhancements
+.card.stateful-card-border {
+  // Enhanced top border with subtle glow effect
+  border-top-width: 4px;
+  position: relative;
+  overflow: hidden;
+
+  // Avatar enhancement
+  img.rounded {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    [data-bs-theme="dark"] & {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  &.card-animated:hover img.rounded {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    [data-bs-theme="dark"] & {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  // Enhanced card title
+  .card-title {
+    font-weight: 600;
+    background: linear-gradient(
+      var(--gradient-angle),
+      var(--bs-body-color),
+      var(--bs-secondary-color)
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    transition: all 0.2s ease-in-out;
+  }
+
+  // Subtle subtitle styling
+  .card-subtitle {
+    color: var(--bs-secondary-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+// App and team card enhancements
+.card:has(.btn-primary) {
+  // Cards with action buttons get extra polish
+  .card-body {
+    padding-bottom: 1.25rem;
+  }
+
+  .btn-primary {
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(var(--bs-primary-rgb), 0.3);
+    }
+  }
+}
+
+// Staggered animation for card grids
+.row > [class*="col-"] {
+  animation: slideUp 0.3s ease-out;
+  animation-fill-mode: both;
+
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+
+  // Equal height cards in grid layouts
+  &:has(.card) {
+    display: flex;
+    flex-direction: column;
+
+    .card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .card-body {
+        flex: 1 0 auto;
+      }
+
+      .card-footer {
+        flex-shrink: 0;
+      }
+    }
+  }
+}
