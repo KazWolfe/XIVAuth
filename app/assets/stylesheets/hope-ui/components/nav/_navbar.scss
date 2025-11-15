@@ -1,21 +1,8 @@
 .nav {
     background: var(--bs-gray-900);
-    overflow: visible; // Ensure dropdown menus aren't clipped
 
     .navbar-inner {
         padding: 0 calc(var(--bs-gutter-x, .75rem) * 2);
-        overflow: visible; // Ensure dropdown menus aren't clipped
-    }
-
-    .navbar-nav {
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            z-index: 1000;
-        }
     }
 
     .search-input {
@@ -376,10 +363,7 @@
         .navbar-collapse {
             .navbar-nav {
                 li {
-                    // Don't use position: static for dropdowns - it breaks Bootstrap's positioning
-                    &:not(.dropdown) {
-                        position: static;
-                    }
+                    position: static;
 
                     .sub-drop {
                         &.dropdown-menu {

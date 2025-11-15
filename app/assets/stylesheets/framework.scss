@@ -1,13 +1,9 @@
-@import "./hope-ui/helper/fonts";
-
+// Import Bootstrap variables and functions first
 @import 'framework_core';
 
+// Bootstrap 5 core
 @import "bootstrap/scss/utilities";
-@import "./hope-ui/helper/reboot";
-
-// Layout & components
 @import "bootstrap/scss/root";
-@import "./hope-ui/root";
 @import "bootstrap/scss/reboot";
 @import "bootstrap/scss/type";
 @import "bootstrap/scss/images";
@@ -45,17 +41,7 @@
 // Utilities
 @import "bootstrap/scss/utilities/api";
 
-// Extra Components and Utilities and plugins
-@import "./hope-ui/components/components";
-@import "./hope-ui/layout-style/index";
-@import "./hope-ui/helper/utilities";
-@import "./hope-ui/plugins/plugins";
-
-// HopeUI Theming
-@import "./hope-ui-theming/variables";
-@import "./hope-ui-theming/root";
-
-// Libs
+// Third-party libraries
 @import 'tom-select/src/scss/tom-select';
 @import 'tom-select/src/scss/tom-select.bootstrap5';
 @import 'components/tom-select-dark';

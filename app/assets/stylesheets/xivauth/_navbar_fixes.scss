@@ -1,0 +1,43 @@
+// Navbar fixes for Bootstrap dropdown behavior
+// These fix issues with dropdowns not appearing as popovers when sidebar is collapsed
+
+// Ensure dropdown containers allow overflow
+.nav.navbar {
+  overflow: visible !important;
+
+  .navbar-inner,
+  .container-fluid {
+    overflow: visible !important;
+  }
+
+  // Dropdowns need relative positioning for Bootstrap's Popper.js
+  .navbar-nav {
+    .nav-item.dropdown {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      z-index: 1050; // Bootstrap's standard dropdown z-index
+    }
+  }
+}
+
+// At all breakpoints where sidebar might be collapsed
+@media (max-width: 1199.98px) {
+  .nav.navbar {
+    .navbar-nav {
+      .nav-item.dropdown {
+        position: relative !important; // Ensure this isn't overridden
+      }
+    }
+  }
+}
+
+// Ensure main content doesn't clip dropdowns
+.main-content {
+  .iq-banner,
+  .position-relative {
+    overflow: visible !important;
+  }
+}
