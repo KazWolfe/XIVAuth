@@ -6,11 +6,10 @@
 @import "xivauth/env_watermark";
 @import "xivauth/branding/pride_logo";
 @import "xivauth/mixins";
+@import "xivauth/sidebar";
+@import "xivauth/navbar";
 
-.iq-header-img {
-  border-radius: unset !important;
-  z-index: -10 !important;
-}
+// Header image styling moved to navbar.scss
 
 .full-backdrop {
   overflow-x: hidden;
@@ -59,7 +58,7 @@
     background-image: url("/backgrounds/s9_commerce.png");
 }
 
-.iq-header-img {
+.header-img {
   @include frosted-bg("/backgrounds/burnwall_day.png", "/backgrounds/burnwall_night.png", 1px, 0.8, 0.65);
 
   &::before {
