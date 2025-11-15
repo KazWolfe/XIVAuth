@@ -14,7 +14,7 @@
   // Subtle gradient overlays for primary buttons
   &.btn-primary {
     background: linear-gradient(
-      135deg,
+      var(--gradient-angle),
       var(--bs-primary),
       var(--bs-primary-border-subtle)
     );
@@ -34,7 +34,7 @@
 
   &.btn-success {
     background: linear-gradient(
-      135deg,
+      var(--gradient-angle),
       var(--bs-success),
       var(--bs-success-border-subtle)
     );
@@ -73,7 +73,7 @@
 
   &.bg-success {
     background: linear-gradient(
-      135deg,
+      var(--gradient-angle),
       var(--bs-success),
       var(--bs-success-border-subtle)
     ) !important;

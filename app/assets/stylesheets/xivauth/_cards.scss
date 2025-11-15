@@ -11,8 +11,8 @@
   [data-bs-theme="light"] & {
     background: linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.9),
-      rgba(248, 249, 250, 0.95)
+      rgba(255, 255, 255, 0.7),
+      rgba(248, 249, 250, 0.5)
     );
   }
 
@@ -100,7 +100,7 @@
   .card-title {
     font-weight: 600;
     background: linear-gradient(
-      135deg,
+      var(--gradient-angle),
       var(--bs-body-color),
       var(--bs-secondary-color)
     );

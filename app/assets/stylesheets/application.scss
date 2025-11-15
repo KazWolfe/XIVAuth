@@ -16,6 +16,11 @@
 
 // Header image styling moved to navbar.scss
 
+// UI polish variables
+:root {
+  --gradient-angle: 135deg;
+}
+
 // Sticky footer layout
 .main-content {
   flex: 1 0 auto;
