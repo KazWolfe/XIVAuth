@@ -236,16 +236,7 @@
 // Enhanced table styling
 .table {
   > :not(caption) > * > * {
-    transition: background-color 0.2s ease-in-out;
-  }
-
-  &.table-hover {
-    > tbody > tr {
-      transition: background-color 0.2s ease-in-out;
-
-      > * {
-        transition: background-color 0.2s ease-in-out;
-      }
-    }
+    // Bootstrap uses box-shadow inset for hover/striped backgrounds, not background-color
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   }
 }
