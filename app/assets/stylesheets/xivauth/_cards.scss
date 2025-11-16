@@ -48,6 +48,11 @@
     background-color: transparent;
     border-top: none;
   }
+
+  // Make sub-tables transparent.
+  .table > :not(caption) > * > * {
+    background-color: transparent;
+  }
 }
 
 // Character card specific enhancements
