@@ -1,0 +1,11 @@
+{
+  "name": "Private Character",
+  "title": "Test Data",
+  "headshotUrl": "https://img2.finalfantasyxiv.com/f/dc1e2649fea5a0048b2937fca34107f4_c33f640c0cdd35f7def85b8aa31a0007fc0.jpg?1762748825",
+  "world": "Twintania",
+  "datacenter": "Light",
+  "_meta": {
+    "resultCode": "profile_private",
+    "upstreamStatusCode": 200
+  }
+}

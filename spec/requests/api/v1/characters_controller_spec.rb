@@ -162,6 +162,16 @@ RSpec.describe "Api::V1::CharactersControllers", type: :request do
     end
 
     context "POST /characters" do
+      before do
+        # Stub out FFXIV::LodestoneProfile/Flarestone to avoid real requests
+        json_str = File.read(Rails.root.join("spec/fixtures/lodestone/characters/valid_withcode.json"))
+        json_object = JSON.parse(json_str)
+
+        allow(FFXIV::LodestoneProfile).to receive(:new).and_return(
+          FFXIV::LodestoneProfile.new("12345678", json_object: json_object)
+        )
+      end
+
       it "creates a new character from a lodestone id" do
         post api_v1_characters_path, params: { lodestone_id: "12345678" },
              headers: { 'Authorization': "Bearer #{oauth_token.token}" },

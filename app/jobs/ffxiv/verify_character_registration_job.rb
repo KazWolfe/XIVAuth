@@ -58,7 +58,7 @@ wait: 2.minutes) do |job, _error|
     character.refresh_from_lodestone(lodestone_data)
     character.save!
 
-    raise FFXIV::LodestoneProfile::LodestoneProfilePrivate unless lodestone_data.character_profile_visible?
+    raise FFXIV::LodestoneProfile::LodestoneProfilePrivate unless lodestone_data.character_profile_public?
 
     lodestone_data.bio.scan(CharacterRegistration::VERIFICATION_KEY_REGEX).each do |match|
       code = match.delete_prefix(CharacterRegistration::VERIFICATION_KEY_PREFIX)

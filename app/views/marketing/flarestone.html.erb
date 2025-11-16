@@ -1,0 +1,54 @@
+<% content_for :head_extensions do %>
+
+<% end %>
+
+<div class="container-fluid content-inner">
+  <div class="card">
+    <div class="card-body">
+      <h1>About Flarestone</h1>
+      <hr>
+      <p>
+        Flarestone is a Lodestone scraper running on Cloudflare Workers built by (and primarily for) XIVAuth. It uses
+        XPaths and a series of transform operations to parse the HTML returned by the Lodestone and to convert it into
+        JSON for easier processing by applications and online services. It boasts an extremely detailed response format,
+        capturing as much information as is possible from the Lodestone directly.
+      </p>
+
+      <div id="api-access">
+        <h3 class="pb-2">Accessing Flarestone</h3>
+        <p>
+          Flarestone is not an open API. It is only available to developers who have requested (and been approved for)
+          an API key. API keys are granted solely at the discretion of the XIVAuth project and access is not guaranteed.
+          Flarestone is not considered part of the XIVAuth API, and API keys for one service will not work for the
+          other. However, XIVAuth does offer (limited) Flarestone data as part of its own API surface.
+        </p>
+        <p>
+          As part of requesting an API key, you will be asked to provide information that will be attached to every
+          request made to Lodestone on your behalf via the <code>X-Flarestone-Client</code> header. This measure exists
+          to force some level of accountability and to distinguish Lodestone requests made by different sources should
+          Square Enix reach out with concerns. In addition, Flarestone enforces very strict rate limits and very
+          aggressive caching to try to mitigate concerns.
+        </p>
+        <p>
+          <strong>Flarestone may not be used for commercial purposes.</strong>
+        </p>
+      </div>
+
+      <div id="endpoints">
+        <h3 class="pb-2">Supported Features</h3>
+        <p>Flarestone currently supports:</p>
+        <ul>
+          <li>Accessing base character information</li>
+          <li>Accessing detailed information about character levels</li>
+          <li>Accessing base Free Company information</li>
+          <li>Accessing lists of Free Company members and role hierarchies.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="container mt-auto">
+  <%= render 'layouts/footer' %>
+</div>

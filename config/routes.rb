@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   end
 
   resource :health, only: [:show], controller: :health
+  get "/flarestone", to: "marketing#flarestone"
 
   if Rails.env.development? || ENV["APP_ENV"].present? && ENV["APP_ENV"] != "production"
     get "/_debug/generate_exception", to: "debug#generate_exception"

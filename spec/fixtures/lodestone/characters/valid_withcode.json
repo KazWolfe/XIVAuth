@@ -1,0 +1,456 @@
+{
+  "name": "Abe Eon",
+  "title": "King Bean",
+  "headshotUrl": "https://img2.finalfantasyxiv.com/f/ebf4695b9d63956a9be6394e751c56d8_4d9be17b5e1edc617052b4dbf4007875fc0.jpg?1762748100",
+  "portraitUrl": "https://img2.finalfantasyxiv.com/f/ebf4695b9d63956a9be6394e751c56d8_4d9be17b5e1edc617052b4dbf4007875fl0.jpg?1762748100",
+  "grandCompany": {
+    "name": "Immortal Flames",
+    "rank": "Flame Captain",
+    "iconUrl": "https://lds-img.finalfantasyxiv.com/h/V/tKlwWMAtNLAumnqjI8iNPnMKHc.png"
+  },
+  "freeCompany": {
+    "name": "Friendly Fire",
+    "lodestoneUrl": "/lodestone/freecompany/9231112598714485863/",
+    "crest": {
+      "background": "https://img2.finalfantasyxiv.com/c/B3d_68585a4e1dc533f1fdd2bac0561a24b6_23_40x40.png",
+      "frame": "https://img2.finalfantasyxiv.com/c/F1c_f050e828d7571a56fd7174a3956262d9_00_40x40.png",
+      "symbol": "https://img2.finalfantasyxiv.com/c/Sa6_0dec9a72d5454569e51481ab91f2e159_04_40x40.png"
+    }
+  },
+  "bio": "<span style=\"color:#CC0000\">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣶⣿⣿⣷⣶⣄⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⡟⠁⣰⣿⣿⣿⡿⠿⠻⠿⣿⣿⣿⣿⣧⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⠏⠀⣴⣿⣿⣿⠉⠀⠀⠀⠀⠀⠈⢻⣿⣿⣇⠀⠀⠀<br>⠀⠀⠀⠀⢀⣠⣼⣿⣿⡏⠀⢠⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⡀⠀⠀<br>⠀⠀⠀⣰⣿⣿⣿⣿⣿⡇⠀⢸⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⡇⠀⠀<br>⠀⠀⢰⣿⣿⡿⣿⣿⣿⡇⠀⠘⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣿⠁⠀⠀<br>⠀⠀⣿⣿⣿⠁⣿⣿⣿⡇⠀⠀⠻⣿⣿⣿⣷⣶⣶⣶⣶⣶⣿⣿⣿⣿⠃⠀⠀⠀<br>⠀⢰⣿⣿⡇⠀⣿⣿⣿⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀<br>⠀⢸⣿⣿⡇⠀⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠛⠉⢉⣿⣿⠀⠀⠀⠀⠀⠀<br>⠀⢸⣿⣿⣇⠀⣿⣿⣿⠀⠀⠀⠀⠀⢀⣤⣤⣤⡀⠀⠀⢸⣿⣿⣿⣷⣦⠀⠀⠀<br>⠀⠀⢻⣿⣿⣶⣿⣿⣿⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣦⡀⠀⠉⠉⠻⣿⣿⡇⠀⠀<br>⠀⠀⠀⠛⠿⣿⣿⣿⣿⣷⣤⡀⠀⠀⠀⠀⠈⠹⣿⣿⣇⣀⠀⣠⣾⣿⣿⡇⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣦⣤⣤⣤⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⢿⣿⣿⣿⣿⣿⣿⠿⠋⠉⠛⠋⠉⠉⠁⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁</span><br>XIVAUTH:E13FPHQ6GXVD6KSYEBEY8V4M",
+  "levels": [
+    {
+      "name": "Gladiator",
+      "level": 1,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/U/F5JzG9RPIKFSogtaKNBk455aYA.png"
+    },
+    {
+      "name": "Warrior / Marauder",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/y/A3UhbjZvDeN3tf_6nJ85VP0RY0.png"
+    },
+    {
+      "name": "Dark Knight",
+      "level": 65,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/l/5CZEvDOMYMyVn2td9LZigsgw9s.png"
+    },
+    {
+      "name": "Gunbreaker",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/8/hg8ofSSOKzqng290No55trV4mI.png"
+    },
+    {
+      "name": "White Mage / Conjurer",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/7/i20QvSPcSQTybykLZDbQCgPwMw.png"
+    },
+    {
+      "name": "Scholar",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/7/WdFey0jyHn9Nnt1Qnm-J3yTg5s.png"
+    },
+    {
+      "name": "Astrologian",
+      "level": 0,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/1/erCgjnMSiab4LiHpWxVc-tXAqk.png"
+    },
+    {
+      "name": "Sage",
+      "level": 0,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/g/_oYApASVVReLLmsokuCJGkEpk0.png"
+    },
+    {
+      "name": "Monk / Pugilist",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/K/HW6tKOg4SOJbL8Z20GnsAWNjjM.png"
+    },
+    {
+      "name": "Dragoon / Lancer",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/m/gX4OgBIHw68UcMU79P7LYCpldA.png"
+    },
+    {
+      "name": "Ninja / Rogue",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/0/Fso5hanZVEEAaZ7OGWJsXpf3jw.png"
+    },
+    {
+      "name": "Samurai",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/m/KndG72XtCFwaq1I1iqwcmO_0zc.png"
+    },
+    {
+      "name": "Reaper",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/7/cLlXUaeMPJDM2nBhIeM-uDmPzM.png"
+    },
+    {
+      "name": "Viper",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/C/WojNTqMJ_Ye1twvkIhw825zc20.png"
+    },
+    {
+      "name": "Archer",
+      "level": 7,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/Q/ZpqEJWYHj9SvHGuV9cIyRNnIkk.png"
+    },
+    {
+      "name": "Machinist",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/E/vmtbIlf6Uv8rVp2YFCWA25X0dc.png"
+    },
+    {
+      "name": "Dancer",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/t/HK0jQ1y7YV9qm30cxGOVev6Cck.png"
+    },
+    {
+      "name": "Black Mage / Thaumaturge",
+      "level": 64,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/P/V01m8YRBYcIs5vgbRtpDiqltSE.png"
+    },
+    {
+      "name": "Summoner / Arcanist",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/h/4ghjpyyuNelzw1Bl0sM_PBA_FE.png"
+    },
+    {
+      "name": "Red Mage",
+      "level": 52,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/q/s3MlLUKmRAHy0pH57PnFStHmIw.png"
+    },
+    {
+      "name": "Pictomancer",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/_/kLob-U-yh652LQPX1NHpLlUYQY.png"
+    },
+    {
+      "name": "Blue Mage (Limited Job)",
+      "level": 54,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/p/jdV3RRKtWzgo226CC09vjen5sk.png"
+    },
+    {
+      "name": "Carpenter",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/v/YCN6F-xiXf03Ts3pXoBihh2OBk.png"
+    },
+    {
+      "name": "Blacksmith",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/5/EEHVV5cIPkOZ6v5ALaoN5XSVRU.png"
+    },
+    {
+      "name": "Armorer",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/G/Rq5wcK3IPEaAB8N-T9l6tBPxCY.png"
+    },
+    {
+      "name": "Goldsmith",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/L/LbEjgw0cwO_2gQSmhta9z03pjM.png"
+    },
+    {
+      "name": "Leatherworker",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/b/ACAcQe3hWFxbWRVPqxKj_MzDiY.png"
+    },
+    {
+      "name": "Weaver",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/X/E69jrsOMGFvFpCX87F5wqgT_Vo.png"
+    },
+    {
+      "name": "Alchemist",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/C/bBVQ9IFeXqjEdpuIxmKvSkqalE.png"
+    },
+    {
+      "name": "Culinarian",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/m/1kMI2v_KEVgo30RFvdFCyySkFo.png"
+    },
+    {
+      "name": "Miner",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/A/aM2Dd6Vo4HW_UGasK7tLuZ6fu4.png"
+    },
+    {
+      "name": "Botanist",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/I/jGRnjIlwWridqM-mIPNew6bhHM.png"
+    },
+    {
+      "name": "Fisher",
+      "level": 100,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/x/B4Azydbn7Prubxt7OL9p1LZXZ0.png"
+    }
+  ],
+  "homeCity": {
+    "name": "Ul'dah",
+    "iconUrl": "https://lds-img.finalfantasyxiv.com/h/u/qXfC-BmEzWbXW3sn62HMNnD3kU.png"
+  },
+  "nameday": "15th Sun of the 4th Umbral Moon",
+  "guardian": {
+    "name": "Nald'thal, the Traders",
+    "iconUrl": "https://lds-img.finalfantasyxiv.com/h/1/-WSZjiohJV9EuelxhTUvr5cmPI.png"
+  },
+  "equippedInventory": {
+    "mainHand": {
+      "name": "Dark Horse Champion's Musketoon",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/3f51148e7d0/",
+      "glamour": {
+        "name": "Makai Hand Mortar",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/794f4de1855/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/b4/b4e35fdcf63af582d9af905cc6f22be1666588e3.png?n7.35"
+      },
+      "materia": [
+        null,
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/df/df2d22313514806dd77c03d5e4d702e74e2b9057.png?n7.35"
+    },
+    "offHand": null,
+    "head": {
+      "name": "Neo Kingdom Chapeau of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/c848096809c/",
+      "glamour": {
+        "name": "Postmoogle Cap",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/54fb0cab2b2/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/cf/cf13566846c7fac5d7c484279b7036d11c4896f7.png?n7.35"
+      },
+      "materia": [
+        null,
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/d9/d9f06e1ec533a70ceab139bfe61c8899d302c108.png?n7.35"
+    },
+    "body": {
+      "name": "Neo Kingdom Coat of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/e020bf16b02/",
+      "glamour": {
+        "name": "Night of Devilry Shirt",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/b96b648f4b2/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/4b/4b9cf652f8db3b5dbe9302670d85302982d9bc7b.png?n7.35"
+      },
+      "materia": [
+        null,
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/3f/3f039cc349430e9d17bfa95f4beeaa221aa99c1b.png?n7.35"
+    },
+    "hands": {
+      "name": "Light-heavy Gloves of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/e4fb7e43194/",
+      "glamour": {
+        "name": "Leonhart Gloves",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/af6cdbc4840/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/7a/7a761ad4c3bc764a1bbe092376c389e640f6efc3.png?n7.35"
+      },
+      "materia": [
+        null,
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/f6/f6042fa8aa7aa2245d320da2414d0d9ebc513e69.png?n7.35"
+    },
+    "legs": {
+      "name": "Neo Kingdom Kecks of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/5838f43e19a/",
+      "glamour": {
+        "name": "Night of Devilry Trousers",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/d36afccd6ea/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/bd/bd2cdfd9ea0f918a4d13ab89d9242db431d0efa0.png?n7.35"
+      },
+      "materia": [
+        null,
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/e7/e7351d658fa197217c4af79d49d84c3c638c73ce.png?n7.35"
+    },
+    "feet": {
+      "name": "Neo Kingdom Boots of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/ea2c714ed01/",
+      "glamour": {
+        "name": "Leonhart Boots",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/7ecbf845074/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/de/decfcece3ff02a40de3e501fc66aa475ee6ee65f.png?n7.35"
+      },
+      "materia": [
+        null,
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/5f/5f00afa2a519ef90f5063bddc8b184218eca317d.png?n7.35"
+    },
+    "earrings": {
+      "name": "Resilient Earring of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/60ce3772564/",
+      "glamour": {
+        "name": "The Emperor's New Earrings",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/64c6c9fe08b/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/52/527150317ca7bae8a209cb9598e32a89f67896d6.png?n7.35"
+      },
+      "materia": [
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/63/632dde3ea08c84fb272885e089c78625a9abd846.png?n7.35"
+    },
+    "necklace": {
+      "name": "Dark Horse Champion's Choker of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/ec0d42cf8be/",
+      "glamour": {
+        "name": "The Emperor's New Necklace",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/5f33d167e05/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/62/62571593c8d89fb74ad208a5a618a5255e12fa36.png?n7.35"
+      },
+      "materia": [
+        null,
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/6c/6c121dbb224370aa33f34bda85623a3d41e322ee.png?n7.35"
+    },
+    "bracelets": {
+      "name": "Neo Kingdom Bangles of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/c227249b310/",
+      "glamour": {
+        "name": "The Emperor's New Bracelet",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/1b9470c33e2/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/f8/f81f6b4e9af75cb515672f2e66e7bf9c94927b4a.png?n7.35"
+      },
+      "materia": [
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/da/da8c54fb80f0e6406cdafa0e171881801f7b78e4.png?n7.35"
+    },
+    "ring1": {
+      "name": "Augmented Credendum Ring of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/ef282af644d/",
+      "glamour": {
+        "name": "The Emperor's New Ring",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/9665ddcaccf/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/ba/baebc2fd0a60fd2424b78c16bf8dc8282496c545.png?n7.35"
+      },
+      "materia": [
+        {
+          "name": "Heavens' Eye Materia X",
+          "grade": 10
+        },
+        {
+          "name": "Heavens' Eye Materia X",
+          "grade": 10
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/3b/3b72e5cf821c793fc08b987c9dcbb38e96690008.png?n7.35"
+    },
+    "ring2": {
+      "name": "Skydeep Ring of Aiming",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/c07136de3cc/",
+      "glamour": {
+        "name": "The Emperor's New Ring",
+        "eorzeaDbUrl": "/lodestone/playguide/db/item/9665ddcaccf/",
+        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/ba/baebc2fd0a60fd2424b78c16bf8dc8282496c545.png?n7.35"
+      },
+      "materia": [
+        null
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/80/80b7b3f4578b280994fb6314d88ea04b99f90221.png?n7.35"
+    },
+    "soulstone": {
+      "name": "Soul of the Machinist",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/b95eca0caf9/",
+      "glamour": null,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/38/385d8ce71a2066028ad6a05f85fe442b43c7619b.png?n7.35"
+    },
+    "glasses": {
+      "name": "Pair Of Tinted Sunglasses",
+      "glamour": null,
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/83/8387ce523583090167f96c038873ba46e0beda17.png?n7.35"
+    }
+  },
+  "statBlock": {
+    "attributes": [
+      {
+        "name": "Strength",
+        "value": 376
+      },
+      {
+        "name": "Dexterity",
+        "value": 4306
+      },
+      {
+        "name": "Vitality",
+        "value": 4397
+      },
+      {
+        "name": "Intelligence",
+        "value": 351
+      },
+      {
+        "name": "Mind",
+        "value": 373
+      },
+      {
+        "name": "Critical Hit Rate",
+        "value": 2004
+      },
+      {
+        "name": "Determination",
+        "value": 1207
+      },
+      {
+        "name": "Direct Hit Rate",
+        "value": 2126
+      },
+      {
+        "name": "Defense",
+        "value": 3381
+      },
+      {
+        "name": "Magic Defense",
+        "value": 3381
+      },
+      {
+        "name": "Attack Power",
+        "value": 4306
+      },
+      {
+        "name": "Skill Speed",
+        "value": 822
+      },
+      {
+        "name": "Attack Magic Potency",
+        "value": 351
+      },
+      {
+        "name": "Healing Magic Potency",
+        "value": 373
+      },
+      {
+        "name": "Spell Speed",
+        "value": 420
+      },
+      {
+        "name": "Tenacity",
+        "value": 420
+      },
+      {
+        "name": "Piety",
+        "value": 440
+      }
+    ],
+    "consumables": [
+      {
+        "name": "HP",
+        "value": 123305
+      },
+      {
+        "name": "MP",
+        "value": 10000
+      }
+    ]
+  },
+  "world": "Lamia",
+  "datacenter": "Primal",
+  "_meta": {
+    "resultCode": "success",
+    "upstreamStatusCode": 200
+  }
+}

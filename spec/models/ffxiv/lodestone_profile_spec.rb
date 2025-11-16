@@ -1,20 +1,22 @@
 require "rails_helper"
 
-RSpec.describe FFXIV::LodestoneProfile do
+RSpec.describe FFXIV::LodestoneProfile, type: :model do
   let(:fixtures_path) { Rails.root.join("spec/fixtures/lodestone/characters") }
 
   def load_fixture(name)
-    File.read(fixtures_path.join(name))
+    json_str = File.read(fixtures_path.join(name))
+
+    JSON.parse(json_str)
   end
 
-  describe ".new with html:" do
+  describe ".new with injected Flarestone response" do
     it "parses a visible character with a verification code" do
-      html = load_fixture("character_present_code.html")
-      profile = described_class.new(43809410, html: html)
+      flarestone_response = load_fixture("valid_withcode.json")
+      profile = described_class.new(43809410, json_object: flarestone_response)
 
       expect(profile).to be_valid
       expect(profile.character_visible?).to be(true)
-      expect(profile.character_profile_visible?).to be(true)
+      expect(profile.character_profile_public?).to be(true)
 
       # Exact identity fields
       expect(profile.name).to eq("Abe Eon")
@@ -38,33 +40,17 @@ RSpec.describe FFXIV::LodestoneProfile do
       expect(profile.free_company[:name]).to eq("Friendly Fire")
       expect(profile.free_company[:id]).to eq(9231112598714485863)
       expect(profile.paid_character?).to be(true)
-
-      # Optional extras (not asserting exact values to avoid brittleness)
-      expect { profile.nameday }.not_to raise_error
-      expect { profile.guardian }.not_to raise_error
-      expect { profile.city_state }.not_to raise_error
-      expect(profile.grand_company).to eq({ company: "Immortal Flames", rank: "Flame Captain" })
-      expect(profile.pvp_team).to eq({ name: "End Bringers", id: "4db96525339b69aac24329a13aaa086994bca30d" })
     end
 
-    it "detects a hidden character page" do
-      html = load_fixture("private_character.html")
-      profile = described_class.new(1234, html: html)
-
-      expect(profile.character_visible?).to be(false)
-      profile.valid?
-      expect(profile.failure_reason).to eq(:hidden_character)
-      expect(profile.errors[:base].join).to match(/is marked as hidden or private/i)
-    end
 
     it "detects a private profile page" do
-      html = load_fixture("private_profile.html")
-      profile = described_class.new(1234, html: html)
+      flarestone_response = load_fixture("profile_private.json")
+      profile = described_class.new(12345678, json_object: flarestone_response)
 
       expect(profile.character_visible?).to be(true)
-      expect(profile.character_profile_visible?).to be(false)
+      expect(profile.character_profile_public?).to be(false)
 
-      expect(profile.name).to eq("Vento Aureo")
+      expect(profile.name).to eq("Private Character")
       expect(profile.world).to eq("Twintania")
       expect(profile.datacenter).to eq("Light")
 
@@ -76,12 +62,23 @@ RSpec.describe FFXIV::LodestoneProfile do
       expect(profile).to be_valid
     end
 
+    it "detects a hidden character page" do
+      flarestone_response = load_fixture("hidden.json")
+      profile = described_class.new(12345678, json_object: flarestone_response)
+
+      expect(profile.character_visible?).to be(false)
+      profile.validate
+      expect(profile.failure_reason).to eq(:hidden_character)
+      expect(profile.errors[:base].join).to match(/is marked as hidden or private/i)
+    end
+
+
     it "detects a 404 not found page" do
-      html = load_fixture("character_not_found.html")
-      profile = described_class.new(0, html: html)
+      flarestone_response = load_fixture("not_found.json")
+      profile = described_class.new(12345678, json_object: flarestone_response)
 
       expect(profile.character_exists?).to be(false)
-      profile.valid?
+      profile.validate
       expect(profile.failure_reason).to eq(:not_found)
       expect(profile.errors[:base].join).to match(/could not be found/i)
     end
