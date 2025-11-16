@@ -233,34 +233,9 @@
   }
 }
 
-// Smooth page transitions
-body {
-  animation: fadeIn 0.3s ease-in;
-}
-
 // Enhanced table styling
 .table {
   > :not(caption) > * > * {
-    transition: background-color 0.15s ease-in-out;
-  }
-
-  tbody tr {
-    &:hover {
-      [data-bs-theme="light"] & {
-        background: linear-gradient(
-          to right,
-          rgba(var(--bs-primary-rgb), 0.05),
-          transparent
-        );
-      }
-
-      [data-bs-theme="dark"] & {
-        background: linear-gradient(
-          to right,
-          rgba(var(--bs-primary-rgb), 0.1),
-          transparent
-        );
-      }
-    }
+    transition: box-shadow 0.1s ease-in-out;
   }
 }
