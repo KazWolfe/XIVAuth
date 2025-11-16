@@ -8,7 +8,6 @@ export default class TextArrayController extends Controller {
     templateElement?: HTMLDivElement;
 
     connect() {
-        console.log("CONNECTED!");
         super.connect();
         this.calculateDisables();
 

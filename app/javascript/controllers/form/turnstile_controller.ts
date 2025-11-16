@@ -6,8 +6,6 @@ export default class TurnstileFormController extends Controller<HTMLFormElement>
     submitButtonText?: string;
 
     initialize() {
-        console.log("Turnstile-protected form intialized", this);
-
         // bind turnstile to turbo so we can update things
         const turnstileEl = this.element.querySelector('.cf-turnstile') as HTMLElement;
         turnstileEl.addEventListener("turbo:morph-element", this.initializeTurnstileChallenge.bind(this));
@@ -47,7 +45,6 @@ export default class TurnstileFormController extends Controller<HTMLFormElement>
     }
 
     onTurboMorph(event: HTMLElement) {
-        console.log("Turbo morph event detected.", event);
         this.initializeTurnstileChallenge();
     }
 }

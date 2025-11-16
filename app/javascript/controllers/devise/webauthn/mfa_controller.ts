@@ -3,7 +3,6 @@ import * as WebAuthnJSON from "@github/webauthn-json";
 
 export default class WebauthnMFAController extends WebauthnControllerBase {
     async authenticate(event: PointerEvent) {
-        console.warn("AUTHENTICATION REQUEST RECEIVED!!!")
         event.preventDefault();
 
         // let discovery = PublicKeyCredential.parseRequestOptionsFromJSON(JSON.parse(this.challengeTarget.value));

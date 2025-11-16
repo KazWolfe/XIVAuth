@@ -6,6 +6,7 @@
     "@types/bootstrap": "^5.2.10",
     "@types/cloudflare-turnstile": "^0.2.2",
     "@types/zxcvbn": "^4.4.2",
+    "esbuild-plugin-stimulus": "^0.2.0",
     "typescript": "^5.8.2"
   },
   "dependencies": {

@@ -7,7 +7,6 @@ export default abstract class TomSelectController extends Controller<HTMLSelectE
 
     connect() {
         this.tomSelect = new TomSelect(this.element, this.user_settings);
-        console.debug("Tom Select initialized", this.tomSelect);
     }
 
     get user_settings(): RecursivePartial<TomSettings> {

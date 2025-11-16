@@ -13,8 +13,6 @@ export default class LoginFormController extends Controller {
     private discoveryAbortController: AbortController = new AbortController();
 
     async initialize() {
-        console.debug("Login form initialized", this);
-
         // bind turnstile to turbo so we can update things
         const turnstileEl = this.element.querySelector('.cf-turnstile') as HTMLElement;
         turnstileEl.addEventListener("turbo:morph-element", this.initializeTurnstileChallenge.bind(this));
@@ -23,16 +21,12 @@ export default class LoginFormController extends Controller {
     }
 
     async connect() {
-        console.debug("Login form connected.");
-
         this.discoveryAbortController = new AbortController();
     }
 
     async disconnect() {
         this.discoveryAbortController.abort("disconnect");
         super.disconnect();
-
-        console.debug("Login form disconnected.");
     }
 
     async webauthnRunConditional() {
@@ -129,8 +123,6 @@ export default class LoginFormController extends Controller {
     }
 
     private onTurboMorph(event: HTMLElement) {
-        console.log("Turbo morph event detected.", event);
-
         this.initializeTurnstileChallenge();
     }
 

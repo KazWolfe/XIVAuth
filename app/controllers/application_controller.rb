@@ -20,6 +20,7 @@ class ApplicationController < ActionController::Base
       LogContext.add(user: user_meta)
     end
 
+    gon.push({ app_env: ENV["APP_ENV"] || Rails.env })
     gon.push({ sentry: sentry_frontend_data })
   end
 

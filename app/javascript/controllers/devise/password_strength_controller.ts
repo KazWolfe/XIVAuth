@@ -28,7 +28,6 @@ export default class PasswordStrengthController extends Controller {
     }
 
     connect() {
-        console.debug('Password strength controller connected!', this);
         this.calc();
     }
 
