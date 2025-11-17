@@ -44,7 +44,7 @@ class CharacterRegistration < ApplicationRecord
   # Mark the targeted CharacterRegistration as verified, optionally unverifying any other registrations that may be present.
   # This method will attempt to save all modified CharacterRegistrations.
   # @param clobber [Boolean] When true, unverify the prior CharacterRegistration.
-  # @param send_email [Boolean] When true, send an email to the prior owner if their character was clobbered.
+  # @param send_email [Boolean] When true, email the prior owner if their character was clobbered.
   def verify!(verification_type, clobber: false, send_email: false)
     transaction do
       other_registration = CharacterRegistration.verified.find_by(character_id:)
@@ -54,7 +54,9 @@ class CharacterRegistration < ApplicationRecord
         other_registration.unverify
         other_registration.save!
 
-        # TODO: Send an email to the losing user.
+        if send_email
+          CharacterRegistrationMailer.with(registration: other_registration).character_verified_elsewhere.deliver_later
+        end
       end
 
       self.verify(verification_type)
@@ -128,11 +130,11 @@ class CharacterRegistration < ApplicationRecord
   private def owner_can_create
     return unless user.character_registrations.unverified.count >= user.unverified_character_allowance
 
-    errors.add(:user, "has too many unverified characters.")
+    errors.add(:user, :too_many_unverified, message: "has too many unverified characters.")
   end
 
   private def character_not_banned
-    return if character.nil?
+    return if character.nil?  # handled elsewhere
 
     # Character bans exist to prevent users from trying to register certain "VIP" or other high-profile charcters.
     # Rather than waste time and resources on verifying them, we simply wait for admin intervention.
@@ -144,7 +146,7 @@ class CharacterRegistration < ApplicationRecord
   end
 
   private def validate_linked_character
-    return if character.nil?  # handled elsewhere
+    return if character.nil? # handled elsewhere
     return if character.validate
 
     base_errors = character.errors.where(:base) || []
@@ -154,7 +156,7 @@ class CharacterRegistration < ApplicationRecord
       logger.error("Validation failed for character with Lodestone ID #{character.lodestone_id}.",
                    errors: character.errors)
 
-      errors.add(:character, :invalid, message: "could not be found or processed.")
+      errors.add(:character, :process_failed, message: "could not be found or processed.")
     end
   end
 end
