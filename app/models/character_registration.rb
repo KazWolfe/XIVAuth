@@ -15,7 +15,6 @@ class CharacterRegistration < ApplicationRecord
   belongs_to :user
   belongs_to :character, class_name: "FFXIV::Character"
 
-  validates :character_id, presence: true
   validates :character_id, uniqueness: { scope: [:user_id], message: "is already registered to you!" }
   validates :character_id,
             uniqueness: { conditions: -> { where.not(verified_at: nil) },
@@ -27,6 +26,7 @@ class CharacterRegistration < ApplicationRecord
 
   attr_accessor :skip_ban_check, :character_ref
 
+  validate :validate_linked_character
   validate :character_not_banned, unless: :skip_ban_check, on: :create
   validate :owner_can_create, on: :create
 
@@ -132,6 +132,8 @@ class CharacterRegistration < ApplicationRecord
   end
 
   private def character_not_banned
+    return if character.nil?
+
     # Character bans exist to prevent users from trying to register certain "VIP" or other high-profile charcters.
     # Rather than waste time and resources on verifying them, we simply wait for admin intervention.
     # The character ban system *may* also be used for fraud and abuse, but that is not its primary purpose.

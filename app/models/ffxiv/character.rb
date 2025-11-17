@@ -64,6 +64,8 @@ class FFXIV::Character < ApplicationRecord
   end
 
   def self.for_lodestone_id(lodestone_id)
+    return nil if lodestone_id.nil?
+    
     existing = find_by(lodestone_id: lodestone_id)
     return existing if existing.present?
 
