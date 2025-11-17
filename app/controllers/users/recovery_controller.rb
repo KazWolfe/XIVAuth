@@ -22,7 +22,7 @@ class Users::RecoveryController < ApplicationController
     @user = User.find_by(email: permitted_params[:email])
 
     if @user.nil?
-      redirect_to new_user_session_path, notice: "Your recovery request was received. If your email is in our " +
+      redirect_to new_user_session_path, notice: "Your recovery request was received. If your email is in our " \
         "system, you should receive a recovery email shortly."
       return
     end
@@ -33,7 +33,7 @@ class Users::RecoveryController < ApplicationController
       @user.send_reset_password_instructions
     end
 
-    redirect_to new_user_session_path, notice: "Your recovery request was received. If your email is in our system, " +
+    redirect_to new_user_session_path, notice: "Your recovery request was received. If your email is in our system, " \
       "you should receive a recovery email shortly."
   rescue Postmark::InactiveRecipientError
     flash.now[:error] = render_to_string(partial: "devise/mailer/mta_error")
