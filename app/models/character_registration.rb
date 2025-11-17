@@ -15,13 +15,12 @@ class CharacterRegistration < ApplicationRecord
   belongs_to :user
   belongs_to :character, class_name: "FFXIV::Character"
 
+  validates :character_id, presence: true
   validates :character_id, uniqueness: { scope: [:user_id], message: "is already registered to you!" }
   validates :character_id,
             uniqueness: { conditions: -> { where.not(verified_at: nil) },
                           if: -> { !verified_at.nil? },
                           message: "has already been verified." }
-
-  validate :validate_linked_character
 
   validates :verification_type, presence: true, if: -> { self.verified? }
   validates :verification_type, absence: true, unless: -> { self.verified? }
@@ -143,11 +142,16 @@ class CharacterRegistration < ApplicationRecord
   end
 
   private def validate_linked_character
-    return if character&.validate
+    return if character.nil?  # handled elsewhere
+    return if character.validate
 
-    if (base_errors = character.errors.where(:base))
+    base_errors = character.errors.where(:base) || []
+    if base_errors.present?
       errors.add(:character, :invalid, message: base_errors.first.message)
     else
+      logger.error("Validation failed for character with Lodestone ID #{character.lodestone_id}.",
+                   errors: character.errors)
+
       errors.add(:character, :invalid, message: "could not be found or processed.")
     end
   end
