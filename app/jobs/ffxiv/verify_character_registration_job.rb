@@ -12,30 +12,33 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     raise error
   end
 
-  discard_on(ActiveJob::DeserializationError) do |job, error|
-    if error.cause&.is_a?(ActiveRecord::RecordNotFound)
+  discard_on(ActiveJob::DeserializationError) do |_job, error|
+    if error.cause.is_a?(ActiveRecord::RecordNotFound)
       logger.warn("CharacterRegistration is missing - was it deleted?", error: error.cause)
       next
     end
 
-    raise(error)
+    raise error
   end
 
   discard_on(FFXIV::LodestoneProfile::LodestoneProfileInvalid) do |job, error|
-    logger.error("Invalid profile", error: JSON.dump(error))
+    logger.error("Got invalid profile while attempting verification", error: error.to_hash)
     job.report_result("verification_failed_invalid")
   end
 
   discard_on(FFXIV::LodestoneProfile::LodestoneCharacterHidden) do |job, _error|
+    logger.warn("Could not verify CR #{job.arguments[0].id} - character was hidden.")
     job.report_result("verification_failed_hiddenchara")
   end
 
   discard_on(FFXIV::LodestoneProfile::LodestoneProfilePrivate) do |job, _error|
+    logger.warn("Could not verify CR #{job.arguments[0].id} - profile was private.")
     job.report_result("verification_failed_privateprofile")
   end
 
   retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS,
 wait: 2.minutes) do |job, _error|
+    logger.warn("Could not verify CR #{job.arguments[0].id} - verification key was not found after multiple attempts.")
     job.report_result("verification_failed_codenotfound")
   end
 
