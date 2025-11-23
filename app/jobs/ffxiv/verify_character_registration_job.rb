@@ -22,7 +22,7 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
   end
 
   discard_on(FFXIV::LodestoneProfile::LodestoneProfileInvalid) do |job, error|
-    logger.error("Invalid profile", error: error)
+    logger.error("Invalid profile", error: JSON.dump(error))
     job.report_result("verification_failed_invalid")
   end
 
@@ -53,7 +53,7 @@ wait: 2.minutes) do |job, _error|
     lodestone_data.validate
 
     raise FFXIV::LodestoneProfile::LodestoneCharacterHidden if lodestone_data.failure_reason == :hidden_character
-    unless lodestone_data.failure_reason == :success || lodestone_data.failure_reason == :profile_private
+    unless lodestone_data.failure_reason == nil || lodestone_data.failure_reason == :profile_private
       raise FFXIV::LodestoneProfile::LodestoneProfileInvalid, lodestone_data.errors
     end
 
