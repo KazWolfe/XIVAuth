@@ -53,6 +53,8 @@ class FFXIV::Character < ApplicationRecord
       return
     end
 
+    # Note: ALWAYS populated fields, even if the character profile is private. Hidden characters won't be considered
+    # valid, so we don't need to worry about that case.
     self.name = @lodestone_data.name
     self.home_world = @lodestone_data.world
     self.data_center = @lodestone_data.datacenter

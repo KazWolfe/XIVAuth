@@ -6,13 +6,11 @@ class FFXIV::LodestoneProfile
   class LodestoneProfilePrivate < LodestoneProfileInvalid; end
 
   FREE_TRIAL_LEVEL_CAP = 70
-  FAILURE_REASONS = [ :unspecified, :hidden_character, :profile_private, :not_found ]
+  FAILURE_REASONS = [ :unspecified, :hidden_character, :profile_private, :not_found, :lodestone_maintenance ]
 
-  attr_accessor :id, :last_parsed, :raw_data, :failure_reason
+  attr_accessor :id, :last_parsed, :raw_data, :failure_reason, :flarestone_statuscode
 
-  validate :character_exists?
-  validate :character_visible?
-  validate :character_profile_public?
+  validate :validate_lodestone_response
 
   # Create a LodestoneProfile for the given character ID.
   # Supports injecting raw JSON for tests to avoid network I/O.
@@ -31,6 +29,7 @@ class FFXIV::LodestoneProfile
 
       request = requestor.get("#{flarestone_base_url}/character/#{lodestone_id}")
       json_object = JSON.parse(request.body)
+      self.flarestone_statuscode = request.status
     end
 
     self.raw_data = json_object
@@ -80,7 +79,7 @@ class FFXIV::LodestoneProfile
   end
 
   def class_levels
-    self.raw_data["levels"]
+    self.raw_data["levels"].deep_symbolize_keys
   end
 
   # Check if this character is known to be paid. Returns true heuristically.
@@ -90,35 +89,29 @@ class FFXIV::LodestoneProfile
   end
 
   # Visibility and existence checks (also validations)
-  def character_profile_public?
-    profile_private = self.raw_data["_meta"]["resultCode"] == "profile_private"
 
-    if profile_private
+  def validate_lodestone_response
+    result_code = self.raw_data.dig("_meta", "resultCode")
+
+    case result_code
+    when "success"
+      self.failure_reason = nil
+      # nop
+    when "profile_private"
       self.failure_reason = :profile_private
-    end
-
-    !profile_private
-  end
-
-  def character_visible?
-    character_hidden = self.raw_data["_meta"]["resultCode"] == "character_hidden"
-
-    if character_hidden
-      errors.add(:base, :hidden_character, message: "is marked as hidden or private.")
-      self.failure_reason = :hidden_character
-    end
-
-    !character_hidden
-  end
-
-  def character_exists?
-    not_found = self.raw_data["_meta"]["resultCode"] == "not_found"
-
-    if not_found
-      errors.add(:base, :not_found, message: "could not be found using this ID.")
+      # Note: valid, just not fully populated.
+    when "not_found"
       self.failure_reason = :not_found
+      errors.add(:base, :not_found, message: "could not be found.")
+    when "character_hidden"
+      self.failure_reason = :hidden_character
+      errors.add(:base, :hidden_character, message: "is marked as hidden or private.")
+    when "lodestone_maintenance"
+      self.failure_reason = :lodestone_maintenance
+      errors.add(:base, :maintenance, message: "can not be fetched due to maintenance. Please try again later.")
+    else
+      self.failure_reason = :unspecified
+      errors.add(:base, :unspecified, message: "could not be fetched at this time. Please try again later.")
     end
-
-    !not_found
   end
 end

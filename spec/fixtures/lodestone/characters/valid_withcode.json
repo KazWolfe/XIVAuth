@@ -1,8 +1,13 @@
 {
   "name": "Abe Eon",
   "title": "King Bean",
-  "headshotUrl": "https://img2.finalfantasyxiv.com/f/ebf4695b9d63956a9be6394e751c56d8_4d9be17b5e1edc617052b4dbf4007875fc0.jpg?1762748100",
-  "portraitUrl": "https://img2.finalfantasyxiv.com/f/ebf4695b9d63956a9be6394e751c56d8_4d9be17b5e1edc617052b4dbf4007875fl0.jpg?1762748100",
+  "headshotUrl": "https://img2.finalfantasyxiv.com/f/ebf4695b9d63956a9be6394e751c56d8_4d9be17b5e1edc617052b4dbf4007875fc0.jpg?1763534349",
+  "portraitUrl": "https://img2.finalfantasyxiv.com/f/ebf4695b9d63956a9be6394e751c56d8_4d9be17b5e1edc617052b4dbf4007875fl0.jpg?1763534349",
+  "currentClass": {
+    "level": 100,
+    "iconUrl": "https://lds-img.finalfantasyxiv.com/h/v/YCN6F-xiXf03Ts3pXoBihh2OBk.png",
+    "name": "Carpenter"
+  },
   "grandCompany": {
     "name": "Immortal Flames",
     "rank": "Flame Captain",
@@ -11,6 +16,7 @@
   "freeCompany": {
     "name": "Friendly Fire",
     "lodestoneUrl": "/lodestone/freecompany/9231112598714485863/",
+    "id": "9231112598714485863",
     "crest": {
       "background": "https://img2.finalfantasyxiv.com/c/B3d_68585a4e1dc533f1fdd2bac0561a24b6_23_40x40.png",
       "frame": "https://img2.finalfantasyxiv.com/c/F1c_f050e828d7571a56fd7174a3956262d9_00_40x40.png",
@@ -18,173 +24,163 @@
     }
   },
   "bio": "<span style=\"color:#CC0000\">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣶⣿⣿⣷⣶⣄⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⡟⠁⣰⣿⣿⣿⡿⠿⠻⠿⣿⣿⣿⣿⣧⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⠏⠀⣴⣿⣿⣿⠉⠀⠀⠀⠀⠀⠈⢻⣿⣿⣇⠀⠀⠀<br>⠀⠀⠀⠀⢀⣠⣼⣿⣿⡏⠀⢠⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⡀⠀⠀<br>⠀⠀⠀⣰⣿⣿⣿⣿⣿⡇⠀⢸⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⡇⠀⠀<br>⠀⠀⢰⣿⣿⡿⣿⣿⣿⡇⠀⠘⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣿⠁⠀⠀<br>⠀⠀⣿⣿⣿⠁⣿⣿⣿⡇⠀⠀⠻⣿⣿⣿⣷⣶⣶⣶⣶⣶⣿⣿⣿⣿⠃⠀⠀⠀<br>⠀⢰⣿⣿⡇⠀⣿⣿⣿⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀<br>⠀⢸⣿⣿⡇⠀⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠛⠉⢉⣿⣿⠀⠀⠀⠀⠀⠀<br>⠀⢸⣿⣿⣇⠀⣿⣿⣿⠀⠀⠀⠀⠀⢀⣤⣤⣤⡀⠀⠀⢸⣿⣿⣿⣷⣦⠀⠀⠀<br>⠀⠀⢻⣿⣿⣶⣿⣿⣿⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣦⡀⠀⠉⠉⠻⣿⣿⡇⠀⠀<br>⠀⠀⠀⠛⠿⣿⣿⣿⣿⣷⣤⡀⠀⠀⠀⠀⠈⠹⣿⣿⣇⣀⠀⣠⣾⣿⣿⡇⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣦⣤⣤⣤⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⢿⣿⣿⣿⣿⣿⣿⠿⠋⠉⠛⠋⠉⠉⠁⠀⠀⠀⠀<br>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁</span><br>XIVAUTH:E13FPHQ6GXVD6KSYEBEY8V4M",
-  "levels": [
-    {
+  "levels": {
+    "GLADIATOR": {
       "name": "Gladiator",
       "level": 1,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/U/F5JzG9RPIKFSogtaKNBk455aYA.png"
     },
-    {
-      "name": "Warrior / Marauder",
+    "WARRIOR": {
+      "name": "Warrior",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/y/A3UhbjZvDeN3tf_6nJ85VP0RY0.png"
     },
-    {
+    "DARK_KNIGHT": {
       "name": "Dark Knight",
-      "level": 65,
+      "level": 66,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/l/5CZEvDOMYMyVn2td9LZigsgw9s.png"
     },
-    {
+    "GUNBREAKER": {
       "name": "Gunbreaker",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/8/hg8ofSSOKzqng290No55trV4mI.png"
     },
-    {
-      "name": "White Mage / Conjurer",
+    "WHITE_MAGE": {
+      "name": "White Mage",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/7/i20QvSPcSQTybykLZDbQCgPwMw.png"
     },
-    {
+    "SCHOLAR": {
       "name": "Scholar",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/7/WdFey0jyHn9Nnt1Qnm-J3yTg5s.png"
     },
-    {
-      "name": "Astrologian",
-      "level": 0,
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/1/erCgjnMSiab4LiHpWxVc-tXAqk.png"
-    },
-    {
-      "name": "Sage",
-      "level": 0,
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/h/g/_oYApASVVReLLmsokuCJGkEpk0.png"
-    },
-    {
-      "name": "Monk / Pugilist",
+    "MONK": {
+      "name": "Monk",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/K/HW6tKOg4SOJbL8Z20GnsAWNjjM.png"
     },
-    {
-      "name": "Dragoon / Lancer",
+    "DRAGOON": {
+      "name": "Dragoon",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/m/gX4OgBIHw68UcMU79P7LYCpldA.png"
     },
-    {
-      "name": "Ninja / Rogue",
+    "NINJA": {
+      "name": "Ninja",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/0/Fso5hanZVEEAaZ7OGWJsXpf3jw.png"
     },
-    {
+    "SAMURAI": {
       "name": "Samurai",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/m/KndG72XtCFwaq1I1iqwcmO_0zc.png"
     },
-    {
+    "REAPER": {
       "name": "Reaper",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/7/cLlXUaeMPJDM2nBhIeM-uDmPzM.png"
     },
-    {
+    "VIPER": {
       "name": "Viper",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/C/WojNTqMJ_Ye1twvkIhw825zc20.png"
     },
-    {
+    "ARCHER": {
       "name": "Archer",
       "level": 7,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/Q/ZpqEJWYHj9SvHGuV9cIyRNnIkk.png"
     },
-    {
+    "MACHINIST": {
       "name": "Machinist",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/E/vmtbIlf6Uv8rVp2YFCWA25X0dc.png"
     },
-    {
+    "DANCER": {
       "name": "Dancer",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/t/HK0jQ1y7YV9qm30cxGOVev6Cck.png"
     },
-    {
-      "name": "Black Mage / Thaumaturge",
+    "BLACK_MAGE": {
+      "name": "Black Mage",
       "level": 64,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/P/V01m8YRBYcIs5vgbRtpDiqltSE.png"
     },
-    {
-      "name": "Summoner / Arcanist",
+    "SUMMONER": {
+      "name": "Summoner",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/h/4ghjpyyuNelzw1Bl0sM_PBA_FE.png"
     },
-    {
+    "RED_MAGE": {
       "name": "Red Mage",
       "level": 52,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/q/s3MlLUKmRAHy0pH57PnFStHmIw.png"
     },
-    {
+    "PICTOMANCER": {
       "name": "Pictomancer",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/_/kLob-U-yh652LQPX1NHpLlUYQY.png"
     },
-    {
-      "name": "Blue Mage (Limited Job)",
+    "BLUE_MAGE": {
+      "name": "Blue Mage",
       "level": 54,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/p/jdV3RRKtWzgo226CC09vjen5sk.png"
     },
-    {
+    "CARPENTER": {
       "name": "Carpenter",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/v/YCN6F-xiXf03Ts3pXoBihh2OBk.png"
     },
-    {
+    "BLACKSMITH": {
       "name": "Blacksmith",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/5/EEHVV5cIPkOZ6v5ALaoN5XSVRU.png"
     },
-    {
+    "ARMORER": {
       "name": "Armorer",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/G/Rq5wcK3IPEaAB8N-T9l6tBPxCY.png"
     },
-    {
+    "GOLDSMITH": {
       "name": "Goldsmith",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/L/LbEjgw0cwO_2gQSmhta9z03pjM.png"
     },
-    {
+    "LEATHERWORKER": {
       "name": "Leatherworker",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/b/ACAcQe3hWFxbWRVPqxKj_MzDiY.png"
     },
-    {
+    "WEAVER": {
       "name": "Weaver",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/X/E69jrsOMGFvFpCX87F5wqgT_Vo.png"
     },
-    {
+    "ALCHEMIST": {
       "name": "Alchemist",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/C/bBVQ9IFeXqjEdpuIxmKvSkqalE.png"
     },
-    {
+    "CULINARIAN": {
       "name": "Culinarian",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/m/1kMI2v_KEVgo30RFvdFCyySkFo.png"
     },
-    {
+    "MINER": {
       "name": "Miner",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/A/aM2Dd6Vo4HW_UGasK7tLuZ6fu4.png"
     },
-    {
+    "BOTANIST": {
       "name": "Botanist",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/I/jGRnjIlwWridqM-mIPNew6bhHM.png"
     },
-    {
+    "FISHER": {
       "name": "Fisher",
       "level": 100,
       "iconUrl": "https://lds-img.finalfantasyxiv.com/h/x/B4Azydbn7Prubxt7OL9p1LZXZ0.png"
     }
-  ],
+  },
   "homeCity": {
     "name": "Ul'dah",
     "iconUrl": "https://lds-img.finalfantasyxiv.com/h/u/qXfC-BmEzWbXW3sn62HMNnD3kU.png"
@@ -196,259 +192,478 @@
   },
   "equippedInventory": {
     "mainHand": {
-      "name": "Dark Horse Champion's Musketoon",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/3f51148e7d0/",
-      "glamour": {
-        "name": "Makai Hand Mortar",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/794f4de1855/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/b4/b4e35fdcf63af582d9af905cc6f22be1666588e3.png?n7.35"
-      },
-      "materia": [
-        null,
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/df/df2d22313514806dd77c03d5e4d702e74e2b9057.png?n7.35"
-    },
-    "offHand": null,
-    "head": {
-      "name": "Neo Kingdom Chapeau of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/c848096809c/",
-      "glamour": {
-        "name": "Postmoogle Cap",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/54fb0cab2b2/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/cf/cf13566846c7fac5d7c484279b7036d11c4896f7.png?n7.35"
-      },
-      "materia": [
-        null,
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/d9/d9f06e1ec533a70ceab139bfe61c8899d302c108.png?n7.35"
-    },
-    "body": {
-      "name": "Neo Kingdom Coat of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/e020bf16b02/",
-      "glamour": {
-        "name": "Night of Devilry Shirt",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/b96b648f4b2/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/4b/4b9cf652f8db3b5dbe9302670d85302982d9bc7b.png?n7.35"
-      },
-      "materia": [
-        null,
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/3f/3f039cc349430e9d17bfa95f4beeaa221aa99c1b.png?n7.35"
-    },
-    "hands": {
-      "name": "Light-heavy Gloves of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/e4fb7e43194/",
-      "glamour": {
-        "name": "Leonhart Gloves",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/af6cdbc4840/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/7a/7a761ad4c3bc764a1bbe092376c389e640f6efc3.png?n7.35"
-      },
-      "materia": [
-        null,
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/f6/f6042fa8aa7aa2245d320da2414d0d9ebc513e69.png?n7.35"
-    },
-    "legs": {
-      "name": "Neo Kingdom Kecks of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/5838f43e19a/",
-      "glamour": {
-        "name": "Night of Devilry Trousers",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/d36afccd6ea/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/bd/bd2cdfd9ea0f918a4d13ab89d9242db431d0efa0.png?n7.35"
-      },
-      "materia": [
-        null,
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/e7/e7351d658fa197217c4af79d49d84c3c638c73ce.png?n7.35"
-    },
-    "feet": {
-      "name": "Neo Kingdom Boots of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/ea2c714ed01/",
-      "glamour": {
-        "name": "Leonhart Boots",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/7ecbf845074/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/de/decfcece3ff02a40de3e501fc66aa475ee6ee65f.png?n7.35"
-      },
-      "materia": [
-        null,
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/5f/5f00afa2a519ef90f5063bddc8b184218eca317d.png?n7.35"
-    },
-    "earrings": {
-      "name": "Resilient Earring of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/60ce3772564/",
-      "glamour": {
-        "name": "The Emperor's New Earrings",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/64c6c9fe08b/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/52/527150317ca7bae8a209cb9598e32a89f67896d6.png?n7.35"
-      },
-      "materia": [
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/63/632dde3ea08c84fb272885e089c78625a9abd846.png?n7.35"
-    },
-    "necklace": {
-      "name": "Dark Horse Champion's Choker of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/ec0d42cf8be/",
-      "glamour": {
-        "name": "The Emperor's New Necklace",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/5f33d167e05/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/62/62571593c8d89fb74ad208a5a618a5255e12fa36.png?n7.35"
-      },
-      "materia": [
-        null,
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/6c/6c121dbb224370aa33f34bda85623a3d41e322ee.png?n7.35"
-    },
-    "bracelets": {
-      "name": "Neo Kingdom Bangles of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/c227249b310/",
-      "glamour": {
-        "name": "The Emperor's New Bracelet",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/1b9470c33e2/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/f8/f81f6b4e9af75cb515672f2e66e7bf9c94927b4a.png?n7.35"
-      },
-      "materia": [
-        null
-      ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/da/da8c54fb80f0e6406cdafa0e171881801f7b78e4.png?n7.35"
-    },
-    "ring1": {
-      "name": "Augmented Credendum Ring of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/ef282af644d/",
-      "glamour": {
-        "name": "The Emperor's New Ring",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/9665ddcaccf/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/ba/baebc2fd0a60fd2424b78c16bf8dc8282496c545.png?n7.35"
-      },
+      "name": "Everseeker's Saw",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/f731c934ab5/?hq=1",
+      "glamour": null,
       "materia": [
         {
-          "name": "Heavens' Eye Materia X",
-          "grade": 10
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
         },
         {
-          "name": "Heavens' Eye Materia X",
-          "grade": 10
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
         }
       ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/3b/3b72e5cf821c793fc08b987c9dcbb38e96690008.png?n7.35"
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/a0/a0017f79dd0d7a5acfee53d30548a723e21931f3.png?n7.38",
+      "highQuality": true
+    },
+    "offHand": {
+      "name": "Everseeker's Claw Hammer",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/ca128911753/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/1c/1c05079deceab05962942dcec42e9c98c8103f8c.png?n7.38",
+      "highQuality": true
+    },
+    "head": {
+      "name": "Everseeker's Headgear of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/605ded616cf/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/e2/e2bad803f5190f45d3eb5c4cc18b01596786e8b6.png?n7.38",
+      "highQuality": true
+    },
+    "body": {
+      "name": "Everseeker's Top of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/45a6113f21a/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/f9/f937c372c8459f3ad1c3c7b3f705741bbfaba1ed.png?n7.38",
+      "highQuality": true
+    },
+    "hands": {
+      "name": "Everseeker's Armguards of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/0c6a6f182b0/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/cb/cbd52c573e120064f83fa4d058cd90ffeaa1b215.png?n7.38",
+      "highQuality": true
+    },
+    "legs": {
+      "name": "Everseeker's Slops of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/8db545be382/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Cunning Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/dd/dd1506f38fb657993006a3e5673cb34c92548deb.png?n7.38",
+      "highQuality": true
+    },
+    "feet": {
+      "name": "Everseeker's Workboots of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/db502b0d18b/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Cunning Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/d7/d76962a1071ca65de8bf470b26696cc600b1e765.png?n7.38",
+      "highQuality": true
+    },
+    "earrings": {
+      "name": "Black Star Earrings of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/4dd95796568/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia IX",
+          "grade": 9,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia V",
+          "grade": 5,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/f3/f3149137d56a8dc9582ca40dfb36d18d0d151cc7.png?n7.38",
+      "highQuality": true
+    },
+    "necklace": {
+      "name": "Black Star Scarf of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/803628deac9/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia IX",
+          "grade": 9,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia V",
+          "grade": 5,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/62/62ce3d2fe9904ef3d1687b28bcd9d9b4d56ff20e.png?n7.38",
+      "highQuality": true
+    },
+    "bracelets": {
+      "name": "Black Star Bracelets of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/90421f07448/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Command Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Command Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia IX",
+          "grade": 9,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia V",
+          "grade": 5,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/30/30d8891dc4685130049f33e30dc8fdc198b2fcab.png?n7.38",
+      "highQuality": true
+    },
+    "ring1": {
+      "name": "Black Star Ring of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/636831fb99f/?hq=1",
+      "glamour": null,
+      "materia": [
+        {
+          "name": "Craftsman's Competence Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Competence Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia VII",
+          "grade": 7,
+          "isAdvancedSlot": true
+        }
+      ],
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/cd/cd30b1130485456d4535b584cf1f2a2bc0d343cd.png?n7.38",
+      "highQuality": true
     },
     "ring2": {
-      "name": "Skydeep Ring of Aiming",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/c07136de3cc/",
-      "glamour": {
-        "name": "The Emperor's New Ring",
-        "eorzeaDbUrl": "/lodestone/playguide/db/item/9665ddcaccf/",
-        "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/ba/baebc2fd0a60fd2424b78c16bf8dc8282496c545.png?n7.35"
-      },
+      "name": "Black Star Ring of Crafting",
+      "eorzeaDbUrl": "/lodestone/playguide/db/item/636831fb99f/?hq=1",
+      "glamour": null,
       "materia": [
-        null
+        {
+          "name": "Craftsman's Competence Materia XII",
+          "grade": 12
+        },
+        {
+          "name": "Craftsman's Competence Materia XII",
+          "grade": 12,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Competence Materia XI",
+          "grade": 11,
+          "isAdvancedSlot": true
+        },
+        {
+          "name": "Craftsman's Cunning Materia VII",
+          "grade": 7,
+          "isAdvancedSlot": true
+        }
       ],
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/80/80b7b3f4578b280994fb6314d88ea04b99f90221.png?n7.35"
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/cd/cd30b1130485456d4535b584cf1f2a2bc0d343cd.png?n7.38",
+      "highQuality": true
     },
-    "soulstone": {
-      "name": "Soul of the Machinist",
-      "eorzeaDbUrl": "/lodestone/playguide/db/item/b95eca0caf9/",
-      "glamour": null,
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/38/385d8ce71a2066028ad6a05f85fe442b43c7619b.png?n7.35"
-    },
+    "soulstone": null,
     "glasses": {
-      "name": "Pair Of Tinted Sunglasses",
+      "name": "Pair Of Black Cat Eye Glasses",
       "glamour": null,
-      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/83/8387ce523583090167f96c038873ba46e0beda17.png?n7.35"
+      "iconUrl": "https://lds-img.finalfantasyxiv.com/itemicon/52/52e5bfffb53014425d8cb1244a6054f3ffa57b28.png?n7.38"
     }
   },
   "statBlock": {
     "attributes": [
       {
         "name": "Strength",
-        "value": 376
+        "value": 398
       },
       {
         "name": "Dexterity",
-        "value": 4306
+        "value": 443
       },
       {
         "name": "Vitality",
-        "value": 4397
+        "value": 462
       },
       {
         "name": "Intelligence",
-        "value": 351
+        "value": 395
       },
       {
         "name": "Mind",
-        "value": 373
+        "value": 395
       },
       {
         "name": "Critical Hit Rate",
-        "value": 2004
+        "value": 420
       },
       {
         "name": "Determination",
-        "value": 1207
+        "value": 440
       },
       {
         "name": "Direct Hit Rate",
-        "value": 2126
+        "value": 420
       },
       {
         "name": "Defense",
-        "value": 3381
+        "value": 2126
       },
       {
         "name": "Magic Defense",
-        "value": 3381
+        "value": 4248
       },
       {
         "name": "Attack Power",
-        "value": 4306
+        "value": 398
       },
       {
         "name": "Skill Speed",
-        "value": 822
-      },
-      {
-        "name": "Attack Magic Potency",
-        "value": 351
-      },
-      {
-        "name": "Healing Magic Potency",
-        "value": 373
-      },
-      {
-        "name": "Spell Speed",
         "value": 420
       },
       {
-        "name": "Tenacity",
-        "value": 420
+        "name": "Craftsmanship",
+        "value": 5386
       },
       {
-        "name": "Piety",
-        "value": 440
+        "name": "Control",
+        "value": 5245
       }
     ],
     "consumables": [
       {
         "name": "HP",
-        "value": 123305
+        "value": 4662
       },
       {
-        "name": "MP",
-        "value": 10000
+        "name": "CP",
+        "value": 628
       }
     ]
   },
   "world": "Lamia",
   "datacenter": "Primal",
+  "race": "Miqo'te",
+  "clan": "Seeker of the Sun",
+  "gender": "male",
   "_meta": {
     "resultCode": "success",
     "upstreamStatusCode": 200

@@ -50,15 +50,19 @@ wait: 2.minutes) do |job, _error|
     end
 
     lodestone_data = FFXIV::LodestoneProfile.new(character.lodestone_id)
+    lodestone_data.validate
 
-    raise FFXIV::LodestoneProfile::LodestoneCharacterHidden unless lodestone_data.character_visible?
-    raise FFXIV::LodestoneProfile::LodestoneProfileInvalid, lodestone_data.errors unless lodestone_data.valid?
+    raise FFXIV::LodestoneProfile::LodestoneCharacterHidden if lodestone_data.failure_reason == :hidden_character
+    unless lodestone_data.failure_reason == :success || lodestone_data.failure_reason == :profile_private
+      raise FFXIV::LodestoneProfile::LodestoneProfileInvalid, lodestone_data.errors
+    end
 
     # We're here, might as well save the character data we just fetched. Waste not!
     character.refresh_from_lodestone(lodestone_data)
     character.save!
 
-    raise FFXIV::LodestoneProfile::LodestoneProfilePrivate unless lodestone_data.character_profile_public?
+    # Set after updating, since we still get a partial response.
+    raise FFXIV::LodestoneProfile::LodestoneProfilePrivate if lodestone_data.failure_reason == :profile_private
 
     lodestone_data.bio.scan(CharacterRegistration::VERIFICATION_KEY_REGEX).each do |match|
       code = match.delete_prefix(CharacterRegistration::VERIFICATION_KEY_PREFIX)
