@@ -1,116 +1,88 @@
 // General UI polish and modern enhancements
 
-// Enhanced button styling
 .btn {
   transition: all 0.15s ease-in-out;
   position: relative;
 
-  // Subtle pressed effect
   &:active {
     transform: scale(0.98);
     transition-duration: 0.05s;
   }
 
-  // Subtle gradient overlays for primary buttons
-  &.btn-primary {
-    [data-bs-theme="light"] & {
-      background: linear-gradient(
-        var(--gradient-angle),
-        var(--bs-primary),
-        color-mix(in srgb, var(--bs-primary) 70%, white)
-      );
-    }
+  @each $variant, $value in $theme-colors {
+    &.btn-#{$variant} {
+      [data-bs-theme="light"] & {
+        background: linear-gradient(
+                        var(--gradient-angle),
+                        var(--bs-#{$variant}),
+                        color-mix(in srgb, var(--bs-#{$variant}) 70%, white)
+        );
+      }
 
-    [data-bs-theme="dark"] & {
-      background: linear-gradient(
-        var(--gradient-angle),
-        var(--bs-primary),
-        var(--bs-primary-border-subtle)
-      );
-    }
+      [data-bs-theme="dark"] & {
+        background: linear-gradient(
+                        var(--gradient-angle),
+                        var(--bs-#{$variant}),
+                        var(--bs-#{$variant}-border-subtle)
+        );
+      }
 
-    border: none;
+      border: none;
 
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.3);
-    }
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(var(--bs-#{$variant}-rgb), 0.3);
+      }
 
-    &:active {
-      transform: scale(0.98);
-      box-shadow: 0 2px 6px rgba(var(--bs-primary-rgb), 0.4);
-      filter: brightness(0.95);
-    }
-  }
-
-  &.btn-success {
-    [data-bs-theme="light"] & {
-      background: linear-gradient(
-        var(--gradient-angle),
-        var(--bs-success),
-        color-mix(in srgb, var(--bs-success) 70%, white)
-      );
-    }
-
-    [data-bs-theme="dark"] & {
-      background: linear-gradient(
-        var(--gradient-angle),
-        var(--bs-success),
-        var(--bs-success-border-subtle)
-      );
-    }
-
-    border: none;
-
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(var(--bs-success-rgb), 0.3);
-    }
-
-    &:active {
-      transform: scale(0.98);
-      box-shadow: 0 2px 6px rgba(var(--bs-success-rgb), 0.4);
-      filter: brightness(0.95);
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 6px rgba(var(--bs-#{$variant}-rgb), 0.4);
+        filter: brightness(0.95);
+      }
     }
   }
 
-  &.btn-outline-secondary {
-    transition: all 0.15s ease-in-out;
+  @each $variant, $value in $theme-colors {
+    &.btn-outline-#{$variant} {
+      transition: all 0.15s ease-in-out;
 
-    &:hover {
-      transform: scale(1.05);
-    }
+      &:hover {
+        transform: scale(1.05);
+      }
 
-    &:active {
-      transform: scale(0.98);
+      &:active {
+        transform: scale(0.98);
+      }
     }
   }
 }
 
-// Enhanced badge styling
 .badge {
   font-weight: 600;
   padding: 0.35em 0.65em;
   transition: all 0.2s ease-in-out;
 
-  &.bg-success {
-    [data-bs-theme="light"] & {
-      background: linear-gradient(
-        var(--gradient-angle),
-        var(--bs-success),
-        color-mix(in srgb, var(--bs-success) 70%, white)
-      ) !important;
-    }
+  @each $variant, $value in $theme-colors {
+    &.bg-#{$variant} {
 
-    [data-bs-theme="dark"] & {
-      background: linear-gradient(
-        var(--gradient-angle),
-        var(--bs-success),
-        var(--bs-success-border-subtle)
-      ) !important;
-    }
+      [data-bs-theme="light"] & {
+        background: linear-gradient(
+                        var(--gradient-angle),
+                        var(--bs-#{$variant}),
+                        color-mix(in srgb, var(--bs-#{$variant}) 70%, white)
+        ) !important;
+      }
 
-    box-shadow: 0 2px 4px rgba(var(--bs-success-rgb), 0.2);
+      [data-bs-theme="dark"] & {
+        background: linear-gradient(
+                        var(--gradient-angle),
+                        var(--bs-#{$variant}),
+                        var(--bs-#{$variant}-border-subtle)
+        ) !important;
+      }
+
+      box-shadow: 0 2px 4px rgba(var(--bs-#{$variant}-rgb), 0.2);
+    }
   }
 
   &:hover {
@@ -118,45 +90,19 @@
   }
 }
 
-// Enhanced alert styling
 .alert {
   border-left-width: 4px;
   border-left-style: solid;
 
-  &.alert-warning {
-    border-left-color: var(--bs-warning);
-    background: linear-gradient(
-      to right,
-      rgba(var(--bs-warning-rgb), 0.1),
-      rgba(var(--bs-warning-rgb), 0.05)
-    );
-  }
-
-  &.alert-danger {
-    border-left-color: var(--bs-danger);
-    background: linear-gradient(
-      to right,
-      rgba(var(--bs-danger-rgb), 0.1),
-      rgba(var(--bs-danger-rgb), 0.05)
-    );
-  }
-
-  &.alert-info {
-    border-left-color: var(--bs-info);
-    background: linear-gradient(
-      to right,
-      rgba(var(--bs-info-rgb), 0.1),
-      rgba(var(--bs-info-rgb), 0.05)
-    );
-  }
-
-  &.alert-success {
-    border-left-color: var(--bs-success);
-    background: linear-gradient(
-      to right,
-      rgba(var(--bs-success-rgb), 0.1),
-      rgba(var(--bs-success-rgb), 0.05)
-    );
+  @each $variant, $value in $theme-colors {
+    &.alert-#{$variant} {
+      border-left-color: var(--bs-#{$variant});
+      background: linear-gradient(
+                      to right,
+                      rgba(var(--bs-#{$variant}-rgb), 0.1),
+                      rgba(var(--bs-#{$variant}-rgb), 0.05)
+      );
+    }
   }
 }
 
@@ -170,7 +116,6 @@
   }
 }
 
-// Enhanced dropdown menus
 .dropdown-menu {
   border: 1px solid var(--bs-border-color);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -188,24 +133,23 @@
 
       [data-bs-theme="light"] & {
         background: linear-gradient(
-          to right,
-          rgba(var(--bs-primary-rgb), 0.1),
-          transparent
+                        to right,
+                        rgba(var(--bs-primary-rgb), 0.1),
+                        transparent
         );
       }
 
       [data-bs-theme="dark"] & {
         background: linear-gradient(
-          to right,
-          rgba(var(--bs-primary-rgb), 0.2),
-          transparent
+                        to right,
+                        rgba(var(--bs-primary-rgb), 0.2),
+                        transparent
         );
       }
     }
   }
 }
 
-// Enhanced modal dialogs
 .modal-content {
   border: none;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -217,14 +161,13 @@
   .modal-header {
     border-bottom: 2px solid var(--bs-border-color);
     background: linear-gradient(
-      to bottom,
-      rgba(var(--bs-primary-rgb), 0.05),
-      transparent
+                    to bottom,
+                    rgba(var(--bs-primary-rgb), 0.05),
+                    transparent
     );
   }
 }
 
-// Enhanced navigation
 .nav-link {
   transition: all 0.2s ease-in-out;
 
@@ -233,7 +176,6 @@
   }
 }
 
-// Enhanced table styling
 .table {
   > :not(caption) > * > * {
     transition: box-shadow 0.1s ease-in-out;
