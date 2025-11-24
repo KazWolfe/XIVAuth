@@ -1,13 +1,11 @@
 <% content_for(:page_header) do %>
-  <div>
+  <div class="d-flex justify-content-between align-items-center">
     <h1>My Applications</h1>
-    <p>Register and manage applications that use XIVAuth APIs for secure login.</p>
-  </div>
-  <div>
     <%= link_to new_developer_application_path, class: "btn btn-primary" do %>
       <i class="bi bi-plus"></i> Create App
     <% end %>
   </div>
+  <p>Register and manage applications that use XIVAuth APIs for secure login.</p>
 <% end %>
 
 <div class="row">

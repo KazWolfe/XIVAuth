@@ -1,12 +1,12 @@
 <% content_for(:page_header) do %>
-  <div>
+  <div class="d-flex justify-content-between align-items-center">
     <h1>My Teams</h1>
-    <p>Manage teams to own applications, hold user groups, and more.</p>
-  </div>
-  <div>
     <%= link_to new_developer_team_path, class: "btn btn-primary" do %>
       <i class="bi bi-plus"></i> Register Team
     <% end %>
+  </div>
+  <div>
+    <p>Manage teams to own applications, hold user groups, and more.</p>
   </div>
 <% end %>
 

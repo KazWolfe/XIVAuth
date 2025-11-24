@@ -1,8 +1,6 @@
 <% content_for(:page_header) do %>
-  <div>
+  <div class="d-flex justify-content-between align-items-center">
     <h1>User Management</h1>
-  </div>
-  <div>
     <div class="d-flex justify-content-end mb-3">
       <%= button_to admin_user_path(@user), method: :delete,
                     class: 'btn btn-danger', form_class: 'd-inline-block', disabled: delete_block_reason != nil,

@@ -1,14 +1,14 @@
 <% content_for(:page_header) do %>
-  <div>
+  <div class="d-flex justify-content-between align-items-center">
     <h1>My Characters</h1>
-    <p>Add, verify, and remove characters for use with external services.</p>
-  </div>
-  <div>
     <% if can_add_characters? %>
       <%= button_to new_character_registration_path, class: "btn btn-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
         <i class="bi bi-plus"></i> Add Character
       <% end %>
     <% end %>
+  </div>
+  <div>
+    <p>Add, verify, and remove characters for use with external services.</p>
   </div>
 <% end %>
 

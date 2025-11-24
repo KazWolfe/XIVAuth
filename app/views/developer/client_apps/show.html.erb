@@ -1,13 +1,13 @@
 <% content_for(:page_header) do %>
-  <div>
+  <div class="d-flex justify-content-between align-items-center">
     <h1>Edit App: <%= @application.name %></h1>
-  </div>
-  <div>
-    <div class="btn-toolbar gap-2">
-      <%= button_to developer_application_path(@application), method: :delete, class: "btn btn-danger",
-                    data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
-        <i class="bi bi-trash"></i> Delete App
-      <% end %>
+    <div>
+      <div class="btn-toolbar gap-2">
+        <%= button_to developer_application_path(@application), method: :delete, class: "btn btn-danger",
+                      data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
+          <i class="bi bi-trash"></i> Delete App
+        <% end %>
+      </div>
     </div>
   </div>
 <% end %>
