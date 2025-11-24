@@ -8,10 +8,8 @@ superuser = User.find_or_create_by!(email: "dev@eorzea.id") do |u|
   u.skip_confirmation!
 end
 
-superteam = Team.find_or_create_by!(id: "00000000-0000-8000-8f0f-000000000001") do |t|
-  t.name = "XIVAuth Developers"
-  t.direct_memberships.build(user: superuser, role: "admin")
-end
+superteam = Team.find_by!(id: "00000000-0000-8000-8f0f-000000000001")
+superteam.direct_memberships.create!(user: superuser, role: "admin")
 
 client_app = ClientApplication.find_or_create_by!(id: "00000000-0000-8000-8f00-ea9e0669f9ba") do |app|
   app.name = "XIVAuth Dev Client"
