@@ -1,4 +1,4 @@
-class Developer::ClientAppsController < ApplicationController
+class Developer::ClientAppsController < Developer::DeveloperPortalController
   layout "portal/base"
   include Pagy::Method
   helper Doorkeeper::DashboardHelper

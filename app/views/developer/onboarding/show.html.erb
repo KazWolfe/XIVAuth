@@ -1,0 +1,103 @@
+<% content_for(:page_header) do %>
+  <div>
+    <h1>Developer Onboarding</h1>
+  </div>
+<% end %>
+
+<% has_mfa = current_user.requires_mfa? %>
+<% has_verified_character = current_user.character_registrations.verified.any? %>
+<% all_requirements_met = has_mfa && has_verified_character %>
+
+<div class="row">
+  <div class="col-12 col-lg-8 mx-auto">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <div class="header-title">
+          <h4 class="card-title">Become a Developer</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>
+          To create and manage your own XIVAuth applications, you must register your account as a Developer. To do so,
+          please make sure you meet all requirements listed below.
+        </p>
+        <p>
+          You do not need to register as a Developer to use XIVAuth to log in to other services.
+        </p>
+
+        <div class="mb-4">
+          <h5>Requirements</h5>
+          <ul class="list-unstyled ps-3">
+            <li class="mb-2">
+              <% if has_mfa %>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <strong>Multi-factor authentication enabled</strong>
+              <% else %>
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                <strong>Multi-factor authentication required</strong>
+                <div class="ms-4 text-muted small">
+                  <%= link_to "Set up MFA", edit_user_path, class: "text-decoration-none" %> to
+                  protect your account.
+                </div>
+              <% end %>
+            </li>
+            <li class="mb-2">
+              <% if has_verified_character %>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <strong>At least one verified character</strong>
+              <% else %>
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                <strong>Verified character required</strong>
+                <div class="ms-4 text-muted small">
+                  <%= link_to "Register and verify a character", character_registrations_path,
+                              class: "text-decoration-none" %> to prove you're not a bot.
+                </div>
+              <% end %>
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-file-earmark-text"></i>
+              <strong>Accept the Developer Agreement</strong>
+              <div class="ms-4 text-muted small">
+                <%= link_to "Read the Developer Agreement", legal_devagreement_path,
+                            class: "text-decoration-none", target: "_blank", rel: "noopener" %>. A checkbox will be
+                displayed below to confirm you have read and agree to the terms.
+              </div>
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-discord"></i>
+              <strong>Join the XIVAuth Discord (Optional)</strong>
+              <div class="ms-4 text-muted small">
+                While not required, joining the
+                <%= link_to "XIVAuth Discord server", "https://discord.gg/nFPPTcDDgH", class: "text-decoration-none",
+                            target: "_blank", rel: "noopener" %> is highly recommended to get updates and to receive
+                support.
+            </li>
+          </ul>
+        </div>
+
+        <% if all_requirements_met %>
+          <%= form_with url: url_for(controller: "developer/onboarding", action: "enable"), method: :post, local: true do %>
+            <div class="form-check mb-3">
+              <%= check_box_tag :agree, "1", false, class: "form-check-input", id: "agree_dev_terms", required: true %>
+              <label for="agree_dev_terms" class="form-check-label">
+                I have read and agree to the
+                <%= link_to "XIVAuth Developer Agreement", legal_devagreement_path,
+                            class: "text-decoration-none", target: "_blank", rel: "noopener" %>.
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-code-slash"></i> Enable Developer Mode
+            </button>
+          <% end %>
+        <% else %>
+          <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle"></i>
+            Please verify you meet all requirements.
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -23,6 +23,10 @@ Rails.application.routes.draw do
 
       get "join/:code", to: "teams#accept_invite", on: :collection, as: :accept_invite
     end
+
+    resource :onboarding, controller: "onboarding", only: [:show] do
+      post "enable", to: "onboarding#enable"
+    end
   end
 
   namespace "api" do

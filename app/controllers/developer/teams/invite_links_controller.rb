@@ -1,6 +1,8 @@
-class Developer::Teams::InviteLinksController < ApplicationController
+class Developer::Teams::InviteLinksController < Developer::DeveloperPortalController
   before_action :set_team, only: %i[new create]
   before_action :set_invite_link, only: %i[destroy accept_invite]
+
+  skip_before_action :check_developer_role, only: %i[accept_invite]
 
   def new
     @invite_link = @team.invite_links.new

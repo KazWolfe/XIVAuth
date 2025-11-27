@@ -1,0 +1,2 @@
+module Developer::OnboardingHelper
+end

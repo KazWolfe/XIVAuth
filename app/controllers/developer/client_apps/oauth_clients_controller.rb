@@ -1,4 +1,4 @@
-class Developer::ClientApps::OAuthClientsController < ApplicationController
+class Developer::ClientApps::OAuthClientsController < Developer::DeveloperPortalController
   helper Developer::ClientApps::OAuthClientHelper
   layout "portal/base"
 

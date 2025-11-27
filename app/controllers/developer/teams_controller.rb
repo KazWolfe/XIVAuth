@@ -1,4 +1,4 @@
-class Developer::TeamsController < ApplicationController
+class Developer::TeamsController < Developer::DeveloperPortalController
   layout "portal/page"
   include Pagy::Method
 

@@ -38,7 +38,7 @@ class User < ApplicationRecord
 
   # Check if the user has permission to access developer functions, like the ability to register OAuth applications.
   def developer?
-    true
+    self.role?(:developer)
   end
 
   def unverified_character_allowance
