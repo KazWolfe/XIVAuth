@@ -4,9 +4,10 @@
   </div>
 <% end %>
 
+<% is_oauth_only = !current_user.has_password? %>
 <% has_mfa = current_user.requires_mfa? %>
 <% has_verified_character = current_user.character_registrations.verified.any? %>
-<% all_requirements_met = has_mfa && has_verified_character %>
+<% all_requirements_met = (is_oauth_only || has_mfa) && has_verified_character %>
 
 <div class="row">
   <div class="col-12 col-lg-8 mx-auto">
@@ -29,7 +30,10 @@
           <h5>Requirements</h5>
           <ul class="list-unstyled ps-3">
             <li class="mb-2">
-              <% if has_mfa %>
+              <% if is_oauth_only %>
+                <i class="bi bi-slash-circle-fill text-secondary"></i>
+                <strong>Multi-factor authentication not applicable</strong>
+              <% elsif has_mfa %>
                 <i class="bi bi-check-circle-fill text-success"></i>
                 <strong>Multi-factor authentication enabled</strong>
               <% else %>
