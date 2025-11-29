@@ -31,17 +31,17 @@
           <ul class="list-unstyled ps-3">
             <li class="mb-2">
               <% if is_oauth_only %>
-                <i class="bi bi-slash-circle-fill text-secondary"></i>
-                <strong>Multi-factor authentication not applicable</strong>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <strong>Account secured with passwordless</strong>
               <% elsif has_mfa %>
                 <i class="bi bi-check-circle-fill text-success"></i>
-                <strong>Multi-factor authentication enabled</strong>
+                <strong>Account secured with MFA</strong>
               <% else %>
                 <i class="bi bi-x-circle-fill text-danger"></i>
                 <strong>Multi-factor authentication required</strong>
                 <div class="ms-4 text-muted small">
                   <%= link_to "Set up MFA", edit_user_path, class: "text-decoration-none" %> to
-                  protect your account. You may still disable MFA until you've created your first application.
+                  protect your account.
                 </div>
               <% end %>
             </li>

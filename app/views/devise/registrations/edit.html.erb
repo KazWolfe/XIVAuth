@@ -61,6 +61,14 @@
               </h2>
               <div id="collapseChangePassword" class="accordion-collapse collapse <%= 'show' if pwd_open %>" aria-labelledby="headingChangePassword" data-bs-parent="#settingsAccordion">
                 <div class="accordion-body">
+                  <% unless resource.has_password? %>
+                    <p class="text-muted small">
+                      Your account is currently <em>passwordless</em>, meaning you need to use OAuth or a Passkey to
+                      sign in. If you wish to use a password, you can set one here. You will still be able to sign in
+                      with your linked accounts or Passkeys.
+                    </p>
+                  <% end %>
+
                   <!-- Password strength controller wrapper -->
                   <div data-controller="devise--password-strength" data-devise--password-strength-min-score-value="<%= User.min_password_score %>">
                     <div class="mb-3">
