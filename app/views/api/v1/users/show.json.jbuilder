@@ -9,7 +9,7 @@ if @social_identities.present?
   json.social_identities @social_identities, partial: "api/v1/users/social_identity", as: "social_identity"
 end
 
-json.mfa_enabled @user.requires_mfa?
+json.mfa_enabled @user.mfa_enabled_or_passwordless?
 json.verified_characters @user.character_registrations.verified.count.positive?
 
 json.created_at @user.created_at

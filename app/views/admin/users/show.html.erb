@@ -93,7 +93,7 @@
             <i class="bi bi-envelope"></i> Send Password Reset
           <% end %>
           <%= button_to mfa_admin_user_path(@user), method: :delete, class: 'btn btn-outline-danger', form_class: 'd-inline-block',
-                        disabled: !@user.requires_mfa?, title: 'Remove MFA' do %>
+                        disabled: !@user.mfa_enabled?, title: 'Remove MFA' do %>
             <i class="bi bi-unlock"></i> Remove MFA
           <% end %>
         </div>

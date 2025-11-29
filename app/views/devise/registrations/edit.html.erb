@@ -11,7 +11,7 @@
           <h2 class="h5 mb-0">Profile Information</h2>
         </div>
       </div>
-      <%= form_for(resource, as: resource_name, url: user_path(resource_name), html: { method: :put }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: user_path, html: { method: :put }) do |f| %>
         <div class="card-body">
           <%= render "devise/shared/error_messages", resource: resource %>
 
@@ -52,7 +52,11 @@
             <div class="accordion-item">
               <h2 class="accordion-header" id="headingChangePassword">
                 <button class="accordion-button <%= 'collapsed' unless pwd_open %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChangePassword" aria-expanded="<%= pwd_open %>" aria-controls="collapseChangePassword">
-                  <i class="bi bi-shield-lock me-2"></i> Change password
+                  <% if resource.has_password? %>
+                    <i class="bi bi-shield-lock me-2"></i> Change password
+                  <% else %>
+                    <i class="bi bi-shield-lock-fill me-2"></i> Set password
+                  <% end %>
                 </button>
               </h2>
               <div id="collapseChangePassword" class="accordion-collapse collapse <%= 'show' if pwd_open %>" aria-labelledby="headingChangePassword" data-bs-parent="#settingsAccordion">
@@ -88,11 +92,14 @@
             </div>
           </div>
 
-          <div class="mb-3">
-            <%= f.label :current_password, class: "form-label fw-semibold" %>
-            <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control", aria: { describedby: "currentPasswordHelp" } %>
-            <div id="currentPasswordHelp" class="form-text">We need your current password to confirm your changes.</div>
-          </div>
+          <% if resource.has_password? %>
+            <div class="mb-3">
+              <%= f.label :current_password, class: "form-label fw-semibold" %>
+              <%= f.password_field :current_password, autocomplete: "current-password", class: "form-control", aria: { describedby: "currentPasswordHelp" } %>
+              <div id="currentPasswordHelp" class="form-text">We need your current password to confirm your changes.
+              </div>
+            </div>
+          <% end %>
         </div>
         <div class="card-footer bg-transparent d-flex justify-content-end">
           <%= f.submit "Save Changes", class: "btn btn-primary" %>

@@ -16,7 +16,7 @@ class Developer::OnboardingController < Developer::DeveloperPortalController
       return
     end
 
-    unless !user.has_password? || user.requires_mfa?
+    unless user.mfa_enabled_or_passwordless?
       redirect_to developer_onboarding_path, alert: "Multi-factor authentication is required to enable Developer Mode."
       return
     end

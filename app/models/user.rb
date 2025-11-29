@@ -45,8 +45,15 @@ class User < ApplicationRecord
     5
   end
 
-  def requires_mfa?
+  # Checks whether the user has MFA defined on their account.
+  def mfa_enabled?
     webauthn_credentials.any? || totp_credential&.otp_enabled || false
+  end
+
+  # Check whether the user is passwordless or has MFA.
+  # Used for activities that require MFA.
+  def mfa_enabled_or_passwordless?
+    !has_password? || mfa_enabled?
   end
 
   # Check if the user has a defined encrypted password. If not, this user is considered oauth-only and cannot

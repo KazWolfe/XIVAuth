@@ -6,13 +6,13 @@ RSpec.describe ClientApplication, type: :model do
 
     context 'public applications' do
       it 'allows access for any user' do
-        app = FactoryBot.create(:client_application, owner:  FactoryBot.create(:user), private: false)
+        app = FactoryBot.create(:client_application, owner: FactoryBot.create(:user, :developer), private: false)
 
         expect(app.usable_by?(random_user)).to be true
       end
 
       it 'does not evaluate ACL entries' do
-        app = FactoryBot.create(:client_application, owner:  FactoryBot.create(:user), private: false)
+        app = FactoryBot.create(:client_application, owner: FactoryBot.create(:user, :developer), private: false)
         FactoryBot.create(:client_application_acl, application: app, principal: random_user, deny: true)
 
         expect(app.usable_by?(random_user)).to be true
@@ -21,12 +21,12 @@ RSpec.describe ClientApplication, type: :model do
 
     context 'unowned application (private)' do
       it "does not allow access without ACL rules" do
-        app = FactoryBot.create(:client_application, owner:  nil, private: true)
+        app = FactoryBot.create(:client_application, owner: nil, private: true)
         expect(app.usable_by?(random_user)).to be false
       end
 
       it "evaluates ACL rules" do
-        app = FactoryBot.create(:client_application, owner:  nil, private: true)
+        app = FactoryBot.create(:client_application, owner: nil, private: true)
         FactoryBot.create(:client_application_acl, application: app, principal: random_user, deny: false)
 
         expect(app.usable_by?(random_user)).to be true
@@ -35,21 +35,21 @@ RSpec.describe ClientApplication, type: :model do
 
     context 'owned by a user (private)' do
       it 'allows access for the owning user even when private' do
-        owner = FactoryBot.create(:user)
+        owner = FactoryBot.create(:user, :developer)
         app = FactoryBot.create(:client_application, owner: owner, private: true)
 
         expect(app.usable_by?(owner)).to be true
       end
 
       it "does not allow access for other users when private" do
-        owner = FactoryBot.create(:user)
+        owner = FactoryBot.create(:user, :developer)
         app = FactoryBot.create(:client_application, owner: owner, private: true)
 
         expect(app.usable_by?(random_user)).to be false
       end
 
       it "allows users to be invited via ACL" do
-        owner = FactoryBot.create(:user)
+        owner = FactoryBot.create(:user, :developer)
         app = FactoryBot.create(:client_application, owner: owner, private: true)
         FactoryBot.create(:client_application_acl, application: app, principal: random_user, deny: false)
 
@@ -57,7 +57,7 @@ RSpec.describe ClientApplication, type: :model do
       end
 
       it "allows the owner even with ACL deny rules" do
-        owner = FactoryBot.create(:user)
+        owner = FactoryBot.create(:user, :developer)
         app = FactoryBot.create(:client_application, owner: owner, private: true)
         FactoryBot.create(:client_application_acl, application: app, principal: owner, deny: true)
 
@@ -122,7 +122,7 @@ RSpec.describe ClientApplication, type: :model do
     end
 
     context 'team invited to app via ACL' do
-      let!(:owner_user) { FactoryBot.create(:user) }
+      let!(:owner_user) { FactoryBot.create(:user, :developer) }
       let!(:parent_team) { FactoryBot.create(:team) }
       let!(:child_team) { FactoryBot.create(:team, parent: parent_team) }
       let!(:grandchild_team) { FactoryBot.create(:team, parent: child_team) }
@@ -279,6 +279,94 @@ RSpec.describe ClientApplication, type: :model do
 
       expect(first).to be_valid
       expect(second).to be_valid
+    end
+  end
+
+  describe '#validate_owner_has_mfa' do
+    context 'when owner is a passwordless user' do
+      it 'allows creation of an application' do
+        passwordless_user = FactoryBot.create(:user, :passwordless)
+        app = FactoryBot.build(:client_application, owner: passwordless_user)
+
+        expect(app).to be_valid
+        expect(app.save).to be true
+      end
+    end
+
+    context 'when owner is a user with password and MFA enabled' do
+      it 'allows creation with TOTP credential' do
+        user_with_totp = FactoryBot.create(:user)
+        FactoryBot.create(:users_totp_credential, :enabled, user: user_with_totp)
+
+        app = FactoryBot.build(:client_application, owner: user_with_totp)
+
+        expect(app).to be_valid
+        expect(app.save).to be true
+      end
+
+      it 'allows creation with WebAuthn credential' do
+        user_with_webauthn = FactoryBot.create(:user)
+        FactoryBot.create(:users_webauthn_credential, user: user_with_webauthn)
+
+        app = FactoryBot.build(:client_application, owner: user_with_webauthn)
+
+        expect(app).to be_valid
+        expect(app.save).to be true
+      end
+
+      it 'allows creation with both TOTP and WebAuthn credentials' do
+        user_with_both = FactoryBot.create(:user, password: 'SecurePassword123!')
+        FactoryBot.create(:users_totp_credential, :enabled, user: user_with_both)
+        FactoryBot.create(:users_webauthn_credential, user: user_with_both)
+
+        app = FactoryBot.build(:client_application, owner: user_with_both)
+
+        expect(app).to be_valid
+        expect(app.save).to be true
+      end
+    end
+
+    context 'when owner is a user with password but without MFA' do
+      it 'prevents creation and adds validation error' do
+        user_without_mfa = FactoryBot.create(:user, password: 'SecurePassword123!')
+
+        app = FactoryBot.build(:client_application, owner: user_without_mfa)
+
+        expect(app).to_not be_valid
+        expect(app.errors[:owner]).to include("must be protected with MFA.")
+        expect(app.save).to be false
+      end
+
+      it 'prevents creation even with disabled TOTP credential' do
+        user_with_disabled_totp = FactoryBot.create(:user, password: 'SecurePassword123!')
+        FactoryBot.create(:users_totp_credential, user: user_with_disabled_totp, otp_enabled: false)
+
+        app = FactoryBot.build(:client_application, owner: user_with_disabled_totp)
+
+        expect(app).to_not be_valid
+        expect(app.errors[:owner]).to include("must be protected with MFA.")
+        expect(app.save).to be false
+      end
+    end
+
+    context 'when owner is a team' do
+      it 'allows creation without MFA validation' do
+        team = FactoryBot.create(:team)
+
+        app = FactoryBot.build(:client_application, owner: team)
+
+        expect(app).to be_valid
+        expect(app.save).to be true
+      end
+    end
+
+    context 'when owner is nil' do
+      it 'allows creation (no MFA validation for ownerless apps)' do
+        app = FactoryBot.build(:client_application, owner: nil)
+
+        expect(app).to be_valid
+        expect(app.save).to be true
+      end
     end
   end
 end

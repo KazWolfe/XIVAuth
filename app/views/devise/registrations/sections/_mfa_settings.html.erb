@@ -5,7 +5,7 @@
         <i class="bi bi-shield-lock me-2 text-primary fs-5" aria-hidden="true"></i>
         <h3 class="h5 mb-0">Multi-Factor Authentication</h3>
       </div>
-      <% if resource.requires_mfa? %>
+      <% if resource.mfa_enabled? %>
         <span class="badge bg-success">MFA Enabled</span>
       <% else %>
         <span class="badge bg-secondary">MFA Disabled</span>
@@ -13,13 +13,15 @@
     </div>
     <div class="card-body">
       <div class="btn-toolbar gap-2 mb-3" role="toolbar">
-        <% if resource.totp_credential.present? %>
-          <%= button_to user_totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
-            <i class="bi bi-calculator"></i> Remove OTP Code
-          <% end %>
-        <% else %>
-          <%= button_to new_user_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
-            <i class="bi bi-calculator"></i> Add OTP Code
+        <% if resource.has_password? %>
+          <% if resource.totp_credential.present? %>
+            <%= button_to user_totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
+              <i class="bi bi-calculator"></i> Remove OTP Code
+            <% end %>
+          <% else %>
+            <%= button_to new_user_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
+              <i class="bi bi-calculator"></i> Add OTP Code
+            <% end %>
           <% end %>
         <% end %>
 

@@ -24,6 +24,8 @@ class ClientApplication < ApplicationRecord
   validates_associated :profile
   accepts_nested_attributes_for :profile, update_only: true
 
+  validate :validate_owner_has_mfa, on: :create
+
   def profile
     super || build_profile
   end
@@ -56,5 +58,13 @@ class ClientApplication < ApplicationRecord
     end
 
     false
+  end
+
+  def validate_owner_has_mfa
+    return unless owner.is_a?(User)
+
+    unless owner.mfa_enabled_or_passwordless?
+      errors.add(:owner, :mfa_required, message: "must be protected with MFA.")
+    end
   end
 end

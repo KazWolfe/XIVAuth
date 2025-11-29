@@ -61,7 +61,7 @@ class Users::SessionsController < Devise::SessionsController
       @user = User.find_by(email: user_params[:email])
       self.resource = @user
 
-      if self.resource&.valid_password?(user_params[:password]) && self.resource&.requires_mfa?
+      if self.resource&.valid_password?(user_params[:password]) && self.resource&.mfa_enabled?
         reset_mfa_attempt!
         prompt_for_mfa(status_code: :unprocessable_content )
       else

@@ -55,11 +55,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected def update_resource(resource, params)
     # block updates of protected fields
-    return super if params[:password].present? || params[:password_confirmation].present?
-    return super if params[:email].present? && params[:email] != current_user.email
+    if resource.has_password?
+      return super if params[:password].present? || params[:password_confirmation].present?
+      return super if params[:email].present? && params[:email] != current_user.email
+    end
 
-    # NOTE: we're filtering out allowable attributes early so this is safe-ish. may cause headaches later though.
-    resource.update_without_password(params.slice(:profile_attributes))
+    # NOTE: Devise filters params for us, so this is safe.
+    resource.update_without_password(params)
   end
 
   # If you have extra params to permit, append them to the sanitizer.
@@ -80,6 +82,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # The path used after sign up for inactive accounts.
   def after_inactive_sign_up_path_for(resource)
     new_user_session_path
+  end
+
+  protected def after_update_path_for(resource)
+    edit_user_path
   end
 
   protected def check_registration_allowed
