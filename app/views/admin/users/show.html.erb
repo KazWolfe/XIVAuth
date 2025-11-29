@@ -37,6 +37,9 @@
               <% end %>
               <% if false %><span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Banned</span>
               <% end %>
+              <% if @user.roles.blank? %>
+                <span class="text-muted"><i>No roles present</i></span>
+              <% end %>
             </td>
           </tr>
           <tr>

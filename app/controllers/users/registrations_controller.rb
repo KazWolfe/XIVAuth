@@ -54,10 +54,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   protected def update_resource(resource, params)
-    # block updates of protected fields
+    # Block update of protected fields (email, password) if the user has a password.
     if resource.has_password?
       return super if params[:password].present? || params[:password_confirmation].present?
       return super if params[:email].present? && params[:email] != current_user.email
+
+      # If the user provides a current_password, validate it anyways.
+      return super if params[:current_password].present?
     end
 
     # NOTE: Devise filters params for us, so this is safe.
