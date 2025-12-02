@@ -6,6 +6,12 @@ module Users::AuthenticatesWithMFA
       authenticate_with_totp
     elsif mfa_params[:webauthn_response].present? && session.dig("mfa")
       authenticate_with_webauthn
+    elsif mfa_params[:bypass_mfa].present? && Rails.env.development? && session.dig("mfa")
+      # local dev gets to bypass.
+      handle_mfa_success
+    else
+      logger.error("MFA authentication attempt failed - missing params or no session data?")
+      handle_mfa_failure("setup", message: "invalid context")
     end
   end
 
@@ -61,6 +67,6 @@ module Users::AuthenticatesWithMFA
   end
 
   def mfa_params
-    params.permit(mfa: [:otp_attempt, :webauthn_response]).fetch(:mfa, {})
+    params.permit(mfa: [:otp_attempt, :webauthn_response, :bypass_mfa]).fetch(:mfa, {})
   end
 end
