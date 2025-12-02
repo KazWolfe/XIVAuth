@@ -1,0 +1,86 @@
+<% content_for(:page_header) do %>
+  <div>
+    <h1>Access Error</h1>
+  </div>
+<% end %>
+
+<div class="row">
+  <div class="col-12 col-lg-8 mx-auto">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <div class="header-title">
+          <h4 class="card-title">Developer Requirements Not Met</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>
+          Your XIVAuth account no longer meets the requirements to create and manage Apps. Please review the list below
+          and ensure you meet all requirements.
+        </p>
+        <p>
+          Apps you've already created will continue to work but may not be edited, and new apps may not be created until
+          this issue is resolved.
+        </p>
+
+        <div class="mb-4">
+          <h5>Requirements</h5>
+          <ul class="list-unstyled ps-3">
+            <li class="mb-2">
+              <% if !current_user.has_password? %>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <strong>Account secured with passwordless</strong>
+              <% elsif current_user.mfa_enabled? %>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <strong>Account secured with MFA</strong>
+              <% else %>
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                <strong>Multi-factor authentication required</strong>
+                <div class="ms-4 text-muted small">
+                  <%= link_to "Set up MFA", edit_user_path, class: "text-decoration-none" %> to
+                  protect your account.
+                </div>
+              <% end %>
+            </li>
+            <li class="mb-2">
+              <% if current_user.character_registrations.verified.any? %>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <strong>At least one verified character</strong>
+              <% else %>
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                <strong>Verified character required</strong>
+                <div class="ms-4 text-muted small">
+                  <%= link_to "Register and verify a character", character_registrations_path,
+                              class: "text-decoration-none" %> to prove you're not a bot.
+                </div>
+              <% end %>
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-file-earmark-text"></i>
+              <strong>Accept the Developer Agreement</strong>
+              <div class="ms-4 text-muted small">
+                <%= link_to "Read the Developer Agreement", legal_devagreement_path,
+                            class: "text-decoration-none", target: "_blank" %>.
+              </div>
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-discord"></i>
+              <strong>Join the XIVAuth Discord (Optional)</strong>
+              <div class="ms-4 text-muted small">
+                While not required, joining the
+                <%= link_to "XIVAuth Discord server", "https://discord.gg/nFPPTcDDgH", class: "text-decoration-none",
+                            target: "_blank", rel: "noopener" %> is highly recommended to get updates and to receive
+                support.
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle"></i>
+          Please address the above issues to regain Developer access.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

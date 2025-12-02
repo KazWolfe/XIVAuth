@@ -34,13 +34,25 @@ class Admin::UsersController < Admin::AdminController
   end
 
   def send_password_reset
-    if @user.send_reset_password_instructions
-      flash[:notice] = "A password reset email was sent to #{@user.email}."
+    token = @user.send_reset_password_instructions
+
+    if token
+      respond_to do |format|
+        format.turbo_stream do
+          render partial: "admin/users/reset_password_modal", locals: {
+            reset_password_token: reset_user_password_url(reset_password_token: token),
+            link_ttl: Devise.reset_password_within.inspect
+          }
+        end
+        format.html do
+          flash[:notice] = "A password reset email was sent to #{@user.email}."
+          redirect_back_or_to admin_user_path(@user)
+        end
+      end
     else
       flash[:error] = "Could not dispatch a password reset email."
+      redirect_back_or_to admin_user_path(@user)
     end
-
-    redirect_back_or_to admin_user_path(@user)
   end
 
   def confirm

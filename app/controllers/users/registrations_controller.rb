@@ -67,22 +67,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
     resource.update_without_password(params)
   end
 
-  # If you have extra params to permit, append them to the sanitizer.
   protected def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: [profile_attributes: [:display_name]])
   end
 
-  # If you have extra params to permit, append them to the sanitizer.
   protected def configure_account_update_params
     devise_parameter_sanitizer.permit(:account_update, keys: [profile_attributes: [:display_name]])
   end
 
-  # The path used after sign up.
   def after_sign_up_path_for(resource)
     character_registrations_path
   end
 
-  # The path used after sign up for inactive accounts.
   def after_inactive_sign_up_path_for(resource)
     new_user_session_path
   end
