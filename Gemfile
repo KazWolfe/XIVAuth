@@ -71,7 +71,7 @@ gem "flipper-ui", "~> 1.3"
 
 # Internal security
 gem "jwt", "~> 2.9.0"
-gem "omniauth-rails_csrf_protection", "~> 1.0.1"
+gem "omniauth-rails_csrf_protection", "~> 2.0"
 gem "rails_cloudflare_turnstile", "~> 0.4"
 gem "rbnacl", "~> 7.1.1"
 
