@@ -86,6 +86,16 @@ class User < ApplicationRecord
     super
   end
 
+  def set_initial_password(password, confirmation)
+    # This method cannot be used to set a new password.
+    return false if has_password?
+
+    update(
+      password: password,
+      password_confirmation: confirmation
+    )
+  end
+
   # def skip_password_complexity?
   #   false
   # end

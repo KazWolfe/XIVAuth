@@ -59,11 +59,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
       return super if params[:password].present? || params[:password_confirmation].present?
       return super if params[:email].present? && params[:email] != current_user.email
 
-      # If the user provides a current_password, validate it anyways.
+      # If the user provides a current_password, validate it regardless.
       return super if params[:current_password].present?
+    else
+      if params[:password].present?
+        resource.set_initial_password(params[:password], params[:password_confirmation])
+      end
     end
 
     # NOTE: Devise filters params for us, so this is safe.
+    params.delete(:current_password)
     resource.update_without_password(params)
   end
 

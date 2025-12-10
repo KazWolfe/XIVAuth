@@ -21,6 +21,9 @@ gem "propshaft"
 gem "stimulus-rails"
 gem "turbo-rails"
 
+# Asset management
+gem "shrine", "~> 3.6"
+
 # JSON API
 gem "jbuilder"
 
