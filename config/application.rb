@@ -42,6 +42,8 @@ module App
       Rails.application.config.credentials.content_path = Rails.root.join("config/credentials/#{ENV['APP_ENV']}.yml.enc")
     end
 
+    config.active_record.encryption.support_sha1_for_non_deterministic_encryption = true
+
     config.generators do |generate|
       generate.orm :active_record, primary_key_type: :uuid
     end
