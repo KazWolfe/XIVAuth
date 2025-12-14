@@ -30,6 +30,17 @@
         <% end %>
       </div>
 
+      <% if resource.totp_credential.present? %>
+        <div class="pb-2">
+          <span class="text-muted small">
+            <%= resource.totp_credential.otp_backup_codes.count %> / <%= User::TotpCredential::BACKUP_CODE_COUNT %>
+            OTP backup codes left.
+            <%= link_to "Regenerate?", regenerate_backup_user_totp_credential_path,
+                        data: { "turbo-stream": true, "turbo-method": :post } %>
+          </span>
+        </div>
+      <% end %>
+
       <% if resource.webauthn_credentials.present? %>
         <h5 class="h6">Registered Security Keys</h5>
         <div class="table-responsive">
@@ -90,7 +101,13 @@
           </table>
         </div>
       <% else %>
-        <p class="text-muted mb-0">No security keys registered yet.</p>
+        <div class="text-center">
+          <i class="bi bi-usb-drive text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
+          <p class="text-muted mb-0 mt-2">
+            No security keys yet. Add one to enable passwordless login or the next generation of two-factor
+            authentication.
+          </p>
+        </div>
       <% end %>
     </div>
   </div>

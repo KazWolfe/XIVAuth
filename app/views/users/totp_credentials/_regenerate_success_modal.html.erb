@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h5 class="modal-title">Regenerate TOTP Backups</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <p>
+    <strong>Great success!</strong> Your TOTP backup codes were regenerated. Any old codes are now invalid.
+  </p>
+  <p>
+    Please take a minute to save the below single-use recovery codes.
+  </p>
+  <ul class="text-center list-unstyled">
+    <% @backup_codes.each do |code| %>
+      <li><code><%= code %></code></li>
+    <% end %>
+  </ul>
+
+  <p>
+    If you lose your authenticator, you will not be able to log in without one of these codes.
+    <span class="text-danger">These recovery codes will not be shown again!</span>
+  </p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+</div>

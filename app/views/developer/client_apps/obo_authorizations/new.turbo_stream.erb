@@ -1,0 +1,30 @@
+<%= turbo_stream.append "body" do %>
+  <%= render 'layouts/components/remote_modal', title: 'Add Authorized Party', modal_id: "add_azp_for_" do %>
+    <%= form_with modal: @aud_app, url: developer_application_obo_authorizations_path(@aud_app) do |f| %>
+      <div class="modal-header">
+        <h5 class="modal-title">Add OBO Authorization</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          Provide the UUID of the application that should be given permissions to request JWT tokens on behalf of this
+          application. The application provided must be public or visible to you.
+        </p>
+        <div class="form-group row">
+          <div class="mb-3">
+            <label class="form-label fw-semibold" for="azp_id">Authorized App ID</label>
+            <div class="input-group">
+              <%= f.text_field :azp_id, id: 'azp_id', class: 'form-control', required: true %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-secondary" data-bs-dismiss="modal">Close</button>
+        <%= f.submit "Authorize App", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,12 +1,12 @@
-<%= form_with(model: @totp_credential, method: :delete, url: user_totp_credential_path) do |f| %>
+<%= form_with(model: @totp_credential, method: :post, url: regenerate_backup_user_totp_credential_path) do |f| %>
   <div class="modal-header">
-    <h5 class="modal-title">Remove TOTP Credential</h5>
+    <h5 class="modal-title">Regenerate TOTP Backups</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
     <p>
-      To remove your TOTP credential, you must authenticate with it one last time. If you no longer have access
-      to your authenticator, you may use a backup code.
+      To regenerate your TOTP backup codes, you will need to authenticate with your current authenticator or a backup
+      code.
     </p>
     <div class="mb-3">
       <%= f.label :otp_attempt, "Current OTP Code", class: "form-label fw-semibold" %>
@@ -16,6 +16,6 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Cancel</button>
-    <%= f.submit "Remove Authenticator", class: "btn btn-danger" %>
+    <%= f.submit "Regenerate Authenticator", class: "btn btn-primary" %>
   </div>
 <% end %>

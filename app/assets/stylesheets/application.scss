@@ -67,6 +67,7 @@ body > .container:not(.toast-container) {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+  z-index: -10;
 
   [data-bs-theme="dark"] & {
     background-image: url("/backgrounds/limsa_night.png");

@@ -1,8 +1,13 @@
 class User::TotpCredential < ApplicationRecord
+  BACKUP_CODE_COUNT = 5
+  BACKUP_CODE_BYTELEN = 6
+
   belongs_to :user
 
   devise :two_factor_authenticatable,
-         :two_factor_backupable, otp_backup_code_length: 16, otp_number_of_backup_codes: 5
+         :two_factor_backupable,
+         otp_backup_code_length: BACKUP_CODE_BYTELEN,
+         otp_number_of_backup_codes: BACKUP_CODE_COUNT
 
   def validate_and_consume_otp_or_backup!(code)
     return true if validate_and_consume_otp!(code)

@@ -153,7 +153,10 @@
       <div class="card-header">
         <div class="d-flex justify-content-between mb-2 align-items-center">
           <h3><i class="bi bi-passport"></i> On-Behalf-Of Authorizations</h3>
-          <button class="btn btn-primary" disabled>Add</button>
+          <%= button_to new_developer_application_obo_authorization_path(@application), class: "btn btn-primary",
+                        method: :get, data: { turbo_stream: "remote_modal" } do %>
+            Add
+          <% end %>
         </div>
         <p class="text-muted small">
           An on-behalf-of authorization allows another app to request a JWT attestation intended for this app. Any
@@ -172,8 +175,7 @@
           <p class="text-center">To remove authorizations, please contact an XIVAuth developer.</p>
         <% else %>
           <div class="text-center">
-            No authorizations added.<br>
-            To request one, please contact an XIVAuth developer.
+            No authorizations added.
           </div>
         <% end %>
       </div>
@@ -188,8 +190,7 @@
         </div>
         <p class="text-muted small">
           The Access Control List allows controlling which users and teams can use this app outside the owning user or
-          team. This is useful for complex apps that have advanced access requirements. ACLs are only supported
-          on private apps.
+          team. This is useful for complex apps that have advanced access requirements.
         </p>
       </div>
       <div class="card-body">

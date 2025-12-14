@@ -15,6 +15,9 @@ Rails.application.routes.draw do
       resources :oauth_clients, controller: "client_apps/oauth_clients", shallow: true do
         post "regenerate_secret", to: "client_apps/oauth_clients#regenerate", on: :member
       end
+
+      resources :obo_authorizations, controller: "client_apps/obo_authorizations", only: %i[new create destroy],
+                param: :azp_id
     end
 
     resources :teams, controller: "teams" do
@@ -134,7 +137,9 @@ Rails.application.routes.draw do
       resources :social_identities, path: "identities", controller: "users/social_identities", only: [:destroy]
       resources :webauthn_credentials, path: "webauthn", controller: "users/webauthn_credentials",
                 only: %i[new create destroy]
-      resource :totp_credential, path: "totp", controller: "users/totp_credentials", only: %i[new create destroy]
+      resource :totp_credential, path: "totp", controller: "users/totp_credentials", only: %i[new create destroy] do
+        post :regenerate_backup, to: "users/totp_credentials#regenerate_backup"
+      end
       resources :oauth_authorizations, path: "authorizations", controller: "users/oauth_authorizations", only: %i[index destroy]
     end
   end

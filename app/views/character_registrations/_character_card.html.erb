@@ -1,9 +1,9 @@
 <% character = character_registration.character %>
 <% card_state = if character_registration.verified?
-                    "ok"
-                  elsif character.refresh_fail_reason.present?
-                    "warning"
-                  end %>
+                  "ok"
+                elsif character.refresh_fail_reason.present?
+                  "warning"
+                end %>
 
 <div class="col-md-6 col-xl-4 mb-2" id="<%= dom_id character_registration %>">
   <div class="card card-animated stateful-card-border" data-state="<%= card_state || "" %>">
@@ -47,19 +47,25 @@
           <ul class="dropdown-menu" aria-labelledby="actionsDropdown">
             <% if character.stale? %>
               <%= button_to character_registration_refresh_path(character_registration), class: 'dropdown-item' do %>
-                <i class="bi bi-arrow-clockwise"></i> Refresh Character
+                <span class="d-block">
+                  <i class="bi bi-arrow-clockwise"></i> Refresh Character
+                </span>
               <% end %>
             <% end %>
             <% if lower_environment? %>
               <% if character_registration.verified? %>
                 <%= button_to character_registration_verify_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
-                  <i class="bi bi-patch-minus"></i> Unverify Character
+                  <span class="d-block">
+                    <i class="bi bi-patch-minus"></i> Unverify Character
+                  </span>
                 <% end %>
               <% end %>
             <% end %>
             <li>
               <%= button_to character_registration_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
-                <i class="bi bi-trash"></i> Delete Character
+                <span class="d-block">
+                  <i class="bi bi-trash"></i> Delete Character
+                </span>
               <% end %>
             </li>
           </ul>

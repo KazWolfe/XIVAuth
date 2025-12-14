@@ -18,12 +18,16 @@
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
           <li>
             <a class="dropdown-item" href="<%= edit_user_path %>">
-              <i class="bi bi-person me-2"></i> Profile
+              <span class="d-block">
+                <i class="bi bi-person me-2"></i> Profile
+              </span>
             </a>
           </li>
           <li>
             <%= link_to destroy_user_session_path, class: "dropdown-item text-danger", data: { "turbo-method": :delete } do %>
-              <i class="bi bi-box-arrow-left me-2"></i> Log Out
+              <span class="d-block">
+                <i class="bi bi-box-arrow-left me-2"></i> Log Out
+              </span>
             <% end %>
           </li>
         </ul>

@@ -171,7 +171,10 @@
     transition: all 0.15s ease-in-out;
 
     &:hover {
-      transform: translateX(4px);
+      // Note: only translate children to avoid the entire gradient shifting right.
+      > * {
+        transform: translateX(4px);
+      }
 
       [data-bs-theme="light"] & {
         background: linear-gradient(

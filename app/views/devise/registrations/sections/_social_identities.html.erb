@@ -1,0 +1,68 @@
+<div class="col-md-6">
+  <div class="card h-100">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-link-45deg me-2 text-primary fs-5" aria-hidden="true"></i>
+        <h2 class="h5 mb-0">Linked Accounts</h2>
+      </div>
+      <%- if devise_mapping.omniauthable? %>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-add"></i> Link
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <%- resource_class.omniauth_providers.each do |provider| %>
+              <li>
+                <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false }, class: "dropdown-item" do %>
+                  <span class="d-block">
+                    <i class="fab fa-<%= provider %> me-1 fa-fw"></i>
+                    Add <%= OmniAuth::Utils.camelize(provider) %>
+                  </span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+    <div class="card-body">
+      <% if resource.social_identities.present? %>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+            <tr>
+              <th scope="col">Provider</th>
+              <th scope="col">Name</th>
+              <th scope="col">External ID</th>
+              <th scope="col" class="text-end"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% resource.social_identities.each do |identity| %>
+              <tr>
+                <td><i class="fab fa-<%= identity.provider %> fa-fw me-1"></i> <%= identity.provider.humanize %>
+                </td>
+                <td><%= identity.friendly_name %></td>
+                <td class="font-monospace"><%= identity.external_id %></td>
+                <td class="text-end">
+                  <%= button_to user_social_identity_path(identity), method: :delete, class: "btn btn-sm btn-danger" do %>
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                    <span class="visually-hidden">Unlink <%= identity.provider.humanize %> identity</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center py-4">
+          <i class="bi bi-link-45deg text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
+          <p class="text-muted mb-0 mt-2">
+            No linked identities yet. Link accounts for faster sign-in and app integration features.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
