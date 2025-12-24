@@ -8,8 +8,9 @@ Sentry.init do |config|
     config.release = "git-#{ENV["RAILWAY_GIT_COMMIT_SHA"][..8]}+railway"
   end
 
-  # set the instrumenter to use OpenTelemetry instead of Sentry
-  # config.instrumenter = :otel if defined?(OpenTelemetry) && defined?(Sentry::OpenTelemetry)
+  if defined?(OpenTelemetry) && defined?(Sentry::OpenTelemetry)
+    config.instrumenter = :otel
+  end
   
   config.traces_sample_rate = 0.1
   config.profiles_sample_rate = 0.1
