@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.19
 
-ARG RUBY_VERSION=3.4.7
+ARG RUBY_VERSION=3.4.8
 FROM ruby:${RUBY_VERSION}-alpine AS base
 
 WORKDIR /app
