@@ -44,7 +44,6 @@ class ErrorsController < ActionController::Base
   end
 
   private def get_internal_trace_id
-    return OpenTelemetry::Trace.current_span.context.hex_trace_id if defined?(OpenTelemetry)
     return Sentry.get_current_scope&.get_span&.trace_id if defined?(Sentry)
 
     nil

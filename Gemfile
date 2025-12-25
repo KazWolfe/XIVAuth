@@ -81,14 +81,7 @@ gem "faraday", "~> 2.9"
 # Better logging
 gem "rails_semantic_logger", "~> 4.17"
 
-# Observability (OTel)
-gem "opentelemetry-instrumentation-faraday", "~> 0.24"
-gem "opentelemetry-instrumentation-rails", "~> 0.34"
-gem "opentelemetry-instrumentation-sidekiq", "~> 0.25"
-gem "opentelemetry-sdk", "~> 1.6"
-
 # Observability (Sentry) - temp for now
-# gem "sentry-opentelemetry", "~> 5.18"
 gem "sentry-rails", "~> 6.0"
 gem "sentry-ruby", "~> 6.0"
 gem "sentry-sidekiq", "~> 6.0"

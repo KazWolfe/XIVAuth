@@ -5,11 +5,7 @@ Sentry.init do |config|
 
   # determine release based on location
   if ENV["RAILWAY_SERVICE_ID"].present? && ENV["RAILWAY_GIT_COMMIT_SHA"].present?
-    config.release = "git-#{ENV["RAILWAY_GIT_COMMIT_SHA"][..8]}+railway"
-  end
-
-  if defined?(OpenTelemetry) && defined?(Sentry::OpenTelemetry)
-    config.instrumenter = :otel
+    config.release = ENV["RAILWAY_GIT_COMMIT_SHA"]
   end
   
   config.traces_sample_rate = 0.1
