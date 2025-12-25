@@ -24,7 +24,7 @@ services:
       - redis
 
   db:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     env_file:
       - development.env
       - .env
@@ -36,7 +36,7 @@ services:
       - 5432
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     env_file: .env
     volumes:
       - redis-data:/data
