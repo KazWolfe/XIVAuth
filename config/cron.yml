@@ -17,3 +17,8 @@ sync_webauthn_aaguids:
   cron: 'every thursday at 1 am in America/Los_Angeles'
   class: 'Webauthn::SyncAaguidsJob'
   queue: 'cronjobs'
+
+refresh_world_list:
+  cron: 'every day at 3 am in America/Los_Angeles'
+  class: 'FFXIV::RefreshWorldListJob'
+  queue: 'cronjobs'

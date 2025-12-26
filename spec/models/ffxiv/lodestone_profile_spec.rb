@@ -77,5 +77,15 @@ RSpec.describe FFXIV::LodestoneProfile, type: :model do
       expect(profile.failure_reason).to eq(:not_found)
       expect(profile.errors[:base].join).to match(/could not be found/i)
     end
+
+    it "detects Lodestone maintenance" do
+      flarestone_response = load_fixture("maintenance.json")
+      profile = described_class.new(12_345_678, json_object: flarestone_response)
+
+      expect(profile).to be_invalid
+      expect(profile.failure_reason).to eq(:lodestone_maintenance)
+      expect(profile.errors[:base].join).to match(/maintenance/i)
+      expect(profile.errors.where(:base).first.type).to eq(:maintenance)
+    end
   end
 end

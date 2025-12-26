@@ -1,6 +1,10 @@
 class FFXIV::Character < ApplicationRecord
   validates :lodestone_id, presence: true, uniqueness: true
-  validate :lodestone_data_ok?, on: :create  # failures during standard updates are handled differently.
+  
+  # We don't care about failures on updates, as the existing data is still "valid"
+  # In the update case (the only other time @lodestone_data is set), we already have valid data
+  # and handle the failure accordingly.
+  validate :lodestone_data_ok?, on: :create
 
   validates :name, presence: true
   validates :home_world, presence: true
@@ -53,8 +57,8 @@ class FFXIV::Character < ApplicationRecord
       return
     end
 
-    # Note: ALWAYS populated fields, even if the character profile is private. Hidden characters won't be considered
-    # valid, so we don't need to worry about that case.
+    # If we're at this point, the data is "valid" even if the profile is private. We can update what we got at the very
+    # least.
     self.name = @lodestone_data.name
     self.home_world = @lodestone_data.world
     self.data_center = @lodestone_data.datacenter
@@ -67,7 +71,7 @@ class FFXIV::Character < ApplicationRecord
 
   def self.for_lodestone_id(lodestone_id)
     return nil if lodestone_id.nil?
-    
+
     existing = find_by(lodestone_id: lodestone_id)
     return existing if existing.present?
 

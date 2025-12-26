@@ -1,0 +1,107 @@
+# Fallback world list for when XIVAPI is unreachable and cache is empty
+# Generated from XIVAPI v2 on 2025-12-25, against Patch 7.40hf2 (2025.12.23.0000.0000).
+# Structure: Region -> Datacenter -> [World Names]
+
+JP:
+  Elemental:
+    - Aegis
+    - Atomos
+    - Carbuncle
+    - Garuda
+    - Gungnir
+    - Kujata
+    - Tonberry
+    - Typhon
+  Gaia:
+    - Alexander
+    - Bahamut
+    - Durandal
+    - Fenrir
+    - Ifrit
+    - Ridill
+    - Tiamat
+    - Ultima
+  Mana:
+    - Anima
+    - Asura
+    - Chocobo
+    - Hades
+    - Ixion
+    - Masamune
+    - Pandaemonium
+    - Titan
+  Meteor:
+    - Belias
+    - Mandragora
+    - Ramuh
+    - Shinryu
+    - Unicorn
+    - Valefor
+    - Yojimbo
+    - Zeromus
+
+NA:
+  Aether:
+    - Adamantoise
+    - Cactuar
+    - Faerie
+    - Gilgamesh
+    - Jenova
+    - Midgardsormr
+    - Sargatanas
+    - Siren
+  Crystal:
+    - Balmung
+    - Brynhildr
+    - Coeurl
+    - Diabolos
+    - Goblin
+    - Malboro
+    - Mateus
+    - Zalera
+  Dynamis:
+    - Cuchulainn
+    - Golem
+    - Halicarnassus
+    - Kraken
+    - Maduin
+    - Marilith
+    - Rafflesia
+    - Seraph
+  Primal:
+    - Behemoth
+    - Excalibur
+    - Exodus
+    - Famfrit
+    - Hyperion
+    - Lamia
+    - Leviathan
+    - Ultros
+
+EU:
+  Chaos:
+    - Cerberus
+    - Louisoix
+    - Moogle
+    - Omega
+    - Phantom
+    - Ragnarok
+    - Sagittarius
+    - Spriggan
+  Light:
+    - Alpha
+    - Lich
+    - Odin
+    - Phoenix
+    - Raiden
+    - Shiva
+    - Twintania
+    - Zodiark
+
+OCE:
+  Materia:
+    - Bismarck
+    - Ravana
+    - Sephirot
+    - Sophia
+    - Zurvan

@@ -14,6 +14,7 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
 
   inflect.acronym "FFXIV"
   inflect.acronym "XIV"
+  inflect.acronym "XIVAPI"
   inflect.acronym "OAuth"
   inflect.acronym "MFA"
   inflect.acronym "OTP"

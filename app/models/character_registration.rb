@@ -24,7 +24,7 @@ class CharacterRegistration < ApplicationRecord
   validates :verification_type, presence: true, if: -> { self.verified? }
   validates :verification_type, absence: true, unless: -> { self.verified? }
 
-  attr_accessor :skip_ban_check, :character_ref
+  attr_accessor :skip_ban_check
 
   validate :validate_linked_character
   validate :character_not_banned, unless: :skip_ban_check, on: :create
@@ -99,8 +99,20 @@ class CharacterRegistration < ApplicationRecord
     Base64.urlsafe_encode64(hmac, padding: false)
   end
 
+  # Create a new (unsaved) CharacterRegistration from a Lodestone ID
+  # @param user [User] The user registering the character
+  # @param lodestone_id [String, Integer] The Lodestone character ID
+  # @param extra_data [Hash] Optional extra data to merge (e.g., { region: "na" })
+  # @return [CharacterRegistration] Unsaved registration (call .save to persist)
+  def self.build_from_lodestone(user:, lodestone_id:, extra_data: {})
+    character = FFXIV::Character.for_lodestone_id(lodestone_id)
+    registration = new(character: character, user: user)
+    registration.extra_data.merge!(extra_data) if extra_data.present?
+    registration
+  end
+
   def lodestone_url(region: nil)
-    region ||= self.extra_data.fetch("region", nil)
+    region ||= self.extra_data.fetch("region", "na")
     self.character.lodestone_url(region)
   end
 
@@ -151,7 +163,7 @@ class CharacterRegistration < ApplicationRecord
 
     base_errors = character.errors.where(:base) || []
     if base_errors.present?
-      errors.add(:character, :invalid, message: base_errors.first.message)
+      errors.add(:character, base_errors.first.type, message: base_errors.first.message)
     else
       logger.error("Validation failed for character with Lodestone ID #{character.lodestone_id}.",
                    errors: character.errors)

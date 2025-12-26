@@ -13,37 +13,38 @@ class CharacterRegistrationsController < ApplicationController
 
   # GET /character_registrations/new
   def new
-    @character_registration = CharacterRegistration.new
+    @character_registration = CharacterRegistrationRequest.new
   end
 
   # POST /character_registrations or /character_registrations.json
   def create
-    lodestone_data = helpers.extract_data(character_registration_params[:character_ref])
-    ffxiv_character = FFXIV::Character.for_lodestone_id(lodestone_data[:lodestone_id])
+    @character_registration = CharacterRegistrationRequest.new(character_registration_params.merge(user: current_user))
 
-    @character_registration = CharacterRegistration.new(
-      character: ffxiv_character,
-      user: current_user,
-      **character_registration_params
-    )
-
-    if lodestone_data[:region]
-      @character_registration.extra_data[:region] = lodestone_data[:region]
-    end
-
-    respond_to do |format|
-      if @character_registration.save
+    case @character_registration.process!
+    when :success
+      respond_to do |format|
         format.html do
-          redirect_to character_registrations_path, notice: "Character registration was successfully created."
+          redirect_to character_registrations_path,
+                      notice: "Character registration was successfully created."
         end
         format.turbo_stream do
           render turbo_stream: turbo_stream.append("register_character_modal-content",
                                                    partial: "layouts/components/remote_modal_close")
         end
-      else
-        format.html { render :new, status: :unprocessable_content }
-        format.turbo_stream { render_new_form_again }
       end
+    when :confirm
+      respond_to do |format|
+        format.html { render :confirm }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update(
+            "register_character_modal-content",
+            partial: "character_registrations/confirm",
+            locals: { candidates: @character_registration.candidates, name: @character_registration.search_name, world: @character_registration.search_world }
+          )
+        end
+      end
+    else
+      render_new_form_again
     end
   end
 
@@ -79,7 +80,7 @@ class CharacterRegistrationsController < ApplicationController
   end
 
   def refresh
-    @character_registration = CharacterRegistration.find(params[:character_registration_id])
+    @character_registration = current_user.character_registrations.find(params[:character_registration_id])
     authorize! :update, @character_registration
 
     unless @character_registration.character.stale?
@@ -90,14 +91,10 @@ class CharacterRegistrationsController < ApplicationController
       return
     end
 
-    if FFXIV::RefreshCharactersJob.perform_later @character_registration.character
-      respond_to do |format|
-        format.html { redirect_to character_registrations_path, notice: "Character refresh was successfully enqueued." }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to character_registrations_path, error: "Character refresh could not be enqueued." }
-      end
+    FFXIV::RefreshCharactersJob.perform_later @character_registration.character
+
+    respond_to do |format|
+      format.html { redirect_to character_registrations_path, notice: "Character refresh was successfully enqueued." }
     end
   end
 
@@ -112,7 +109,7 @@ class CharacterRegistrationsController < ApplicationController
   # Only allow a list of trusted parameters through.
   private def character_registration_params
     params.require(:character_registration)
-          .permit(:character_ref)
+          .permit(:lodestone_url, :search_name, :search_world, :search_exact)
   end
 
   private def render_new_form_again(status: :unprocessable_content)

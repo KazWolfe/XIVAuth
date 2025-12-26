@@ -1,29 +1,65 @@
-<%= form_with(model: character_registration) do |form| %>
+<%= form_with(model: character_registration, url: character_registrations_path, method: :post, scope: :character_registration) do |form| %>
   <div class="modal-header">
     <h5 class="modal-title">Register Character</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
 
   <div class="modal-body">
+    <% if character_registration.errors[:base].present? %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <% character_registration.errors.full_messages_for(:base).each do |message| %>
+          <div><%= message %></div>
+        <% end %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+
     <p>
-      To register a character, please paste in either the character's Lodestone ID or a link to the character to add.
-    </p>
-    <p>
-      Please note that the character's profile must be visible to the public for this character to be added.
+      You can register a character using either their Lodestone ID or URL, or by entering their name and home world.
     </p>
 
-    <div class="form-floating mb-3">
-      <%= form.text_field :character_ref,
-                          class: "form-control #{"is-invalid" if character_registration.errors.present?}",
+    <div class="form-floating">
+      <%= form.text_field :lodestone_url,
+                          class: "form-control #{ character_registration.errors[:lodestone_url].present? ? 'is-invalid' : '' }",
                           pattern: CharacterRegistrationsHelper::LODESTONE_URL_REGEX,
-                          placeholder: "id" %>
-      <%= form.label :character_ref, "Lodestone ID or URL" %>
-      <% if character_registration.errors.present? %>
-        <ul class="invalid-feedback list-unstyled">
-          <% character_registration.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
+                          placeholder: "id or url" %>
+      <%= form.label :lodestone_url, "Lodestone ID or URL" %>
+    </div>
+
+    <div class="text-center my-2">or</div>
+
+    <div class="row">
+      <div class="input-group col-12">
+        <div class="form-floating">
+          <%= form.text_field :search_name,
+                              class: "form-control #{character_registration.errors[:character_search].present? ? 'is-invalid' : ''}",
+                              placeholder: "Character Name" %>
+          <%= form.label :search_name, "Character Name" %>
+        </div>
+        <span class="input-group-text">@</span>
+        <div class="form-floating">
+          <%= form.select :search_world,
+                          grouped_options_for_select(world_options),
+                          {},
+                          class: "form-select #{character_registration.errors[:character_search].present? ? 'is-invalid' : ''}" %>
+          <%= form.label :search_world, "World" %>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-check mt-2">
+          <%= form.check_box :search_exact, class: "form-check-input" %>
+          <%= form.label :search_exact, "Use exact name search", class: "form-check-label" %>
+        </div>
+      </div>
+
+      <% if character_registration.errors[:character_search].present? %>
+        <div class="invalid-feedback d-block">
+          <ul class="list-unstyled mb-0">
+            <% character_registration.errors.full_messages_for(:character_search).each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
       <% end %>
     </div>
   </div>
