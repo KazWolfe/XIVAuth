@@ -11,6 +11,9 @@ gem "pg", "~> 1.5"
 gem "puma", "~> 7.0"
 gem "redis", "~> 5.2"
 
+# HACK: Temporary downgrade to avoid issues with Sidekiq 8
+gem "connection_pool", "<3"
+
 # Platform-specific
 gem "tzinfo-data", platforms: %i[windows jruby]
 
