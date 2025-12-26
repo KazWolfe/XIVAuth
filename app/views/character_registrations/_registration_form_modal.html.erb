@@ -39,7 +39,7 @@
         <span class="input-group-text">@</span>
         <div class="form-floating">
           <%= form.select :search_world,
-                          grouped_options_for_select(world_options),
+                          grouped_options_for_select(world_options, character_registration.search_world),
                           {},
                           class: "form-select #{character_registration.errors[:character_search].present? ? 'is-invalid' : ''}" %>
           <%= form.label :search_world, "World" %>
