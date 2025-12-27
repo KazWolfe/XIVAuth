@@ -8,6 +8,8 @@ class LegalController < ApplicationController
   def developer_agreement; end
   def security_policy; end
 
+  def moderation_policy; end
+
   private def set_layout
     user_signed_in? ? "portal/page" : "marketing/legal"
   end

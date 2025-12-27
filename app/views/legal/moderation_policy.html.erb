@@ -1,0 +1,53 @@
+<h1>XIVAuth Moderation Policy</h1>
+
+<p>
+  This document serves as a set of guidelines for how content moderation on XIVAuth will work. As XIVAuth is a
+  "gatekeeper" platform, potential moderation actions against users or developers may have a significant impact on
+  large segments of the community. As such, XIVAuth takes a conservative approach on moderation and will only take
+  action in extreme cases, such as spam, abuse, or when legally required.
+</p>
+
+<p>
+  Generally speaking, XIVAuth does not moderate user accounts. Users are free to create their accounts, register their
+  characters, and leverage the platform as they see fit. As the platform supports little to no user-generated content,
+  the surfaces upon which moderation could be applied are limited.
+</p>
+
+<p>User accounts, however, may still be removed from XIVAuth in the following conditions:</p>
+<ul>
+  <li>
+    If the user is in blatant violation of agreements such as the <%= link_to "Terms of Service", legal_terms_path %> or
+    the <%= link_to "Developer Agreement", legal_devagreement_path %>.
+  </li>
+  <li>If the user has a clear and unambiguous history of spam, fraud, or abuse of the service.</li>
+  <li>If the user has engaged in activity which poses a clear threat to the stability of the service.</li>
+  <li>If the user has engaged in activity in violation of applicable laws, or exposes XIVAuth to legal risk.</li>
+</ul>
+
+<p>
+  <strong>XIVAuth does not factor in actions taken on other platforms, including XIVAuth-protected services.</strong>
+  Due to the design of XIVAuth, it is not possible to trace how a user has used an issued access key or authentication
+  statement. While these external platforms and services may have their own moderation policies (and may have different
+  rules or criteria), XIVAuth does not have control over them and will not handle reports from them. Likewise, if an
+  application is removed from XIVAuth for violations of the Developer Agreement, users who have used that service will
+  not have moderative action taken against them (barring exceptional circumstances such as abuse or legal requirements).
+</p>
+
+<h3>Character Bans</h3>
+<p>
+  In certain cases, XIVAuth reserves the right to mark a character as "banned," preventing self-registration of that
+  character on the platform. This action is normally reserved for characters that may be claimed by a large number of
+  users, as this can cause a considerable load to XIVAuth's servers. In most cases, a banned character will remain
+  registered (and verified) to the character's proper owner; bans only affect <em>new</em> registration attempts.
+</p>
+<p>
+  For example, a character that belongs to a well-known streamer or community member may be marked as banned to prevent
+  generating bogus Lodestone codes or registration requests. In this case, anyone wishing to register the character will
+  receive an error message and will need to contact an XIVAuth developer to request an exception.
+</p>
+<p>
+  Character bans may also be used in cases where a character has been "traded" between accounts multiple times. This,
+  however, would also likely be considered abuse of the service and may be grounds for user account removal instead. In
+  extremely rare cases, characters that have been banned may be completely removed from the platform. This action is
+  normally reserved for characters that have been the subject of significant abuse.
+</p>

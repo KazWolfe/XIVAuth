@@ -83,6 +83,7 @@ Rails.application.routes.draw do
     get "privacy", to: "legal#privacy_policy"
     get "devagreement", to: "legal#developer_agreement"
     get "security", to: "legal#security_policy"
+    get "moderation", to: "legal#moderation_policy"
   end
 
   resource :health, only: [:show], controller: :health
