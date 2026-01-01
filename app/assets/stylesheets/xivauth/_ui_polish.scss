@@ -226,3 +226,21 @@
     transition: box-shadow 0.1s ease-in-out;
   }
 }
+
+// Fix for icons in links - prevent underline from extending to icon and surrounding spaces
+a {
+  i, .bi {
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 0.35em; // Create visual space with margin instead of literal space
+  }
+
+  // Only apply font-size collapse to links that contain icons
+  &:has(i), &:has(.bi) {
+    font-size: 0; // Collapse the whitespace character
+
+    > * {
+      font-size: 1rem; // Restore font size for all child elements
+    }
+  }
+}
