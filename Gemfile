@@ -12,6 +12,7 @@ gem "puma", "~> 7.0"
 gem "redis", "~> 5.2"
 
 # HACK: Temporary downgrade to avoid issues with Sidekiq 8
+# Fixed with https://github.com/rails/rails/pull/56292, targeting Rails 8.2?
 gem "connection_pool", "<3"
 
 # Platform-specific
@@ -77,6 +78,9 @@ gem "jwt", "~> 2.9.0"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
 gem "rails_cloudflare_turnstile", "~> 0.4"
 gem "rbnacl", "~> 7.1.1"
+
+# CA certificates
+gem 'certificate_authority', '~> 1.1'
 
 # HTTP Requests
 gem "faraday", "~> 2.9"
