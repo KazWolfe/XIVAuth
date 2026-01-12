@@ -1,0 +1,43 @@
+.form-control-with-button {
+  position: relative;
+
+  > .form-control {
+    // Add padding on the right to prevent text overlap with button
+    padding-right: 2.5rem;
+
+    // When input is focused, move button with it
+    &:focus + .btn {
+      transform: translateY(calc(-50% - 1px));
+    }
+
+    // When invalid, add more padding for both icons
+    &.is-invalid {
+      padding-right: 4.5rem;
+    }
+  }
+
+  > .btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--bs-secondary);
+    padding: 0.375rem 0.75rem;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      color: var(--bs-emphasis-color);
+    }
+
+    &:active {
+      transform: translateY(-50%);
+    }
+  }
+
+  // When input is invalid, move button left to make room for validation icon
+  > .form-control.is-invalid + .btn {
+    right: 2rem;
+  }
+}

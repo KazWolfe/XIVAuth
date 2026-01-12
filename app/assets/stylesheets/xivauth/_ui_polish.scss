@@ -150,11 +150,17 @@
 
 // Enhanced form inputs
 .form-control, .form-select {
-  transition: all 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
   &:focus {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.15);
+  }
+
+  // Fade in validation background instead of sliding
+  &.is-invalid,
+  &.is-valid {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out, background-image 0.2s ease-in-out;
   }
 }
 
