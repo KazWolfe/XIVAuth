@@ -23,11 +23,16 @@
   <div data-controller="devise--password-strength" data-devise--password-strength-min-score-value="<%= User.min_password_score %>">
     <div class="form-group field mb-2">
       <%= f.label :password, class: "form-label" %>
-      <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
-                           data: {
-                             "action": 'input->devise--password-strength#calc',
-                             "devise--password-strength-target": 'password'
-                           } %>
+      <div class="input-group">
+        <%= f.password_field :password, autocomplete: "new-password", class: "form-control",
+                             data: {
+                               "action": 'input->devise--password-strength#calc',
+                               "devise--password-strength-target": 'password'
+                             } %>
+        <button class="btn btn-outline-secondary" type="button" aria-label="Show password" data-action="click->devise--password-strength#togglePassword">
+          <i class="bi bi-eye" aria-hidden="true"></i>
+        </button>
+      </div>
 
       <div class="form-text text-secondary pt-1">
         <div class="progress password-strength mb-1" role="meter" aria-hidden="true" data-devise--password-strength-target="meter">
@@ -44,11 +49,16 @@
 
     <div class="form-group field mb-2">
       <%= f.label :password_confirmation %><br/>
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",
-                           data: {
-                             "action": "input->devise--password-strength#onConfirm",
-                             "devise--password-strength-target": 'confirm'
-                           } %>
+      <div class="input-group">
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control",
+                             data: {
+                               "action": "input->devise--password-strength#onConfirm",
+                               "devise--password-strength-target": 'confirm'
+                             } %>
+        <button class="btn btn-outline-secondary" type="button" aria-label="Show password" data-action="click->devise--password-strength#togglePassword">
+          <i class="bi bi-eye" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
   </div>
 

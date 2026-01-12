@@ -104,4 +104,29 @@ export default class PasswordStrengthController extends Controller {
 
         return `${PasswordStrengthController.STRENGTH_NAMES[score]} Password`;
     }
+
+    togglePassword(event: Event) {
+        event.preventDefault();
+        const button = event.currentTarget as HTMLButtonElement;
+        const inputGroup = button.parentElement;
+        if (!inputGroup) return;
+
+        const field = inputGroup.querySelector('input[type="password"], input[type="text"]') as HTMLInputElement;
+        if (!field) return;
+
+        const icon = button.querySelector('i');
+        if (!icon) return;
+
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+            button.setAttribute('aria-label', 'Hide password');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+            button.setAttribute('aria-label', 'Show password');
+        }
+    }
 }
