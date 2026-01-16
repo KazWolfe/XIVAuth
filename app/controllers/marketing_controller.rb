@@ -5,4 +5,8 @@ class MarketingController < ApplicationController
   def index; end
 
   def flarestone; end
+
+  def discord
+    redirect_to "https://discord.com/invite/nFPPTcDDgH", allow_other_host: true
+  end
 end
