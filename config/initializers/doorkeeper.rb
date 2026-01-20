@@ -430,6 +430,8 @@ Doorkeeper.configure do
   # Hook into the strategies' request & response life-cycle in case your
   # application needs advanced customization or logging:
   #
+  # Called, basically, upon any form of token exchange.
+  #
   # before_successful_strategy_response do |request|
   #   puts "BEFORE HOOK FIRED! #{request}"
   # end

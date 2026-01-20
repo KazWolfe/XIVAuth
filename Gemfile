@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby ">= 3.4.0", "< 3.5"
+ruby ">= 4.0.0", "< 4.1"
 
 # Rails.
 gem "rails", "~> 8.1.0"
@@ -10,10 +10,6 @@ gem "rails", "~> 8.1.0"
 gem "pg", "~> 1.5"
 gem "puma", "~> 7.0"
 gem "redis", "~> 5.2"
-
-# HACK: Temporary downgrade to avoid issues with Sidekiq 8
-# Fixed with https://github.com/rails/rails/pull/56292, targeting Rails 8.2?
-gem "connection_pool", "<3"
 
 # Platform-specific
 gem "tzinfo-data", platforms: %i[windows jruby]
@@ -53,7 +49,7 @@ gem "devise_zxcvbn", "~> 6.0.0"
 
 # Authn (MFA)
 gem "devise-two-factor", "~> 6.1"
-gem "rqrcode", "~> 3.1.0"
+gem "rqrcode", "~> 3.2"
 gem "webauthn", "~> 3.4.1"
 
 # OAuth2 Providers
@@ -89,9 +85,9 @@ gem "faraday", "~> 2.9"
 gem "rails_semantic_logger", "~> 4.17"
 
 # Observability (Sentry) - temp for now
-gem "sentry-rails", "~> 6.0"
-gem "sentry-ruby", "~> 6.0"
-gem "sentry-sidekiq", "~> 6.0"
+gem "sentry-rails", "~> 6.3"
+gem "sentry-ruby", "~> 6.3"
+gem "sentry-sidekiq", "~> 6.3"
 gem "stackprof", "~> 0.2"
 
 # Heroku dependencies
@@ -99,6 +95,9 @@ gem "rexml", "~> 3.4.2"
 
 # Helpers
 gem "pagy", "~> 43.0"
+
+# FIXME(DEPS): Required dep for devise-zxcvbn, see https://github.com/bitzesty/devise_zxcvbn/issues/49.
+gem 'ostruct', '~> 0.6.3'
 
 group :production do
   # Handle Cloudflare IPs in our X-Forwarded-For chain
@@ -144,4 +143,4 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "gon", "~> 6.5"
+gem "gon", "~> 7.0"

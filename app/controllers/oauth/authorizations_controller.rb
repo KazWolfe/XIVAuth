@@ -33,6 +33,23 @@ module OAuth
           token.save!
         end
       end
+
+      oauth_client = @authorize_response.pre_auth.client
+
+      # log the successful auth to sentry.
+      Sentry.metrics.count(
+        "xivauth.application.authorize",
+        value: 1,
+        attributes: {
+          oauth: {
+            response_type: @authorize_response.pre_auth.response_type
+          },
+          application: {
+            client_id: oauth_client.id,
+            app_id: oauth_client.application.id
+          }
+        }
+      )
     end
 
     private def render_preflight_error
