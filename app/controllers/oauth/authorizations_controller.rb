@@ -41,13 +41,9 @@ module OAuth
         "xivauth.application.authorize",
         value: 1,
         attributes: {
-          oauth: {
-            response_type: @authorize_response.pre_auth.response_type
-          },
-          application: {
-            client_id: oauth_client.id,
-            app_id: oauth_client.application.id
-          }
+          "oauth.response_type": @authorize_response.pre_auth.response_type,
+          "application.client_id": oauth_client.id,
+          "application.app_id": oauth_client.application.id
         }
       )
     end

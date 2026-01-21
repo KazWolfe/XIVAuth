@@ -13,7 +13,6 @@ class ApplicationController < ActionController::Base
 
     if user_signed_in?
       user_meta = { id: current_user.id, username: current_user.display_name }
-
       sentry_frontend_data[:user] = user_meta
 
       Sentry.set_user(user_meta)
