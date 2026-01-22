@@ -59,9 +59,9 @@
                   <% if cred.device_class.present? %>
                     <%= image_tag cred.device_class.icon_dark, style: "width: 2.5rem; height: 2.5rem;", class: "mx-2" %>
                   <% elsif cred.resident_key? %>
-                    <i class="bi bi-fingerprint mx-2" style="font-size: 2.5rem"></i>
+                    <i class="bi bi-fingerprint mx-2 fs-1"></i>
                   <% else %>
-                    <i class="bi bi-usb-drive mx-2" style="font-size: 2.5rem"></i>
+                    <i class="bi bi-usb-drive mx-2 fs-1"></i>
                   <% end %>
                 </td>
                 <td>

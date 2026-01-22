@@ -43,17 +43,34 @@ section#developers {
     }
 
     // Tilt effect on icon badge
-    .rounded-circle {
+    .icon-badge {
       transform: rotate(8deg) scale(1.05);
     }
   }
 
-  // Icon badge styling
-  .rounded-circle {
+  .icon-badge {
+    width: 2.5rem;
+    height: 2.5rem;
+
     transition: transform 0.3s ease-in-out;
+
+    border-radius: 50%;
+
+    justify-content: center;
+    align-items: center;
+
+    display: inline-flex;
+
+    .bi {
+      font-size: 1.25rem;
+    }
   }
 }
 
 .btn-outline-secondary {
   backdrop-filter: blur(4px);
+}
+
+.marketing-dna-buff {
+  height: 2rem;
 }
