@@ -23,6 +23,8 @@ export default class CopyCodeController extends Controller {
         if (!this.hasTimeoutValue) {
             this.timeoutValue = 2000;
         }
+
+        this.sourceTarget.addEventListener("click", this.selectSource);
     }
 
     disconnect() {
@@ -30,6 +32,15 @@ export default class CopyCodeController extends Controller {
             window.clearTimeout(this.resetTimer);
             this.resetTimer = undefined;
         }
+
+        this.sourceTarget.removeEventListener("click", this.selectSource);
+    }
+
+    private selectSource = (event: Event) => {
+        event.preventDefault();
+        const target = event.currentTarget as HTMLInputElement | HTMLTextAreaElement;
+        target.focus();
+        target.select();
     }
 
     copy(event: PointerEvent) {

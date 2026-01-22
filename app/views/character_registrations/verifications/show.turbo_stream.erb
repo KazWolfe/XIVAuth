@@ -13,8 +13,7 @@
       </p>
       <div class="input-group mb-3" data-controller="utilities--copy-code">
         <input type="text" data-utilities--copy-code-target="source" readonly class="form-control text-center font-monospace"
-               value="<%= @character_registration.verification_key %>" aria-label="Verification code"
-               onclick="this.select();">
+               value="<%= @character_registration.verification_key %>" aria-label="Verification code">
         <button class="btn btn-outline-secondary" type="button" data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
           <i class="bi bi-clipboard"></i> Copy
         </button>

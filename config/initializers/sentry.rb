@@ -1,12 +1,11 @@
-Sentry.init do |config|
-  config.dsn = Rails.application.credentials.dig(:sentry, :dsn)
-  config.breadcrumbs_logger = %i[active_support_logger sentry_logger http_logger]
-  config.environment = (ENV["APP_ENV"] || Rails.env.to_s).downcase
+require 'environment_info'
 
-  # determine release based on location
-  if ENV["RAILWAY_SERVICE_ID"].present? && ENV["RAILWAY_GIT_COMMIT_SHA"].present?
-    config.release = ENV["RAILWAY_GIT_COMMIT_SHA"]
-  end
+Sentry.init do |config|
+  config.dsn = Rails.application.credentials.dig(:sentry, :dsn, :backend)
+  config.breadcrumbs_logger = %i[active_support_logger sentry_logger http_logger]
+
+  config.environment = EnvironmentInfo.environment.to_s.downcase
+  config.release = EnvironmentInfo.commit_hash
   
   config.traces_sample_rate = 0.1
   config.profiles_sample_rate = 0.1

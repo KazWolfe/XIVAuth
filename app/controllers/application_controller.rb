@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   private def set_observability_context
     sentry_frontend_data = {
       environment: ENV["APP_ENV"] || Rails.env,
-      dsn: Rails.application.credentials.dig(:sentry, :dsn),
+      dsn: Rails.application.credentials.dig(:sentry, :dsn, :frontend),
       user: { }
     }
 

@@ -1,18 +1,14 @@
 module ApplicationHelper
   def commit_hash
-    ENV["COMMIT_HASH"] || ENV["RAILWAY_GIT_COMMIT_SHA"] || ENV["HEROKU_SLUG_COMMIT"] || nil
+    EnvironmentInfo.commit_hash
   end
 
   def hosting_provider
-    if ENV["HEROKU_APP_NAME"]
-      :heroku
-    elsif ENV["RAILWAY_SERVICE_ID"]
-      :railway
-    elsif ENV["container"] == "podman"
-      :podman
-    else
-      nil
-    end
+    EnvironmentInfo.hosting_provider
+  end
+
+  def environment
+    EnvironmentInfo.environment
   end
 
   def lower_environment?

@@ -31,8 +31,8 @@
             <th scope="row">Supported Algorithms</th>
             <td>
               <%= sanitize(@key.supported_algorithms.each
-                      .map { |a| "<span class='font-monospace'>#{a}</span>" }
-                      .join(", ")) %>
+                               .map { |a| "<span class='font-monospace'>#{a}</span>" }
+                               .join(", ")) %>
             </td>
           </tr>
 
@@ -58,7 +58,7 @@
         <% if @key.raw_public_key != nil %>
           <div data-controller="utilities--copy-code">
           <textarea data-utilities--copy-code-target="source" readonly class="form-control font-monospace" style="height: 22em;"
-                    aria-label="Public Key" onclick="this.select();"><%= @key.raw_public_key.gsub('\n', "\n").strip %></textarea>
+                    aria-label="Public Key"><%= @key.raw_public_key.gsub('\n', "\n").strip %></textarea>
             <button class="btn btn-outline-secondary" type="button" data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
               <i class="bi bi-clipboard"></i> Copy
             </button>

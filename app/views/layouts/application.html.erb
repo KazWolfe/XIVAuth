@@ -6,7 +6,7 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
-  <%= Gon::Base.render_data %>
+  <%= include_gon(nonce: content_security_policy_nonce) %>
 
   <% if content_for(:head_extensions_before) %>
     <%= yield(:head_extensions_before) %>

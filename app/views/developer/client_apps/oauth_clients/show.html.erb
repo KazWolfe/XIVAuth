@@ -47,7 +47,7 @@
             <label class="form-label" for="client_id_value">Client ID</label>
             <div class="input-group" data-controller="utilities--copy-code">
               <input type="text" class="form-control font-monospace" value="<%= @oauth_client.uid %>" id="client_id_value" readonly
-                     data-utilities--copy-code-target="source" onclick="this.select();">
+                     data-utilities--copy-code-target="source">
               <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy client ID"
                       data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
                 <i class="bi bi-clipboard"></i>
@@ -68,7 +68,7 @@
             <div class="input-group mb-2" data-controller="utilities--copy-code">
               <% if secret.present? %>
                 <input type="text" class="form-control font-monospace" value="<%= secret %>" id="client_secret_value" readonly
-                       data-utilities--copy-code-target="source" onclick="this.select();">
+                       data-utilities--copy-code-target="source">
                 <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy client secret"
                         data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
                   <i class="bi bi-clipboard"></i>
