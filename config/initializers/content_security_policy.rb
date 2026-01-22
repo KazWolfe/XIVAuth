@@ -12,8 +12,7 @@ Rails.application.configure do
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :https, :data
     policy.object_src  :none
-    policy.script_src  :self, :strict_dynamic, "https://challenges.cloudflare.com/",
-                       "https://static.cloudflareinsights.com/"
+    policy.script_src  :self, "https://challenges.cloudflare.com/", "https://static.cloudflareinsights.com/"
     policy.style_src   :self, :https, :unsafe_inline
 
     if (csp_base_uri = Rails.application.credentials.dig(:sentry, :csp_report_uri))
@@ -23,9 +22,9 @@ Rails.application.configure do
     end
   end
 
-  # Generate session nonces for permitted importmap and inline scripts
-  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  config.content_security_policy_nonce_generator = ->(request) { SecureRandom.hex(16) }
   config.content_security_policy_nonce_directives = %w(script-src)
+  config.content_security_policy_nonce_auto = true
 
   # Report violations without enforcing the policy.
   config.content_security_policy_report_only = true
