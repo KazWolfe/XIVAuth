@@ -32,6 +32,8 @@ class CharacterRegistrationsController < ApplicationController
                                                    partial: "layouts/components/remote_modal_close")
         end
       end
+
+      record_create_analytics(@character_registration.created_character)
     when :confirm
       respond_to do |format|
         format.html { render :confirm }
@@ -109,7 +111,7 @@ class CharacterRegistrationsController < ApplicationController
   # Only allow a list of trusted parameters through.
   private def character_registration_params
     params.require(:character_registration)
-          .permit(:lodestone_url, :search_name, :search_world, :search_exact)
+          .permit(:lodestone_url, :search_name, :search_world, :search_exact, :from_search)
   end
 
   private def render_new_form_again(status: :unprocessable_content)
@@ -117,5 +119,40 @@ class CharacterRegistrationsController < ApplicationController
            turbo_stream: turbo_stream.update("register_character_modal-content",
                                              partial: "character_registrations/registration_form_modal",
                                              locals: { character_registration: @character_registration })
+  end
+
+  private def record_create_analytics(registration)
+    if registration.nil?
+      logger.warn("Attempted to record analytics for a failed registration. Wut?")
+      return
+    end
+
+    analytics_type = if character_registration_params[:from_search].present?
+                       :search_result
+                     elsif character_registration_params[:search_name].present?
+                       if character_registration_params[:search_exact] == "1"
+                         :exact_name_search
+                       else
+                         :name_search
+                       end
+                     else
+                       :lodestone_id
+                     end
+
+    Sentry.metrics.count(
+      "xivauth.character.register",
+      value: 1,
+      attributes: {
+        "registration.search_type": analytics_type,
+        "registration.is_first": registration.character.character_registrations.count <= 1,
+        
+        "character.lodestone_id": registration.character.lodestone_id,
+        "character.home_world": registration.character.home_world,
+        "character.data_center": registration.character.data_center,
+
+        # FIXME(DEPS): https://github.com/getsentry/sentry-ruby/issues/2842
+        "user.id": current_user.id,
+      }
+    )
   end
 end

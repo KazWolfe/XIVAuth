@@ -22,7 +22,7 @@
             <small class="text-muted"><%= c[:world] %> [<%= c[:datacenter] %>]</small>
           </div>
         </div>
-        <%= button_to "Select", character_registrations_path, method: :post, params: { character_registration: { lodestone_url: c[:lodestone_id] } }, class: "btn btn-primary" %>
+        <%= button_to "Select", character_registrations_path, method: :post, params: { character_registration: { lodestone_url: c[:lodestone_id], from_search: true } }, class: "btn btn-primary" %>
       </li>
     <% end %>
   </ul>

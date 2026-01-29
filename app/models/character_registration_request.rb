@@ -10,6 +10,10 @@ class CharacterRegistrationRequest
 
   attr_reader :candidates
   attr_accessor :character_search # NOTE: fake attribute for search feedback.
+  attr_accessor :from_search
+
+  attr_reader :created_character
+
 
   # Provide either a valid Lodestone URL/ID, or both name and world.
   validates :lodestone_url,
@@ -89,16 +93,16 @@ class CharacterRegistrationRequest
   # @return [Symbol] :success or :invalid
   def create_registration(lodestone_id, region: nil, field_for_character_error: :search_name)
     extra_data = region.present? ? { region: region } : {}
-    registration = CharacterRegistration.build_from_lodestone(
+    @created_character = CharacterRegistration.build_from_lodestone(
       user: user,
       lodestone_id: lodestone_id,
       extra_data: extra_data
     )
 
-    if registration.save
+    if @created_character.save
       :success
     else
-      attach_registration_errors(registration, field_for_character_error: field_for_character_error)
+      attach_registration_errors(@created_character, field_for_character_error: field_for_character_error)
       :invalid
     end
   end
