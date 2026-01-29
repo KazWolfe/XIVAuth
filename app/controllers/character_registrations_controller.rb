@@ -131,7 +131,7 @@ class CharacterRegistrationsController < ApplicationController
                        :search_result
                      elsif character_registration_params[:search_name].present?
                        if character_registration_params[:search_exact] == "1"
-                         :exact_name_search
+                         :name_search_exact
                        else
                          :name_search
                        end
@@ -143,9 +143,9 @@ class CharacterRegistrationsController < ApplicationController
       "xivauth.character.register",
       value: 1,
       attributes: {
-        "registration.search_type": analytics_type,
-        "registration.is_first": registration.character.character_registrations.count <= 1,
-        
+        "registration.search_type": analytics_type.to_s,
+        "registration.is_first": (registration.character.character_registrations.count <= 1),
+
         "character.lodestone_id": registration.character.lodestone_id,
         "character.home_world": registration.character.home_world,
         "character.data_center": registration.character.data_center,
