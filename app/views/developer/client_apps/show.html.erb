@@ -3,6 +3,10 @@
     <h1>Edit App: <%= @application.name %></h1>
     <div>
       <div class="btn-toolbar gap-2">
+        <%= button_to transfer_developer_application_path(@application), method: :get, class: "btn btn-outline-primary",
+                      data: { turbo_stream: "remote_modal" } do %>
+          <i class="bi bi-arrow-left-right"></i> Transfer
+        <% end %>
         <%= button_to developer_application_path(@application), method: :delete, class: "btn btn-danger",
                       data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
           <i class="bi bi-trash"></i> Delete App

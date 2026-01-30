@@ -12,6 +12,11 @@ Rails.application.routes.draw do
 
   namespace "developer" do
     resources :applications, controller: "client_apps" do
+      member do
+        get :transfer
+        patch :transfer, action: :update_transfer
+      end
+
       resources :oauth_clients, controller: "client_apps/oauth_clients", shallow: true do
         post "regenerate_secret", to: "client_apps/oauth_clients#regenerate", on: :member
       end

@@ -1,0 +1,47 @@
+<%= form_with(model: @application, url: transfer_developer_application_path(@application), method: :patch, data: { "turbo-frame": "_top" }) do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Transfer Application</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <% if @application.errors.any? %>
+      <div class="alert alert-danger" role="alert">
+        <ul class="mb-0">
+          <% @application.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <p class="text-muted mb-3">
+      <% if @application.owner.is_a?(User) %>
+        This application is currently owned by <strong>your account</strong>. You can transfer it to any team where you are a developer.
+      <% else %>
+        This application is currently owned by <strong><%= @application.owner.name %></strong>. You can transfer it to teams in the same hierarchy (parent/child teams).
+      <% end %>
+    </p>
+
+    <div class="mb-3">
+      <%= f.label :owner_id, "Transfer to Team", class: "form-label fw-semibold" %>
+      <% if @transferable_teams.any? %>
+        <%= f.select :owner_id,
+                     options_from_collection_for_select(@transferable_teams, :id, :name),
+                     { prompt: "Select a team..." },
+                     class: "form-select" %>
+        <div class="form-text">
+          Select the team that will become the new owner of this application.
+        </div>
+      <% else %>
+        <div class="alert alert-warning mb-0">
+          <i class="bi bi-exclamation-triangle"></i>
+          No eligible teams available for transfer. You must be a developer of a team to transfer this application.
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    <%= f.submit "Transfer Application", class: "btn btn-primary", disabled: @transferable_teams.empty? %>
+  </div>
+<% end %>

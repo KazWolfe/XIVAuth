@@ -4,7 +4,7 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
   helper Doorkeeper::DashboardHelper
 
   before_action :load_available_owners, only: %i[new create]
-  before_action :set_application, only: %i[show edit update destroy regenerate]
+  before_action :set_application, only: %i[show edit update destroy regenerate transfer update_transfer]
 
   def index
     @pagy, @applications = pagy(accessible_applications, items: 24)
@@ -71,6 +71,16 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
     end
   end
 
+  def transfer
+    authorize! :manage, @application
+    @transferable_teams = transferable_teams_for(@application)
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :transfer }
+    end
+  end
+
   def update
     authorize! :update, @application
 
@@ -90,6 +100,34 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
           render json: { errors: errors }, status: :unprocessable_content
         end
       end
+    end
+  end
+
+  def update_transfer
+    authorize! :manage, @application
+    @transferable_teams = transferable_teams_for(@application)
+    target_team_id = transfer_params[:owner_id]
+
+    if target_team_id.blank?
+      @application.errors.add(:owner_id, "must be selected")
+      return render :transfer, status: :unprocessable_entity
+    end
+
+    target_team = @transferable_teams.find_by(id: target_team_id)
+    unless target_team
+      @application.errors.add(:owner_id, "is not a valid transfer target")
+      return render :transfer, status: :unprocessable_entity
+    end
+
+    @application.owner = target_team
+
+    if @application.save
+      flash[:notice] = "Application transferred successfully."
+      respond_to do |format|
+        format.html { redirect_to developer_application_path(@application) }
+      end
+    else
+      render :transfer, status: :unprocessable_entity
     end
   end
 
@@ -122,5 +160,22 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
     params.require(:client_application)
           .permit(:name, :private, :owner_id,
                   profile_attributes: [:homepage_url, :privacy_policy_url, :terms_of_service_url])
+  end
+
+  private def transferable_teams_for(application)
+    developer_teams = current_user.teams_by_membership_scope(:developers)
+
+    if application.owner.is_a?(User)
+      developer_teams
+    elsif application.owner.is_a?(Team)
+      hierarchy_ids = application.owner.antecedent_team_ids + application.owner.descendant_team_ids + [application.owner.id]
+      developer_teams.where(id: hierarchy_ids)
+    else
+      Team.none
+    end
+  end
+
+  private def transfer_params
+    params.require(:client_application).permit(:owner_id)
   end
 end

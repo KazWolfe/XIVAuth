@@ -1,0 +1,5 @@
+<%= turbo_stream.append "body" do %>
+  <%= render 'layouts/components/remote_modal', title: 'Transfer Application', modal_id: "transfer_application_modal" do %>
+    <%= render 'developer/client_apps/transfer_modal' %>
+  <% end %>
+<% end %>
