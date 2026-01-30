@@ -29,5 +29,10 @@ class Ability
       t.direct_memberships.admins.where(user_id: user.id).any? ||
         t.antecedent_memberships.admins.where(user_id: user.id).any?
     end
+
+    can :create_apps, Team do |t|
+      t.direct_memberships.developers.where(user_id: user.id).any? ||
+        t.antecedent_memberships.developers.where(user_id: user.id).any?
+    end
   end
 end

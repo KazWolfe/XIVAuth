@@ -29,16 +29,14 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
   def create
     @application = ClientApplication.new(application_params)
 
-    # Set owner based on owner_id parameter
-    # Blank/nil = current user, otherwise must be a team ID where user is a developer
     if create_application_params[:owner_id].present?
-      owner = current_user.teams_by_membership_scope(:developers)
-                          .find_by(id: create_application_params[:owner_id])
-      unless owner
-        @application.errors.add(:owner_id, "you must be a developer of the selected team")
+      owning_team = Team.find_by(id: create_application_params[:owner_id])
+
+      unless can? :create_apps, owning_team
+        @application.errors.add(:owner_id, :not_developer, message: "you do not have permission to create applications for this team")
         return render :new, status: :unprocessable_entity
       end
-      @application.owner = owner
+      @application.owner = owning_team
     else
       @application.owner = current_user
     end
