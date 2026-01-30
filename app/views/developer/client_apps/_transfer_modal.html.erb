@@ -16,9 +16,12 @@
 
     <p class="text-muted mb-3">
       <% if @application.owner.is_a?(User) %>
-        This application is currently owned by <strong>your account</strong>. You can transfer it to any team where you are a developer.
+        This application is currently owned by <strong>your account</strong>. You can transfer it to any team where
+        you are a developer. <span class="text-danger">Once moved to a team, an application cannot be removed from
+        that team's hierarchy.</span>
       <% else %>
-        This application is currently owned by <strong><%= @application.owner.name %></strong>. You can transfer it to teams in the same hierarchy (parent/child teams).
+        This application is currently owned by <strong><%= @application.owner.name %></strong>. You can transfer it to
+        teams in the same hierarchy (parent/child teams).
       <% end %>
     </p>
 
