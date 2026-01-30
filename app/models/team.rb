@@ -98,6 +98,10 @@ class Team < ApplicationRecord
     super || (!new_record? && is_special_id?)
   end
 
+  def verified?
+    self.verified_at.present?
+  end
+
   protected def resolve_antecedent_memberships(admin_only: false, recursing: false)
     base = if recursing
              admin_only ? self.direct_memberships.admins : self.direct_memberships.active
@@ -130,11 +134,15 @@ class Team < ApplicationRecord
     deletion_errors = []
 
     if is_special_id?
-      deletion_errors << { code: :system_team, message: "This team is marked as a system team and cannot be deleted" }
+      deletion_errors << { code: :system_team, message: "This team is marked as a system team and cannot be deleted." }
+    end
+
+    if verified?
+      deletion_errors << { code: :verified_team, message: "This team has been verified and cannot be deleted." }
     end
 
     if subteams.any?
-      deletion_errors << { code: :has_subteams, message: "This team has child teams and cannot be deleted" }
+      deletion_errors << { code: :has_subteams, message: "This team has child teams and cannot be deleted." }
     end
 
     deletion_errors

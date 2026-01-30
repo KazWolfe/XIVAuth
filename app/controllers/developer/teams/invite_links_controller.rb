@@ -56,7 +56,7 @@ class Developer::Teams::InviteLinksController < Developer::DeveloperPortalContro
   end
 
   private def set_invite_link
-    @invite_link = Team::InviteLink.find_by!(code: params[:code])
+    @invite_link = Team::InviteLink.find_by!(invite_key: params[:code])
     @team = @invite_link.team
   end
 

@@ -1,0 +1,56 @@
+<div class="card-body">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <%= f.label :name, "App Name", class: "form-label fw-semibold" %>
+        <%= f.text_field :name, class: "form-control", placeholder: "My Awesome App", required: true %>
+        <div class="form-text">The name of your app as it appears to users.</div>
+      </div>
+
+      <% if @application.persisted? %>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" for="application_id">App ID</label>
+          <div class="input-group" data-controller="utilities--copy-code">
+            <input type="text" class="form-control font-monospace" id="application_id" value="<%= @application.id %>" readonly
+                   data-utilities--copy-code-target="source">
+            <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy application ID"
+                    data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+              <i class="bi bi-clipboard"></i>
+            </button>
+          </div>
+          <div class="form-text">Used for entangled IDs and privacy features. This cannot be changed.</div>
+        </div>
+      <% end %>
+
+      <div class="mb-3">
+        <div class="form-check form-switch">
+          <%= f.check_box :private, class: "form-check-input", role: "switch" %>
+          <%= f.label :private, "Private App", class: "form-check-label fw-semibold" %>
+        </div>
+        <div class="form-text">Private apps can only be used by the owners and permitted users.</div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <%= f.fields_for :profile, @application.profile do |pf| %>
+        <div class="mb-3">
+          <%= pf.label :homepage_url, "Homepage URL", class: "form-label fw-semibold" %>
+          <%= pf.url_field :homepage_url, class: "form-control" %>
+          <div class="form-text">The main website for your app.</div>
+        </div>
+
+        <div class="mb-3">
+          <%= pf.label :privacy_policy_url, "Privacy Policy URL", class: "form-label fw-semibold" %>
+          <%= pf.url_field :privacy_policy_url, class: "form-control" %>
+          <div class="form-text">Link to your app's privacy policy.</div>
+        </div>
+
+        <div class="mb-3">
+          <%= pf.label :terms_of_service_url, "Terms of Service URL", class: "form-label fw-semibold" %>
+          <%= pf.url_field :terms_of_service_url, class: "form-control" %>
+          <div class="form-text">Link to your app's terms of service.</div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

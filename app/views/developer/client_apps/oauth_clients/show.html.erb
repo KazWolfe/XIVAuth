@@ -11,7 +11,7 @@
     </div>
     <div>
       <div class="btn-toolbar gap-2">
-        <%= button_to developer_oauth_client_path(@oauth_client), method: :delete, class: "btn btn-outline-danger",
+        <%= button_to developer_oauth_client_path(@oauth_client), method: :delete, class: "btn btn-danger",
                       data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
           <i class="bi bi-trash"></i> Delete Credential
         <% end %>
@@ -133,7 +133,6 @@
     <% end %>
   </div>
 
-  <!-- Full width: Client Settings -->
   <div class="col-12">
     <%= form_for @oauth_client, url: developer_oauth_client_path(@oauth_client), as: :oauth_client, html: { role: 'form' } do |f| %>
       <div class="card mb-4">
@@ -146,52 +145,7 @@
             <div class="alert alert-danger" role="alert"><%= t('doorkeeper.applications.form.error') %></div>
           <% end %>
 
-          <!-- Scopes -->
-          <h6 class="mt-0">Scopes</h6>
-          <p class="text-secondary small mb-2">Select only the scopes your integration needs. Fewer scopes build trust.</p>
-          <div class="mb-3 row">
-            <div class="col-sm-12">
-              <%= hidden_field_tag 'oauth_client[scopes][]', '' %>
-              <%= render partial: 'developer/client_apps/oauth_clients/scope_tree',
-                         locals: { scopes: listable_scopes, selected_scopes: @oauth_client.scopes, nested: false, parent_id: "scope" } %>
-            </div>
-          </div>
-
-          <!-- Grant Flows -->
-          <h6 class="mt-4">Grant Flows</h6>
-          <p class="text-secondary small mb-2">Choose which OAuth 2.0 flows this credential can use. Leave all unchecked to allow any enabled flow.</p>
-
-          <!-- Confidential Client Toggle inside Grant Flows -->
-          <div class="mb-3 row">
-            <div class="col-sm-12">
-              <div class="form-check form-switch">
-                <%= f.check_box :confidential, class: 'form-check-input', id: 'oauth_client_confidential' %>
-                <%= f.label :confidential, 'Confidential Client', class: 'form-check-label' %>
-              </div>
-              <div class="form-text text-secondary">
-                <%= t('doorkeeper.applications.help.confidential') %>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-3 row">
-            <div class="col-sm-12">
-              <%= hidden_field_tag 'oauth_client[grant_flows][]', '' %>
-              <% Doorkeeper.configuration.enabled_grant_flows.each do |flow| %>
-                <% flow_name = (flow.respond_to?(:name) ? flow.name.to_s : flow) %>
-                <div class="form-check mb-2">
-                  <%= check_box_tag("oauth_client[grant_flows][]", flow_name, @oauth_client.grant_flows&.include?(flow_name), id: "grant_flow_#{flow_name}", class: 'form-check-input') %>
-                  <label class="form-check-label" for="grant_flow_<%= flow_name %>">
-                    <strong><%= t("xivauth.grant_flows.#{flow_name}.friendly") %></strong>
-                    (<code><%= flow_name %></code>)
-                  </label>
-                  <div class="form-text text-secondary">
-                    <%= t("xivauth.grant_flows.#{flow_name}.description") %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
+          <%= render 'client_settings', f: f %>
 
           <div class="d-flex justify-content-end mt-3">
             <%= link_to t('doorkeeper.applications.buttons.cancel'), developer_application_path(@application), class: 'btn btn-outline-secondary me-2' %>

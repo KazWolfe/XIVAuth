@@ -1,0 +1,42 @@
+<div class="row">
+  <!-- Left: Scopes -->
+  <div class="col-md-6">
+    <h6 class="mt-0">Scopes</h6>
+    <p class="text-secondary small mb-3">Select only the scopes your integration needs. Fewer scopes build trust.</p>
+    <%= hidden_field_tag 'oauth_client[scopes][]', '' %>
+    <%= render partial: 'developer/client_apps/oauth_clients/scope_tree',
+               locals: { scopes: listable_scopes, selected_scopes: @oauth_client.scopes, nested: false, parent_id: "scope" } %>
+  </div>
+
+  <!-- Right: Grant Flows -->
+  <div class="col-md-6">
+    <h6 class="mt-0">Grant Flows</h6>
+    <p class="text-secondary small mb-3">Choose which OAuth 2.0 flows this credential can use. Leave all unchecked to allow any enabled flow.</p>
+
+    <!-- Confidential Client Toggle -->
+    <div class="mb-3">
+      <div class="form-check form-switch">
+        <%= f.check_box :confidential, class: 'form-check-input', id: 'oauth_client_confidential' %>
+        <%= f.label :confidential, 'Confidential Client', class: 'form-check-label' %>
+      </div>
+      <div class="form-text text-secondary">
+        <%= t('doorkeeper.applications.help.confidential') %>
+      </div>
+    </div>
+
+    <%= hidden_field_tag 'oauth_client[grant_flows][]', '' %>
+    <% Doorkeeper.configuration.enabled_grant_flows.each do |flow| %>
+      <% flow_name = (flow.respond_to?(:name) ? flow.name.to_s : flow) %>
+      <div class="form-check mb-2">
+        <%= check_box_tag("oauth_client[grant_flows][]", flow_name, @oauth_client.grant_flows&.include?(flow_name), id: "grant_flow_#{flow_name}", class: 'form-check-input') %>
+        <label class="form-check-label" for="grant_flow_<%= flow_name %>">
+          <strong><%= t("xivauth.grant_flows.#{flow_name}.friendly") %></strong>
+          (<code><%= flow_name %></code>)
+        </label>
+        <div class="form-text text-secondary">
+          <%= t("xivauth.grant_flows.#{flow_name}.description") %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
