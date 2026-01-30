@@ -5,7 +5,7 @@ class Team < ApplicationRecord
   has_one :profile, class_name: "Team::Profile", dependent: :destroy, required: true, autosave: true
 
   belongs_to :parent, class_name: "Team", optional: true
-  has_many :subteams, class_name: "Team", foreign_key: "parent_id", dependent: :destroy, inverse_of: :parent
+  has_many :subteams, class_name: "Team", foreign_key: "parent_id", inverse_of: :parent
 
   has_many :direct_memberships, class_name: "Team::Membership", dependent: :destroy
   has_many :direct_members, through: :direct_memberships, source: :user
@@ -20,6 +20,7 @@ class Team < ApplicationRecord
   validate :validate_subteam_or_has_admin
 
   validate :team_recursion_control
+  before_destroy :validate_deletion
 
   before_create do
     build_profile
@@ -111,6 +112,41 @@ class Team < ApplicationRecord
       antecedents.or(base)
     else
       base
+    end
+  end
+
+  def deletion_block_reason
+    errors = deletion_check
+    errors.first&.dig(:message)
+  end
+
+  def can_be_deleted?
+    deletion_check.empty?
+  end
+
+  # Returns an array of hashes with code and message if deletion is blocked, empty array otherwise
+  # @return [Array<Hash{code: Symbol, message: String}>]
+  private def deletion_check
+    deletion_errors = []
+
+    if is_special_id?
+      deletion_errors << { code: :system_team, message: "This team is marked as a system team and cannot be deleted" }
+    end
+
+    if subteams.any?
+      deletion_errors << { code: :has_subteams, message: "This team has child teams and cannot be deleted" }
+    end
+
+    deletion_errors
+  end
+
+  private def validate_deletion
+    checks = deletion_check
+    if checks.present?
+      checks.each do |check|
+        errors.add(:base, check[:message])
+      end
+      throw :abort
     end
   end
 

@@ -1,7 +1,7 @@
 module AuthenticationHelpers
   # Helper to sign in a user in request specs
   # This actually performs the login request to set up the session properly
-  def sign_in(user, password: nil)
+  def true_sign_in(user, password: nil)
     # Use provided password or try to get it from the user object
     pwd = password || user.instance_variable_get(:@password) || user.password
 
@@ -14,7 +14,7 @@ module AuthenticationHelpers
   end
 
   # Helper to sign out a user in request specs
-  def sign_out
+  def true_sign_out
     delete destroy_user_session_path
   end
 

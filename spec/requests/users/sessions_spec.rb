@@ -338,7 +338,7 @@ RSpec.describe "Users::SessionsController", type: :request do
 
   describe "DELETE /users/sign_out" do
     before do
-      sign_in user, password: password
+      true_sign_in user, password: password
     end
 
     it "signs out the user successfully" do

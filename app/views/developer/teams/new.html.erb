@@ -1,10 +1,38 @@
 <% content_for(:page_header) do %>
-  <div>
-    <h1>Create Team</h1>
-    <p>Register a new Team with XIVAuth</p>
+  <div class="d-flex justify-content-between align-items-center">
+    <h1>Create New Team</h1>
   </div>
+  <p>Organize your applications and users with a dedicated team.</p>
 <% end %>
 
-<div class="d-flex justify-content-center">
-  <h3 class="text-danger">Team registrations not available.</h3>
+<div class="card mb-4">
+  <%= form_for @team, url: developer_teams_path, local: true do |f| %>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <%= f.label :name, "Team Name", class: "form-label fw-semibold" %>
+            <%= f.text_field :name, class: "form-control", placeholder: "My Awesome Team", required: true %>
+            <div class="form-text">A unique name for your team that appears to all members.</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <%= f.label :parent_id, "Parent Team", class: "form-label fw-semibold" %>
+            <%= f.select :parent_id,
+                options_for_select([["Standalone (no parent)", nil]] + @available_parent_teams.map { |t| [t.name, t.id] }, @team.parent_id),
+                { include_blank: false },
+                class: "form-select" %>
+            <div class="form-text">Organize this team under a parent team, or create it as standalone.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+      <%= f.submit "Create Team", class: "btn btn-primary" %>
+      <%= link_to "Cancel", developer_teams_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
 </div>

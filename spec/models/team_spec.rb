@@ -2,6 +2,38 @@ require "rails_helper"
 
 RSpec.describe Team, type: :model do
   describe "validations" do
+    describe "#validate_subteam_or_has_admin" do
+      it "requires root teams to have at least one admin" do
+        team = FactoryBot.build(:team, :no_initial_admin)
+
+        expect(team).not_to be_valid
+        expect(team.errors[:base]).to include("Root teams must have at least one admin")
+      end
+
+      it "allows root teams with an admin membership" do
+        admin = FactoryBot.create(:user)
+        team = FactoryBot.build(:team, :no_initial_admin)
+        team.direct_memberships.build(user: admin, role: "admin")
+
+        expect(team).to be_valid
+      end
+
+      it "does not require subteams to have an admin" do
+        parent = FactoryBot.create(:team)
+        subteam = FactoryBot.build(:team, parent: parent)
+
+        expect(subteam).to be_valid
+      end
+
+      it "allows subteams with no direct memberships" do
+        parent = FactoryBot.create(:team)
+        subteam = FactoryBot.create(:team, parent: parent)
+
+        expect(subteam.direct_memberships).to be_empty
+        expect(subteam).to be_valid
+      end
+    end
+
     describe "#team_recursion_control" do
       it "limits a team to five subteams" do
         parent = FactoryBot.create(:team)

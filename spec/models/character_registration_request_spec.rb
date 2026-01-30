@@ -24,7 +24,7 @@ RSpec.describe CharacterRegistrationRequest, type: :model do
       error?: error.present? || error_status.present?
     )
     allow(FFXIV::LodestoneSearch).to receive(:new)
-      .with(name: name, world: world)
+      .with(name: name, world: world, exact: false)
       .and_return(search_double)
   end
 
