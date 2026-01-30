@@ -2,5 +2,10 @@
   <%= link_to target, class: ['nav-link', request.path == target ? "active" : ""] do %>
     <i class="<%= icon_classes %>"></i>
     <span class="item-name"><%= name %></span>
+    <% if local_assigns[:badge_html].present? %>
+      <%= raw badge_html %>
+    <% elsif local_assigns[:badge].present? %>
+      <span class="badge <%= local_assigns[:badge_class] || 'bg-primary' %> ms-2"><%= badge %></span>
+    <% end %>
   <% end %>
 </li>
