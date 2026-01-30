@@ -92,59 +92,66 @@
       </div>
 
       <div class="card-body">
-        <table class="table">
-          <thead>
-          <tr>
-            <th>Name</th>
-            <th>Credentials</th>
-            <th>Credential Age</th>
-            <th></th>
-          </tr>
-          </thead>
-          <tbody>
-          <% @application.oauth_clients.each do |client| %>
+        <% if @application.oauth_clients.any? %>
+          <table class="table">
+            <thead>
             <tr>
-              <td>
-                <%= link_to client.name, developer_oauth_client_path(client) %>
-                <% if client.active? %>
-                  <span class="badge bg-success">Active</span>
-                <% elsif client.expired? %>
-                  <span class="badge bg-warning">Expired</span>
-                <% else %>
-                  <span class="badge bg-gray">Disabled</span>
-                <% end %>
-              </td>
-              <td>
-                <strong>Client ID:</strong> <span class="font-monospace"><%= client.client_id %></span><br>
-                <strong>Client Secret:</strong> <span class="font-monospace">REDACTED</span>
-              </td>
-              <td>
-                <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.created_at.to_i %>">
-                  <%= distance_of_time_in_words_to_now(client.created_at).capitalize %>
-                </span> <br/>
-
-                <% if client.expires_at.present? && !client.expired? %>
-                  <small class="text-muted">
-                    Expires
-                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.expires_at.to_i %>">
-                      in <%= distance_of_time_in_words_to_now(client.expires_at) %>
-                    </span>
-                  </small>
-                <% elsif client.expires_at.present? && client.expired? %>
-                  <small class="text-warning">
-                    Expired
-                    <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.expires_at.to_i %>">
-                      <%= distance_of_time_in_words_to_now(client.expires_at) %> ago
-                    </span>
-                  </small>
-                <% else %>
-                  <small class="text-muted">Never expires</small>
-                <% end %>
-              </td>
+              <th>Name</th>
+              <th>Credentials</th>
+              <th>Credential Age</th>
+              <th></th>
             </tr>
-          <% end %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            <% @application.oauth_clients.each do |client| %>
+              <tr>
+                <td>
+                  <%= link_to client.name, developer_oauth_client_path(client) %>
+                  <% if client.active? %>
+                    <span class="badge bg-success">Active</span>
+                  <% elsif client.expired? %>
+                    <span class="badge bg-warning">Expired</span>
+                  <% else %>
+                    <span class="badge bg-gray">Disabled</span>
+                  <% end %>
+                </td>
+                <td>
+                  <strong>Client ID:</strong> <span class="font-monospace"><%= client.client_id %></span><br>
+                  <strong>Client Secret:</strong> <span class="font-monospace">REDACTED</span>
+                </td>
+                <td>
+                  <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.created_at.to_i %>">
+                    <%= distance_of_time_in_words_to_now(client.created_at).capitalize %>
+                  </span> <br/>
+
+                  <% if client.expires_at.present? && !client.expired? %>
+                    <small class="text-muted">
+                      Expires
+                      <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.expires_at.to_i %>">
+                        in <%= distance_of_time_in_words_to_now(client.expires_at) %>
+                      </span>
+                    </small>
+                  <% elsif client.expires_at.present? && client.expired? %>
+                    <small class="text-warning">
+                      Expired
+                      <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= client.expires_at.to_i %>">
+                        <%= distance_of_time_in_words_to_now(client.expires_at) %> ago
+                      </span>
+                    </small>
+                  <% else %>
+                    <small class="text-muted">Never expires</small>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="text-center text-muted py-2">
+            <p>No OAuth credentials are defined yet.</p>
+            <p>Click the "Add new Credential" button to create your first OAuth client.</p>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

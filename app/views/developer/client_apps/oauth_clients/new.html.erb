@@ -1,46 +1,54 @@
-<div class="border-bottom mb-4">
-  <h1>Create new OAuth Client</h1>
-</div>
+<% content_for(:page_header) do %>
+  <div class="d-flex justify-content-between align-items-center">
+    <h1>Create New OAuth Client</h1>
+  </div>
+  <p>Register a new OAuth client for <%= @application.name %>.</p>
+<% end %>
 
-<%= form_for @oauth_client, url: developer_application_oauth_clients_path(@application), as: :oauth_client, html: { role: 'form' } do |f| %>
-  <div class="form-group row">
-    <%= f.label :name, class: 'col-sm-2 col-form-label font-weight-bold' %>
-    <div class="col-sm-10">
-      <%= f.text_field :name, class: "form-control #{ 'is-invalid' if @oauth_client.errors[:name].present? }", required: true %>
-    </div>
-
-    <div class="form-group row">
-      <%= f.label :confidential, class: 'col-sm-2 form-check-label font-weight-bold' %>
-      <div class="col-sm-10">
-        <%= f.check_box :confidential, class: "checkbox #{ 'is-invalid' if @oauth_client.errors[:confidential].present? }" %>
-        <span class="form-text text-secondary">
-          <%= t('doorkeeper.applications.help.confidential') %>
-        </span>
+<div class="card mb-4">
+  <%= form_for @oauth_client, url: developer_application_oauth_clients_path(@application), as: :oauth_client, html: { role: 'form' } do |f| %>
+    <div class="card-body">
+      <div class="mb-3">
+        <%= f.label :name, "Client Name", class: "form-label fw-semibold" %>
+        <%= f.text_field :name, class: "form-control #{ 'is-invalid' if @oauth_client.errors[:name].present? }", placeholder: "My OAuth Client", required: true %>
+        <div class="form-text">A descriptive name for this OAuth client.</div>
       </div>
-    </div>
 
-    <div class="form-group row">
-      <%= f.label :scopes, class: 'col-sm-2 col-form-label font-weight-bold' %>
-      <div class="col-sm-10">
+      <div class="mb-3">
+        <div class="form-check form-switch">
+          <%= f.check_box :confidential, class: "form-check-input", role: "switch" %>
+          <%= f.label :confidential, "Confidential Client", class: "form-check-label fw-semibold" %>
+        </div>
+        <div class="form-text"><%= t('doorkeeper.applications.help.confidential') %></div>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :scopes, "Scopes", class: "form-label fw-semibold" %>
         <%= render partial: 'developer/client_apps/oauth_clients/scope_tree', locals: { scopes: listable_scopes, selected_scopes: @oauth_client.scopes, nested: false, parent_id: "scope" } %>
       </div>
-    </div>
-  </div>
 
-  <div class="form-group row">
-    <%= f.label "Grant Flows", class: 'col-sm-2 col-form-label font-weight-bold' %>
-    <div class="col-sm-10">
-      <% Doorkeeper.configuration.enabled_grant_flows.each do |flow| %>
-        <%= check_box_tag("oauth_client[grant_flows][]", flow.name, @oauth_client.grant_flows&.include?(flow.name)) %>
-        <strong><%= t("xivauth.grant_flows.#{flow.name}.friendly") %></strong> (<code><%= flow.name %></code>)
-        <br>
-        <span class="form-text text-secondary">
-          <%= t("xivauth.grant_flows.#{flow.name}.description") %>
-        </span>
-        <br>
-      <% end %>
+      <div class="mb-3">
+        <%= f.label "Grant Flows", class: "form-label fw-semibold" %>
+        <div>
+          <% Doorkeeper.configuration.enabled_grant_flows.each do |flow| %>
+            <div class="form-check mb-2">
+              <%= check_box_tag("oauth_client[grant_flows][]", flow.name, @oauth_client.grant_flows&.include?(flow.name), class: "form-check-input") %>
+              <label class="form-check-label">
+                <strong><%= t("xivauth.grant_flows.#{flow.name}.friendly") %></strong>
+                <code class="ms-1"><%= flow.name %></code>
+              </label>
+              <div class="form-text d-block">
+                <%= t("xivauth.grant_flows.#{flow.name}.description") %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <%= f.submit %>
-<% end %>
+    <div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+      <%= f.submit "Create Client", class: "btn btn-primary" %>
+      <%= link_to "Cancel", developer_application_path(@application), class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>
