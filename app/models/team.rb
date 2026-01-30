@@ -161,7 +161,7 @@ class Team < ApplicationRecord
   # Check if this ID is a special UUID of the form 00000000-0000-8000-8f0f-0000xxxxxxxx
   # where x is any hex digit. This is used to mark internal or system teams that should
   # not be edited by the app.
-  protected def is_special_id?
+  def is_special_id?
     return false if self.id.nil?
 
     (self.id.gsub("-", "").to_i(16) >> 32) == 0x8000_8f0f_0000

@@ -9,6 +9,34 @@
 
       <% if @application.persisted? %>
         <div class="mb-3">
+          <label class="form-label fw-semibold">App Owner</label>
+          <div class="form-control-plaintext">
+            <% if @application.owner.is_a?(Team) %>
+              <%= link_to developer_team_path(@application.owner) do %>
+                <i class="bi bi-people me-1"></i><%= @application.owner.name %>
+              <% end %>
+            <% else %>
+              <i class="bi bi-person"></i> <%= @application.owner.profile.display_name %>
+            <% end %>
+          </div>
+        </div>
+      <% elsif !@application.persisted? && @available_owners&.length > 1 %>
+        <div class="mb-3">
+          <%= f.label "owner", "App Owner", class: "form-label fw-semibold" %>
+          <%= hidden_field_tag 'client_application[owner_id]', @available_owners.first[1] %>
+          <select name="client_application[owner_id]" class="form-select" id="application_owner">
+            <% @available_owners.each do |label, value| %>
+              <option value="<%= value %>" <%= 'selected' if value == params.dig(:client_application, :owner_id) %>>
+                <%= label %>
+              </option>
+            <% end %>
+          </select>
+          <div class="form-text">Select which account or team will own this application.</div>
+        </div>
+      <% end %>
+
+      <% if @application.persisted? %>
+        <div class="mb-3">
           <label class="form-label fw-semibold" for="application_id">App ID</label>
           <div class="input-group" data-controller="utilities--copy-code">
             <input type="text" class="form-control font-monospace" id="application_id" value="<%= @application.id %>" readonly

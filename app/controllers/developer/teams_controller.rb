@@ -81,7 +81,7 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   end
 
   private def load_parent_teams
-    @available_parent_teams = current_user.admin_teams
+    @available_parent_teams = current_user.teams_by_membership_scope(:admins)
                                           .order(:name)
                                           .distinct
   end

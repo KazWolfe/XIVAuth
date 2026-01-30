@@ -3,6 +3,7 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
   include Pagy::Method
   helper Doorkeeper::DashboardHelper
 
+  before_action :load_available_owners, only: %i[new create]
   before_action :set_application, only: %i[show edit update destroy regenerate]
 
   def index
@@ -27,7 +28,20 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
 
   def create
     @application = ClientApplication.new(application_params)
-    @application.owner = current_user
+
+    # Set owner based on owner_id parameter
+    # Blank/nil = current user, otherwise must be a team ID where user is a developer
+    if create_application_params[:owner_id].present?
+      owner = current_user.teams_by_membership_scope(:developers)
+                          .find_by(id: create_application_params[:owner_id])
+      unless owner
+        @application.errors.add(:owner_id, "you must be a developer of the selected team")
+        return render :new, status: :unprocessable_entity
+      end
+      @application.owner = owner
+    else
+      @application.owner = current_user
+    end
 
     if @application.save
       flash[:notice] = I18n.t(:notice, scope: %i[doorkeeper flash applications create])
@@ -81,6 +95,15 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
     end
   end
 
+  private def load_available_owners
+    # Build owner options: current user + teams where user is a developer
+    @available_owners = [["Your Account", ""]]
+
+    current_user.teams_by_membership_scope(:developers).order(:name).each do |team|
+      @available_owners << [team.name, team.id]
+    end
+  end
+
   private def accessible_applications
     ClientApplication.where(owner: current_user).or(ClientApplication.where(owner: current_user.associated_teams))
   end
@@ -95,5 +118,11 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
   private def application_params
     params.require(:client_application)
           .permit(:name, :private, profile_attributes: [:homepage_url, :privacy_policy_url, :terms_of_service_url])
+  end
+
+  private def create_application_params
+    params.require(:client_application)
+          .permit(:name, :private, :owner_id,
+                  profile_attributes: [:homepage_url, :privacy_policy_url, :terms_of_service_url])
   end
 end
