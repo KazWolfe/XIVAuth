@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
 
   before_action :redirect_to_new_domain
 
+  helper PrideHelper
+
   private def set_observability_context
     sentry_frontend_data = {
       environment: ENV["APP_ENV"] || Rails.env,

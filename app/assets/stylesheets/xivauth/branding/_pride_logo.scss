@@ -1,31 +1,111 @@
+@function pride-flag-gradient($colors, $angle: 85deg) {
+  $expanded-colors: $colors;
+  $original-count: length($colors);
+
+  @if $original-count > 1 {
+    @for $i from 1 through ($original-count - 1) {
+      $expanded-colors: append($expanded-colors, nth($colors, $original-count - $i));
+    }
+  }
+
+  $gradient: "linear-gradient(#{$angle}, ";
+  $color-count: length($expanded-colors);
+
+  @for $index from 1 through $color-count {
+    $gradient: $gradient + #{nth($expanded-colors, $index)};
+
+    @if $index != $color-count {
+      $gradient: $gradient + ", ";
+    }
+  }
+
+  @return unquote($gradient + ")");
+}
+
+
+$pride-gradients: (
+        "rainbow": (
+                rgba(222, 80, 80, 1),
+                rgba(222, 180, 114, 1),
+                rgba(213, 213, 114, 1),
+                rgba(140, 207, 140, 1),
+                rgba(118, 114, 231, 1),
+                rgba(148, 82, 229, 1),
+                rgba(191, 94, 233, 1)
+        ),
+        "transgender": (
+                rgba(85, 205, 252, 1),
+                rgba(247, 168, 184, 1),
+                rgba(255, 255, 255, 1),
+                rgba(247, 168, 184, 1),
+                rgba(85, 205, 252, 1),
+        ),
+        "bisexual": (
+                rgba(214, 2, 112, 1),
+                rgba(214, 2, 112, 1),
+                rgba(155, 79, 150, 1),
+                rgba(100, 149, 237, 1),
+                rgba(100, 149, 237, 1)
+        ),
+        "lesbian": (
+                rgba(213, 45, 0, 1),
+                rgba(239, 118, 39, 1),
+                rgba(255, 154, 86, 1),
+                rgba(255, 255, 255, 1),
+                rgba(209, 98, 164, 1),
+                rgba(181, 86, 144, 1),
+                rgba(163, 2, 98, 1)
+        ),
+        "asexual": (
+                rgba(80, 80, 80, 1),
+                rgba(163, 163, 163, 1),
+                rgba(255, 255, 255, 1),
+                rgba(128, 0, 128, 1)
+        ),
+        "gay": (
+                rgba(0, 119, 79, 1),
+                rgba(0, 168, 107, 1),
+                rgba(255, 255, 255, 1),
+                rgba(0, 119, 182, 1),
+                rgba(108, 48, 147, 1)
+        ),
+        "demi": (
+                rgba(255, 255, 255, 1),
+                rgba(200, 156, 221, 1),
+                rgba(127, 127, 127, 1),
+        ),
+        "nonbinary": (
+                rgba(255, 244, 51, 1),
+                rgba(255, 255, 255, 1),
+                rgba(156, 89, 209, 1),
+                rgba(80, 80, 80, 1),
+        )
+);
+
+$default-pride-gradient: pride-flag-gradient(map-get($pride-gradients, "rainbow"));
+
 .pride-brand {
-  background: linear-gradient(85deg,
-          rgba(222,80,80,1),
-          rgba(222,180,114,1),
-          rgba(213,213,114,1),
-          rgba(140,207,140,1),
-          rgba(118,114,231,1),
-          rgba(148,82,229,1),
-          rgba(191,94,233,1),
-          rgba(148,82,229,1),
-          rgba(118,114,231,1),
-          rgba(140,207,140,1),
-          rgba(213,213,114,1),
-          rgba(222,80,80,1)
-  );
+  --pride-gradient: #{$default-pride-gradient};
+  background-image: var(--pride-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   background-size: 200% 100%;
   color: transparent;
-
   animation: pride-gradient 5s linear infinite;
   animation-play-state: paused;
 
   &:hover {
     color: transparent;
-    animation-play-state: unset;
+    animation-play-state: running;
   }
 }
+
+@each $name, $colors in $pride-gradients {
+  .pride-brand--#{$name} {
+    --pride-gradient: #{pride-flag-gradient($colors)};
+  }
+}
+
 
 @keyframes pride-gradient {
   0% {

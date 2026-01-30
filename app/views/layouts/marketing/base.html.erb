@@ -10,7 +10,7 @@
       <% else %>
         <nav class="navbar navbar-expand-xl navbar-light">
           <div class="container-fluid navbar-inner">
-            <a class="navbar-brand pride-brand m-0 d-xl-flex d-none" href="/">XIVAuth</a>
+            <a class="navbar-brand pride-brand <%= current_pride_flag_class %> m-0 d-xl-flex d-none" href="/">XIVAuth</a>
             <ul class="navbar-nav align-items-center navbar-list d-none d-xl-flex">
               <li class="nav-item">
                 <%= link_to new_user_registration_path, class: "nav-link" do %>
