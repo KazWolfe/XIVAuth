@@ -83,7 +83,7 @@
   <p>Environment: <%= (ENV["APP_ENV"] || Rails.env).titleize %></p>
   <% if commit_hash.present? %>
     <p>Commit:
-      <a href="https://github.com/KazWolfe/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
+      <a href="https://github.com/XIVAuth/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
     </p>
   <% end %>
   <% if @trace_type.present? && @trace_id.present? %>

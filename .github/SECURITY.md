@@ -47,4 +47,4 @@ The following security issues are considered "out of scope":
 If your report covers one of the above categories and is a code-level issue, we encourage you to submit a normal 
 [GitHub Issue][gh-issues] for it instead. 
 
-[gh-issues]: https://github.com/KazWolfe/XIVAuth/issues
+[gh-issues]: https://github.com/XIVAuth/XIVAuth/issues

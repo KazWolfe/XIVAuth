@@ -1,6 +1,6 @@
 services:
   app:
-    image: kazwolfe/xivauth:latest
+    image: xivauth/xivauth-app:latest
     build:
       context: .
       target: dev
