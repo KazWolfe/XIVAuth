@@ -56,7 +56,7 @@ class JwtSigningKey < ApplicationRecord
     case alg_type.to_s
     when "JWT::JWA::Rsa", "JWT::JWA::Ps"
       JwtSigningKeys::RSA.active.first
-    when "JWT::JWA::Eddsa"
+    when "JWT::EdDSA::Algo"
       JwtSigningKeys::Ed25519.active.first
     when "JWT::JWA::Hmac", "JWT::JWA::HmacRbNaCl"
       JwtSigningKeys::HMAC.active.first

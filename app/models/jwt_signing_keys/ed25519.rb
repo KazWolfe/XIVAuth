@@ -2,31 +2,42 @@ class JwtSigningKeys::Ed25519 < JwtSigningKey
   after_initialize :generate_keypair, if: :new_record?
   validates :public_key, presence: true
 
-  def openssl_key
-    @openssl_key ||= OpenSSL::PKey.read(self[:private_key])
-  end
-
-  # @return [RbNaCl::Signatures::Ed25519::SigningKey]
+  # @return [Ed25519::SigningKey]
   def private_key
-    @rbnacl_signing_key ||= RbNaCl::Signatures::Ed25519::SigningKey.new openssl_key.raw_private_key
+    @private_key ||= ::Ed25519::SigningKey.new(openssl_key.raw_private_key)
   end
 
-  # @param [OpenSSL::PKey::PKey] pk
-  def private_key=(pk)
-    self[:private_key] = pk.private_to_pem
-    self[:public_key] = pk.public_to_pem
+  # @param [Ed25519::SigningKey] key
+  def private_key=(key)
+    if key.is_a?(::Ed25519::SigningKey)
+      encoded_key = OpenSSL::PKey.new_raw_private_key("Ed25519", key.to_bytes)
+
+      self[:private_key] = encoded_key.private_to_pem
+      self[:public_key] = encoded_key.public_to_pem
+    elsif key.is_a?(OpenSSL::PKey::PKey)
+      self[:private_key] = key.private_to_pem
+      self[:public_key] = key.public_to_pem
+    end
+
+    # Clear caches to force fresh reads from the newly set values
+    @private_key = nil
+    @public_key = nil
   end
 
-  # @return [RbNaCl::Signatures::Ed2519::VerifyKey]
+  # @return [Ed25519::VerifyKey]
   def public_key
-    @rbnacl_public_key ||= RbNaCl::Signatures::Ed25519::VerifyKey.new openssl_key.raw_public_key
+    @public_key ||= ::Ed25519::VerifyKey.new(openssl_key.raw_public_key)
   end
 
   def generate_keypair
-    self.private_key = OpenSSL::PKey.generate_key("ED25519")
+    self.private_key = ::Ed25519::SigningKey.generate
   end
 
   def supported_algorithms
     %w[EdDSA Ed25519]
+  end
+
+  private def openssl_key
+    OpenSSL::PKey.read(self[:private_key])
   end
 end

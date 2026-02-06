@@ -15,7 +15,7 @@ class Users::RecoveryController < ApplicationController
       @user = User.new
       @user.errors.add(:email, "can't be blank")
 
-      render "devise/recovery/new", status: :unprocessable_entity
+      render "devise/recovery/new", status: :unprocessable_content
       return
     end
 
@@ -37,7 +37,7 @@ class Users::RecoveryController < ApplicationController
       "you should receive a recovery email shortly."
   rescue Postmark::InactiveRecipientError
     flash.now[:error] = render_to_string(partial: "devise/mailer/mta_error")
-    render "devise/recovery/new", status: :unprocessable_entity
+    render "devise/recovery/new", status: :unprocessable_content
   end
 
   def permitted_params

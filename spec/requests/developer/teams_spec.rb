@@ -24,7 +24,7 @@ RSpec.describe "Developer::Teams", type: :request do
       it "requires a team name" do
         post developer_teams_path, params: { team: { name: "" } }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "automatically builds a profile" do
@@ -68,7 +68,7 @@ RSpec.describe "Developer::Teams", type: :request do
           post developer_teams_path, params: { team: { name: "Child Team", parent_id: non_admin_team.id } }
         }.not_to change(Team, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "prevents creating a subteam when user is only a member (not admin) of the parent" do
@@ -79,7 +79,7 @@ RSpec.describe "Developer::Teams", type: :request do
           post developer_teams_path, params: { team: { name: "Child Team", parent_id: member_team.id } }
         }.not_to change(Team, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "prevents creating a subteam when user is a developer (not admin) of the parent" do
@@ -90,7 +90,7 @@ RSpec.describe "Developer::Teams", type: :request do
           post developer_teams_path, params: { team: { name: "Child Team", parent_id: dev_team.id } }
         }.not_to change(Team, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "allows creating a subteam when user is an admin via antecedent team" do
@@ -117,7 +117,7 @@ RSpec.describe "Developer::Teams", type: :request do
           post developer_teams_path, params: { team: { name: "Child Team", parent_id: other_user_team.id } }
         }.not_to change(Team, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "respects the team depth limit" do
@@ -130,7 +130,7 @@ RSpec.describe "Developer::Teams", type: :request do
           post developer_teams_path, params: { team: { name: "Too Deep", parent_id: team.id } }
         }.not_to change(Team, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "respects the subteam limit" do
@@ -140,7 +140,7 @@ RSpec.describe "Developer::Teams", type: :request do
           post developer_teams_path, params: { team: { name: "Sixth Child", parent_id: parent_team.id } }
         }.not_to change(Team, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

@@ -67,11 +67,20 @@ RSpec.describe JwtSigningKey, type: :model do
   end
 
   describe ".preferred_key_for_algorithm" do
+    # Key generation is expensive, do it once.
     before(:context) do
-      @rsa_key = JwtSigningKeys::RSA.create!(name: "rsa_pref_#{SecureRandom.uuid}")
+      @rsa_key = JwtSigningKeys::RSA.create!(name: "rsa_pref_#{SecureRandom.uuid}", size: 2048)
       @hmac_key = JwtSigningKeys::HMAC.create!(name: "hmac_pref_#{SecureRandom.uuid}")
       @eddsa_key = JwtSigningKeys::Ed25519.create!(name: "eddsa_pref_#{SecureRandom.uuid}")
       @ecdsa_key = JwtSigningKeys::ECDSA.create!(name: "ecdsa_pref_#{SecureRandom.uuid}", curve: "prime256v1")
+    end
+
+    after(:context) do
+      # Clean up keys to prevent test pollution
+      @rsa_key&.destroy
+      @hmac_key&.destroy
+      @eddsa_key&.destroy
+      @ecdsa_key&.destroy
     end
 
     it "returns RSA for RS256 and PS256 families" do

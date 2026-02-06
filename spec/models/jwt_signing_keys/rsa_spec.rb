@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe JwtSigningKeys::RSA, type: :model do
-  subject { described_class.new(name: "rspec_rsa_#{SecureRandom.uuid}", size: 1024) }
+  subject { described_class.new(name: "rspec_rsa_#{SecureRandom.uuid}", size: 2048) }
 
   context "crypto verification" do
     it "can sign and verify a message" do
@@ -46,9 +46,9 @@ RSpec.describe JwtSigningKeys::RSA, type: :model do
     end
 
     it "doesn't allow updating the key size" do
-      subject.size = 2048
+      subject.size = 4096
 
-      expect(subject.size).to eq(1024)
+      expect(subject.size).to eq(2048)
     end
   end
 end

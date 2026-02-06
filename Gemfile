@@ -44,7 +44,7 @@ gem "sidekiq-unique-jobs", "~> 8.0.10"
 
 # Authentication / Authorization
 gem "cancancan", "~> 3.5"
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 gem "devise_zxcvbn", "~> 6.0.0"
 
 # Authn (MFA)
@@ -70,10 +70,10 @@ gem "flipper-active_record", "~> 1.3"
 gem "flipper-ui", "~> 1.3"
 
 # Internal security
-gem "jwt", "~> 2.9.0"
+gem "jwt", "~> 3.0"
+gem "jwt-eddsa", "~> 0.9"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
 gem "rails_cloudflare_turnstile", "~> 0.4"
-gem "rbnacl", "~> 7.1.1"
 
 # CA certificates
 gem 'certificate_authority', '~> 1.1'

@@ -27,8 +27,8 @@ RSpec.describe JwtSigningKeys::Ed25519, type: :model do
     end
 
     it "contains a valid keypair at initialization" do
-      expect(subject.public_key).to be_an_instance_of(RbNaCl::Signatures::Ed25519::VerifyKey)
-      expect(subject.private_key).to be_an_instance_of(RbNaCl::Signatures::Ed25519::SigningKey)
+      expect(subject.public_key).to be_an_instance_of(Ed25519::VerifyKey)
+      expect(subject.private_key).to be_an_instance_of(Ed25519::SigningKey)
     end
 
     it "correctly persists the keypair" do

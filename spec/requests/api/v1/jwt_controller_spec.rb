@@ -5,11 +5,19 @@ RSpec.describe "Api::V1::JwtController", type: :request do
   include_context "oauth:client_credentials"
 
   # Key generation is expensive, do it once.
-  before(:all) do
+  before(:context) do
     @test_key = JwtSigningKeys::HMAC.create!(name: "hmac_spec_#{SecureRandom.uuid}")
-    @rsa_key =  JwtSigningKeys::RSA.create!(name: "rsa_spec_#{SecureRandom.uuid}", size: 1024)
+    @rsa_key =  JwtSigningKeys::RSA.create!(name: "rsa_spec_#{SecureRandom.uuid}", size: 2048)
     @ed25519_key = JwtSigningKeys::Ed25519.create!(name: "ed25519_spec_#{SecureRandom.uuid}")
     @ecdsa_key = JwtSigningKeys::ECDSA.create!(name: "ecdsa_spec_#{SecureRandom.uuid}")
+  end
+
+  after(:context) do
+    # Clean up keys to prevent test pollution
+    @test_key&.destroy
+    @rsa_key&.destroy
+    @ed25519_key&.destroy
+    @ecdsa_key&.destroy
   end
 
   describe "GET /api/v1/jwt/jwks" do

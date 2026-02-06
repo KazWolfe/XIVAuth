@@ -85,14 +85,14 @@ RSpec.describe "Users::SessionsController", type: :request do
         post user_session_path, params: login_params(password: "WrongPassword123!")
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(response.body).to include("Invalid Email or password.")
+        expect(response.body).to include("Invalid email or password.")
       end
 
       it "fails to sign in with non-existent email" do
         post user_session_path, params: login_params(email: "nonexistent@example.test")
 
         expect(response).to have_http_status(:unprocessable_content)
-        expect(response.body).to include("Invalid Email or password.")
+        expect(response.body).to include("Invalid email or password.")
       end
     end
 
