@@ -1,24 +1,27 @@
 class JwtSigningKeys::ECDSA < JwtSigningKey
   after_initialize :generate_keypair, if: :new_record?
   validates :public_key, presence: true
-  validates :curve, inclusion: JWT::JWA::Ecdsa::NAMED_CURVES.keys
+  validates :curve, inclusion: ::JWT::JWA::Ecdsa::NAMED_CURVES.keys
 
   # @return [OpenSSL::PKey::ECDSA] A private RSA key.
   def private_key
-    OpenSSL::PKey::EC.new self[:private_key]
+    @private_key ||= OpenSSL::PKey::EC.new self[:private_key]
   end
 
-  # @param [OpenSSL::PKey::EC] key The RSA private key to store.
+  # @param [OpenSSL::PKey::EC] key The EC private key to store.
   def private_key=(key)
     self[:private_key] = key.to_pem
     self[:public_key] = key.public_to_pem
 
+    @private_key = key
+    @public_key = nil  # needs to be recalculated from the PEM, can be deferred.
+
     key_params[:curve] = key.public_key&.group&.curve_name
   end
 
-  # @return [OpenSSL::PKey::EC] A public RSA key.
+  # @return [OpenSSL::PKey::EC] A public EC key.
   def public_key
-    OpenSSL::PKey::EC.new self[:public_key]
+    @public_key ||= OpenSSL::PKey::EC.new self[:public_key]
   end
 
   def generate_keypair(curve = nil)
@@ -37,11 +40,11 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
   end
 
   def supported_algorithms
-    [JWT::JWA::Ecdsa::NAMED_CURVES[curve][:algorithm]]
+    [::JWT::JWA::Ecdsa::NAMED_CURVES[curve][:algorithm]]
   end
 
   def self.preferred_key_for_algorithm(algorithm_name)
-    curves = JWT::JWA::Ecdsa::NAMED_CURVES.filter { |_, c| c[:algorithm] == algorithm_name }
+    curves = ::JWT::JWA::Ecdsa::NAMED_CURVES.filter { |_, c| c[:algorithm] == algorithm_name }
 
     active.where("key_params->>'curve' IN (?)", curves.keys).first
   end

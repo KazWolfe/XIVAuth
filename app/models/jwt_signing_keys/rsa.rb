@@ -5,20 +5,24 @@ class JwtSigningKeys::RSA < JwtSigningKey
 
   # @return [OpenSSL::PKey::RSA] A private RSA key.
   def private_key
-    OpenSSL::PKey::RSA.new self[:private_key]
+    @private_key ||= OpenSSL::PKey::RSA.new self[:private_key]
   end
 
   # @param [OpenSSL::PKey::RSA] key The RSA private key to store.
   def private_key=(key)
-    self[:private_key] = key.export(nil)
+    self[:private_key] = key.private_to_pem
     self[:public_key] = key.public_to_pem
 
     key_params[:size] = key.public_key.n.num_bits
+
+    # populate our cache
+    @private_key = key
+    @public_key = key.public_key
   end
 
   # @return [OpenSSL::PKey::RSA] A public RSA key.
   def public_key
-    OpenSSL::PKey::RSA.new self[:public_key]
+    @public_key ||= OpenSSL::PKey::RSA.new self[:public_key]
   end
 
   def generate_keypair(size = nil)
@@ -37,6 +41,13 @@ class JwtSigningKeys::RSA < JwtSigningKey
   end
 
   def supported_algorithms
+    # NOTE: It's not the greatest idea to reuse keys for all these algorithms,
+    # but there shouldn't be any inherent cryptographic flaw in doing so. The
+    # differences ultimately come down to hashing algorithm and padding, which
+    # don't care about the key material. The end user ultimately decides which
+    # algorithm they want, so they're making the security choice based on their
+    # needs.
+
     # TODO: Figure out some way to read this from JWT again.
     %w[RS256 RS384 RS512 PS256 PS384 PS512]
   end
