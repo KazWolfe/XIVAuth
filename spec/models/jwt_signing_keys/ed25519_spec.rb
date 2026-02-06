@@ -38,5 +38,12 @@ RSpec.describe JwtSigningKeys::Ed25519, type: :model do
       expect(ci.raw_private_key).to eq(subject.raw_private_key)
       expect(ci.raw_public_key).to eq(subject.raw_public_key)
     end
+
+    it "rejects mismatched public and private keys" do
+      subject[:public_key] = OpenSSL::PKey.new_raw_public_key("Ed25519", "\x00" * 32).public_to_pem
+
+      expect(subject).not_to be_valid
+      expect(subject.errors[:public_key]).to include("must be consistent with the private key")
+    end
   end
 end

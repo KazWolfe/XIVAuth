@@ -3,7 +3,9 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
   validates :public_key, presence: true
   validates :curve, inclusion: ::JWT::JWA::Ecdsa::NAMED_CURVES.keys
 
-  # @return [OpenSSL::PKey::ECDSA] A private RSA key.
+  validate :validate_public_key_consistent
+
+  # @return [OpenSSL::PKey::EC] A private RSA key.
   def private_key
     @private_key ||= OpenSSL::PKey::EC.new self[:private_key]
   end
@@ -41,6 +43,16 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
 
   def supported_algorithms
     [::JWT::JWA::Ecdsa::NAMED_CURVES[curve][:algorithm]]
+  end
+
+  private def validate_public_key_consistent
+    sig_data = "CRYPTO_VALIDATION_OPERATION"
+    digest = OpenSSL::Digest.new("SHA256")
+    signature = private_key.sign(digest, sig_data)
+
+    unless public_key.verify(digest, signature, sig_data)
+      errors.add(:public_key, "must be consistent with the private key")
+    end
   end
 
   def self.preferred_key_for_algorithm(algorithm_name)

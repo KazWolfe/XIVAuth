@@ -45,6 +45,19 @@ RSpec.describe JwtSigningKeys::RSA, type: :model do
       expect(ci.raw_public_key).to eq(subject.raw_public_key)
     end
 
+    it "rejects mismatched public and private keys" do
+      # Hardcoded dummy key so we don't need to bother with generation.
+      subject[:public_key] = <<~PEM
+        -----BEGIN PUBLIC KEY-----
+        MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANvbTriRwee0XnXiKWxUNg+4fcxm7GGu
+        AypgbOlDM0zBlmIUKyoj987V7ToEzyA7sBD9gw+6f0rtxC3LcQBc41ECAwEAAQ==
+        -----END PUBLIC KEY-----
+      PEM
+
+      expect(subject).not_to be_valid
+      expect(subject.errors[:public_key]).to include("must be consistent with the private key")
+    end
+
     it "doesn't allow updating the key size" do
       subject.size = 4096
 

@@ -2,9 +2,13 @@ class JwtSigningKeys::Ed25519 < JwtSigningKey
   after_initialize :generate_keypair, if: :new_record?
   validates :public_key, presence: true
 
+  validate :validate_public_key_consistent
+
   # @return [Ed25519::SigningKey]
   def private_key
-    @private_key ||= ::Ed25519::SigningKey.new(openssl_key.raw_private_key)
+    @private_key ||= ::Ed25519::SigningKey.new(
+      OpenSSL::PKey.read(self[:private_key]).raw_private_key
+    )
   end
 
   # @param [Ed25519::SigningKey] key
@@ -26,7 +30,9 @@ class JwtSigningKeys::Ed25519 < JwtSigningKey
 
   # @return [Ed25519::VerifyKey]
   def public_key
-    @public_key ||= ::Ed25519::VerifyKey.new(openssl_key.raw_public_key)
+    @public_key = ::Ed25519::VerifyKey.new(
+      OpenSSL::PKey.read(self[:public_key]).raw_public_key
+    )
   end
 
   def generate_keypair
@@ -37,7 +43,16 @@ class JwtSigningKeys::Ed25519 < JwtSigningKey
     %w[EdDSA Ed25519]
   end
 
-  private def openssl_key
-    OpenSSL::PKey.read(self[:private_key])
+  private def validate_public_key_consistent
+    return if public_key.blank? && private_key.blank?
+
+    sig_data = "CRYPTO_VALIDATION_OPERATION"
+    signature = private_key.sign(sig_data)
+
+    begin
+      public_key.verify(signature, sig_data)
+    rescue ::Ed25519::VerifyError
+      errors.add(:public_key, "must be consistent with the private key")
+    end
   end
 end

@@ -3,9 +3,11 @@ class JwtSigningKeys::RSA < JwtSigningKey
   validates :public_key, presence: true
   validates :size, numericality: { greater_than_or_equal_to: 2048 }
 
+  validate :validate_public_key_consistent
+
   # @return [OpenSSL::PKey::RSA] A private RSA key.
   def private_key
-    @private_key ||= OpenSSL::PKey::RSA.new self[:private_key]
+    @private_key ||= OpenSSL::PKey::RSA.new(self[:private_key])
   end
 
   # @param [OpenSSL::PKey::RSA] key The RSA private key to store.
@@ -15,14 +17,14 @@ class JwtSigningKeys::RSA < JwtSigningKey
 
     key_params[:size] = key.public_key.n.num_bits
 
-    # populate our cache
-    @private_key = key
-    @public_key = key.public_key
+    # reset key cache
+    @private_key = nil
+    @public_key = nil
   end
 
   # @return [OpenSSL::PKey::RSA] A public RSA key.
   def public_key
-    @public_key ||= OpenSSL::PKey::RSA.new self[:public_key]
+    @public_key ||= OpenSSL::PKey::RSA.new(self[:public_key])
   end
 
   def generate_keypair(size = nil)
@@ -50,5 +52,17 @@ class JwtSigningKeys::RSA < JwtSigningKey
 
     # TODO: Figure out some way to read this from JWT again.
     %w[RS256 RS384 RS512 PS256 PS384 PS512]
+  end
+
+  private def validate_public_key_consistent
+    return if public_key.blank? && private_key.blank?
+
+    sig_data = "CRYPTO_VALIDATION_OPERATION"
+    digest = OpenSSL::Digest.new("SHA256")
+    signature = private_key.sign(digest, sig_data)
+
+    unless public_key.verify(digest, signature, sig_data)
+      errors.add(:public_key, "must be consistent with the private key")
+    end
   end
 end

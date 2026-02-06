@@ -1,13 +1,16 @@
 require "rails_helper"
 require "support/oauth_contexts"
+require "support/crypto_support"
 
 RSpec.describe "Api::V1::JwtController", type: :request do
+  include CryptoSupport
+
   include_context "oauth:client_credentials"
 
   # Key generation is expensive, do it once.
   before(:context) do
     @test_key = JwtSigningKeys::HMAC.create!(name: "hmac_spec_#{SecureRandom.uuid}")
-    @rsa_key =  JwtSigningKeys::RSA.create!(name: "rsa_spec_#{SecureRandom.uuid}", size: 2048)
+    @rsa_key =  JwtSigningKeys::RSA.create!(name: "rsa_spec_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
     @ed25519_key = JwtSigningKeys::Ed25519.create!(name: "ed25519_spec_#{SecureRandom.uuid}")
     @ecdsa_key = JwtSigningKeys::ECDSA.create!(name: "ecdsa_spec_#{SecureRandom.uuid}")
   end

@@ -47,6 +47,19 @@ RSpec.describe JwtSigningKeys::ECDSA, type: :model do
       expect(ci.raw_public_key).to eq(subject.raw_public_key)
     end
 
+    it "rejects mismatched public and private keys" do
+      # Hardcoded dummy key so we don't need to bother with generation.
+      subject[:public_key] = <<~PEM
+        -----BEGIN PUBLIC KEY-----
+        MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEvY8E1L/aJqf1NpbkjVBGcbUPS2JNvRKr
+        lambrfrFKAUJrtS5343hUIf8M2OuJAAyW4roOeHLW9hMjb+4s9C/3Q==
+        -----END PUBLIC KEY-----
+      PEM
+
+      expect(subject).not_to be_valid
+      expect(subject.errors[:public_key]).to include("must be consistent with the private key")
+    end
+
     it "doesn't allow updating the curve" do
       subject.curve = "foobarbaz"
 

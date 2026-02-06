@@ -1,6 +1,9 @@
 require "rails_helper"
+require "support/crypto_support"
 
 RSpec.describe JwtSigningKey, type: :model do
+  include CryptoSupport
+
   describe "lifecycle and flags" do
     it "computes expired? correctly" do
       key = JwtSigningKeys::HMAC.create!(name: "exp_test_#{SecureRandom.uuid}")
@@ -25,9 +28,9 @@ RSpec.describe JwtSigningKey, type: :model do
     end
 
     it "filters only active keys in .active scope" do
-      active_rsa = JwtSigningKeys::RSA.create!(name: "rsa_#{SecureRandom.uuid}")
+      active_rsa = JwtSigningKeys::RSA.create!(name: "rsa_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
       _inactive = JwtSigningKeys::HMAC.create!(name: "hmac_#{SecureRandom.uuid}", enabled: false)
-      _expired = JwtSigningKeys::RSA.create!(name: "rsa_exp_#{SecureRandom.uuid}", expires_at: 1.hour.ago)
+      _expired = JwtSigningKeys::RSA.create!(name: "rsa_exp_#{SecureRandom.uuid}", expires_at: 1.hour.ago, private_key: CryptoSupport.shared_rsa_key)
 
       expect(JwtSigningKey.active).to contain_exactly(active_rsa)
     end
@@ -40,7 +43,7 @@ RSpec.describe JwtSigningKey, type: :model do
 
   describe "JWKS and JWK export" do
     it "includes only active keys in JWKS with correct kids" do
-      rsa_active = JwtSigningKeys::RSA.create!(name: "rsa_jwks_#{SecureRandom.uuid}")
+      rsa_active = JwtSigningKeys::RSA.create!(name: "rsa_jwks_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
       hmac_active = JwtSigningKeys::HMAC.create!(name: "hmac_jwks_#{SecureRandom.uuid}")
       _expired = JwtSigningKeys::HMAC.create!(name: "hmac_jwks_exp_#{SecureRandom.uuid}", expires_at: 1.hour.ago)
 
@@ -53,7 +56,7 @@ RSpec.describe JwtSigningKey, type: :model do
     end
 
     it "exports algs and exp fields on JWK when present" do
-      rsa = JwtSigningKeys::RSA.create!(name: "rsa_export_#{SecureRandom.uuid}")
+      rsa = JwtSigningKeys::RSA.create!(name: "rsa_export_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
       rsa.update!(expires_at: 2.hours.from_now)
 
       jwk = rsa.jwk
@@ -69,7 +72,7 @@ RSpec.describe JwtSigningKey, type: :model do
   describe ".preferred_key_for_algorithm" do
     # Key generation is expensive, do it once.
     before(:context) do
-      @rsa_key = JwtSigningKeys::RSA.create!(name: "rsa_pref_#{SecureRandom.uuid}", size: 2048)
+      @rsa_key = JwtSigningKeys::RSA.create!(name: "rsa_pref_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
       @hmac_key = JwtSigningKeys::HMAC.create!(name: "hmac_pref_#{SecureRandom.uuid}")
       @eddsa_key = JwtSigningKeys::Ed25519.create!(name: "eddsa_pref_#{SecureRandom.uuid}")
       @ecdsa_key = JwtSigningKeys::ECDSA.create!(name: "ecdsa_pref_#{SecureRandom.uuid}", curve: "prime256v1")
