@@ -23,7 +23,17 @@ class JwtSigningKeys::ECDSA < JwtSigningKey
 
   # @return [OpenSSL::PKey::EC] A public EC key.
   def public_key
-    @public_key ||= OpenSSL::PKey::EC.new self[:public_key]
+    return @public_key if @public_key.present?
+
+    if self[:public_key].present?
+      @public_key = OpenSSL::PKey::EC.new(self[:public_key])
+    elsif private_key.present?
+      logger.warn "Public key not saved for EC key #{id}, deriving from private key."
+
+      derived_key = OpenSSL::PKey::EC.new(private_key.public_to_pem)
+      self[:public_key] = derived_key.to_pem
+      @public_key = derived_key
+    end
   end
 
   def generate_keypair(curve = nil)

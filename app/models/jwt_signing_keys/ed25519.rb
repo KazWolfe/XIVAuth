@@ -30,9 +30,22 @@ class JwtSigningKeys::Ed25519 < JwtSigningKey
 
   # @return [Ed25519::VerifyKey]
   def public_key
-    @public_key = ::Ed25519::VerifyKey.new(
-      OpenSSL::PKey.read(self[:public_key]).raw_public_key
-    )
+    return @public_key if @public_key.present?
+
+    if self[:public_key].present?
+      @public_key = ::Ed25519::VerifyKey.new(
+        OpenSSL::PKey.read(self[:public_key]).raw_public_key
+      )
+    elsif private_key.present?
+      logger.warn "Public key not saved for Ed25519 key #{id}, deriving from private key."
+
+      derived_key = private_key.verify_key
+      self[:public_key] = OpenSSL::PKey
+                            .new_raw_public_key("Ed25519", derived_key.to_bytes)
+                            .public_to_pem
+
+      @public_key = derived_key
+    end
   end
 
   def generate_keypair

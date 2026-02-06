@@ -24,7 +24,17 @@ class JwtSigningKeys::RSA < JwtSigningKey
 
   # @return [OpenSSL::PKey::RSA] A public RSA key.
   def public_key
-    @public_key ||= OpenSSL::PKey::RSA.new(self[:public_key])
+    return @public_key if @public_key.present?
+
+    if self[:public_key].present?
+      @public_key = OpenSSL::PKey::RSA.new(self[:public_key])
+    elsif private_key.present?
+      logger.warn "Public key not saved for RSA key #{id}, deriving from private key."
+
+      derived_key = private_key.public_key
+      self[:public_key] = derived_key.to_pem
+      @public_key = derived_key
+    end
   end
 
   def generate_keypair(size = nil)
