@@ -3,16 +3,14 @@ require "support/oauth_contexts"
 require "support/crypto_support"
 
 RSpec.describe "Api::V1::JwtController", type: :request do
-  include CryptoSupport
-
   include_context "oauth:client_credentials"
 
   # Key generation is expensive, do it once.
   before(:context) do
-    @test_key = JwtSigningKeys::HMAC.create!(name: "hmac_spec_#{SecureRandom.uuid}")
-    @rsa_key =  JwtSigningKeys::RSA.create!(name: "rsa_spec_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
-    @ed25519_key = JwtSigningKeys::Ed25519.create!(name: "ed25519_spec_#{SecureRandom.uuid}")
-    @ecdsa_key = JwtSigningKeys::ECDSA.create!(name: "ecdsa_spec_#{SecureRandom.uuid}")
+    @test_key = FactoryBot.create(:jwt_signing_keys_hmac)
+    @rsa_key = FactoryBot.create(:jwt_signing_keys_rsa)
+    @ed25519_key = FactoryBot.create(:jwt_signing_keys_ed25519)
+    @ecdsa_key = FactoryBot.create(:jwt_signing_keys_ecdsa)
   end
 
   after(:context) do
@@ -30,8 +28,8 @@ RSpec.describe "Api::V1::JwtController", type: :request do
     end
 
     it "returns only active keys in JWKS" do
-      _disabled = JwtSigningKeys::HMAC.create!(name: "hmac_disabled_#{SecureRandom.uuid}", enabled: false)
-      _expired = JwtSigningKeys::HMAC.create!(name: "hmac_expired_#{SecureRandom.uuid}", expires_at: 1.hour.ago)
+      _disabled = FactoryBot.create(:jwt_signing_keys_hmac, enabled: false)
+      _expired = FactoryBot.create(:jwt_signing_keys_hmac, expires_at: 1.hour.ago)
 
       get api_v1_jwt_jwks_path, headers: { Authorization: bearer_token }
       expect(response).to be_successful
@@ -101,7 +99,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
     it "returns an expiration timestamp if set" do
       expiry = 1.hour.from_now
-      expiring_key = JwtSigningKeys::HMAC.create!(name: "expiring_key_#{SecureRandom.uuid}", expires_at: expiry)
+      expiring_key = FactoryBot.create(:jwt_signing_keys_hmac, expires_at: expiry)
       get api_v1_jwt_jwks_path, headers: { Authorization: bearer_token }
       expect(response).to be_successful
 
