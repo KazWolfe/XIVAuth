@@ -1,4 +1,4 @@
-require "support/crypto_support"
+require_relative "../support/crypto_support"
 
 FactoryBot.define do
   factory :jwt_signing_key do
