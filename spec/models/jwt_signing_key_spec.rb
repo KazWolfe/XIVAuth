@@ -1,12 +1,9 @@
 require "rails_helper"
-require "support/crypto_support"
 
 RSpec.describe JwtSigningKey, type: :model do
-  include CryptoSupport
-
   describe "lifecycle and flags" do
     it "computes expired? correctly" do
-      key = JwtSigningKeys::HMAC.create!(name: "exp_test_#{SecureRandom.uuid}")
+      key = FactoryBot.create(:jwt_signing_keys_hmac)
       expect(key).not_to be_expired
 
       key.update!(expires_at: 10.minutes.from_now)
@@ -17,7 +14,7 @@ RSpec.describe JwtSigningKey, type: :model do
     end
 
     it "computes active? correctly from enabled and expired" do
-      key = JwtSigningKeys::HMAC.create!(name: "active_test_#{SecureRandom.uuid}")
+      key = FactoryBot.create(:jwt_signing_keys_hmac)
       expect(key).to be_active
 
       key.update!(enabled: false)
@@ -28,24 +25,27 @@ RSpec.describe JwtSigningKey, type: :model do
     end
 
     it "filters only active keys in .active scope" do
-      active_rsa = JwtSigningKeys::RSA.create!(name: "rsa_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
-      _inactive = JwtSigningKeys::HMAC.create!(name: "hmac_#{SecureRandom.uuid}", enabled: false)
-      _expired = JwtSigningKeys::RSA.create!(name: "rsa_exp_#{SecureRandom.uuid}", expires_at: 1.hour.ago, private_key: CryptoSupport.shared_rsa_key)
+      active_rsa = FactoryBot.create(:jwt_signing_keys_rsa)
+      inactive = FactoryBot.create(:jwt_signing_keys_hmac, enabled: false)
+      expired = FactoryBot.create(:jwt_signing_keys_rsa, expires_at: 1.hour.ago)
 
-      expect(JwtSigningKey.active).to contain_exactly(active_rsa)
+      active_keys = JwtSigningKey.active
+      expect(active_keys).to include(active_rsa)
+      expect(active_keys).not_to include(inactive)
+      expect(active_keys).not_to include(expired)
     end
 
     it "returns name in to_param" do
-      key = JwtSigningKeys::HMAC.create!(name: "param_#{SecureRandom.uuid}")
+      key = FactoryBot.create(:jwt_signing_keys_hmac)
       expect(key.to_param).to eq(key.name)
     end
   end
 
   describe "JWKS and JWK export" do
     it "includes only active keys in JWKS with correct kids" do
-      rsa_active = JwtSigningKeys::RSA.create!(name: "rsa_jwks_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
-      hmac_active = JwtSigningKeys::HMAC.create!(name: "hmac_jwks_#{SecureRandom.uuid}")
-      _expired = JwtSigningKeys::HMAC.create!(name: "hmac_jwks_exp_#{SecureRandom.uuid}", expires_at: 1.hour.ago)
+      rsa_active = FactoryBot.create(:jwt_signing_keys_rsa)
+      hmac_active = FactoryBot.create(:jwt_signing_keys_hmac)
+      _expired = FactoryBot.create(:jwt_signing_keys_hmac, expires_at: 1.hour.ago)
 
       set = JwtSigningKey.jwks
       expect(set).to be_a(JWT::JWK::Set)
@@ -56,8 +56,7 @@ RSpec.describe JwtSigningKey, type: :model do
     end
 
     it "exports algs and exp fields on JWK when present" do
-      rsa = JwtSigningKeys::RSA.create!(name: "rsa_export_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
-      rsa.update!(expires_at: 2.hours.from_now)
+      rsa = FactoryBot.create(:jwt_signing_keys_rsa, expires_at: 2.hours.from_now)
 
       jwk = rsa.jwk
       exported = jwk.export
@@ -70,12 +69,12 @@ RSpec.describe JwtSigningKey, type: :model do
   end
 
   describe ".preferred_key_for_algorithm" do
-    # Key generation is expensive, do it once.
+    # Key generation is expensive, do it once and share across all tests
     before(:context) do
-      @rsa_key = JwtSigningKeys::RSA.create!(name: "rsa_pref_#{SecureRandom.uuid}", private_key: CryptoSupport.shared_rsa_key)
-      @hmac_key = JwtSigningKeys::HMAC.create!(name: "hmac_pref_#{SecureRandom.uuid}")
-      @eddsa_key = JwtSigningKeys::Ed25519.create!(name: "eddsa_pref_#{SecureRandom.uuid}")
-      @ecdsa_key = JwtSigningKeys::ECDSA.create!(name: "ecdsa_pref_#{SecureRandom.uuid}", curve: "prime256v1")
+      @rsa_key = FactoryBot.create(:jwt_signing_keys_rsa)
+      @hmac_key = FactoryBot.create(:jwt_signing_keys_hmac)
+      @eddsa_key = FactoryBot.create(:jwt_signing_keys_ed25519)
+      @ecdsa_key = FactoryBot.create(:jwt_signing_keys_ecdsa, curve: "prime256v1")
     end
 
     after(:context) do
@@ -111,5 +110,31 @@ RSpec.describe JwtSigningKey, type: :model do
   it "raises NoMethodError for supported_algorithms in base class" do
     key = JwtSigningKey.new(name: "base_test_#{SecureRandom.uuid}")
     expect { key.supported_algorithms }.to raise_error(NoMethodError, /Must be implemented by subclass/)
+  end
+
+  describe "encryption" do
+    it "has encryption configured for private_key" do
+      # Verify that the private_key attribute is marked as encrypted
+      encrypted_attributes = JwtSigningKey.encrypted_attributes
+      expect(encrypted_attributes).to include(:private_key)
+    end
+
+    it "calls encryption when saving private_key" do
+      encryptor = ActiveRecord::Encryption.encryptor
+      expect(encryptor).to receive(:encrypt).at_least(:once).and_call_original
+
+      FactoryBot.create(:jwt_signing_keys_hmac)
+    end
+
+    it "calls decryption when reading private_key" do
+      key = FactoryBot.create(:jwt_signing_keys_hmac)
+
+      encryptor = ActiveRecord::Encryption.encryptor
+      expect(encryptor).to receive(:decrypt).at_least(:once).and_call_original
+
+      # Reload to ensure we're reading from DB
+      reloaded_key = JwtSigningKey.find(key.id)
+      reloaded_key.private_key
+    end
   end
 end

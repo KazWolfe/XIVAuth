@@ -75,42 +75,37 @@ class Api::V1::CharactersController < Api::V1::ApiController
       return
     end
 
-    issued_at = Time.now.to_i
+    # Build JWT using JwtWrapper
+    jwt_wrapper = AttestationJwt.new(
+      body_attrs: {
+        sub: @registration.character.lodestone_id,
+        pk: @registration.entangled_id
+      },
+      claim_type: "xivauth.character_attestation",
+      expires_in: 10.minutes,
+      algorithm: (params[:algorithm] if params[:algorithm].present?),
+      nonce: (params[:nonce] if params[:nonce].present?)
+    )
 
-    payload = {
-      jti: SecureRandom.urlsafe_base64(24, padding: false),
-      iss: ENV.fetch("APP_URL", "https://xivauth.net"),
-      sub: @registration.character.lodestone_id,
-      pk: @registration.entangled_id,
-      iat: issued_at,
-      exp: (issued_at + 10.minutes).to_i
-    }
+    client_app = doorkeeper_token.application.application
 
-    my_app_id = doorkeeper_token.application&.application_id
     if params[:obo_id].present?
       audience_app = ClientApplication.find(params[:obo_id])
-      if audience_app.obo_authorizations.exists?(my_app_id)
-        payload[:aud] = "https://xivauth.net/applications/#{audience_app.id}"
-        payload[:azp] = "https://xivauth.net/applications/#{my_app_id}"
-      else
-        render json: { error: "Application is not permitted to request a token for the specified app." }, status: :forbidden
-        return
-      end
+
+      jwt_wrapper.audience = audience_app
+      jwt_wrapper.authorized_party = client_app
     else
-      payload[:aud] = "https://xivauth.net/applications/#{my_app_id}"
+      # Set audience to requesting app
+      jwt_wrapper.audience = client_app
     end
 
-    payload[:nonce] = params[:nonce] if params[:nonce].present?
-
-    algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
-    signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
-    if signing_key.blank?
-      render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_content
+    # Validate and render
+    unless jwt_wrapper.valid?
+      render json: { errors: jwt_wrapper.errors.full_messages }, status: :unprocessable_content
       return
     end
 
-    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name, typ: "Character",
-                           jku: api_v1_jwt_jwks_url)
+    jwt_token = jwt_wrapper.token
 
     render json: { token: jwt_token }
   end

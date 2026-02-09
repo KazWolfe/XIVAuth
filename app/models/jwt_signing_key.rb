@@ -76,4 +76,8 @@ class JwtSigningKey < ApplicationRecord
 
     fields
   end
+
+  private def keys_changed?
+    will_save_change_to_private_key? || will_save_change_to_public_key?
+  end
 end

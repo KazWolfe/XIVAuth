@@ -66,6 +66,9 @@ Rails.application.configure do
   config.active_record.encryption.deterministic_key = "testing"
   config.active_record.encryption.key_derivation_salt = "testing"
 
+  # Use NullEncryptor for speed in tests while still exercising encryption API
+  config.active_record.encryption.encryptor = ActiveRecord::Encryption::NullEncryptor.new
+
   # Don't spam log by default.
   config.log_level = ENV["LOG_LEVEL"]&.downcase&.strip&.to_sym || :info
 end

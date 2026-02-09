@@ -1,5 +1,5 @@
 class JwtSigningKeys::HMAC < JwtSigningKey
-  after_initialize :generate_keypair, if: :new_record?
+  after_initialize :generate_keypair, if: -> { new_record? && self[:private_key].blank? }
   validates :size, numericality: { greater_than_or_equal_to: 16 }
 
   def generate_keypair(size = nil)

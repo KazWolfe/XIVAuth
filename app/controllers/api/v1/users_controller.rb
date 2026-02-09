@@ -14,26 +14,42 @@ class Api::V1::UsersController < Api::V1::ApiController
   def jwt
     @user = current_user
 
-    issued_at = Time.now.to_i
-    payload = {
-      jti: SecureRandom.urlsafe_base64(24, padding: false),
-      iss: ENV.fetch("APP_URL", "https://xivauth.net"),
-      sub: @user.id,
-      verified: @user.character_registrations.verified.count.positive?,
-      iat: issued_at,
-      exp: issued_at + 600
-    }
+    # Build JWT using JwtWrapper
+    jwt_wrapper = AttestationJwt.new(
+      claim_type: "xivauth.user_attestation",
+      subject: @user.id,
+      expires_in: 10.minutes,
+      algorithm: params[:algorithm]
+    )
 
-    payload[:nonce] = params[:nonce] if params[:nonce].present?
+    jwt_wrapper.body["verified"] = @user.character_registrations.verified.count.positive?
+    jwt_wrapper.body["nonce"] = params[:nonce] if params[:nonce].present?
 
-    algorithm = params[:algorithm] || JwtSigningKey::DEFAULT_ALGORITHM
-    signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm)
-    if signing_key.blank?
+    unless jwt_wrapper.signing_key.present?
       render json: { error: "Algorithm is not valid, or a key does not exist for it." }, status: :unprocessable_content
       return
     end
 
-    jwt_token = JWT.encode(payload, signing_key.private_key, algorithm, kid: signing_key.name, typ: "User")
+    # Set audience and authorized_party if on-behalf-of requested
+    this_app = doorkeeper_token.application.application
+
+    if params[:obo_id].present?
+      audience_app = ClientApplication.find(params[:obo_id])
+
+      jwt_wrapper.audience = audience_app
+      jwt_wrapper.authorized_party = this_app
+    else
+      # Set audience to requesting app
+      jwt_wrapper.audience = this_app
+    end
+
+    # Validate and render
+    unless jwt_wrapper.valid?
+      render json: { errors: jwt_wrapper.errors.full_messages }, status: :unprocessable_content
+      return
+    end
+
+    jwt_token = jwt_wrapper.token
 
     render json: { token: jwt_token }
   end

@@ -2,87 +2,147 @@ class Api::V1::JwtController < Api::V1::ApiController
   skip_before_action :doorkeeper_authorize!, only: %i[jwks]
 
   def dummy_jwt
-    algorithm = request.query_parameters["algorithm"] || JwtSigningKey::DEFAULT_ALGORITHM
     expiry_time = (request.query_parameters[:ttl].to_i or 300)
-    issuer = "#{ENV.fetch('APP_URL', 'https://xivauth.net/')}/sandbox"
 
-    payload = {
-      jti: SecureRandom.urlsafe_base64(24, padding: false),
-      data: "dummy jwt for testing",
-      iss: issuer,
-      aud: issuer
-    }
+    # Build JWT using JwtWrapper
+    jwt_wrapper = AttestationJwt.new(
+      algorithm: (params[:algorithm] if params[:algorithm].present?),
+      issuer: "#{ENV.fetch('APP_URL', 'https://xivauth.net')}/sandbox",
+      claim_type: "xivauth.dummy"
+    )
 
-    payload[:nonce] = params[:nonce] if params[:nonce].present?
-    payload[:exp] = Time.now.to_i + expiry_time unless expiry_time.zero?
-    payload[:iat] = Time.now.to_i if request.query_parameters[:ignore_iat].blank?
+    jwt_wrapper.body["data"] = "dummy jwt for testing"
+    jwt_wrapper.body["nonce"] = params[:nonce] if params[:nonce].present?
 
-    signing_key = JwtSigningKey.preferred_key_for_algorithm(algorithm.upcase)
-    raise ActiveRecord::RecordNotFound if signing_key.blank?
+    # Set expiration if TTL is specified
+    if expiry_time.zero?
+      jwt_wrapper.expires_at = nil
+    else
+      jwt_wrapper.expires_in = expiry_time.seconds
+    end
 
-    token = JWT.encode payload, signing_key.private_key, algorithm, kid: signing_key.name, jku: api_v1_jwt_jwks_url
+    # Set issued_at unless ignore_iat is specified
+    jwt_wrapper.issued_at = DateTime.now if request.query_parameters[:ignore_iat].blank?
+
+    unless jwt_wrapper.signing_key.present?
+      raise ActiveRecord::RecordNotFound
+    end
+
+    # Validate and render
+    unless jwt_wrapper.valid?
+      render json: { errors: jwt_wrapper.errors.full_messages }, status: :unprocessable_content
+      return
+    end
+
+    token = jwt_wrapper.token
 
     render json: { token: token }
   end
 
   def verify
-    body = params[:token]
+    token = extract_token
+    if token.blank?
+      render json: { status: "error", error: "No token provided" }, status: :unprocessable_content
+      return
+    end
 
-    decoded_jwt = JWT.decode(body, nil, false)
-    key_name = decoded_jwt[1]["kid"]
-    if key_name.blank?
+    # Parse the encoded token
+    encoded_token = JWT::EncodedToken.new(token)
+
+    # Extract kid from header
+    kid = encoded_token.header["kid"]
+    if kid.blank?
       render json: { status: "error", error: "No kid specified - cannot verify" }, status: :unprocessable_content
       return
     end
 
-    signing_key = JwtSigningKey.find_by(name: key_name)
-    logger.warn("Validating with signing key #{key_name}", signing_key)
+    # Look up signing key
+    signing_key = JwtSigningKey.find_by(name: kid)
+    if signing_key.blank?
+      render json: { status: "error", error: "Signing key '#{kid}' not found" }, status: :unprocessable_content
+      return
+    end
 
-    validation_params = {
+    # Verify signature and standard claims using JWT.decode
+    verification_options = {
       verify_iat: params[:ignore_iat].blank?,
       verify_nbf: params[:ignore_nbf].blank?,
       verify_iss: params[:ignore_iss].blank?,
       iss: ENV.fetch("APP_URL", "https://xivauth.net")
     }
 
-    if decoded_jwt[0]["aud"].present? && params[:ignore_aud].blank?
-      validation_params[:verify_aud] = true
+    verified_jwt = JWT.decode(
+      token,
+      signing_key.jwk.verify_key,
+      true,
+      algorithms: signing_key.supported_algorithms,
+      **verification_options
+    )
 
+    payload = verified_jwt[0]
+    header_data = verified_jwt[1]
+
+    # Manual audience check
+    if payload["aud"].present? && params[:ignore_aud].blank?
       issuer_id = doorkeeper_token&.application&.application_id || "_anonymous"
-      validation_params[:aud] = "https://xivauth.net/applications/#{issuer_id}"
-    end
+      expected_aud = "#{ENV.fetch('APP_URL', 'https://xivauth.net')}/applications/#{issuer_id}"
 
-    # Validate on-behalf-of authorized party for keys issued via other clients.
-    # Used when client A (azp) requests a JWT intended for client B (aud).
-    # Validation only takes place from Client B.
-    if decoded_jwt[0]["azp"].present?
-      extracted_id = decoded_jwt[0]["azp"].split("/").last
-
-      unless doorkeeper_token.application.application.obo_authorizations.exists?(extracted_id)
-        raise JWT::InvalidAudError, "Authorized party is not permitted to request a token for this audience."
+      unless payload["aud"] == expected_aud
+        raise JWT::InvalidAudError, "Audience does not match this app's ID"
       end
-
-      validation_params[:azp] = "https://xivauth.net/applications/#{extracted_id}"
     end
 
-    validated_jwt = JWT.decode(body, signing_key.jwk.verify_key, true,
-                               algorithms: signing_key.supported_algorithms,
-                               **validation_params)
+    # Manual OBO/azp authorization check
+    if payload["azp"].present?
+      azp_id = payload["azp"].split("/").last
+      unless doorkeeper_token.application.application.obo_authorizations.exists?(azp_id)
+        raise JWT::InvalidAudError, "Authorized party is not permitted to request a token for this audience"
+      end
+    end
 
-    render json: { status: "valid", jwt_head: validated_jwt[1], jwt_body: validated_jwt[0] }
+    render json: { status: "valid", jwt_head: header_data, jwt_body: payload }
 
   rescue JWT::ExpiredSignature => e
-    render json: { status: "expired", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+    render json: { status: "expired", error: e.message, jwt_head: safe_header(token), jwt_body: safe_payload(token) },
            status: :unprocessable_content
   rescue JWT::InvalidAudError => e
-    render json: { status: "invalid_client", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+    render json: { status: "invalid_client", error: e.message, jwt_head: safe_header(token), jwt_body: safe_payload(token) },
            status: :unprocessable_content
-  rescue JWT::DecodeError => e
-    render json: { status: "invalid", error: e, jwt_head: decoded_jwt[1], jwt_body: decoded_jwt[0] },
+  rescue JWT::VerificationError, JWT::DecodeError, JWT::InvalidPayload => e
+    render json: { status: "invalid", error: e.message, jwt_head: safe_header(token), jwt_body: safe_payload(token) },
            status: :unprocessable_content
   end
 
   def jwks
     render json: JwtSigningKey.jwks.export
+  end
+
+  private
+
+  def extract_token
+    return params[:token] if params[:token].present?
+    return params[:_json] if params[:_json].present? && params[:_json].is_a?(String)
+
+    raw = request.raw_post.to_s.strip
+    return if raw.blank?
+
+    # Strip wrapping quotes if present
+    if raw.start_with?("\"") && raw.end_with?("\"")
+      raw = raw[1..-2]
+    end
+
+    raw.presence
+  end
+
+  def safe_header(token_string)
+    JWT.decode(token_string, nil, false)[1]
+  rescue StandardError
+    nil
+  end
+
+  def safe_payload(token_string)
+    JWT.decode(token_string, nil, false)[0]
+  rescue StandardError
+    nil
   end
 end

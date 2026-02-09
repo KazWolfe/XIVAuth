@@ -1,8 +1,8 @@
 class JwtSigningKeys::Ed25519 < JwtSigningKey
-  after_initialize :generate_keypair, if: :new_record?
+  after_initialize :generate_keypair, if: -> { new_record? && self[:private_key].blank? }
   validates :public_key, presence: true
 
-  validate :validate_public_key_consistent
+  validate :validate_public_key_consistent, if: :keys_changed?
 
   # @return [Ed25519::SigningKey]
   def private_key

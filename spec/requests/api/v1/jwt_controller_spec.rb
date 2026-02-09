@@ -167,6 +167,8 @@ RSpec.describe "Api::V1::JwtController", type: :request do
         expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json["status"]).to eq("valid")
+        expect(json["jwt_head"]).to be_present
+        expect(json["jwt_body"]).to be_present
       end
     end
 
@@ -187,6 +189,7 @@ RSpec.describe "Api::V1::JwtController", type: :request do
         expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json["status"]).to eq("valid")
+        expect(json["jwt_body"]["aud"]).to eq("https://xivauth.net/applications/#{oauth_client.application_id}")
       end
 
       it "rejects an audience for a different app" do
@@ -208,6 +211,8 @@ RSpec.describe "Api::V1::JwtController", type: :request do
 
         json = JSON.parse(response.body)
         expect(json["status"]).to eq("invalid_client")
+        expect(json["jwt_head"]).to be_present
+        expect(json["jwt_body"]).to be_present
       end
     end
 
@@ -232,6 +237,8 @@ RSpec.describe "Api::V1::JwtController", type: :request do
         expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json["status"]).to eq("invalid_client")
+        expect(json["jwt_head"]).to be_present
+        expect(json["jwt_body"]).to be_present
       end
 
       it "accepts an AZP from an allowed app" do
@@ -242,7 +249,27 @@ RSpec.describe "Api::V1::JwtController", type: :request do
         expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json["status"]).to eq("valid")
+        expect(json["jwt_body"]["azp"]).to eq("https://xivauth.net/applications/#{azp_application.id}")
       end
+    end
+
+    it "returns expired status for expired tokens" do
+      header = { alg: "HS256", kid: @test_key.name, typ: "JWT" }
+      payload = {
+        iss: ENV.fetch('APP_URL', 'https://xivauth.net'),
+        iat: (Time.now - 3600).to_i,
+        exp: (Time.now - 60).to_i,
+        data: "expired"
+      }
+
+      token = JWT.encode(payload, @test_key.private_key, "HS256", header)
+
+      post api_v1_jwt_verify_path, params: { token: token }, headers: { Authorization: bearer_token }
+      expect(response).to have_http_status(:unprocessable_content)
+      json = JSON.parse(response.body)
+      expect(json["status"]).to eq("expired")
+      expect(json["jwt_head"]).to be_present
+      expect(json["jwt_body"]).to be_present
     end
   end
 end
