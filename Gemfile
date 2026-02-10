@@ -61,7 +61,7 @@ gem "omniauth-twitch", "~> 1.2"
 # Outbound OAuth2
 gem "doorkeeper", "~> 5.8.0"
 gem "doorkeeper-device_authorization_grant",
-    github: "KazWolfe/doorkeeper-device_authorization_grant",
+    github: "XIVAuth/doorkeeper-device_authorization_grant",
     ref: "f84062469900890461b1f03d9c37960236413321"
 
 # Feature flags
@@ -105,7 +105,6 @@ group :production do
 end
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri windows]
 
   gem "amazing_print"
