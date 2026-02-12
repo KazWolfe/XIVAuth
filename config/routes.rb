@@ -29,7 +29,7 @@ Rails.application.routes.draw do
       resources :invite_links, controller: "teams/invite_links", shallow: true, param: :code,
                 shallow_path: "teams", shallow_prefix: "team"
 
-      get "join/:code", to: "teams#accept_invite", on: :collection, as: :accept_invite
+      get "join/:code", to: "teams/invite_links#accept_invite", on: :collection, as: :accept_invite
     end
 
     resource :onboarding, controller: "onboarding", only: [:show] do

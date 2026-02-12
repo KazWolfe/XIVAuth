@@ -32,6 +32,10 @@ class Developer::Teams::InviteLinksController < Developer::DeveloperPortalContro
   end
 
   def destroy
+    unless @team.present?
+      redirect_to root_path, alert: "Team not found."
+    end
+
     authorize! :manage, @team
 
     if @invite_link.destroy
@@ -42,6 +46,10 @@ class Developer::Teams::InviteLinksController < Developer::DeveloperPortalContro
   end
 
   def accept_invite
+    unless @team.present?
+      redirect_to root_path, alert: "Team invite link invalid."
+    end
+
     membership = Team::Membership.new(team: @team, user: current_user)
 
     if membership.save
@@ -56,8 +64,8 @@ class Developer::Teams::InviteLinksController < Developer::DeveloperPortalContro
   end
 
   private def set_invite_link
-    @invite_link = Team::InviteLink.find_by!(invite_key: params[:code])
-    @team = @invite_link.team
+    @invite_link = Team::InviteLink.find_by(invite_key: params[:code])
+    @team = @invite_link&.team
   end
 
   private def set_team
