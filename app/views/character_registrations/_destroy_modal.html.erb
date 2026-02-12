@@ -15,6 +15,12 @@
         <% end %>
         This action cannot be undone.
       </p>
+      <% if character_registration.pki_issued_certificates.active.present? %>
+        <div class="alert alert-warning">
+          <strong>Caution:</strong> This character has active certificates. These certificates will be revoked and
+          cannot be used again.
+        </div>
+      <% end %>
       <div class="mb-3">
         <label class="form-label fw-semibold" for="confirm_text">
           Type <strong><%= confirm_text %></strong> to confirm.

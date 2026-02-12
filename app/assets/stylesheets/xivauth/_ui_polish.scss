@@ -45,6 +45,7 @@
   @each $variant, $value in $theme-colors {
     &.btn-outline-#{$variant} {
       transition: all 0.15s ease-in-out;
+      backdrop-filter: blur(4px);
 
       &:hover {
         transform: scale(1.05);

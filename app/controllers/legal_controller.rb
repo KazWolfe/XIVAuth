@@ -11,6 +11,6 @@ class LegalController < ApplicationController
   def moderation_policy; end
 
   private def set_layout
-    user_signed_in? ? "portal/page" : "marketing/legal"
+    user_signed_in? ? "portal/page" : "marketing/page"
   end
 end

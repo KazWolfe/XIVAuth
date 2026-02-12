@@ -1,4 +1,6 @@
 class Api::V1::CharactersController < Api::V1::ApiController
+  include Api::FiltersAuthorizedCharacters
+
   before_action { doorkeeper_authorize! "character", "character:all", "character:manage", "character:jwt" }
   before_action(except: %i[index show jwt]) { doorkeeper_authorize! "character:manage" }
   before_action(only: %i[jwt]) { doorkeeper_authorize! "character:jwt", "character:manage" }
@@ -134,19 +136,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
   end
 
   private def load_authorized_characters
-    @authorized_registrations = CharacterRegistration.accessible_by(current_ability)
-
-    return if character_manage?
-
-    @authorized_registrations = @authorized_registrations.verified
-
-    policy = @doorkeeper_token.permissible_policy
-
-    @authorized_registrations = @authorized_registrations.verified.filter do |r|
-      policy.blank? || policy.can_access_resource?(r)
-    end
-
-    @authorized_registrations = CharacterRegistration.where(id: @authorized_registrations.map(&:id))
+    @authorized_registrations = authorized_character_registrations
   end
 
   private def set_character
@@ -161,7 +151,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
 
   private def search_params
     allowlist = %i[name home_world data_center]
-    allowlist << :content_id if character_manage?
+    allowlist << :content_id if has_character_manage_scope?
 
     params.permit(allowlist)
   end
@@ -171,6 +161,6 @@ class Api::V1::CharactersController < Api::V1::ApiController
   end
 
   private def character_manage?
-    doorkeeper_token[:scopes].include? "character:manage"
+    has_character_manage_scope?
   end
 end

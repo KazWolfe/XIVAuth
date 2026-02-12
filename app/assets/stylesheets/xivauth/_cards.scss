@@ -84,15 +84,6 @@
   // Enhanced card title
   .card-title {
     font-weight: 600;
-    background: linear-gradient(
-      var(--gradient-angle),
-      var(--bs-body-color),
-      var(--bs-secondary-color)
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-
-    transition: all 0.2s ease-in-out;
   }
 
   // Subtle subtitle styling
@@ -120,18 +111,17 @@
   }
 }
 
-// Staggered animation for card grids
-.row > [class*="col-"] {
-  animation: slideUp 0.3s ease-out;
+// Fade-in + equal height for grid columns containing cards
+.row > [class*="col-"]:has(.card) {
+  animation: slideUp 0.15s ease-out;
   animation-fill-mode: both;
 
   @for $i from 1 through 12 {
     &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.05}s;
+      animation-delay: #{$i * 0.02}s;
     }
   }
 
-  // Equal height cards in grid layouts
   &:has(.card) {
     display: flex;
     flex-direction: column;

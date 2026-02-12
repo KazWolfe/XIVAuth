@@ -1,0 +1,39 @@
+<%= form_with(url: revoke_certificate_path(certificate), method: :post,
+              data: { controller: "form--confirm", "form--confirm-text-value": "Revoke Certificate" }) do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title"><i class="bi bi-shield-x text-danger"></i> Revoke Certificate</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p>
+      Revoking this certificate is <strong>permanent and cannot be undone</strong>. Any application or service using
+      this certificate will no longer be able to generate valid signatures or access protected resources.
+    </p>
+
+    <div class="mb-3">
+      <%= f.label :revocation_reason, "Reason", class: "form-label fw-semibold" %>
+      <%= f.select :revocation_reason,
+            PKI::IssuedCertificate::USER_REVOCATION_REASONS.map { |r| [r.humanize.titleize, r] },
+            { selected: "unspecified" },
+            { class: "form-select" } %>
+    </div>
+
+    <div class="mb-3">
+      <%= label_tag :confirm_text, class: "form-label fw-semibold" do %>
+        Type <code>Revoke Certificate</code> to confirm
+      <% end %>
+      <%= text_field_tag :confirm_text, nil,
+            class: "form-control font-monospace",
+            placeholder: "Revoke Certificate",
+            autocomplete: "off",
+            data: { "form--confirm-target": "input", action: "input->form--confirm#validate" } %>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+    <%= f.submit "Revoke Certificate",
+          class: "btn btn-danger",
+          disabled: true,
+          data: { "form--confirm-target": "submit" } %>
+  </div>
+<% end %>

@@ -30,9 +30,14 @@ class CharacterRegistration < ApplicationRecord
   validate :character_not_banned, unless: :skip_ban_check, on: :create
   validate :owner_can_create, on: :create
 
-  after_create :broadcast_card_create
-  after_update :broadcast_card_update
+  has_many :pki_issued_certificates, class_name: "PKI::IssuedCertificate",
+           as: :subject
+
+  after_create  :broadcast_card_create
+  after_update  :broadcast_card_update
+  after_update  :revoke_pki_certificates_if_unverified
   after_destroy :broadcast_card_destroy
+  after_destroy :revoke_pki_certificates_on_destroy
 
   scope :verified, -> { where.not(verified_at: nil) }
   scope :unverified, -> { where(verified_at: nil) }
@@ -137,6 +142,15 @@ class CharacterRegistration < ApplicationRecord
       "UserStream:#{user.id}", :character_registrations,
       target: "character_registration_#{self.id}"
     )
+  end
+
+  private def revoke_pki_certificates_if_unverified
+    return unless saved_change_to_verified_at? && verified_at.nil?
+    pki_issued_certificates.active.find_each { |c| c.revoke!(reason: "affiliation_changed") }
+  end
+
+  private def revoke_pki_certificates_on_destroy
+    pki_issued_certificates.active.find_each { |c| c.revoke!(reason: "affiliation_changed") }
   end
 
   private def owner_can_create

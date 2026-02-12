@@ -41,6 +41,26 @@ en:
         friendly: Allow Persistent Access
         consent: Maintain access to your information
         description: Generates an OAuth refresh token, allowing the application to refresh information in the future.
+      certificate:
+        friendly: Access Issued Certificates
+        consent: Access certificates issued to this application.
+        description: Allows accessing certificates issued to this application.
+      certificate:all:
+        friendly: Access All Certificates
+        consent: Access certificates issued to any application.
+        description: Allows accessing certificates issued to any application.
+      certificate:request:
+        friendly: Request New Certificates
+        consent: Request new certificates for objects in your account.
+        description: Allows requesting new certificates to be issued, associated with the requesting application.
+      certificate:revoke:
+        friendly: Revoke Certificates
+        consent: Allows revoking certificates visible to this application.
+        description: Allows revocation of any certificates that are visible to this application.
+      certificate:manage:
+        friendly: Manage Certificates
+        consent: Manage all certificates on your XIVAuth account.
+        description: Allow globally managing certificates issued to any application.
     grant_flows:
       authorization_code:
         friendly: Authorization Code Flow

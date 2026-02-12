@@ -239,6 +239,7 @@ Doorkeeper.configure do
   # default_scopes  :public
   optional_scopes "user", "user:email", "user:social", "user:jwt", "user:manage",
                   "character", "character:all", "character:jwt", "character:manage",
+                  "certificate", "certificate:all", "certificate:request", "certificate:revoke", "certificate:manage",
                   "internal", "internal:jwt:obo",
                   "refresh"
 

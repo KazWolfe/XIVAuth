@@ -1,0 +1,5 @@
+<%= turbo_stream.append "body" do %>
+  <%= render "layouts/components/remote_modal", modal_id: "revoke_certificate_modal" do %>
+    <%= render "revoke_modal", certificate: @certificate %>
+  <% end %>
+<% end %>

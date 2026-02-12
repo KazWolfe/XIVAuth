@@ -34,6 +34,9 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
+  # Set default host
+  routes.default_url_options[:host] = ENV["APP_URL"] || "http://localhost:3000"
+
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
   # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
@@ -84,7 +87,7 @@ Rails.application.configure do
   }
 
   config.action_mailer.default_url_options = {
-    host: ENV["APP_URL"] || "http://localhost:3000"
+    host: routes.default_url_options[:host]
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

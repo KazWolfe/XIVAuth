@@ -22,3 +22,8 @@ refresh_world_list:
   cron: 'every day at 3 am in America/Los_Angeles'
   class: 'FFXIV::RefreshWorldListJob'
   queue: 'cronjobs'
+
+revoke_orphaned_pki_certificates:
+  cron: 'every day at 2 am in America/Los_Angeles'
+  class: 'PKI::RevokeOrphanedCertificatesJob'
+  queue: 'cronjobs'

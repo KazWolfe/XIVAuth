@@ -1,6 +1,6 @@
 require "rails_helper"
 require "support/oauth_contexts"
-require "support/crypto_support"
+require "support/pki_support"
 
 RSpec.describe "Api::V1::JwtController", type: :request do
   include_context "oauth:client_credentials"

@@ -1,0 +1,113 @@
+<% content_for(:page_header) do %>
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h1>Certificate Details</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><%= link_to "My Certificates", certificates_path %></li>
+          <li class="breadcrumb-item active" aria-current="page">Certificate Details</li>
+        </ol>
+      </nav>
+    </div>
+    <% if @certificate.active? %>
+      <%= button_to revoke_certificate_path(@certificate), method: :post, class: "btn btn-danger",
+            data: { turbo_stream: "remote_modal" } do %>
+        <i class="bi bi-shield-x"></i> Revoke
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0"><i class="bi bi-shield-check"></i> Certificate Info</h3>
+        <% if @certificate.revoked? %>
+          <span class="badge bg-danger">Revoked</span>
+        <% elsif @certificate.expired? %>
+          <span class="badge bg-secondary">Expired</span>
+        <% else %>
+          <span class="badge bg-success">Active</span>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4">Serial (UUID)</dt>
+          <dd class="col-sm-8"><code class="small"><%= @certificate.id %></code></dd>
+
+          <dt class="col-sm-4">Subject</dt>
+          <dd class="col-sm-8">
+            <% if @certificate.subject_type == "User" %>
+              <i class="bi bi-person-fill"></i> <%= @certificate.subject.display_name %>
+              <span class="text-muted small">(User)</span>
+            <% elsif @certificate.subject_type == "CharacterRegistration" %>
+              <i class="bi bi-person-badge"></i> <%= @certificate.subject.character.name %>
+              <span class="text-muted small">(<%= @certificate.subject.character.home_with_datacenter %>)</span>
+            <% end %>
+          </dd>
+
+          <dt class="col-sm-4">Issued At</dt>
+          <dd class="col-sm-8"><%= @certificate.issued_at.to_fs(:long) %></dd>
+
+          <dt class="col-sm-4">Expires At</dt>
+          <dd class="col-sm-8"><%= @certificate.expires_at.to_fs(:long) %></dd>
+
+          <% if @certificate.revoked? %>
+            <dt class="col-sm-4">Revoked At</dt>
+            <dd class="col-sm-8">
+              <%= @certificate.revoked_at.to_fs(:long) %>
+              <span class="text-muted small">(<%= @certificate.revocation_reason.humanize %>)</span>
+            </dd>
+          <% end %>
+
+          <dt class="col-sm-4">Key Type</dt>
+          <dd class="col-sm-8">
+            <%= @certificate.key_type %>
+            <% if @certificate.key_curve.present? %>
+              (<%= @certificate.key_curve %>)
+            <% else %>
+              <%= @certificate.key_bits %>-bit
+            <% end %>
+          </dd>
+
+          <dt class="col-sm-4">Certificate Fingerprint</dt>
+          <dd class="col-sm-8"><code class="small"><%= raw @certificate.certificate_fingerprint.sub(/^\w+:/, "").scan(/.{4}/).each_slice(8).map { |g| g.join(" ") }.join("<br>") %></code></dd>
+
+          <dt class="col-sm-4">Public Key Fingerprint</dt>
+          <dd class="col-sm-8"><code class="small"><%= raw @certificate.public_key_fingerprint.sub(/^\w+:/, "").scan(/.{4}/).each_slice(8).map { |g| g.join(" ") }.join("<br>") %></code></dd>
+
+          <dt class="col-sm-4">Issuing CA</dt>
+          <dd class="col-sm-8">
+            <code class="me-2"><%= @certificate.certificate_authority.slug %></code>
+            <%= render "certificates/roots/ca_download_links", ca: @certificate.certificate_authority %>
+          </dd>
+
+          <% if @certificate.requesting_application.present? %>
+            <dt class="col-sm-4">Requested by</dt>
+            <dd class="col-sm-8"><%= @certificate.requesting_application.name %></dd>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0"><i class="bi bi-file-text"></i> Certificate Data</h3>
+        <div class="btn-toolbar gap-2">
+          <%= link_to certificate_path(@certificate, format: :pem), class: "btn btn-sm btn-outline-primary" do %>
+            <i class="bi bi-download"></i> PEM
+          <% end %>
+          <%= link_to certificate_path(@certificate, format: :der), class: "btn btn-sm btn-outline-primary" do %>
+            <i class="bi bi-download"></i> DER
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <pre class="bg-body-secondary p-2 rounded small overflow-auto mb-0"><code><%= @certificate.certificate_pem.strip %></code></pre>
+      </div>
+    </div>
+  </div>
+</div>

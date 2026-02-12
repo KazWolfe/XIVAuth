@@ -34,5 +34,15 @@ class Ability
       t.direct_memberships.developers.where(user_id: user.id).any? ||
         t.antecedent_memberships.developers.where(user_id: user.id).any?
     end
+
+    # PKI certificates: read and revoke own certs.
+    # User-subject certs: simple column condition.
+    can %i[read revoke], PKI::IssuedCertificate, subject_type: "User", subject_id: user.id
+
+    # CharacterRegistration-subject certs: block check (no simple hash condition due to polymorphic subject).
+    can %i[read revoke], PKI::IssuedCertificate do |cert|
+      cert.subject_type == "CharacterRegistration" &&
+        user.character_registrations.verified.exists?(id: cert.subject_id)
+    end
   end
 end

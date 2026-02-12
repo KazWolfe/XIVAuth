@@ -1,0 +1,31 @@
+<% content_for(:page_header) do %>
+  <div class="d-flex justify-content-between align-items-center">
+    <h1>My Certificates</h1>
+    <%= link_to ca_certs_path, class: "btn btn-primary" do %>
+      <i class="bi bi-shield-lock"></i> Certificate Authorities
+    <% end %>
+  </div>
+  <div>
+    <p>X.509-compliant certificates issued to your account and verified characters.</p>
+  </div>
+<% end %>
+
+<% if @certificates.empty? %>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center text-muted py-5">
+          <i class="bi bi-shield-slash display-4 mb-3 d-block"></i>
+          <p class="mb-0">You have no certificates yet.</p>
+          <p class="small">Certificates may be requested through the XIVAuth API.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="row">
+    <% @certificates.each do |certificate| %>
+      <%= render 'certificate_card', certificate: certificate %>
+    <% end %>
+  </div>
+<% end %>

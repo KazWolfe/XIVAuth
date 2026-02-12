@@ -1,0 +1,66 @@
+<% card_state = certificate.active? ? "ok" : "" %>
+
+<div class="col-md-6 col-xl-4 mb-2">
+  <div class="card card-animated stateful-card-border" data-state="<%= card_state %>">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start mb-1">
+        <h5 class="card-title mb-0">
+          <% if certificate.subject_type == "User" %>
+            <i class="bi bi-person-fill"></i> <%= certificate.subject.display_name %>
+          <% elsif certificate.subject_type == "CharacterRegistration" %>
+            <i class="bi bi-person-badge"></i> <%= certificate.subject.character.name %>
+          <% end %>
+        </h5>
+        <% if certificate.revoked? %>
+          <span class="badge bg-danger ms-2">Revoked</span>
+        <% elsif certificate.expired? %>
+          <span class="badge bg-secondary ms-2">Expired</span>
+        <% else %>
+          <span class="badge bg-success ms-2">Active</span>
+        <% end %>
+      </div>
+
+      <p class="card-subtitle text-muted mb-2">
+        <% if certificate.subject_type == "CharacterRegistration" %>
+          <%= certificate.subject.character.home_with_datacenter %>
+        <% else %>
+          User Certificate
+        <% end %>
+      </p>
+
+      <div class="small">
+        <p class="d-flex mb-1 text-muted justify-content-between">
+          <span><i class="bi bi-calendar3"></i> Issued <%= certificate.issued_at.strftime("%Y-%m-%d %H:%M") %></span>
+          <span><i class="bi bi-calendar-x"></i> Expires <%= certificate.expires_at.strftime("%Y-%m-%d %H:%M") %></span>
+        </p>
+        <p class="mb-1 text-muted">
+          <i class="bi bi-key"></i> Type:
+          <%= certificate.key_type %>
+          <% if certificate.key_curve.present? %>
+            (<%= certificate.key_curve %>)
+          <% else %>
+            <%= certificate.key_bits %>-bit
+          <% end %>
+        </p>
+        <% if certificate.requesting_application.present? %>
+          <p class="mb-1 text-muted">
+            <i class="bi bi-code-slash"></i> Requested by: <%= certificate.requesting_application.name %>
+          </p>
+        <% end %>
+        <% fingerprint_hex = certificate.certificate_fingerprint.sub(/^\w+:/, "") %>
+        <p class="mb-0 text-muted" title="<%= fingerprint_hex %>">
+          <i class="bi bi-fingerprint"></i> Fingerprint:
+          <span class="font-monospace"><%= fingerprint_hex.last(16).scan(/..../).join(" ") %></span>
+        </p>
+      </div>
+    </div>
+
+    <div class="card-footer bg-transparent">
+      <div class="btn-toolbar float-end" role="toolbar" aria-label="Certificate Actions">
+        <%= link_to certificate_path(certificate), class: "btn btn-outline-secondary btn-sm" do %>
+          <i class="bi bi-eye"></i> View
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

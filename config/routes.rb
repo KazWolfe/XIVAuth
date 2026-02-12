@@ -37,6 +37,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # Top-level /certificates (UI + PKI infrastructure)
+  resources :certificates, only: %i[index show] do
+    member { post :revoke }
+    collection do
+      post :ocsp, controller: "certificates/ocsp", action: :respond
+      # RFC 6960 §A.1: OCSP over HTTP GET - base64url-encoded DER in path
+      get "ocsp/*encoded_request", controller: "certificates/ocsp", action: :respond_get, as: :ocsp_get
+      resources :ca_certs, controller: "certificates/certificate_authorities", only: %i[index show], param: :slug, path: "cas"
+      resources :crls,  controller: "certificates/crls",  only: %i[show],       param: :slug
+    end
+  end
+
   namespace "api" do
     namespace "v1" do
       resource :user, only: %i[show update] do
@@ -52,6 +64,11 @@ Rails.application.routes.draw do
       post "jwt/verify", to: "jwt#verify"
       get "jwt/jwks", to: "jwt#jwks"
       get "jwt/gen_jwt", to: "jwt#dummy_jwt"
+
+      resources :certificates, only: %i[index show] do
+        collection { post :request, to: "certificates#request_cert" }
+        member     { post :revoke }
+      end
     end
   end
 

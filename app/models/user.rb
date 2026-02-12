@@ -29,6 +29,11 @@ class User < ApplicationRecord
   has_many :oauth_authorizations, class_name: "OAuth::AccessToken", foreign_key: "resource_owner_id",
            inverse_of: :resource_owner, dependent: :destroy
 
+  has_many :pki_issued_certificates, class_name: "PKI::IssuedCertificate",
+           as: :subject  # no dependent: - records survive as a permanent audit log
+
+  before_destroy :revoke_pki_certificates_on_destroy
+
   def profile
     super || build_profile
   end
@@ -117,5 +122,9 @@ class User < ApplicationRecord
 
   def self.signup_permitted?
     Flipper.enabled? :user_signups
+  end
+
+  private def revoke_pki_certificates_on_destroy
+    pki_issued_certificates.active.find_each { |c| c.revoke!(reason: "cessation_of_operation") }
   end
 end

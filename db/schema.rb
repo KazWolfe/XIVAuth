@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_19_064315) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_12_013535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -18,6 +18,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_064315) do
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "ffxiv_character_refresh_error", ["UNSPECIFIED", "HIDDEN_CHARACTER", "PROFILE_PRIVATE", "NOT_FOUND", "LODESTONE_MAINTENANCE"]
+  create_enum "pki_revocation_reason", ["unspecified", "key_compromise", "ca_compromise", "affiliation_changed", "superseded", "cessation_of_operation", "certificate_hold", "privilege_withdrawn", "aa_compromise"]
+  create_enum "pki_subject_type", ["user", "character_registration"]
   create_enum "team_member_roles", ["admin", "developer", "member", "invited", "blocked"]
   create_enum "user_roles", ["developer", "admin"]
 
@@ -213,6 +215,48 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_064315) do
     t.index ["resource_type", "resource_id"], name: "index_oauth_permissible_rules_on_resource"
   end
 
+  create_table "pki_certificate_authorities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.enum "allowed_subject_types", default: ["user", "character_registration"], null: false, array: true, enum_type: "pki_subject_type"
+    t.string "certificate_fingerprint", null: false
+    t.text "certificate_pem", null: false
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.text "private_key", null: false
+    t.string "public_key_fingerprint", null: false
+    t.enum "revocation_reason", enum_type: "pki_revocation_reason"
+    t.datetime "revoked_at"
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_pki_certificate_authorities_on_active"
+    t.index ["certificate_fingerprint"], name: "index_pki_certificate_authorities_on_certificate_fingerprint", unique: true
+    t.index ["public_key_fingerprint"], name: "index_pki_certificate_authorities_on_public_key_fingerprint"
+    t.index ["slug"], name: "index_pki_certificate_authorities_on_slug", unique: true
+  end
+
+  create_table "pki_issued_certificates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "certificate_authority_id", null: false
+    t.string "certificate_fingerprint", null: false
+    t.text "certificate_pem", null: false
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.jsonb "issuance_context", default: {}, null: false
+    t.datetime "issued_at", null: false
+    t.string "public_key_fingerprint", null: false
+    t.jsonb "public_key_info", default: {}, null: false
+    t.uuid "requesting_application_id"
+    t.enum "revocation_reason", enum_type: "pki_revocation_reason"
+    t.datetime "revoked_at"
+    t.uuid "subject_id"
+    t.string "subject_type"
+    t.datetime "updated_at", null: false
+    t.index ["certificate_authority_id"], name: "index_pki_issued_certificates_on_certificate_authority_id"
+    t.index ["certificate_fingerprint"], name: "index_pki_issued_certificates_on_certificate_fingerprint", unique: true
+    t.index ["public_key_fingerprint"], name: "index_pki_issued_certificates_on_public_key_fingerprint"
+    t.index ["requesting_application_id"], name: "index_pki_issued_certificates_on_requesting_application_id"
+    t.index ["subject_type", "subject_id"], name: "index_pki_issued_certificates_on_subject"
+  end
+
   create_table "site_announcements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -379,6 +423,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_19_064315) do
   add_foreign_key "oauth_device_grants", "client_application_oauth_clients", column: "application_id"
   add_foreign_key "oauth_device_grants", "oauth_permissible_policies", column: "permissible_policy_id"
   add_foreign_key "oauth_permissible_rules", "oauth_permissible_policies", column: "policy_id"
+  add_foreign_key "pki_issued_certificates", "pki_certificate_authorities", column: "certificate_authority_id"
   add_foreign_key "team_invite_links", "teams", on_delete: :cascade
   add_foreign_key "team_memberships", "teams", on_delete: :cascade
   add_foreign_key "team_memberships", "users", on_delete: :cascade

@@ -1,6 +1,10 @@
 class Api::V1::ApiController < ActionController::API
   # There are no "open" API calls; everything must require at least authorization.
   before_action :doorkeeper_authorize!
+
+  rescue_from CanCan::AccessDenied do
+    render json: { error: "Forbidden" }, status: :forbidden
+  end
   before_action :load_token
   before_action :set_observability_context
 

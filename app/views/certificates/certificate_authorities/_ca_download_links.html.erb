@@ -1,0 +1,11 @@
+<%# Renders PEM/DER download buttons for a PKI::CertificateAuthority.
+    Usage: render 'ca_download_links', ca: ca %>
+<div class="btn-toolbar gap-2 float-end" >
+  <%= link_to ca_cert_path(ca.slug, format: :pem), class: "btn btn-sm btn-outline-primary" do %>
+    <i class="bi bi-download"></i> PEM
+  <% end %>
+  <%= link_to ca_cert_path(ca.slug, format: :der), class: "btn btn-sm btn-outline-primary" do %>
+    <i class="bi bi-download"></i> DER
+  <% end %>
+</div>
+

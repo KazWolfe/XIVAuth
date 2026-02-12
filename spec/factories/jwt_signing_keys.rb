@@ -1,4 +1,4 @@
-require_relative "../support/crypto_support"
+require_relative "../support/pki_support"
 
 FactoryBot.define do
   factory :jwt_signing_key do
@@ -10,19 +10,19 @@ FactoryBot.define do
     factory :jwt_signing_keys_ed25519, class: "JwtSigningKeys::Ed25519" do
       sequence(:name) { |n| "ed25519_key_#{n}" }
       enabled { true }
-      private_key { CryptoSupport.shared_ed25519_key }
+      private_key { PkiSupport.shared_ed25519_key }
     end
 
     factory :jwt_signing_keys_rsa, class: "JwtSigningKeys::RSA" do
       sequence(:name) { |n| "rsa_key_#{n}" }
       enabled { true }
-      private_key { CryptoSupport.shared_rsa_key }
+      private_key { PkiSupport.shared_rsa_key }
     end
 
     factory :jwt_signing_keys_ecdsa, class: "JwtSigningKeys::ECDSA" do
       sequence(:name) { |n| "ecdsa_key_#{n}" }
       enabled { true }
-      private_key { CryptoSupport.shared_ecdsa_key("prime256v1") }
+      private_key { PkiSupport.shared_ecdsa_key("prime256v1") }
     end
   end
 end

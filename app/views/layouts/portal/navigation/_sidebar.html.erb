@@ -8,11 +8,14 @@
 
       <li class="nav-item static-item">
         <a class="nav-link static-item disabled" href="#" tabindex="-1">
-          <span class="default-icon">Characters</span>
+          <span class="default-icon">My Account</span>
         </a>
       </li>
       <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
         name: "My Characters", target: character_registrations_path, icon_classes: "bi bi-person-badge"
+      } %>
+      <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
+        name: "My Certificates", target: certificates_path, icon_classes: "bi bi-award"
       } %>
 
       <li>
