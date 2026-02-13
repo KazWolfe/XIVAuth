@@ -124,6 +124,7 @@ Rails.application.routes.draw do
 
       get "register", to: "users/registrations#new", as: :new_user_registration
       post "register", to: "users/registrations#create", as: :user_registration
+      delete "register", to: "users/registrations#destroy", as: :cancel_user_registration
       get "register/post_signup", to: "users/registrations#post_signup", as: :user_post_registration
       get "register/confirm", to: "users/confirmations#show", as: :user_confirmation
 

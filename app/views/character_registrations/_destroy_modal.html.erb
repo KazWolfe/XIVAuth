@@ -1,0 +1,33 @@
+<% character = character_registration.character %>
+<% confirm_text = "#{character.name} @ #{character.home_world}" %>
+<%= form_with(url: character_registration_path(character_registration), method: :delete) do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Delete Character</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div data-controller="form--confirm" data-form--confirm-text-value="<%= confirm_text %>"
+       data-form--confirm-case-sensitive-value="false">
+    <div class="modal-body">
+      <p>
+        This will remove <strong><%= character.name %></strong> from your account.
+        <% if character_registration.verified? %>
+          This character will be removed from your verified characters list, and will no longer be available for use.
+        <% end %>
+        This action cannot be undone.
+      </p>
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="confirm_text">
+          Type <strong><%= confirm_text %></strong> to confirm.
+        </label>
+        <input type="text" class="form-control" placeholder="<%= confirm_text %>"
+               data-form--confirm-target="input" data-action="input->form--confirm#validate"
+               autocomplete="off" id="confirm_text" name="confirm_text">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      <%= f.submit "Delete Character", class: "btn btn-danger",
+                   data: { "form--confirm-target": "submit" } %>
+    </div>
+  </div>
+<% end %>

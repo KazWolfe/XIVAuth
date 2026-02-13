@@ -1,0 +1,25 @@
+<%= form_with(url: developer_oauth_client_path(@oauth_client), method: :delete) do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Delete OAuth Credential</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div data-controller="form--confirm" data-form--confirm-text-value="<%= @oauth_client.name %>">
+    <div class="modal-body">
+      <p>
+        This will permanently delete the OAuth client <strong><%= @oauth_client.name %></strong>.
+        Any services using this client's credentials will immediately lose access. This action cannot be undone.
+      </p>
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="confirm_text">Type this client's name to confirm.</label>
+        <input type="text" class="form-control" placeholder="<%= @oauth_client.name %>"
+               data-form--confirm-target="input" data-action="input->form--confirm#validate"
+               autocomplete="off" id="confirm_text" name="confirm_text">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      <%= f.submit "Delete Credential", class: "btn btn-danger",
+                   data: { "form--confirm-target": "submit" } %>
+    </div>
+  </div>
+<% end %>

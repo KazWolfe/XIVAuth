@@ -24,7 +24,7 @@ class Developer::ClientApps::OAuthClientsController < Developer::DeveloperPortal
       flash[:application_secret] = @oauth_client.plaintext_secret
     end
 
-    if @oauth_client.save
+    if @oauth_client.save(context: :developer_update)
       respond_to do |format|
         format.html { redirect_to developer_oauth_client_path(@oauth_client), notice: "Updated." }
       end
@@ -50,7 +50,7 @@ class Developer::ClientApps::OAuthClientsController < Developer::DeveloperPortal
     @oauth_client = ClientApplication::OAuthClient.new(filtered_params)
     @oauth_client.application = @application
 
-    if @oauth_client.save
+    if @oauth_client.save(context: :developer_create)
       flash[:notice] = "OAuth client created successfully."
       flash[:application_secret] = @oauth_client.plaintext_secret
 
@@ -64,9 +64,12 @@ class Developer::ClientApps::OAuthClientsController < Developer::DeveloperPortal
   def destroy
     authorize! :edit, @application
 
+    render and return if request.format.turbo_stream? && params[:confirm_text].blank?
+
     if @oauth_client.destroy
       respond_to do |format|
         format.html { redirect_to developer_application_path(@application), notice: "OAuth client deleted." }
+        format.turbo_stream { redirect_to developer_application_path(@application) }
         format.json { head :no_content }
       end
     else
@@ -76,6 +79,7 @@ class Developer::ClientApps::OAuthClientsController < Developer::DeveloperPortal
                       status: :unprocessable_content,
                       error: "Could not delete OAuth client."
         end
+        format.turbo_stream { redirect_to developer_oauth_client_path(@oauth_client) }
         format.json { render json: { error: "Could not delete OAuth client." }, status: :unprocessable_content }
       end
     end

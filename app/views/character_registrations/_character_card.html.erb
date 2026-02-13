@@ -62,7 +62,8 @@
               <% end %>
             <% end %>
             <li>
-              <%= button_to character_registration_path(character_registration), method: :delete, class: "dropdown-item text-danger" do %>
+              <%= button_to character_registration_path(character_registration), method: :delete, class: "dropdown-item text-danger",
+                            data: { turbo_stream: true } do %>
                 <span class="d-block">
                   <i class="bi bi-trash"></i> Delete Character
                 </span>

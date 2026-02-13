@@ -69,14 +69,29 @@ class CharacterRegistrationsController < ApplicationController
   def destroy
     authorize! :destroy, @character_registration
 
-    @character_registration.destroy
+    # prompt for confirmation if the user is verified, and we aren't already confirming.
+    if request.format.turbo_stream? && params[:confirm_text].blank? && @character_registration.verified?
+      render and return
+    end
 
-    respond_to do |format|
-      format.html do
-        redirect_to character_registrations_path, notice: "Character registration was successfully destroyed."
-      end
-      format.turbo_stream do
-        # handled in the model now...
+    if @character_registration.destroy
+      respond_to do |format|
+        format.html do
+          redirect_to character_registrations_path, notice: "Character registration was successfully destroyed."
+        end
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.append("delete_character_modal-content",
+                                                   partial: "layouts/components/remote_modal_close")
+
+          Turbo::StreamsChannel.broadcast_append_to(
+            "UserStream:#{current_user.id}", :toasts, target: "toasts",
+            partial: "layouts/components/toasts/toast",
+            locals: {
+              title: "XIVAuth System",
+              message: "Character successfully deleted."
+            }
+          )
+        end
       end
     end
   end

@@ -8,7 +8,7 @@
           <i class="bi bi-arrow-left-right"></i> Transfer
         <% end %>
         <%= button_to developer_application_path(@application), method: :delete, class: "btn btn-danger",
-                      data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" } do %>
+                      data: { turbo_stream: true } do %>
           <i class="bi bi-trash"></i> Delete App
         <% end %>
       </div>

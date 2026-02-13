@@ -1,0 +1,25 @@
+<%= form_with(url: registration_path(resource_name), method: :delete) do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Cancel Account</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div data-controller="form--confirm" data-form--confirm-text-value="<%= resource.email %>">
+    <div class="modal-body">
+      <p>
+        This will permanently delete your account and all associated data including registered characters and
+        authorizations. <strong>This action cannot be undone.</strong>
+      </p>
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="confirm_text">Type your email address to confirm.</label>
+        <input type="text" class="form-control" placeholder="<%= resource.email %>"
+               data-form--confirm-target="input" data-action="input->form--confirm#validate"
+               autocomplete="off" id="confirm_text" name="confirm_text">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      <%= f.submit "Delete My Account", class: "btn btn-danger",
+                   data: { "form--confirm-target": "submit" } %>
+    </div>
+  </div>
+<% end %>

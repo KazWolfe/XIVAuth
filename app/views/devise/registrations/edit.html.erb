@@ -142,7 +142,7 @@
         <p class="text-muted">Deleting your account is irreversible. All data associated with your account will be
           removed.</p>
         <%= button_to "Cancel my account", registration_path(resource_name), class: "btn btn-danger",
-                      data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" },
+                      data: { turbo_stream: true },
                       method: :delete %>
       </div>
     </div>

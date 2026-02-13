@@ -1,0 +1,5 @@
+<%= turbo_stream.append "body" do %>
+  <%= render 'layouts/components/remote_modal', modal_id: "delete_character_modal" do %>
+    <%= render 'character_registrations/destroy_modal', character_registration: @character_registration %>
+  <% end %>
+<% end %>

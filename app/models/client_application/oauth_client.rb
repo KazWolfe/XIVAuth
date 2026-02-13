@@ -9,7 +9,7 @@ class ClientApplication::OAuthClient < ApplicationRecord
   alias_attribute :uid, :client_id
   alias_attribute :secret, :client_secret
 
-  validate :validate_internal_scopes, if: :scopes_changed?
+  validate :validate_internal_scopes, on: %i[developer_create developer_update], if: :scopes_changed?
 
   def redirect_uri
     self.redirect_uris.join("\n")

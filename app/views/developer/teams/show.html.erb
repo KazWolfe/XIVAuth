@@ -5,7 +5,7 @@
       <div class="btn-toolbar gap-2">
         <%= button_to developer_team_path(@team), method: :delete, class: "btn btn-danger #{ 'disabled' if @team.deletion_block_reason }",
                       disabled: @team.deletion_block_reason.present?,
-                      data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" },
+                      data: { turbo_stream: true },
                       title: @team.deletion_block_reason do %>
           <i class="bi bi-trash"></i> Delete Team
         <% end %>

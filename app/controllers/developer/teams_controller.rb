@@ -62,6 +62,8 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   def destroy
     authorize! :destroy, @team
 
+    render and return if request.format.turbo_stream? && params[:confirm_text].blank?
+
     if @team.destroy
       flash[:notice] = "Team destroyed."
     else
@@ -70,6 +72,7 @@ class Developer::TeamsController < Developer::DeveloperPortalController
 
     respond_to do |format|
       format.html { redirect_to developer_teams_url }
+      format.turbo_stream { redirect_to developer_teams_url }
       format.json { head :no_content }
     end
   end

@@ -40,9 +40,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   # DELETE /resource
-  # def destroy
-  #   super
-  # end
+  def destroy
+    if request.format.turbo_stream? && params[:confirm_text].blank?
+      self.resource = current_user
+      render and return
+    end
+    super
+  end
 
   # GET /resource/cancel
   # Forces the session data which is usually expired after sign

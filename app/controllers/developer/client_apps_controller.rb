@@ -63,10 +63,13 @@ class Developer::ClientAppsController < Developer::DeveloperPortalController
   def destroy
     authorize! :destroy, @application
 
+    render and return if request.format.turbo_stream? && params[:confirm_text].blank?
+
     flash[:notice] = "Application destroyed." if @application.destroy
 
     respond_to do |format|
       format.html { redirect_to developer_applications_url }
+      format.turbo_stream { redirect_to developer_applications_url }
       format.json { head :no_content }
     end
   end
