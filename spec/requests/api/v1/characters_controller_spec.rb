@@ -162,36 +162,126 @@ RSpec.describe "Api::V1::CharactersControllers", type: :request do
     end
 
     context "POST /characters" do
-      before do
-        # Stub out FFXIV::LodestoneProfile/Flarestone to avoid real requests
-        json_str = File.read(Rails.root.join("spec/fixtures/lodestone/characters/valid_withcode.json"))
-        json_object = JSON.parse(json_str)
+      let(:mock_request) { instance_double(CharacterRegistrationRequest) }
+      let(:mock_registration) { FactoryBot.create(:character_registration, user: user) }
 
-        allow(FFXIV::LodestoneProfile).to receive(:new).and_return(
-          FFXIV::LodestoneProfile.new("12345678", json_object: json_object)
-        )
+      context "when registration succeeds" do
+        it "returns HTTP 201 with character data" do
+          allow(CharacterRegistrationRequest).to receive(:new).and_return(mock_request)
+          allow(mock_request).to receive(:process!).and_return(:success)
+          allow(mock_request).to receive(:created_character).and_return(mock_registration)
+
+          post api_v1_characters_path,
+               params: { lodestone_id: "12345678" },
+               headers: { 'Authorization': "Bearer #{oauth_token.token}" },
+               as: :json
+
+          expect(response).to have_http_status(:created)
+
+          json = JSON.parse(response.body)
+          expect(json["lodestone_id"]).to eq(mock_registration.character.lodestone_id)
+        end
+
+        it "passes lodestone_id parameter to CharacterRegistrationRequest" do
+          expect(CharacterRegistrationRequest).to receive(:new)
+            .with(hash_including(user: user, lodestone_url: "12345678"))
+            .and_return(mock_request)
+          allow(mock_request).to receive(:process!).and_return(:success)
+          allow(mock_request).to receive(:created_character).and_return(mock_registration)
+
+          post api_v1_characters_path,
+               params: { lodestone_id: "12345678" },
+               headers: { 'Authorization': "Bearer #{oauth_token.token}" },
+               as: :json
+        end
+
+        it "passes name/world parameters to CharacterRegistrationRequest" do
+          expect(CharacterRegistrationRequest).to receive(:new)
+            .with(hash_including(user: user, search_name: "Test Character", search_world: "Excalibur", search_exact: false))
+            .and_return(mock_request)
+          allow(mock_request).to receive(:process!).and_return(:success)
+          allow(mock_request).to receive(:created_character).and_return(mock_registration)
+
+          post api_v1_characters_path,
+               params: { name: "Test Character", world: "Excalibur" },
+               headers: { 'Authorization': "Bearer #{oauth_token.token}" },
+               as: :json
+        end
+
+        it "passes exact parameter correctly" do
+          expect(CharacterRegistrationRequest).to receive(:new)
+            .with(hash_including(search_exact: true))
+            .and_return(mock_request)
+          allow(mock_request).to receive(:process!).and_return(:success)
+          allow(mock_request).to receive(:created_character).and_return(mock_registration)
+
+          post api_v1_characters_path,
+               params: { name: "Test Character", world: "Excalibur", exact: "true" },
+               headers: { 'Authorization': "Bearer #{oauth_token.token}" },
+               as: :json
+        end
       end
 
-      it "creates a new character from a lodestone id" do
-        post api_v1_characters_path, params: { lodestone_id: "12345678" },
-             headers: { 'Authorization': "Bearer #{oauth_token.token}" },
-             as: :json
+      context "when multiple candidates are found" do
+        let(:candidates) do
+          [
+            { lodestone_id: "11111111", name: "Test Character", world: "Excalibur", datacenter: "Primal", avatar_url: "http://example.com/avatar1.jpg" },
+            { lodestone_id: "22222222", name: "Test Character", world: "Excalibur", datacenter: "Primal", avatar_url: "http://example.com/avatar2.jpg" }
+          ]
+        end
 
-        expect(response).to have_http_status(:created)
+        it "returns HTTP 300 with candidate list" do
+          allow(CharacterRegistrationRequest).to receive(:new).and_return(mock_request)
+          allow(mock_request).to receive(:process!).and_return(:confirm)
+          allow(mock_request).to receive(:candidates).and_return(candidates)
 
-        json = JSON.parse(response.body)
-        expect(json["lodestone_id"]).to eq("12345678")
-        expect(json["verified"]).to be(false)
-        expect(json["verification_key"]).to be_present
+          post api_v1_characters_path,
+               params: { name: "Test Character", world: "Excalibur" },
+               headers: { 'Authorization': "Bearer #{oauth_token.token}" },
+               as: :json
 
-        db_character = FFXIV::Character.find_by_lodestone_id("12345678")
-        registration = CharacterRegistration.find_by(user: user, character: db_character)
+          expect(response).to have_http_status(:multiple_choices)
 
-        expect(db_character).to be_persisted
-        expect(registration).to be_persisted
+          json = JSON.parse(response.body).deep_symbolize_keys
+          expect(json[:status]).to eq("search_selection_required")
+          expect(json[:message]).to be_present
+          expect(json[:candidates]).to eq candidates
+        end
       end
 
-      xit "creates a new character from a name/world" do
+      context "when registration fails validation" do
+        it "returns HTTP 422 with error messages" do
+          allow(CharacterRegistrationRequest).to receive(:new).and_return(mock_request)
+          allow(mock_request).to receive(:process!).and_return(:invalid)
+          allow(mock_request).to receive_message_chain(:errors, :full_messages).and_return(["Character is already registered to you!"])
+
+          post api_v1_characters_path,
+               params: { lodestone_id: "12345678" },
+               headers: { 'Authorization': "Bearer #{oauth_token.token}" },
+               as: :json
+
+          expect(response).to have_http_status(:unprocessable_content)
+
+          json = JSON.parse(response.body)
+          expect(json["errors"]).to include("Character is already registered to you!")
+        end
+
+        it "handles missing parameters error" do
+          allow(CharacterRegistrationRequest).to receive(:new).and_return(mock_request)
+          allow(mock_request).to receive(:process!).and_return(:invalid)
+          allow(mock_request).to receive_message_chain(:errors, :full_messages)
+            .and_return(["Please provide either a Lodestone URL or both character name and world."])
+
+          post api_v1_characters_path,
+               params: {},
+               headers: { 'Authorization': "Bearer #{oauth_token.token}" },
+               as: :json
+
+          expect(response).to have_http_status(:unprocessable_content)
+
+          json = JSON.parse(response.body)
+          expect(json["errors"]).to be_present
+        end
       end
     end
 

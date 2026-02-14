@@ -24,7 +24,7 @@ class ClientApplication < ApplicationRecord
   validates_associated :profile
   accepts_nested_attributes_for :profile, update_only: true
 
-  # validate :validate_owner_has_mfa, on: :create
+  validate :validate_owner_has_mfa, on: :create
 
   def profile
     super || build_profile

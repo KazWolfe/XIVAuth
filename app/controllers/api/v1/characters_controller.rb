@@ -17,13 +17,36 @@ class Api::V1::CharactersController < Api::V1::ApiController
   def show; end
 
   def create
-    ffxiv_character = FFXIV::Character.for_lodestone_id(params[:lodestone_id])
-    @registration = CharacterRegistration.new(character: ffxiv_character, user: current_user)
+    request_params = {
+      user: current_user,
+      lodestone_url: params[:lodestone_id]
+    }
 
-    if @registration.save
+    # If name and world are provided, use search path
+    if params[:name].present? && params[:world].present?
+      request_params = {
+        user: current_user,
+        search_name: params[:name],
+        search_world: params[:world],
+        search_exact: params[:exact].to_s == "true"
+      }
+    end
+
+    registration_request = CharacterRegistrationRequest.new(request_params)
+
+    case registration_request.process!
+    when :success
+      @registration = registration_request.created_character
       render :show, status: :created, location: @registration
+    when :confirm
+      # For API, return candidates for the client to choose from
+      render json: {
+        status: "search_selection_required",
+        message: "Multiple matching characters found. Please specify which character to register.",
+        candidates: registration_request.candidates
+      }, status: :multiple_choices
     else
-      render json: { errors: @registration.errors.full_messages }, status: :unprocessable_content
+      render json: { errors: registration_request.errors.full_messages }, status: :unprocessable_content
     end
   end
 
