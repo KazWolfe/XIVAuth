@@ -438,7 +438,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
       it "revokes user certificate" do
         cert = FactoryBot.create(:pki_issued_certificate, subject: user, certificate_authority: @ca, requesting_application: oauth_client.application)
 
-        post revoke_api_v1_certificate_path(cert), headers: headers
+        post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
 
         expect(response).to have_http_status(:ok)
         expect(cert.reload.revoked?).to be true
@@ -448,7 +448,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
         verified_char = FactoryBot.create(:verified_registration, user: user)
         cert = FactoryBot.create(:pki_issued_certificate, subject: verified_char, certificate_authority: @ca, requesting_application: oauth_client.application)
 
-        post revoke_api_v1_certificate_path(cert), headers: headers
+        post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
 
         expect(response).to have_http_status(:ok)
         expect(cert.reload.revoked?).to be true
@@ -457,10 +457,26 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
       it "revokes certificate from another application" do
         cert = FactoryBot.create(:pki_issued_certificate, subject: user, certificate_authority: @ca, requesting_application: other_oauth_client.application)
 
-        post revoke_api_v1_certificate_path(cert), headers: headers
+        post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
 
         expect(response).to have_http_status(:ok)
         expect(cert.reload.revoked?).to be true
+      end
+
+      it "returns 400 when reason is missing" do
+        cert = FactoryBot.create(:pki_issued_certificate, subject: user, certificate_authority: @ca, requesting_application: oauth_client.application)
+
+        post revoke_api_v1_certificate_path(cert), headers: headers
+
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it "returns 400 for invalid revocation reason" do
+        cert = FactoryBot.create(:pki_issued_certificate, subject: user, certificate_authority: @ca, requesting_application: oauth_client.application)
+
+        post revoke_api_v1_certificate_path(cert), params: { reason: "ca_compromise" }, headers: headers
+
+        expect(response).to have_http_status(:bad_request)
       end
 
       it "returns 404 for other user's certificate" do
@@ -468,7 +484,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
         cert = FactoryBot.create(:pki_issued_certificate, subject: other_user, certificate_authority: @ca, requesting_application: oauth_client.application)
 
         without_detailed_exceptions do
-          post revoke_api_v1_certificate_path(cert), headers: headers
+          post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
         end
 
         expect(response).to have_http_status(:not_found)
@@ -479,7 +495,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
         token_without_user = OAuth::AccessToken.create(application: oauth_client, resource_owner: user, scopes: "certificate:revoke certificate:all")
 
         without_detailed_exceptions do
-          post revoke_api_v1_certificate_path(cert), headers: { "Authorization" => "Bearer #{token_without_user.token}" }
+          post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: { "Authorization" => "Bearer #{token_without_user.token}" }
         end
 
         expect(response).to have_http_status(:not_found)
@@ -491,7 +507,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
         token_without_char = OAuth::AccessToken.create(application: oauth_client, resource_owner: user, scopes: "certificate:revoke certificate:all")
 
         without_detailed_exceptions do
-          post revoke_api_v1_certificate_path(cert), headers: { "Authorization" => "Bearer #{token_without_char.token}" }
+          post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: { "Authorization" => "Bearer #{token_without_char.token}" }
         end
 
         expect(response).to have_http_status(:not_found)
@@ -506,7 +522,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
         cert = FactoryBot.create(:pki_issued_certificate, subject: user, certificate_authority: @ca, requesting_application: other_oauth_client.application)
 
         without_detailed_exceptions do
-          post revoke_api_v1_certificate_path(cert), headers: headers
+          post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
         end
 
         expect(response).to have_http_status(:not_found)

@@ -51,8 +51,15 @@ class Api::V1::CertificatesController < Api::V1::ApiController
   def revoke
     authorize! :revoke, @certificate
 
-    @certificate.revoke!(reason: "unspecified")
+    reason = params.require(:reason).to_s
+    unless PKI::IssuedCertificate::USER_REVOCATION_REASONS.include?(reason)
+      return render json: { error: "Invalid revocation reason." }, status: :bad_request
+    end
+
+    @certificate.revoke!(reason: reason)
     render json: @certificate
+  rescue ActionController::ParameterMissing => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   private
