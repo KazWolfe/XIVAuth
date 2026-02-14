@@ -8,7 +8,7 @@ class Certificates::CrlsController < ActionController::Base
     revoked = []
 
     crl = CertificateAuthority::CertificateRevocationList.new
-    crl.parent = ca_record.as_gem_ca_issuer
+    crl.parent = ca_record.as_ca_gem_issuer
     crl.next_update = 24 * 60 * 60
 
     revoked.each do |issued_cert|

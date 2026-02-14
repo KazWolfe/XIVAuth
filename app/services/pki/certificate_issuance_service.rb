@@ -41,23 +41,16 @@ class PKI::CertificateIssuanceService
       raise IssuanceError, "Certificate signing failed: #{e.message}"
     end
 
-    cert_pem                = leaf.to_pem
-    cert_der                = OpenSSL::X509::Certificate.new(cert_pem).to_der
-    certificate_fingerprint = "sha256:#{OpenSSL::Digest::SHA256.hexdigest(cert_der)}"
+    cert_pem = leaf.to_pem
 
     begin
       PKI::IssuedCertificate.create!(
-        id:                      policy.cert_uuid,
-        certificate_authority:   ca_record,
-        subject:                 @subject,
-        certificate_pem:         cert_pem,
-        public_key_info:         build_key_info(public_key),
-        issuance_context:        policy.issuance_context,
-        certificate_fingerprint: certificate_fingerprint,
-        public_key_fingerprint:  policy.public_key_fingerprint,
-        issued_at:               leaf.not_before,
-        expires_at:              leaf.not_after,
-        requesting_application:  requesting_application
+        id:                     policy.cert_uuid,
+        certificate_authority:  ca_record,
+        subject:                @subject,
+        certificate_pem:        cert_pem,
+        issuance_context:       policy.issuance_context,
+        requesting_application: requesting_application
       )
     rescue ActiveRecord::RecordInvalid => e
       raise IssuanceError, "Certificate persistence failed: #{e.message}"
@@ -72,16 +65,5 @@ class PKI::CertificateIssuanceService
     csr
   rescue OpenSSL::X509::RequestError => e
     raise IssuanceError, "Invalid CSR: #{e.message}"
-  end
-
-  def build_key_info(public_key)
-    case public_key
-    when OpenSSL::PKey::RSA
-      { "type" => "RSA", "bits" => public_key.n.num_bits }
-    when OpenSSL::PKey::EC
-      { "type" => "EC", "curve" => public_key.group.curve_name, "bits" => public_key.group.degree }
-    else
-      { "type" => public_key.class.name }
-    end
   end
 end

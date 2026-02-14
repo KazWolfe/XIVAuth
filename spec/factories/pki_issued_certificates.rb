@@ -4,9 +4,20 @@ FactoryBot.define do
   factory :pki_issued_certificate, class: "PKI::IssuedCertificate" do
     # Generates a certificate *without* using shared keys, as that may muck up tests where we need multiple certs.
     # Speed-wise, this shouldn't be a problem as we use EC curves.
+    # Certificate attributes (issued_at, expires_at, public_key_info, fingerprints) are derived
+    # automatically when certificate_pem is assigned via the model's certificate_pem= setter.
 
     transient do
       cert_uuid { SecureRandom.uuid_v7 }
+
+      # transients to allow overriding derived data for test purposes.
+      # This allows us to pass in/override internal state data without needing to do certificate magic, which is very
+      # annoying during testing.
+      issued_at { nil }
+      expires_at { nil }
+      public_key_info { nil }
+      certificate_fingerprint { nil }
+      public_key_fingerprint { nil }
     end
 
     id { cert_uuid }
@@ -19,11 +30,6 @@ FactoryBot.define do
         cn: "user:#{subject&.id || 'test'}", serial: serial
       )
     end
-    issued_at { Time.current }
-    expires_at { 1.year.from_now }
-    public_key_info { { "type" => "EC", "curve" => "prime256v1", "bits" => 256 } }
-    certificate_fingerprint { "sha256:#{SecureRandom.hex(32)}" }
-    public_key_fingerprint { "sha256:#{SecureRandom.hex(32)}" }
 
     trait :for_character_registration do
       subject { association :verified_registration }
@@ -42,6 +48,14 @@ FactoryBot.define do
     trait :renewable do
       issued_at { 10.months.ago }
       expires_at { 2.months.from_now }
+    end
+
+    after(:build) do |cert, evaluator|
+      cert[:issued_at] = evaluator.issued_at if evaluator.issued_at
+      cert[:expires_at] = evaluator.expires_at if evaluator.expires_at
+      cert[:public_key_info] = evaluator.public_key_info if evaluator.public_key_info
+      cert[:certificate_fingerprint] = evaluator.certificate_fingerprint if evaluator.certificate_fingerprint
+      cert[:public_key_fingerprint] = evaluator.public_key_fingerprint if evaluator.public_key_fingerprint
     end
   end
 end

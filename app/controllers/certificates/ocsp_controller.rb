@@ -64,7 +64,7 @@ class Certificates::OcspController < ActionController::Base
     issuing_ca_record = ca_records.first
 
     builder = CertificateAuthority::OCSPResponseBuilder.from_request_reader(ocsp_reader)
-    builder.parent = issuing_ca_record.as_gem_ca_issuer
+    builder.parent = issuing_ca_record.as_ca_gem_issuer
 
     # Gem uses this lambda to get cert status per serial.
     # FIXME: certificate_authority gem doesn't support revocation time, so we can't set that yet.

@@ -1,4 +1,6 @@
 class PKI::IssuedCertificate < ApplicationRecord
+  extend AttributeHelper
+
   self.table_name = "pki_issued_certificates"
 
   # NOTE: Do NOT add dependent: destroy to inbound records for this table! We need to retain an audit log
@@ -37,6 +39,16 @@ class PKI::IssuedCertificate < ApplicationRecord
   validates :certificate_fingerprint, :public_key_fingerprint, presence: true
   validates :certificate_fingerprint, uniqueness: true  # generally validated by service, but catch here.
 
+  protected attr_ar_setter :issued_at, :expires_at, :public_key_info, :certificate_fingerprint, :public_key_fingerprint
+
+  # Override the certificate_pem setter to immediately derive attributes from the certificate
+  def certificate_pem=(pem)
+    super(pem)
+    derive_certificate_attributes if pem.present?
+  end
+
+  # ...existing code...
+
   def key_type
     public_key_info["type"]
   end
@@ -71,8 +83,12 @@ class PKI::IssuedCertificate < ApplicationRecord
     update!(revoked_at: Time.current, revocation_reason: reason)
   end
 
-  def as_gem_certificate
+  def as_ca_gem_certificate
     @gem_cert ||= CertificateAuthority::Certificate.from_x509_cert(certificate_pem)
+  end
+
+  def as_openssl_certificate
+    @openssl_cert ||= OpenSSL::X509::Certificate.new(certificate_pem)
   end
 
   # Converts a serial number back to a UUID for query purposes.
@@ -80,5 +96,40 @@ class PKI::IssuedCertificate < ApplicationRecord
     hex = serial_integer.to_s(16).rjust(32, "0")
     uuid = [hex[0, 8], hex[8, 4], hex[12, 4], hex[16, 4], hex[20, 12]].join("-")
     find_by(id: uuid)
+  end
+
+  private
+
+  # Derives and assigns certificate attributes from the PEM certificate.
+  # Called automatically when certificate_pem is assigned via the certificate_pem= setter.
+  def derive_certificate_attributes
+    x509_cert = as_openssl_certificate
+
+    cert_der = x509_cert.to_der
+    public_key = x509_cert.public_key
+
+    self.issued_at = x509_cert.not_before
+    self.expires_at = x509_cert.not_after
+
+    self.public_key_info = build_public_key_info(public_key)
+
+    self.certificate_fingerprint = "sha256:#{OpenSSL::Digest::SHA256.hexdigest(cert_der)}"
+    self.public_key_fingerprint = calculate_public_key_fingerprint(public_key)
+  end
+
+  def build_public_key_info(public_key)
+    case public_key
+    when OpenSSL::PKey::RSA
+      { "type" => "RSA", "bits" => public_key.n.num_bits }
+    when OpenSSL::PKey::EC
+      { "type" => "EC", "curve" => public_key.group.curve_name, "bits" => public_key.group.degree }
+    else
+      { "type" => public_key.class.name }
+    end
+  end
+
+  def calculate_public_key_fingerprint(public_key)
+    spki_der = public_key.to_der
+    "sha256:#{OpenSSL::Digest::SHA256.hexdigest(spki_der)}"
   end
 end

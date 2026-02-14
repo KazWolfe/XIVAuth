@@ -106,7 +106,7 @@ class PKI::IssuancePolicy
       leaf.key_material         = signing_key_mat
       leaf.not_before = now - 30.seconds
       leaf.not_after  = now + validity_period
-      leaf.parent     = certificate_authority.as_gem_ca_issuer
+      leaf.parent     = certificate_authority.as_ca_gem_issuer
       leaf
     end
 

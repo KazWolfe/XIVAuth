@@ -10,22 +10,19 @@ RSpec.describe PKI::IssuedCertificate, type: :model do
       expect(cert.errors[:certificate_pem]).to be_present
     end
 
-    it "requires issued_at" do
-      cert = FactoryBot.build(:pki_issued_certificate, issued_at: nil)
-      expect(cert).not_to be_valid
-      expect(cert.errors[:issued_at]).to be_present
+    it "derives issued_at, expires_at, and fingerprints from certificate_pem" do
+      cert = FactoryBot.build(:pki_issued_certificate)
+      expect(cert.issued_at).to be_present
+      expect(cert.expires_at).to be_present
+      expect(cert.certificate_fingerprint).to be_present
+      expect(cert.public_key_fingerprint).to be_present
     end
 
-    it "requires expires_at" do
-      cert = FactoryBot.build(:pki_issued_certificate, expires_at: nil)
-      expect(cert).not_to be_valid
-      expect(cert.errors[:expires_at]).to be_present
-    end
-
-    it "requires public_key_fingerprint" do
-      cert = FactoryBot.build(:pki_issued_certificate, public_key_fingerprint: nil)
-      expect(cert).not_to be_valid
-      expect(cert.errors[:public_key_fingerprint]).to be_present
+    it "derives public_key_info from the certificate" do
+      cert = FactoryBot.build(:pki_issued_certificate)
+      expect(cert.public_key_info).to be_present
+      expect(cert.public_key_info["type"]).to be_present
+      expect(cert.public_key_info["bits"]).to be_present
     end
   end
 

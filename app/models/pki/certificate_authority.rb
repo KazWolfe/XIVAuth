@@ -1,4 +1,6 @@
 class PKI::CertificateAuthority < ApplicationRecord
+  extend AttributeHelper
+
   self.table_name = "pki_certificate_authorities"
 
   encrypts :private_key
@@ -16,8 +18,9 @@ class PKI::CertificateAuthority < ApplicationRecord
   validates :certificate_pem, presence: true
   validates :private_key, presence: true
   validate :validate_certificate_is_ca, if: :certificate_pem_changed?
+  validate :validate_private_key_matches_certificate, if: :certificate_pem_changed?
 
-  before_save :derive_subject_key_fingerprint, if: :will_save_change_to_certificate_pem?
+  protected attr_ar_setter :certificate_fingerprint, :public_key_fingerprint, :expires_at
 
   enum :revocation_reason, {
     unspecified:            "unspecified",
@@ -48,6 +51,11 @@ class PKI::CertificateAuthority < ApplicationRecord
     raise "No active PKI certificate authority configured for subject type: #{subject_type}"
   end
 
+  def certificate_pem=(pem)
+    super pem
+    derive_certificate_metadata if pem.present?
+  end
+
   def revoked? = revoked_at.present?
 
   # Revoke this CA. Sets revoked_at and deactivates.
@@ -59,7 +67,7 @@ class PKI::CertificateAuthority < ApplicationRecord
   end
 
   # Convert to a CertificateAuthority::Certificate for use in signing.
-  def as_gem_ca_issuer
+  def as_ca_gem_issuer
     ca = CertificateAuthority::Certificate.from_x509_cert(certificate_pem)
     key_mat = CertificateAuthority::MemoryKeyMaterial.new
     key_mat.private_key = OpenSSL::PKey.read(private_key)
@@ -68,30 +76,41 @@ class PKI::CertificateAuthority < ApplicationRecord
     ca
   end
 
+  def as_ca_gem_certificate
+    @ca_gem_cert ||= CertificateAuthority::Certificate.from_x509_cert(certificate_pem)
+  end
+
   def as_openssl_certificate
-    OpenSSL::X509::Certificate.new(certificate_pem)
+    return nil if certificate_pem.blank?
+    @openssl_cert ||= OpenSSL::X509::Certificate.new(certificate_pem)
   end
 
   def as_openssl_pkey
+    return nil if private_key.blank?
     OpenSSL::PKey.read(private_key)
   end
 
-  private def derive_subject_key_fingerprint
-    cert = OpenSSL::X509::Certificate.new(certificate_pem)
+  private def derive_certificate_metadata
+    cert = as_openssl_certificate
+    return if cert.nil?
+
     self.certificate_fingerprint = "sha256:#{OpenSSL::Digest::SHA256.hexdigest(cert.to_der)}"
     self.public_key_fingerprint  = "sha256:#{OpenSSL::Digest::SHA256.hexdigest(cert.public_key.to_der)}"
+    self.expires_at = cert.not_after
+  rescue OpenSSL::X509::CertificateError => e
+    errors.add(:certificate_pem, "is not a valid X.509 certificate: #{e.message}")
   end
 
   # Check against RFC 5280 §4.2.1.9 (basicConstraints: CA) and §4.2.1.3 (keyUsage: keyCertSign)
   private def validate_certificate_is_ca
     return if certificate_pem.blank?
 
-    cert = begin
-             OpenSSL::X509::Certificate.new(certificate_pem)
-           rescue OpenSSL::X509::CertificateError => e
-             errors.add(:certificate_pem, "is not a valid X.509 certificate: #{e.message}")
-             return
-           end
+    begin
+      cert = OpenSSL::X509::Certificate.new(certificate_pem)
+    rescue OpenSSL::X509::CertificateError => e
+      errors.add(:certificate_pem, "is not a valid X.509 certificate: #{e.message}")
+      return
+    end
 
     bc = cert.extensions.find { |e| e.oid == "basicConstraints" }
     if bc.nil? || !bc.value.include?("CA:TRUE")
@@ -101,6 +120,27 @@ class PKI::CertificateAuthority < ApplicationRecord
     ku = cert.extensions.find { |e| e.oid == "keyUsage" }
     if ku.nil? || !ku.value.include?("Certificate Sign")
       errors.add(:certificate_pem, "must have keyUsage keyCertSign")
+    end
+  end
+
+  private def validate_private_key_matches_certificate
+    # skip validation if there's already something wrong with the certificate
+    return if errors[:certificate_pem].present?
+
+    cert = as_openssl_certificate
+    return if cert.nil?
+
+    return if private_key.blank?
+
+    begin
+      key = OpenSSL::PKey.read(private_key)
+    rescue OpenSSL::PKey::PKeyError, OpenSSL::X509::CertificateError => e
+      errors.add(:private_key, "could not be read: #{e.message}")
+      return
+    end
+
+    unless cert.verify(key)
+      errors.add(:private_key, "does not match certificate public key")
     end
   end
 
