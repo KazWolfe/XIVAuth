@@ -40,17 +40,16 @@ class PKI::CertificateAuthority < ApplicationRecord
   scope :inactive,    -> { where(active: false) }
   scope :not_revoked, -> { where(revoked_at: nil) }
 
-  scope :for_subject_type, ->(type) {
-    where("? = ANY(allowed_subject_types)", type)
+  scope :for_certificate_type, ->(type) {
+    where("? = ANY(allowed_certificate_types)", type)
   }
 
-  # Return the newest certificate for a specific subject type.
-  # @param subject [User, CharacterRegistration]
-  def self.current_for(subject:)
-    subject_type = subject.class.name.underscore
-    active.for_subject_type(subject_type).order(created_at: :desc).first!
+  # Return the newest active CA for a specific certificate type.
+  # @param certificate_type [String] e.g. "user_identification", "character_identification"
+  def self.current_for(certificate_type:)
+    active.for_certificate_type(certificate_type).order(created_at: :desc).first!
   rescue ActiveRecord::RecordNotFound
-    raise NoCertificateAuthorityError, "No active CA certificate for subject type #{subject_type}"
+    raise NoCertificateAuthorityError, "No active CA certificate for certificate type #{certificate_type}"
   end
 
   def certificate_pem=(pem)

@@ -1,4 +1,10 @@
-class PKI::IssuancePolicy::UserPolicy < PKI::IssuancePolicy::Base
+class PKI::IssuancePolicy::UserIdentificationPolicy < PKI::IssuancePolicy::Base
+  register_certificate_type "user_identification"
+
+  def self.allowed_subject_types = [User]
+  def self.api_issuable?  = true
+  def self.api_revocable? = true
+
   def common_name     = "[XIVAuth] #{subject.display_name}"
 
   def validity_period = 1.year

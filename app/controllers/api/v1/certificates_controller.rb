@@ -18,14 +18,27 @@ class Api::V1::CertificatesController < Api::V1::ApiController
   end
 
   # Params:
-  #   csr_pem       [String] PEM-encoded CSR (required)
-  #   subject_type  [String] "user" or "character" (required)
-  #   lodestone_id  [String] Lodestone character ID (required when subject_type == "character")
+  #   csr_pem            [String]  PEM-encoded CSR (required)
+  #   certificate_type   [String]  e.g. "user_identification", "character_identification" (required)
+  #   subject_id         [String]  Subject UUID — required for character_identification, optional otherwise
   def request_cert
-    subject = resolve_subject
+    certificate_type = params.require(:certificate_type).to_s
+
+    # Validate certificate type exists
+    policy_class = PKI::IssuancePolicy::REGISTRY[certificate_type]
+    unless policy_class
+      return render json: { error: "Unknown certificate_type '#{certificate_type}'" }, status: :bad_request
+    end
+
+    # Check that this certificate type is API-issuable
+    unless policy_class.api_issuable?
+      return render json: { error: "Certificate type '#{certificate_type}' cannot be issued via the API" }, status: :forbidden
+    end
+
+    subject = resolve_subject_for(certificate_type)
     return unless subject
 
-    service = PKI::CertificateIssuanceService.new(subject: subject)
+    service = PKI::CertificateIssuanceService.new(subject: subject, certificate_type: certificate_type)
     result = service.issue!(
       csr_pem: read_csr_pem,
       requesting_application: requesting_application
@@ -56,6 +69,12 @@ class Api::V1::CertificatesController < Api::V1::ApiController
   def revoke
     authorize! :revoke, @certificate
 
+    # Check that this certificate type is API-revocable
+    policy_class = PKI::IssuancePolicy::REGISTRY[@certificate.certificate_type]
+    unless policy_class&.api_revocable?
+      return render json: { error: "Certificate type '#{@certificate.certificate_type}' cannot be revoked via the API" }, status: :forbidden
+    end
+
     reason = params.require(:reason).to_s
     unless PKI::IssuedCertificate::USER_REVOCATION_REASONS.include?(reason)
       return render json: { error: "Invalid revocation reason." }, status: :bad_request
@@ -74,28 +93,85 @@ class Api::V1::CertificatesController < Api::V1::ApiController
     authorize! :read, @certificate
   end
 
-  def resolve_subject
-    case params[:subject_type]
-    when "user"
-      unless has_user_scope?
-        render json: { error: "User scope required for certificate issuance" }, status: :forbidden
-        return
-      end
-
-      current_user
-    when "character"
-      unless has_character_scope?
-        render json: { error: "Character scope required for certificate issuance" }, status: :forbidden
-        return
-      end
-
-      lodestone_id = params.require(:lodestone_id)
-
-      return authorized_character_registrations(only_verified: true)
-               .joins(:character)
-               .find_by!(ffxiv_characters: { lodestone_id: lodestone_id })
+  # Resolve subject based on certificate_type. Each type has its own rules for how
+  # the subject is determined and which scopes are required.
+  def resolve_subject_for(certificate_type)
+    case certificate_type
+    when "user_identification"
+      resolve_user_subject
+    when "character_identification"
+      resolve_character_subject
+    when "code_signing"
+      resolve_code_signing_subject
     else
-      render json: { error: "subject_type must be 'user' or 'character'" }, status: :bad_request
+      render json: { error: "Subject resolution not supported for certificate type '#{certificate_type}'" }, status: :bad_request
+      nil
+    end
+  end
+
+  # user_identification: always the current user; no subject params needed.
+  def resolve_user_subject
+    unless has_user_scope?
+      render json: { error: "User scope required for certificate issuance" }, status: :forbidden
+      return
+    end
+
+    current_user
+  end
+
+  # character_identification: requires subject_id (CharacterRegistration UUID).
+  def resolve_character_subject
+    unless has_character_scope?
+      render json: { error: "Character scope required for certificate issuance" }, status: :forbidden
+      return
+    end
+
+    subject_id = params.require(:subject_id)
+
+    authorized_character_registrations(only_verified: true)
+      .find_by!(id: subject_id)
+  end
+
+  # code_signing: subject is the current user when no subject params are given,
+  # or a specific entity identified by subject_type + subject_id.
+  #   subject_type: "User" or "Team" (required when subject_id is present)
+  #   subject_id:   UUID of the subject (required when subject_type is present)
+  def resolve_code_signing_subject
+    unless has_user_scope?
+      render json: { error: "User scope required for certificate issuance" }, status: :forbidden
+      return
+    end
+
+    subject_type = params[:subject_type]
+    subject_id = params[:subject_id]
+
+    # No subject params → default to current user
+    if subject_type.blank? && subject_id.blank?
+      return current_user
+    end
+
+    # Both must be present if either is given
+    if subject_type.blank? || subject_id.blank?
+      render json: { error: "Both subject_type and subject_id are required for code_signing certificates" }, status: :bad_request
+      return
+    end
+
+    case subject_type
+    when "User"
+      unless subject_id == current_user.id
+        render json: { error: "Cannot issue certificates for other users" }, status: :forbidden
+        return
+      end
+      current_user
+    when "Team"
+      team = current_user.teams_by_membership_scope(:admins).find_by(id: subject_id)
+      unless team
+        render json: { error: "Team not found or insufficient permissions" }, status: :not_found
+        return
+      end
+      team
+    else
+      render json: { error: "Invalid subject_type '#{subject_type}' for code_signing certificates" }, status: :bad_request
       nil
     end
   end

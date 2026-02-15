@@ -6,7 +6,7 @@ RSpec.describe PKI::CertificateIssuanceService, type: :service do
   let(:ec_key)  { OpenSSL::PKey::EC.generate("prime256v1") }
   let(:csr_pem) { PkiSupport.generate_csr_pem(key: ec_key) }
 
-  subject(:service) { described_class.new(subject: user) }
+  subject(:service) { described_class.new(subject: user, certificate_type: "user_identification") }
 
   describe "#issue!" do
     context "with a valid CSR and user subject" do
@@ -20,6 +20,11 @@ RSpec.describe PKI::CertificateIssuanceService, type: :service do
       it "sets the correct subject" do
         result = service.issue!(csr_pem: csr_pem, certificate_authority: ca)
         expect(result.subject).to eq(user)
+      end
+
+      it "sets the certificate_type" do
+        result = service.issue!(csr_pem: csr_pem, certificate_authority: ca)
+        expect(result.certificate_type).to eq("user_identification")
       end
 
       it "the record id matches the certificate serial (round-trip)" do
@@ -91,6 +96,97 @@ RSpec.describe PKI::CertificateIssuanceService, type: :service do
       end
     end
 
+    context "with a valid CSR and character_registration subject" do
+      let(:cr) { FactoryBot.create(:verified_registration) }
+      let(:cr_service) { described_class.new(subject: cr, certificate_type: "character_identification") }
+
+      it "embeds emailProtection EKU for character certificates" do
+        result = cr_service.issue!(csr_pem: csr_pem, certificate_authority: ca)
+        cert   = OpenSSL::X509::Certificate.new(result.certificate_pem)
+        eku    = cert.extensions.find { |e| e.oid == "extendedKeyUsage" }
+
+        expect(eku).not_to be_nil, "extendedKeyUsage extension must be present"
+        expect(eku.value).to include("E-mail Protection")
+      end
+
+      it "embeds subjectAltName with lodestone and entangled_id URIs (RFC 5280 §4.2.1.6)" do
+        result = cr_service.issue!(csr_pem: csr_pem, certificate_authority: ca)
+        cert   = OpenSSL::X509::Certificate.new(result.certificate_pem)
+        san    = cert.extensions.find { |e| e.oid == "subjectAltName" }
+
+        expect(san).not_to be_nil, "subjectAltName extension must be present for character certs"
+        expect(san.value).to include("urn:xivauth:character:lodestone:#{cr.character.lodestone_id}")
+        expect(san.value).to include("urn:xivauth:character:entangled_id:#{cr.entangled_id}")
+      end
+    end
+
+    context "when the policy is invalid" do
+      it "returns the policy with errors (no record written) for an EC curve not allowed" do
+        weak_ec  = OpenSSL::PKey::EC.generate("secp112r1") rescue nil
+        skip "secp112r1 not available" unless weak_ec
+        weak_csr = PkiSupport.generate_csr_pem(key: weak_ec)
+
+        expect {
+          result = service.issue!(csr_pem: weak_csr, certificate_authority: ca)
+          expect(result).to be_a(PKI::IssuancePolicy::Base)
+          expect(result.errors[:public_key]).to be_present
+        }.not_to change(PKI::IssuedCertificate, :count)
+      end
+
+      it "returns the policy with errors (no record written) for RSA key too small" do
+        small_key = OpenSSL::PKey::RSA.new(1024)
+        small_csr = PkiSupport.generate_csr_pem(key: small_key)
+
+        expect {
+          result = service.issue!(csr_pem: small_csr, certificate_authority: ca)
+          expect(result).to be_a(PKI::IssuancePolicy::Base)
+          expect(result.errors[:public_key]).to be_present
+        }.not_to change(PKI::IssuedCertificate, :count)
+      end
+
+      it "returns the policy with errors for inactive CA" do
+        inactive_ca = FactoryBot.create(:pki_certificate_authority, :inactive)
+        result = service.issue!(csr_pem: csr_pem, certificate_authority: inactive_ca)
+
+        expect(result).to be_a(PKI::IssuancePolicy::Base)
+        expect(result.errors[:certificate_authority]).to be_present
+      end
+
+      it "raises NoCertificateAuthorityError when no CA exists for certificate type" do
+        # Destroy all CAs so none are available
+        PKI::CertificateAuthority.destroy_all
+
+        expect {
+          service.issue!(csr_pem: csr_pem)
+        }.to raise_error(PKI::CertificateAuthority::NoCertificateAuthorityError, /No active CA certificate for certificate type/)
+      end
+    end
+
+    context "with an invalid CSR" do
+      it "raises IssuanceError for malformed PEM" do
+        expect {
+          service.issue!(csr_pem: "not a csr", certificate_authority: ca)
+        }.to raise_error(PKI::CertificateIssuanceService::IssuanceError, /Invalid CSR/)
+      end
+
+      it "raises IssuanceError when CSR signature doesn't match its public key" do
+        # Build a CSR with one key, then re-sign with a different key so the
+        # embedded public key and the signature don't match.
+        legit_key  = OpenSSL::PKey::EC.generate("prime256v1")
+        tampered_key = OpenSSL::PKey::EC.generate("prime256v1")
+
+        req = OpenSSL::X509::Request.new
+        req.version    = 0
+        req.subject    = OpenSSL::X509::Name.parse("CN=Tampered")
+        req.public_key = legit_key  # embed legit_key's public key
+        req.sign(tampered_key, OpenSSL::Digest::SHA256.new)  # but sign with a different key
+
+        expect {
+          service.issue!(csr_pem: req.to_pem, certificate_authority: ca)
+        }.to raise_error(PKI::CertificateIssuanceService::IssuanceError, /CSR self-signature verification failed/)
+      end
+    end
+
     # These tests assert RFC 5280 structural requirements that are effectively guaranteed
     # by the certificate_authority gem and OpenSSL. They exist purely to claim compliance
     # and should never reasonably fail given how the code is architected.
@@ -148,7 +244,7 @@ RSpec.describe PKI::CertificateIssuanceService, type: :service do
 
         serial_bytes = cert.serial.to_s(2)
         expect(serial_bytes.bytesize).to be <= 20,
-          "serial is #{serial_bytes.bytesize} octets, RFC 5280 §4.1.2.2 limits to 20"
+                                         "serial is #{serial_bytes.bytesize} octets, RFC 5280 §4.1.2.2 limits to 20"
 
         expect(cert.serial).to be > 0, "serial must be positive"
       end
@@ -171,97 +267,6 @@ RSpec.describe PKI::CertificateIssuanceService, type: :service do
         expect(cert.signature_algorithm).to match(/ecdsa/i)
       end
 
-    end
-
-    context "with a valid CSR and character_registration subject" do
-      let(:cr) { FactoryBot.create(:verified_registration) }
-      let(:cr_service) { described_class.new(subject: cr) }
-
-      it "embeds emailProtection EKU for character certificates" do
-        result = cr_service.issue!(csr_pem: csr_pem, certificate_authority: ca)
-        cert   = OpenSSL::X509::Certificate.new(result.certificate_pem)
-        eku    = cert.extensions.find { |e| e.oid == "extendedKeyUsage" }
-
-        expect(eku).not_to be_nil, "extendedKeyUsage extension must be present"
-        expect(eku.value).to include("E-mail Protection")
-      end
-
-      it "embeds subjectAltName with lodestone and entangled_id URIs (RFC 5280 §4.2.1.6)" do
-        result = cr_service.issue!(csr_pem: csr_pem, certificate_authority: ca)
-        cert   = OpenSSL::X509::Certificate.new(result.certificate_pem)
-        san    = cert.extensions.find { |e| e.oid == "subjectAltName" }
-
-        expect(san).not_to be_nil, "subjectAltName extension must be present for character certs"
-        expect(san.value).to include("urn:xivauth:character:lodestone:#{cr.character.lodestone_id}")
-        expect(san.value).to include("urn:xivauth:character:entangled_id:#{cr.entangled_id}")
-      end
-    end
-
-    context "when the policy is invalid" do
-      it "returns the policy with errors (no record written) for an EC curve not allowed" do
-        weak_ec  = OpenSSL::PKey::EC.generate("secp112r1") rescue nil
-        skip "secp112r1 not available" unless weak_ec
-        weak_csr = PkiSupport.generate_csr_pem(key: weak_ec)
-
-        expect {
-          result = service.issue!(csr_pem: weak_csr, certificate_authority: ca)
-          expect(result).to be_a(PKI::IssuancePolicy::Base)
-          expect(result.errors[:public_key]).to be_present
-        }.not_to change(PKI::IssuedCertificate, :count)
-      end
-
-      it "returns the policy with errors (no record written) for RSA key too small" do
-        small_key = OpenSSL::PKey::RSA.new(1024)
-        small_csr = PkiSupport.generate_csr_pem(key: small_key)
-
-        expect {
-          result = service.issue!(csr_pem: small_csr, certificate_authority: ca)
-          expect(result).to be_a(PKI::IssuancePolicy::Base)
-          expect(result.errors[:public_key]).to be_present
-        }.not_to change(PKI::IssuedCertificate, :count)
-      end
-
-      it "returns the policy with errors for inactive CA" do
-        inactive_ca = FactoryBot.create(:pki_certificate_authority, :inactive)
-        result = service.issue!(csr_pem: csr_pem, certificate_authority: inactive_ca)
-
-        expect(result).to be_a(PKI::IssuancePolicy::Base)
-        expect(result.errors[:certificate_authority]).to be_present
-      end
-
-      it "raises NoCertificateAuthorityError when no CA exists for subject type" do
-        # Destroy all CAs so none are available
-        PKI::CertificateAuthority.destroy_all
-
-        expect {
-          service.issue!(csr_pem: csr_pem)
-        }.to raise_error(PKI::CertificateAuthority::NoCertificateAuthorityError, /No active CA certificate for subject type/)
-      end
-    end
-
-    context "with an invalid CSR" do
-      it "raises IssuanceError for malformed PEM" do
-        expect {
-          service.issue!(csr_pem: "not a csr", certificate_authority: ca)
-        }.to raise_error(PKI::CertificateIssuanceService::IssuanceError, /Invalid CSR/)
-      end
-
-      it "raises IssuanceError when CSR signature doesn't match its public key" do
-        # Build a CSR with one key, then re-sign with a different key so the
-        # embedded public key and the signature don't match.
-        legit_key  = OpenSSL::PKey::EC.generate("prime256v1")
-        tampered_key = OpenSSL::PKey::EC.generate("prime256v1")
-
-        req = OpenSSL::X509::Request.new
-        req.version    = 0
-        req.subject    = OpenSSL::X509::Name.parse("CN=Tampered")
-        req.public_key = legit_key  # embed legit_key's public key
-        req.sign(tampered_key, OpenSSL::Digest::SHA256.new)  # but sign with a different key
-
-        expect {
-          service.issue!(csr_pem: req.to_pem, certificate_authority: ca)
-        }.to raise_error(PKI::CertificateIssuanceService::IssuanceError, /CSR self-signature verification failed/)
-      end
     end
   end
 end

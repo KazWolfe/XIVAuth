@@ -134,46 +134,42 @@ RSpec.describe PKI::CertificateAuthority, type: :model do
   end
 
   describe ".current_for" do
-    it "returns the most recently created active CA for the subject type" do
-      user = FactoryBot.create(:user)
+    it "returns the most recently created active CA for the certificate type" do
       old_ca = FactoryBot.create(:pki_certificate_authority, created_at: 2.days.ago)
       new_ca = FactoryBot.create(:pki_certificate_authority, created_at: 1.day.ago)
 
-      expect(PKI::CertificateAuthority.current_for(subject: user)).to eq(new_ca)
+      expect(PKI::CertificateAuthority.current_for(certificate_type: "user_identification")).to eq(new_ca)
     end
 
     it "excludes inactive CAs" do
-      user = FactoryBot.create(:user)
       FactoryBot.create(:pki_certificate_authority, :inactive)
       active_ca = FactoryBot.create(:pki_certificate_authority)
 
-      expect(PKI::CertificateAuthority.current_for(subject: user)).to eq(active_ca)
+      expect(PKI::CertificateAuthority.current_for(certificate_type: "user_identification")).to eq(active_ca)
     end
 
     it "excludes revoked CAs" do
-      user = FactoryBot.create(:user)
       FactoryBot.create(:pki_certificate_authority, :revoked)
       active_ca = FactoryBot.create(:pki_certificate_authority)
 
-      expect(PKI::CertificateAuthority.current_for(subject: user)).to eq(active_ca)
+      expect(PKI::CertificateAuthority.current_for(certificate_type: "user_identification")).to eq(active_ca)
     end
 
-    it "raises when no active CA exists for the subject type" do
-      user = FactoryBot.create(:user)
+    it "raises when no active CA exists for the certificate type" do
       expect {
-        PKI::CertificateAuthority.current_for(subject: user)
-      }.to raise_error(PKI::CertificateAuthority::NoCertificateAuthorityError, /No active CA certificate for subject type/)
+        PKI::CertificateAuthority.current_for(certificate_type: "user_identification")
+      }.to raise_error(PKI::CertificateAuthority::NoCertificateAuthorityError, /No active CA certificate for certificate type/)
     end
   end
 
-  describe ".for_subject_type scope" do
+  describe ".for_certificate_type scope" do
     it "returns CAs that include the given type" do
       ca_all   = FactoryBot.create(:pki_certificate_authority)
-      ca_users = FactoryBot.create(:pki_certificate_authority, :users_only)
+      ca_users = FactoryBot.create(:pki_certificate_authority, :user_identification_only)
 
-      expect(PKI::CertificateAuthority.for_subject_type("user")).to include(ca_all, ca_users)
-      expect(PKI::CertificateAuthority.for_subject_type("character_registration")).to include(ca_all)
-      expect(PKI::CertificateAuthority.for_subject_type("character_registration")).not_to include(ca_users)
+      expect(PKI::CertificateAuthority.for_certificate_type("user_identification")).to include(ca_all, ca_users)
+      expect(PKI::CertificateAuthority.for_certificate_type("character_identification")).to include(ca_all)
+      expect(PKI::CertificateAuthority.for_certificate_type("character_identification")).not_to include(ca_users)
     end
   end
 

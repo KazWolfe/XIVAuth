@@ -1,9 +1,11 @@
 class PKI::CertificateIssuanceService
   class IssuanceError < StandardError; end
 
-  # @param subject [User, CharacterRegistration]
-  def initialize(subject:)
+  # @param subject [User, CharacterRegistration, Team]
+  # @param certificate_type [String] e.g. "user_identification", "character_identification", "code_signing"
+  def initialize(subject:, certificate_type:)
     @subject = subject
+    @certificate_type = certificate_type
   end
 
   # Issues a certificate from a CSR PEM string.
@@ -18,11 +20,12 @@ class PKI::CertificateIssuanceService
     csr = parse_csr!(csr_pem)
     public_key = csr.public_key
 
-    ca_record = certificate_authority || PKI::CertificateAuthority.current_for(subject: @subject)
+    ca_record = certificate_authority || PKI::CertificateAuthority.current_for(certificate_type: @certificate_type)
 
     # Build and validate policy. On failure, return the policy so the caller
     # can render policy.errors as 422. No signing or persistence occurs.
     policy = PKI::IssuancePolicy.for(
+      certificate_type: @certificate_type,
       subject: @subject,
       public_key: public_key,
       certificate_authority: ca_record,
@@ -48,6 +51,7 @@ class PKI::CertificateIssuanceService
         id:                     policy.cert_uuid,
         certificate_authority:  ca_record,
         subject:                @subject,
+        certificate_type:       @certificate_type,
         certificate_pem:        cert_pem,
         issuance_context:       policy.issuance_context,
         requesting_application: requesting_application

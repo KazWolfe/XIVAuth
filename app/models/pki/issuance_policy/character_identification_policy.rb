@@ -1,4 +1,10 @@
-class PKI::IssuancePolicy::CharacterRegistrationPolicy < PKI::IssuancePolicy::Base
+class PKI::IssuancePolicy::CharacterIdentificationPolicy < PKI::IssuancePolicy::Base
+  register_certificate_type "character_identification"
+
+  def self.allowed_subject_types = [CharacterRegistration]
+  def self.api_issuable?  = true
+  def self.api_revocable? = true
+
   # CN is a human-friendly snapshot of the character's name and world at issuance time.
   # Consumers MUST use the SAN URI for identity, not the CN - it may become stale on
   # character transfers/renames without invalidating the certificate.
@@ -7,7 +13,7 @@ class PKI::IssuancePolicy::CharacterRegistrationPolicy < PKI::IssuancePolicy::Ba
 
   def subject_alt_names = %W[
     urn:xivauth:character:lodestone:#{subject.character.lodestone_id}
-    urn:xivauth:character:entangled_id:#{subject.entangled_id}
+    urn:xivauth:character:persistent_key:#{subject.entangled_id}
   ]
 
   # Character certs support identity + E2EE - emailProtection is the closest standard

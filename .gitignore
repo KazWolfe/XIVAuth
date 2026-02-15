@@ -63,3 +63,6 @@ db/seeds/**/*.private.rb
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# AI.
+CLAUDE.local.md

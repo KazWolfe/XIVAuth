@@ -6,7 +6,7 @@ FactoryBot.define do
     certificate_pem { PkiSupport.generate_ca_cert(key: PkiSupport.shared_ecdsa_key) }
     private_key     { PkiSupport.shared_ecdsa_key.to_pem }
     active          { true }
-    allowed_subject_types { %w[user character_registration] }
+    allowed_certificate_types { %w[user_identification character_identification] }
 
     trait :inactive do
       active { false }
@@ -18,12 +18,16 @@ FactoryBot.define do
       active            { false }
     end
 
-    trait :users_only do
-      allowed_subject_types { %w[user] }
+    trait :user_identification_only do
+      allowed_certificate_types { %w[user_identification] }
     end
 
-    trait :characters_only do
-      allowed_subject_types { %w[character_registration] }
+    trait :character_identification_only do
+      allowed_certificate_types { %w[character_identification] }
+    end
+
+    trait :code_signing_only do
+      allowed_certificate_types { %w[code_signing] }
     end
   end
 end

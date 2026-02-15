@@ -1,13 +1,15 @@
 class PKI::IssuancePolicy
-  # Factory: returns the correct policy object for the given subject.
-  # Adding a new subject type = add a subclass + a when branch here.
-  def self.for(subject:, public_key:, certificate_authority:, requesting_application: nil)
-    policy_class = case subject
-                   when User                  then UserPolicy
-                   when CharacterRegistration then CharacterRegistrationPolicy
-                   else raise ArgumentError, "No PKI issuance policy for #{subject.class}"
-                   end
+  # Registry mapping certificate_type strings to policy classes.
+  # Populated by each subclass via `register_certificate_type`.
+  REGISTRY = {}
+
+  # Factory: returns the correct policy object for the given certificate type.
+  def self.for(certificate_type:, subject:, public_key:, certificate_authority:, requesting_application: nil)
+    policy_class = REGISTRY.fetch(certificate_type.to_s) do
+      raise ArgumentError, "No PKI issuance policy for certificate type '#{certificate_type}'"
+    end
     policy_class.new(
+      certificate_type: certificate_type.to_s,
       subject: subject,
       public_key: public_key,
       certificate_authority: certificate_authority,
@@ -18,9 +20,10 @@ class PKI::IssuancePolicy
   class Base
     include ActiveModel::Validations
 
-    attr_reader :subject, :public_key, :certificate_authority, :cert_uuid, :requesting_application
+    attr_reader :certificate_type, :subject, :public_key, :certificate_authority, :cert_uuid, :requesting_application
 
-    def initialize(subject:, public_key:, certificate_authority:, requesting_application: nil)
+    def initialize(certificate_type:, subject:, public_key:, certificate_authority:, requesting_application: nil)
+      @certificate_type = certificate_type
       @subject = subject
       @public_key = public_key
       @certificate_authority = certificate_authority
@@ -28,12 +31,39 @@ class PKI::IssuancePolicy
       @cert_uuid  = SecureRandom.uuid_v7
     end
 
+    # --- Class-level DSL ---
+
+    # Subclasses call this to register themselves in the REGISTRY.
+    def self.register_certificate_type(type)
+      @certificate_type = type.to_s
+      PKI::IssuancePolicy::REGISTRY[@certificate_type] = self
+    end
+
+    # The certificate type string this policy handles.
+    def self.certificate_type
+      @certificate_type
+    end
+
+    # Which subject classes are allowed for this certificate type.
+    def self.allowed_subject_types
+      raise NotImplementedError, "#{name} must define self.allowed_subject_types"
+    end
+
+    # Whether this certificate type can be issued via the API.
+    def self.api_issuable? = false
+
+    # Whether this certificate type can be revoked via the API.
+    def self.api_revocable? = false
+
+    # --- Validations ---
+
     validate :validate_key_type
     validate :validate_key_strength
     validate :validate_key_not_revoked
     validate :validate_cert_limit
     validate :validate_renewal_window
     validate :validate_certificate_authority
+    validate :validate_subject_type
     validate :validate_key_subject_uniqueness
 
     def min_rsa_bits      = 2048
@@ -151,7 +181,7 @@ class PKI::IssuancePolicy
     end
 
     # Certificates can only be renewed if at least one year has passed, or 75% of the certificate's lifespan
-    # has passed, whichever if first.
+    # has passed, whichever is first.
     def validate_renewal_window
       prior_certs = PKI::IssuedCertificate
                       .where(subject: subject, public_key_fingerprint: public_key_fingerprint)
@@ -178,9 +208,14 @@ class PKI::IssuancePolicy
       unless certificate_authority.active? && !certificate_authority.revoked?
         errors.add(:certificate_authority, "is not active or has been revoked")
       end
-      subject_type = subject.class.name.underscore
-      unless certificate_authority.allowed_subject_types.include?(subject_type)
-        errors.add(:certificate_authority, "is not permitted to issue for #{subject_type}")
+      unless certificate_authority.allowed_certificate_types.include?(certificate_type)
+        errors.add(:certificate_authority, "is not permitted to issue #{certificate_type} certificates")
+      end
+    end
+
+    def validate_subject_type
+      unless self.class.allowed_subject_types.include?(subject.class)
+        errors.add(:subject, "#{subject.class.name} is not a valid subject for #{certificate_type} certificates")
       end
     end
 
@@ -198,7 +233,7 @@ class PKI::IssuancePolicy
     def validate_key_subject_uniqueness
       conflict = PKI::IssuedCertificate
                    .where(public_key_fingerprint: public_key_fingerprint)
-                   .where.not(subject_type: subject.class.name, subject_id: subject.id)
+                   .where.not(subject_type: subject.class.name, subject_id: subject.id, certificate_type: certificate_type)
                    .exists?
       if conflict
         errors.add(:public_key, "is already associated with a different subject - " \
@@ -206,4 +241,9 @@ class PKI::IssuancePolicy
       end
     end
   end
+
+  # Eager-load all policy subclasses so they register themselves in REGISTRY.
+  # This is needed because Rails autoloading won't load them until they're
+  # referenced by name, but we need the REGISTRY populated for dispatch.
+  Dir[File.join(__dir__, "issuance_policy", "*.rb")].each { |f| require f }
 end

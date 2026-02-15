@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_15_064859) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_15_185125) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -18,8 +18,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_15_064859) do
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "ffxiv_character_refresh_error", ["UNSPECIFIED", "HIDDEN_CHARACTER", "PROFILE_PRIVATE", "NOT_FOUND", "LODESTONE_MAINTENANCE"]
+  create_enum "pki_certificate_type", ["character_identification", "user_identification", "code_signing"]
   create_enum "pki_revocation_reason", ["unspecified", "key_compromise", "ca_compromise", "affiliation_changed", "superseded", "cessation_of_operation", "certificate_hold", "privilege_withdrawn", "aa_compromise"]
-  create_enum "pki_subject_type", ["user", "character_registration"]
   create_enum "team_member_roles", ["admin", "developer", "member", "invited", "blocked"]
   create_enum "user_roles", ["developer", "admin"]
 
@@ -217,7 +217,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_15_064859) do
 
   create_table "pki_certificate_authorities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
-    t.enum "allowed_subject_types", default: ["user", "character_registration"], null: false, array: true, enum_type: "pki_subject_type"
+    t.enum "allowed_certificate_types", default: ["user_identification", "character_identification"], null: false, array: true, enum_type: "pki_certificate_type"
     t.string "certificate_fingerprint", null: false
     t.text "certificate_pem", null: false
     t.datetime "created_at", null: false
@@ -238,6 +238,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_15_064859) do
     t.uuid "certificate_authority_id", null: false
     t.string "certificate_fingerprint", null: false
     t.text "certificate_pem", null: false
+    t.enum "certificate_type", null: false, enum_type: "pki_certificate_type"
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
     t.jsonb "issuance_context", default: {}, null: false

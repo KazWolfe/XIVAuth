@@ -23,6 +23,7 @@ FactoryBot.define do
     id { cert_uuid }
     certificate_authority { association :pki_certificate_authority }
     subject { association :user }
+    certificate_type { "user_identification" }
     certificate_pem do
       serial = cert_uuid.delete("-").to_i(16)
       PkiSupport.generate_leaf_pem(
@@ -33,6 +34,7 @@ FactoryBot.define do
 
     trait :for_character_registration do
       subject { association :verified_registration }
+      certificate_type { "character_identification" }
     end
 
     trait :revoked do

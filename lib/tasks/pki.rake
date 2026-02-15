@@ -32,6 +32,7 @@ namespace :pki do
       certificate_pem: cert.to_pem,
       private_key:     key.to_pem,
       active:          true,
+      allowed_certificate_types: PKI::IssuancePolicy::REGISTRY.keys
     )
 
     puts "Created PKI::CertificateAuthority:"

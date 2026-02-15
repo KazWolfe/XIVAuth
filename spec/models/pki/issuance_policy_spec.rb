@@ -7,28 +7,43 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
   let(:rsa_key) { PkiSupport.shared_rsa_key }
 
   # Default policy uses EC - fast for the bulk of tests.
-  def build_policy(subject: user, public_key: ec_key, ca: self.ca, requesting_application: nil)
+  def build_policy(certificate_type: "user_identification", subject: user, public_key: ec_key, ca: self.ca, requesting_application: nil)
     PKI::IssuancePolicy.for(
-      subject: subject, public_key: public_key,
+      certificate_type: certificate_type, subject: subject, public_key: public_key,
       certificate_authority: ca, requesting_application: requesting_application
     )
   end
 
   describe ".for factory" do
-    it "returns UserPolicy for User subjects" do
-      expect(build_policy).to be_a(PKI::IssuancePolicy::UserPolicy)
+    it "returns UserIdentificationPolicy for user_identification type" do
+      expect(build_policy).to be_a(PKI::IssuancePolicy::UserIdentificationPolicy)
     end
 
-    it "returns CharacterRegistrationPolicy for CharacterRegistration subjects" do
+    it "returns CharacterIdentificationPolicy for character_identification type" do
       cr = FactoryBot.create(:verified_registration)
-      policy = PKI::IssuancePolicy.for(subject: cr, public_key: ec_key, certificate_authority: ca)
-      expect(policy).to be_a(PKI::IssuancePolicy::CharacterRegistrationPolicy)
+      policy = build_policy(certificate_type: "character_identification", subject: cr)
+      expect(policy).to be_a(PKI::IssuancePolicy::CharacterIdentificationPolicy)
     end
 
-    it "raises for unknown subject types" do
+    it "returns CodeSigningPolicy for code_signing type" do
+      policy = build_policy(certificate_type: "code_signing",
+                            ca: FactoryBot.create(:pki_certificate_authority, :code_signing_only))
+      expect(policy).to be_a(PKI::IssuancePolicy::CodeSigningPolicy)
+    end
+
+    it "raises for unknown certificate types" do
       expect {
-        PKI::IssuancePolicy.for(subject: Object.new, public_key: ec_key, certificate_authority: ca)
+        PKI::IssuancePolicy.for(certificate_type: "unknown", subject: user, public_key: ec_key, certificate_authority: ca)
       }.to raise_error(ArgumentError, /No PKI issuance policy/)
+    end
+  end
+
+  describe "subject type validation" do
+    it "rejects a subject type not allowed for the certificate type" do
+      cr = FactoryBot.create(:verified_registration)
+      policy = build_policy(certificate_type: "user_identification", subject: cr)
+      expect(policy).not_to be_valid
+      expect(policy.errors[:subject]).to be_present
     end
   end
 
@@ -72,10 +87,10 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
       expect(build_policy(ca: revoked_ca)).not_to be_valid
     end
 
-    it "rejects CA not permitted for the subject type" do
-      users_only_ca = FactoryBot.create(:pki_certificate_authority, :users_only)
+    it "rejects CA not permitted for the certificate type" do
+      users_only_ca = FactoryBot.create(:pki_certificate_authority, :user_identification_only)
       cr = FactoryBot.create(:verified_registration)
-      policy = PKI::IssuancePolicy.for(subject: cr, public_key: ec_key, certificate_authority: users_only_ca)
+      policy = build_policy(certificate_type: "character_identification", subject: cr, ca: users_only_ca)
 
       expect(policy).not_to be_valid
       expect(policy.errors[:certificate_authority]).to be_present
@@ -96,19 +111,18 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
       FactoryBot.create_list(:pki_issued_certificate, 2, subject: user, certificate_authority: ca,
                   requesting_application: app1)
 
-      policy = PKI::IssuancePolicy.for(subject: user, public_key: ec_key,
-                                       certificate_authority: ca, requesting_application: app2)
+      policy = build_policy(requesting_application: app2)
       expect(policy).to be_valid
     end
   end
 
-  describe "keyUsage and EKU for UserPolicy" do
-    it "uses digitalSignature only (no keyAgreement or keyEncipherment)" do
+  describe "keyUsage and EKU for UserIdentificationPolicy" do
+    it "uses digitalSignature only for EC keys" do
       usage = build_policy(public_key: ec_key).signing_profile["extensions"]["keyUsage"]["usage"]
       expect(usage).to eq(%w[digitalSignature])
     end
 
-    it "uses digitalSignature only for RSA keys too" do
+    it "uses digitalSignature only for RSA keys" do
       usage = build_policy(public_key: rsa_key).signing_profile["extensions"]["keyUsage"]["usage"]
       expect(usage).to eq(%w[digitalSignature])
     end
@@ -119,11 +133,11 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
     end
   end
 
-  describe "keyUsage and EKU for CharacterRegistrationPolicy" do
+  describe "keyUsage and EKU for CharacterIdentificationPolicy" do
     let(:cr) { FactoryBot.create(:verified_registration) }
 
     def build_cr_policy(public_key: ec_key)
-      PKI::IssuancePolicy.for(subject: cr, public_key: public_key, certificate_authority: ca)
+      build_policy(certificate_type: "character_identification", subject: cr, public_key: public_key)
     end
 
     it "includes digitalSignature and keyAgreement for EC" do
@@ -141,6 +155,27 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
     it "uses emailProtection EKU" do
       eku = build_cr_policy.signing_profile["extensions"]["extendedKeyUsage"]["usage"]
       expect(eku).to eq(%w[emailProtection])
+    end
+  end
+
+  describe "keyUsage and EKU for CodeSigningPolicy" do
+    def build_cs_policy(public_key: ec_key)
+      build_policy(certificate_type: "code_signing", subject: user, public_key: public_key)
+    end
+
+    it "uses digitalSignature only for EC keys" do
+      usage = build_cs_policy(public_key: ec_key).signing_profile["extensions"]["keyUsage"]["usage"]
+      expect(usage).to eq(%w[digitalSignature])
+    end
+
+    it "uses digitalSignature only for RSA keys" do
+      usage = build_cs_policy(public_key: rsa_key).signing_profile["extensions"]["keyUsage"]["usage"]
+      expect(usage).to eq(%w[digitalSignature])
+    end
+
+    it "uses clientAuth EKU" do
+      eku = build_cs_policy.signing_profile["extensions"]["extendedKeyUsage"]["usage"]
+      expect(eku).to eq(%w[codeSigning])
     end
   end
 
@@ -192,7 +227,7 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
       FactoryBot.create(:pki_issued_certificate, subject: user, certificate_authority: ca,
                         public_key_fingerprint: fresh_fingerprint)
       cr     = FactoryBot.create(:verified_registration)
-      policy = PKI::IssuancePolicy.for(subject: cr, public_key: fresh_key, certificate_authority: ca)
+      policy = build_policy(certificate_type: "character_identification", subject: cr, public_key: fresh_key)
 
       expect(policy).not_to be_valid
       expect(policy.errors[:public_key]).to include(match(/already associated with a different subject/))
@@ -203,6 +238,17 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
       policy = build_policy(subject: user, public_key: ec_key)
 
       expect(policy).to be_valid
+    end
+
+    it "rejects a key already used by the same subject under a different certificate type" do
+      FactoryBot.create(:pki_issued_certificate, subject: user, certificate_authority: ca,
+                        certificate_type: "user_identification",
+                        public_key_fingerprint: fresh_fingerprint)
+      policy = build_policy(certificate_type: "code_signing", subject: user, public_key: fresh_key,
+                            ca: FactoryBot.create(:pki_certificate_authority, :code_signing_only))
+
+      expect(policy).not_to be_valid
+      expect(policy.errors[:public_key]).to include(match(/already associated with a different subject/))
     end
   end
 
@@ -245,21 +291,38 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
     end
   end
 
-  describe "CharacterRegistrationPolicy" do
+  describe "CharacterIdentificationPolicy" do
     let(:cr)          { FactoryBot.create(:verified_registration) }
     let(:cr_key)      { OpenSSL::PKey::EC.generate("prime256v1") }
     let(:cr_key_fp)   { "sha256:#{OpenSSL::Digest::SHA256.hexdigest(cr_key.to_der)}" }
 
     def build_cr_policy(subject: cr, public_key: cr_key)
-      PKI::IssuancePolicy.for(subject: subject, public_key: public_key, certificate_authority: ca)
+      build_policy(certificate_type: "character_identification", subject: subject, public_key: public_key)
     end
 
     it "rejects unverified CharacterRegistration" do
       unverified = FactoryBot.create(:character_registration)
-      policy = PKI::IssuancePolicy.for(subject: unverified, public_key: ec_key, certificate_authority: ca)
+      policy = build_cr_policy(subject: unverified)
 
       expect(policy).not_to be_valid
       expect(policy.errors[:subject]).to include(match(/must be verified/))
+    end
+  end
+
+  describe "API access class methods" do
+    it "reports user_identification as API-issuable and API-revocable" do
+      expect(PKI::IssuancePolicy::UserIdentificationPolicy.api_issuable?).to be true
+      expect(PKI::IssuancePolicy::UserIdentificationPolicy.api_revocable?).to be true
+    end
+
+    it "reports character_identification as API-issuable and API-revocable" do
+      expect(PKI::IssuancePolicy::CharacterIdentificationPolicy.api_issuable?).to be true
+      expect(PKI::IssuancePolicy::CharacterIdentificationPolicy.api_revocable?).to be true
+    end
+
+    it "reports code_signing as not API-issuable and not API-revocable" do
+      expect(PKI::IssuancePolicy::CodeSigningPolicy.api_issuable?).to be false
+      expect(PKI::IssuancePolicy::CodeSigningPolicy.api_revocable?).to be false
     end
   end
 end

@@ -20,7 +20,7 @@ json.issuing_cas @certificate_authorities do |ca|
            end
   json.status status
 
-  json.allowed_subject_types ca.allowed_subject_types
+  json.allowed_certificate_types ca.allowed_certificate_types
   json.expires_at ca.expires_at&.iso8601
   json.fingerprint ca.certificate_fingerprint.sub(/^\w+:/, "")
   json.download do

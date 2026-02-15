@@ -34,6 +34,8 @@ class PKI::IssuedCertificate < ApplicationRecord
   }, prefix: :revocation
 
   validates :certificate_pem, presence: true
+  validates :certificate_type, presence: true,
+            inclusion: { in: -> { PKI::IssuancePolicy::REGISTRY.keys }, message: "is not a known certificate type" }
   validates :issued_at, :expires_at, presence: true
   validates :public_key_info, presence: true
   validates :certificate_fingerprint, :public_key_fingerprint, presence: true
@@ -46,9 +48,7 @@ class PKI::IssuedCertificate < ApplicationRecord
     super(pem)
     derive_certificate_attributes if pem.present?
   end
-
-  # ...existing code...
-
+  
   def key_type
     public_key_info["type"]
   end
