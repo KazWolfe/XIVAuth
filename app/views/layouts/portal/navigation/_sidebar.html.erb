@@ -14,9 +14,13 @@
       <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
         name: "My Characters", target: character_registrations_path, icon_classes: "bi bi-person-badge"
       } %>
-      <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
-        name: "My Certificates", target: certificates_path, icon_classes: "bi bi-award"
-      } %>
+
+      <% if current_user.profile.has_feature?(:certificate_management) ||
+            Flipper.enabled?(:certificate_management, current_user) %>
+        <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
+          name: "My Certificates", target: certificates_path, icon_classes: "bi bi-award"
+        } %>
+      <% end %>
 
       <li>
         <hr class="hr-horizontal">

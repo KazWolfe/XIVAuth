@@ -228,6 +228,15 @@ RSpec.describe PKI::CertificateIssuanceService, type: :service do
         expect(result).to be_a(PKI::IssuancePolicy::Base)
         expect(result.errors[:certificate_authority]).to be_present
       end
+
+      it "raises NoCertificateAuthorityError when no CA exists for subject type" do
+        # Destroy all CAs so none are available
+        PKI::CertificateAuthority.destroy_all
+
+        expect {
+          service.issue!(csr_pem: csr_pem)
+        }.to raise_error(PKI::CertificateAuthority::NoCertificateAuthorityError, /No active CA certificate for subject type/)
+      end
     end
 
     context "with an invalid CSR" do

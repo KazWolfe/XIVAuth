@@ -38,10 +38,15 @@ class Api::V1::CertificatesController < Api::V1::ApiController
         fingerprint: result.public_key_fingerprint.sub(/^\w+:/, "").scan(/../).join(":"),
         ca_url: ca_cert_url(result.certificate_authority.slug),
       }, status: :created
+
+      # certificate was successfully issued, enable the certificates view in the UI.
+      current_user.profile.set_feature_enabled!(:certificate_management, true)
     else
       # result is an invalid policy - return its errors
       render json: { errors: result.errors.full_messages }, status: :unprocessable_content
     end
+  rescue PKI::CertificateAuthority::NoCertificateAuthorityError => e
+    render json: { error: e.message }, status: :service_unavailable
   rescue PKI::CertificateIssuanceService::IssuanceError => e
     render json: { error: e.message }, status: :unprocessable_content
   rescue ActionController::ParameterMissing => e

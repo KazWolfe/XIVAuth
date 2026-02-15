@@ -1,6 +1,8 @@
 class PKI::CertificateAuthority < ApplicationRecord
   extend AttributeHelper
 
+  class NoCertificateAuthorityError < StandardError; end
+
   self.table_name = "pki_certificate_authorities"
 
   encrypts :private_key
@@ -48,7 +50,7 @@ class PKI::CertificateAuthority < ApplicationRecord
     subject_type = subject.class.name.underscore
     active.for_subject_type(subject_type).order(created_at: :desc).first!
   rescue ActiveRecord::RecordNotFound
-    raise "No active PKI certificate authority configured for subject type: #{subject_type}"
+    raise NoCertificateAuthorityError, "No active CA certificate for subject type #{subject_type}"
   end
 
   def certificate_pem=(pem)

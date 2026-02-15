@@ -32,7 +32,6 @@ namespace :pki do
       certificate_pem: cert.to_pem,
       private_key:     key.to_pem,
       active:          true,
-      expires_at:      cert.not_after
     )
 
     puts "Created PKI::CertificateAuthority:"

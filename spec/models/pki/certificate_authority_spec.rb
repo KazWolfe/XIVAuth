@@ -160,7 +160,9 @@ RSpec.describe PKI::CertificateAuthority, type: :model do
 
     it "raises when no active CA exists for the subject type" do
       user = FactoryBot.create(:user)
-      expect { PKI::CertificateAuthority.current_for(subject: user) }.to raise_error(RuntimeError, /No active PKI/)
+      expect {
+        PKI::CertificateAuthority.current_for(subject: user)
+      }.to raise_error(PKI::CertificateAuthority::NoCertificateAuthorityError, /No active CA certificate for subject type/)
     end
   end
 

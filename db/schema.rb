@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_12_013535) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_15_064859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -328,7 +328,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_12_013535) do
 
   create_table "user_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "display_name", limit: 64, null: false
+    t.jsonb "preferences", default: {}
     t.uuid "user_id", null: false
+    t.index ["preferences"], name: "index_user_profiles_on_preferences", using: :gin
     t.index ["user_id"], name: "index_user_profiles_on_user_id", unique: true
   end
 

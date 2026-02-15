@@ -279,6 +279,18 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
           expect(JSON.parse(response.body)["errors"]).to be_present
         end
 
+        it "returns 503 when no CA is available for the subject type" do
+          # Destroy all CAs
+          PKI::CertificateAuthority.destroy_all
+
+          post request_api_v1_certificates_path,
+               params: { subject_type: "user", csr_pem: csr_pem },
+               headers: headers
+
+          expect(response).to have_http_status(:service_unavailable)
+          expect(JSON.parse(response.body)["error"]).to include("No active CA certificate for subject type")
+        end
+
         it "sets requesting_application from the doorkeeper token" do
           post request_api_v1_certificates_path,
                params: { subject_type: "user", csr_pem: csr_pem },
@@ -365,6 +377,18 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
           end
 
           expect(response).to have_http_status(:not_found)
+        end
+
+        it "returns 503 when no CA is available for character subject type" do
+          # Destroy all CAs
+          PKI::CertificateAuthority.destroy_all
+
+          post request_api_v1_certificates_path,
+               params: { subject_type: "character", lodestone_id: verified_char.character.lodestone_id, csr_pem: csr_pem },
+               headers: headers
+
+          expect(response).to have_http_status(:service_unavailable)
+          expect(JSON.parse(response.body)["error"]).to include("No active CA certificate for subject type")
         end
       end
 
