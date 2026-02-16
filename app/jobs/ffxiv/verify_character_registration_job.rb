@@ -22,7 +22,7 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
   end
 
   discard_on(FFXIV::LodestoneProfile::LodestoneProfileInvalid) do |job, error|
-    logger.error("Got invalid profile while attempting verification", error: error.to_hash)
+    logger.error("Got invalid profile while attempting verification", error: error)
     job.report_result("verification_failed_invalid")
   end
 

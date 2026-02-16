@@ -7,10 +7,9 @@ class PKI::RevokeOrphanedCertificatesJob < ApplicationJob
 
   def do_revoke
     now = Time.current
-    attrs = { revoked_at: now, revocation_reason: "affiliation_changed" }
-
-    count  = cr_orphans.update_all(attrs)
-    count += user_orphans.update_all(attrs)
+    
+    count  = cr_orphans.update_all(revoked_at: now, revocation_reason: "affiliation_changed")
+    count += user_orphans.update_all(revoked_at: now, revocation_reason: "cessation_of_operation")
 
     logger.info("Revoked #{count} orphaned PKI certificates.")
   end

@@ -1,5 +1,7 @@
 class Certificates::CrlsController < ActionController::Base
   def show
+    head :service_unavailable and return
+    
     ca_record = PKI::CertificateAuthority.find_by!(slug: params[:slug])
 
     # TODO: Full CRL population with revoked entries is deferred.
