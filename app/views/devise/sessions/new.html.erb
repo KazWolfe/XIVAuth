@@ -16,6 +16,11 @@
 </div>
 
 <%= form_for(resource, as: resource_name, url: user_session_path, data: { controller: "devise--login-form" }) do |f| %>
+  <div class="alert alert-warning d-none d-flex" role="alert" id="webauthnAlertFailure">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span data-devise--login-form-target="webauthnFeedback"></span>
+  </div>
+
   <div class="mb-3">
     <%= f.label :email, class: "form-label" %>
     <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control', placeholder: "#{eegg_random_npc_email}" %>

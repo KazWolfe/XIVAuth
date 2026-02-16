@@ -4,11 +4,12 @@ import RenderParameters = Turnstile.RenderParameters;
 import {PublicKeyCredentialWithAssertionJSON} from "@github/webauthn-json";
 
 export default class LoginFormController extends Controller {
-    static targets = ["webauthnChallenge", "webauthnResponse", "actionButton"];
+    static targets = ["webauthnChallenge", "webauthnResponse", "actionButton", "webauthnFeedback"];
 
     declare readonly webauthnChallengeTarget: HTMLInputElement;
     declare readonly webauthnResponseTarget: HTMLInputElement;
     declare readonly actionButtonTargets: HTMLButtonElement[] | undefined;
+    declare readonly webauthnFeedbackTarget: HTMLDivElement;
 
     private discoveryAbortController: AbortController = new AbortController();
 
@@ -43,6 +44,7 @@ export default class LoginFormController extends Controller {
                 "mediation": "conditional",
             });
         } catch (e: unknown) {
+            // Ignore errors in discovery, as this is supposed to be a silent process.
             return;
         }
 
@@ -61,10 +63,29 @@ export default class LoginFormController extends Controller {
         // stop conditional first, we don't need it anymore.
         this.discoveryAbortController.abort("manualWebauthn");
 
-        // FIXME: Bug in certain password managers where they don't support toJSON on the response.
-        let discoveredCredential = await WebAuthnJSON.get({
-            "publicKey": JSON.parse(this.webauthnChallengeTarget.value),
-        });
+        let discoveredCredential: PublicKeyCredentialWithAssertionJSON;
+        try {
+            // FIXME: Bug in certain password managers where they don't support toJSON on the response.
+            discoveredCredential = await WebAuthnJSON.get({
+                "publicKey": JSON.parse(this.webauthnChallengeTarget.value),
+            });
+        } catch (err: unknown) {
+            console.error("WebAuthn manual discovery failed:", err);
+            if (err instanceof DOMException && err.name === "NotAllowedError") {
+                this.webauthnFeedbackTarget.innerText = "Your browser blocked an attempt to use a Passkey. " +
+                    "Please make sure your security key is available and try again.";
+                this.webauthnFeedbackTarget.parentElement.classList.remove("d-none");
+                return;
+            }
+
+            if (err instanceof DOMException && err.name === "NotSupportedError") {
+                this.webauthnFeedbackTarget.innerText = "Your browser does not support WebAuthn. Please try again " +
+                    "with a different browser.";
+                this.webauthnFeedbackTarget.parentElement.classList.remove("d-none");
+                return;
+            }
+            return;
+        }
 
         if (discoveredCredential) {
             this.webauthnResponseTarget.value = JSON.stringify(discoveredCredential);
