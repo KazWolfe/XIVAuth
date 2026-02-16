@@ -48,7 +48,7 @@ class Api::V1::CertificatesController < Api::V1::ApiController
       render json: {
         id: result.id,
         certificate: result.certificate_pem,
-        fingerprint: result.public_key_fingerprint.sub(/^\w+:/, "").scan(/../).join(":"),
+        fingerprint: result.public_key_fingerprint.sub(/^\w+:/, ""),
         ca_url: ca_cert_url(result.certificate_authority.slug),
       }, status: :created
 
@@ -81,7 +81,7 @@ class Api::V1::CertificatesController < Api::V1::ApiController
     end
 
     @certificate.revoke!(reason: reason)
-    render json: @certificate
+    head :no_content
   rescue ActionController::ParameterMissing => e
     render json: { error: e.message }, status: :bad_request
   end

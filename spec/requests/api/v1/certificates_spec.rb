@@ -509,7 +509,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
 
         post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
         expect(cert.reload.revoked?).to be true
       end
 
@@ -519,7 +519,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
 
         post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
         expect(cert.reload.revoked?).to be true
       end
 
@@ -528,7 +528,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
 
         post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
         expect(cert.reload.revoked?).to be true
       end
 
@@ -619,7 +619,7 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
 
         post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
         expect(cert.reload.revoked?).to be true
       end
     end

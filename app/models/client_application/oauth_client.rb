@@ -9,7 +9,7 @@ class ClientApplication::OAuthClient < ApplicationRecord
   alias_attribute :uid, :client_id
   alias_attribute :secret, :client_secret
 
-  validate :validate_internal_scopes, on: %i[developer_create developer_update], if: :scopes_changed?
+  validate :validate_internal_scopes, if: :scopes_changed?
 
   def redirect_uri
     self.redirect_uris.join("\n")
@@ -36,6 +36,8 @@ class ClientApplication::OAuthClient < ApplicationRecord
   end
 
   def validate_internal_scopes
+    return if application.has_entitlement?(:internal)
+
     self.scopes.select { |s| s.starts_with? "internal" }.each do |scope|
       errors.add(:scopes, :internal_scope, message: "cannot include internal scope: #{scope}")
     end

@@ -17,6 +17,7 @@ client_app = ClientApplication.find_or_create_by!(id: "00000000-0000-8000-8f00-e
   app.private = false
 
   app.profile.homepage_url = "https://xivauth.net/"
+  app.entitlements = ["internal"]
 end
 
 client_app.oauth_clients.find_or_create_by!(client_id: "superapp") do |client|

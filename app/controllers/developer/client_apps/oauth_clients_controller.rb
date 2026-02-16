@@ -24,7 +24,7 @@ class Developer::ClientApps::OAuthClientsController < Developer::DeveloperPortal
       flash[:application_secret] = @oauth_client.plaintext_secret
     end
 
-    if @oauth_client.save(context: :developer_update)
+    if @oauth_client.save
       respond_to do |format|
         format.html { redirect_to developer_oauth_client_path(@oauth_client), notice: "Updated." }
       end
@@ -50,7 +50,7 @@ class Developer::ClientApps::OAuthClientsController < Developer::DeveloperPortal
     @oauth_client = ClientApplication::OAuthClient.new(filtered_params)
     @oauth_client.application = @application
 
-    if @oauth_client.save(context: :developer_create)
+    if @oauth_client.save
       flash[:notice] = "OAuth client created successfully."
       flash[:application_secret] = @oauth_client.plaintext_secret
 
