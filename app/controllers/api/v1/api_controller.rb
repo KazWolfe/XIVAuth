@@ -16,6 +16,19 @@ class Api::V1::ApiController < ActionController::API
     @current_user ||= User.find_by(id: doorkeeper_token[:resource_owner_id])
   end
 
+  def current_client_app
+    @current_client_app ||= doorkeeper_token.application.application
+  end
+
+  def current_ability
+    return @current_ability if defined?(@current_ability)
+
+    @current_ability = Abilities::ClientAppAbility.new(current_client_app)
+    if current_user.present?
+      @current_ability = @current_ability.merge(Abilities::UserAbility.new(current_user))
+    end
+  end
+
   private def check_resource_owner_presence
     render status: :unauthorized unless current_user.present? && current_user.persisted?
   end

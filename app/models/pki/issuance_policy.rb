@@ -49,12 +49,6 @@ class PKI::IssuancePolicy
       raise NotImplementedError, "#{name} must define self.allowed_subject_types"
     end
 
-    # Whether this certificate type can be issued via the API.
-    def self.api_issuable? = false
-
-    # Whether this certificate type can be revoked via the API.
-    def self.api_revocable? = false
-
     # --- Validations ---
 
     validate :validate_key_type

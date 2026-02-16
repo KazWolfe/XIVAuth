@@ -2,8 +2,6 @@ class PKI::IssuancePolicy::CharacterIdentificationPolicy < PKI::IssuancePolicy::
   register_certificate_type "character_identification"
 
   def self.allowed_subject_types = [CharacterRegistration]
-  def self.api_issuable?  = true
-  def self.api_revocable? = true
 
   # CN is a human-friendly snapshot of the character's name and world at issuance time.
   # Consumers MUST use the SAN URI for identity, not the CN - it may become stale on

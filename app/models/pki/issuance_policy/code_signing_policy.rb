@@ -2,8 +2,6 @@ class PKI::IssuancePolicy::CodeSigningPolicy < PKI::IssuancePolicy::Base
   register_certificate_type "code_signing"
 
   def self.allowed_subject_types = [User, Team]
-  def self.api_issuable?  = false
-  def self.api_revocable? = false
 
   def common_name
     case subject

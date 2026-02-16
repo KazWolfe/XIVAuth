@@ -37,6 +37,11 @@ FactoryBot.define do
       certificate_type { "character_identification" }
     end
 
+    trait :code_signing do
+      subject { association :user }
+      certificate_type { "code_signing" }
+    end
+
     trait :revoked do
       revoked_at { 1.day.ago }
       revocation_reason { "unspecified" }

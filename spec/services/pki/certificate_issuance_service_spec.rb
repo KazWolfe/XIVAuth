@@ -116,7 +116,7 @@ RSpec.describe PKI::CertificateIssuanceService, type: :service do
 
         expect(san).not_to be_nil, "subjectAltName extension must be present for character certs"
         expect(san.value).to include("urn:xivauth:character:lodestone:#{cr.character.lodestone_id}")
-        expect(san.value).to include("urn:xivauth:character:entangled_id:#{cr.entangled_id}")
+        expect(san.value).to include("urn:xivauth:character:persistent_key:#{cr.entangled_id}")
       end
     end
 

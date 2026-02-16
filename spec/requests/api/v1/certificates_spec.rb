@@ -418,17 +418,29 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
       end
     end
 
-    context "for non-API-issuable certificate types" do
+    context "for entitlement-gated certificate types" do
       let(:token) { OAuth::AccessToken.create(application: oauth_client, resource_owner: user, scopes: "certificate:issue user") }
       let(:headers) { { "Authorization" => "Bearer #{token.token}" } }
 
-      it "returns 403 for code_signing certificates" do
+      it "returns 403 for code_signing certificates without entitlement" do
         post request_api_v1_certificates_path,
              params: { certificate_type: "code_signing", csr_pem: csr_pem },
              headers: headers
 
         expect(response).to have_http_status(:forbidden)
-        expect(JSON.parse(response.body)["error"]).to include("cannot be issued via the API")
+        expect(JSON.parse(response.body)["error"]).to include("not authorized to issue")
+      end
+
+      it "allows code_signing certificates with entitlement" do
+        oauth_client.application.update!(entitlements: ["code_signing_certificates"])
+
+        expect {
+          post request_api_v1_certificates_path,
+               params: { certificate_type: "code_signing", csr_pem: csr_pem },
+               headers: headers
+        }.to change(PKI::IssuedCertificate, :count).by(1)
+
+        expect(response).to have_http_status(:created)
       end
     end
 
@@ -583,6 +595,32 @@ RSpec.describe "Api::V1::CertificatesController", type: :request do
         end
 
         expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "for entitlement-gated revocation" do
+      let(:token) { OAuth::AccessToken.create(application: oauth_client, resource_owner: user, scopes: "certificate:revoke certificate:all user") }
+      let(:headers) { { "Authorization" => "Bearer #{token.token}" } }
+
+      it "returns 403 when revoking code_signing certificate without entitlement" do
+        cert = FactoryBot.create(:pki_issued_certificate, :code_signing, subject: user, certificate_authority: @ca, requesting_application: oauth_client.application)
+
+        without_detailed_exceptions do
+          post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
+        end
+
+        expect(response).to have_http_status(:forbidden)
+        expect(JSON.parse(response.body)["error"]).to include("not authorized to revoke")
+      end
+
+      it "allows revoking code_signing certificate with entitlement" do
+        oauth_client.application.update!(entitlements: ["code_signing_certificates"])
+        cert = FactoryBot.create(:pki_issued_certificate, :code_signing, subject: user, certificate_authority: @ca, requesting_application: oauth_client.application)
+
+        post revoke_api_v1_certificate_path(cert), params: { reason: "superseded" }, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(cert.reload.revoked?).to be true
       end
     end
   end

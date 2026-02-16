@@ -60,6 +60,10 @@ class ClientApplication < ApplicationRecord
     false
   end
 
+  def has_entitlement?(name)
+    entitlements.include?(name.to_s)
+  end
+
   def validate_owner_has_mfa
     return unless owner.is_a?(User)
 

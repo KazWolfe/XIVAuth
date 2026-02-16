@@ -309,20 +309,40 @@ RSpec.describe PKI::IssuancePolicy, type: :model do
     end
   end
 
-  describe "API access class methods" do
-    it "reports user_identification as API-issuable and API-revocable" do
-      expect(PKI::IssuancePolicy::UserIdentificationPolicy.api_issuable?).to be true
-      expect(PKI::IssuancePolicy::UserIdentificationPolicy.api_revocable?).to be true
+  describe "API access via ClientAppAbility" do
+    let(:app_with_entitlement) { FactoryBot.create(:client_application, entitlements: ["code_signing_certificates"]) }
+    let(:app_without_entitlement) { FactoryBot.create(:client_application, entitlements: []) }
+
+    it "allows any app to issue user_identification certificates" do
+      ability = Abilities::ClientAppAbility.new(app_without_entitlement)
+      expect(ability.can?(:issue, PKI::IssuancePolicy::UserIdentificationPolicy)).to be true
     end
 
-    it "reports character_identification as API-issuable and API-revocable" do
-      expect(PKI::IssuancePolicy::CharacterIdentificationPolicy.api_issuable?).to be true
-      expect(PKI::IssuancePolicy::CharacterIdentificationPolicy.api_revocable?).to be true
+    it "allows any app to revoke user_identification certificates" do
+      ability = Abilities::ClientAppAbility.new(app_without_entitlement)
+      expect(ability.can?(:revoke, PKI::IssuancePolicy::UserIdentificationPolicy)).to be true
     end
 
-    it "reports code_signing as not API-issuable and not API-revocable" do
-      expect(PKI::IssuancePolicy::CodeSigningPolicy.api_issuable?).to be false
-      expect(PKI::IssuancePolicy::CodeSigningPolicy.api_revocable?).to be false
+    it "allows any app to issue character_identification certificates" do
+      ability = Abilities::ClientAppAbility.new(app_without_entitlement)
+      expect(ability.can?(:issue, PKI::IssuancePolicy::CharacterIdentificationPolicy)).to be true
+    end
+
+    it "allows any app to revoke character_identification certificates" do
+      ability = Abilities::ClientAppAbility.new(app_without_entitlement)
+      expect(ability.can?(:revoke, PKI::IssuancePolicy::CharacterIdentificationPolicy)).to be true
+    end
+
+    it "denies code_signing without entitlement" do
+      ability = Abilities::ClientAppAbility.new(app_without_entitlement)
+      expect(ability.can?(:issue, PKI::IssuancePolicy::CodeSigningPolicy)).to be false
+      expect(ability.can?(:revoke, PKI::IssuancePolicy::CodeSigningPolicy)).to be false
+    end
+
+    it "allows code_signing with entitlement" do
+      ability = Abilities::ClientAppAbility.new(app_with_entitlement)
+      expect(ability.can?(:issue, PKI::IssuancePolicy::CodeSigningPolicy)).to be true
+      expect(ability.can?(:revoke, PKI::IssuancePolicy::CodeSigningPolicy)).to be true
     end
   end
 end

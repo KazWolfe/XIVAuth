@@ -30,9 +30,9 @@ class Api::V1::CertificatesController < Api::V1::ApiController
       return render json: { error: "Unknown certificate_type '#{certificate_type}'" }, status: :bad_request
     end
 
-    # Check that this certificate type is API-issuable
-    unless policy_class.api_issuable?
-      return render json: { error: "Certificate type '#{certificate_type}' cannot be issued via the API" }, status: :forbidden
+    # Check that the application has permission to issue this certificate type
+    unless can?(:issue, policy_class)
+      return render json: { error: "Application is not authorized to issue '#{certificate_type}' certificates" }, status: :forbidden
     end
 
     subject = resolve_subject_for(certificate_type)
@@ -69,10 +69,10 @@ class Api::V1::CertificatesController < Api::V1::ApiController
   def revoke
     authorize! :revoke, @certificate
 
-    # Check that this certificate type is API-revocable
+    # Check that the application has permission to revoke this certificate type
     policy_class = PKI::IssuancePolicy::REGISTRY[@certificate.certificate_type]
-    unless policy_class&.api_revocable?
-      return render json: { error: "Certificate type '#{@certificate.certificate_type}' cannot be revoked via the API" }, status: :forbidden
+    unless can?(:revoke, policy_class)
+      return render json: { error: "Application is not authorized to revoke '#{@certificate.certificate_type}' certificates" }, status: :forbidden
     end
 
     reason = params.require(:reason).to_s

@@ -369,4 +369,26 @@ RSpec.describe ClientApplication, type: :model do
       end
     end
   end
+
+  describe '#has_entitlement?' do
+    it 'returns true when the entitlement is present' do
+      app = FactoryBot.create(:client_application, entitlements: ["code_signing_certificates"])
+      expect(app.has_entitlement?("code_signing_certificates")).to be true
+    end
+
+    it 'returns false when the entitlement is not present' do
+      app = FactoryBot.create(:client_application, entitlements: [])
+      expect(app.has_entitlement?("code_signing_certificates")).to be false
+    end
+
+    it 'accepts both string and symbol argument' do
+      app = FactoryBot.create(:client_application, entitlements: ["code_signing_certificates"])
+      expect(app.has_entitlement?(:code_signing_certificates)).to be true
+    end
+
+    it 'returns false for an application with different entitlements' do
+      app = FactoryBot.create(:client_application, entitlements: ["other_thing"])
+      expect(app.has_entitlement?("code_signing_certificates")).to be false
+    end
+  end
 end

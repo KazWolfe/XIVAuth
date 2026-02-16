@@ -6,6 +6,10 @@ class ApplicationController < ActionController::Base
 
   helper PrideHelper
 
+  def current_ability
+    @current_ability ||= Abilities::UserAbility.new(current_user)
+  end
+
   private def set_observability_context
     sentry_frontend_data = {
       environment: ENV["APP_ENV"] || Rails.env,
