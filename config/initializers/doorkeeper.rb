@@ -408,7 +408,7 @@ Doorkeeper.configure do
   # Be default all Resource Owners are authorized to any Client (application).
   #
   authorize_resource_owner_for_client do |client, resource_owner|
-    Ability.new(resource_owner).can? :use, client.application
+    Abilities::UserAbility.new(resource_owner).can? :use, client.application
   end
 
   # Allows additional data fields to be sent while granting access to an application,

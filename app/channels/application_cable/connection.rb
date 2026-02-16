@@ -6,7 +6,7 @@ class ApplicationCable::Connection < ActionCable::Connection::Base
   end
 
   def ability
-    @ability ||= Ability.new(current_user)
+    @ability ||= Abilities::UserAbility.new(current_user)
   end
 
   protected def find_user
