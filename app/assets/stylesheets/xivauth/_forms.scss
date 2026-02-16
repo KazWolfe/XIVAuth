@@ -1,3 +1,9 @@
+// Pre-reserve space for validation icons so w-auto elements don't shift on feedback
+.form-select.is-validatable {
+  padding-right: $form-select-feedback-icon-padding-end;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-image 0.3s ease;
+}
+
 .form-control-with-button {
   position: relative;
 

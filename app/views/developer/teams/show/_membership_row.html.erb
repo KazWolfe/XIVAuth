@@ -1,0 +1,68 @@
+<% edit_permitted = can?(:manage, @team) && membership.team == @team %>
+
+<tr id="<%= dom_id(membership) %>">
+  <td class="align-middle">
+    <div class="d-flex align-items-center gap-2">
+      <img src="<%= membership.user.avatar_url %>" alt="<%= membership.user.display_name %>"
+           class="rounded-circle" width="32" height="32">
+      <div>
+        <div>
+          <%= membership.user.display_name %>
+          <% if membership.user == current_user %>
+            <span class="badge bg-secondary ms-1">You</span>
+          <% end %>
+        </div>
+        <% if membership.team != @team %>
+          <div class="small text-muted">
+            Role inherited from
+            <% if can? :show, membership.team %>
+              <%= link_to membership.team.name, developer_team_path(membership.team), class: "text-reset" %>
+            <% else %>
+              <%= membership.team.name %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </td>
+  <td class="align-middle">
+    <% if edit_permitted %>
+      <%= form_with(model: membership, url: developer_team_membership_path(@team, membership.user_id),
+                    method: :patch, local: true, data: { controller: "form--autosubmit" }) do |f| %>
+        <div class="position-relative">
+          <%= f.select :role,
+                       [["Admin", "admin"], ["Developer", "developer"], ["Member", "member"]],
+                       { selected: membership.role },
+                       id: "#{dom_id(membership)}_role",
+                       class: "form-select form-select-sm w-auto is-validatable #{membership.errors.any? ? 'is-invalid' : (membership.role_previously_changed? ? 'is-valid' : '')}",
+                       data: { action: "change->form--autosubmit#submit" } %>
+          <% if membership.errors.any? %>
+            <div class="invalid-feedback d-block">
+              <%= membership.errors.full_messages.join(", ") %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% else %>
+      <span class="badge bg-primary"><%= membership.role.titleize %></span>
+    <% end %>
+  </td>
+  <td class="align-middle">
+    <small class="text-muted">
+      <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= membership.created_at.to_i %>">
+        <%= distance_of_time_in_words_to_now(membership.created_at) %> ago
+      </span>
+    </small>
+  </td>
+  <td class="align-middle text-end">
+    <% if edit_permitted %>
+      <% unless membership.user == current_user %>
+        <%= button_to developer_team_membership_path(@team, membership.user_id), method: :delete,
+                      data: { turbo_stream: true },
+                      class: "btn btn-sm btn-danger" do %>
+          <i class="bi bi-trash"></i>
+        <% end %>
+      <% end %>
+    <% end %>
+  </td>
+</tr>

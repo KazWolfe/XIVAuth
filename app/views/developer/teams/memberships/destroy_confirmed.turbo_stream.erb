@@ -1,0 +1,4 @@
+<%= turbo_stream.remove dom_id(@membership) %>
+<%= turbo_stream.append "remove_member_modal-content" do %>
+  <%= render 'layouts/components/remote_modal_close' %>
+<% end %>

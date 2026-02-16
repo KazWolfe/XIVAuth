@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@membership), method: "morph" do %>
+  <%= render 'developer/teams/membership_row', membership: @membership %>
+<% end %>

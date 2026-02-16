@@ -9,9 +9,32 @@
         </h5>
       </div>
     </div>
-    <div class="d-flex justify-content-end">
-      <%= link_to developer_team_path(team), class: 'btn btn-primary' do %>
-        <i class="bi bi-pencil-fill"></i>
+    <div class="d-flex justify-content-end gap-2">
+      <% if can? :manage, team %>
+        <%= link_to developer_team_path(team), class: 'btn btn-primary' do %>
+          <i class="bi bi-pencil-fill"></i> Manage
+        <% end %>
+      <% elsif can? :show, team %>
+        <%= link_to developer_team_path(team), class: 'btn btn-outline-primary' do %>
+          <i class="bi bi-eye-fill"></i> View
+        <% end %>
+      <% end %>
+      <% if team.direct_memberships.exists?(user: current_user) %>
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-gear-fill"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <%= button_to leave_developer_team_path(team), method: :delete, class: "dropdown-item text-danger",
+                            data: { confirm: "Are you sure you want to leave #{team.name}?" } do %>
+                <span class="d-block">
+                  <i class="bi bi-box-arrow-right"></i> Leave Team
+                </span>
+              <% end %>
+            </li>
+          </ul>
+        </div>
       <% end %>
     </div>
   </div>

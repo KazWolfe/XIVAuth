@@ -1,0 +1,5 @@
+<%= turbo_stream.append "body" do %>
+  <%= render 'layouts/components/remote_modal', modal_id: "remove_member_modal" do %>
+    <%= render 'developer/teams/memberships/destroy_modal' %>
+  <% end %>
+<% end %>

@@ -1,0 +1,36 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="mb-0"><i class="bi bi-grid"></i> Applications</h3>
+      <% if can? :create_apps, @team %>
+        <%= link_to new_developer_application_path(client_application: { owner_id: @team.id }), class: "btn btn-primary btn-sm" do %>
+          <i class="bi bi-plus"></i> New App
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <% if @team.client_applications.any? %>
+      <ul class="list-group list-group-flush">
+        <% @team.client_applications.each do |app| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <img src="<%= app.profile.icon_url %>" class="rounded" alt="<%= app.name %>" width="32" height="32">
+              <div>
+                <%= link_to app.name, developer_application_path(app) %>
+                <% if app.private? %>
+                  <span class="badge bg-secondary"><i class="bi bi-lock"></i> Private</span>
+                <% end %>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <div class="text-center text-muted py-3">
+        <p class="mb-0">No applications created yet.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

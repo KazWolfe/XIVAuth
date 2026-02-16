@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_15_201400) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_16_212104) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -289,6 +289,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_15_201400) do
     t.uuid "team_id", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.index ["team_id", "user_id"], name: "index_team_memberships_on_team_id_and_user_id", unique: true
     t.index ["team_id"], name: "index_team_memberships_on_team_id"
     t.index ["user_id"], name: "index_team_memberships_on_user_id"
   end

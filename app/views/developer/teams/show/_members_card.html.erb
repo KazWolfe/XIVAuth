@@ -1,0 +1,98 @@
+<div class="card mb-4" id="team-members-card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div>
+      <h3 class="mb-0"><i class="bi bi-person-fill"></i> Members</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+        <tr>
+          <th>User</th>
+          <th style="width: 15rem">Role</th>
+          <th>Member Since</th>
+          <% if can?(:manage, @team) %>
+            <th></th>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody id="team-memberships-list">
+        <% @all_memberships.each do |membership| %>
+          <%= render 'developer/teams/show/membership_row', membership: membership %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <% if can?(:manage, @team) %>
+    <div class="card-header border-top d-flex justify-content-between align-items-center">
+      <h5 class="mb-0"><i class="bi bi-link-45deg"></i> Invite Links</h5>
+      <%= link_to new_developer_team_invite_link_path(team_id: @team.id), class: "btn btn-primary btn-sm", data: { turbo_stream: true } do %>
+        <i class="bi bi-plus"></i> Create Link
+      <% end %>
+    </div>
+    <div class="card-body">
+      <% if @team.invite_links.any? %>
+        <div class="table-responsive">
+          <table class="table table-sm mb-0">
+            <thead>
+            <tr>
+              <th>Invite Key</th>
+              <th>Role</th>
+              <th>Uses</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @team.invite_links.each do |link| %>
+              <tr id="invite_link_<%= link.id %>">
+                <td>
+                  <code class="small"><%= link.invite_key %></code>
+                  <div data-controller="utilities--copy-code" class="d-inline-block">
+                    <input type="hidden" data-utilities--copy-code-target="source"
+                           value="<%= accept_invite_developer_teams_url(link.invite_key) %>">
+                    <button class="btn btn-outline-secondary btn-sm" type="button" title="Copy Invite URL"
+                            aria-label="Copy Invite URL" data-action="utilities--copy-code#copy"
+                            data-utilities--copy-code-target="button">
+                      <i class="bi bi-copy"></i>
+                    </button>
+                  </div>
+                </td>
+                <td><span class="badge bg-primary"><%= link.target_role.titleize %></span></td>
+                <td>
+                  <small class="text-muted">
+                    <%= link.usage_count %> of <%= link.usage_limit || "∞" %>
+                    <% if link.expires_at? %>
+                      <br/>
+                      <% if link.expired? %>
+                        <span class="text-danger">Expired</span>
+                      <% else %>
+                          <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= link.expires_at.to_i %>">
+                            expires in <%= distance_of_time_in_words_to_now(link.expires_at) %>
+                          </span>
+                      <% end %>
+                    <% end %>
+                  </small>
+                </td>
+                <td>
+                  <%= button_to developer_team_invite_link_path(link.invite_key), method: :delete,
+                                data: { confirm: "Are you sure?", turbo_stream: true },
+                                class: "btn btn-sm btn-danger" do %>
+                    <i class="bi bi-trash"></i>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center text-muted py-3">
+          <p class="mb-0">No invite links created yet.</p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

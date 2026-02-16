@@ -20,11 +20,19 @@ class Abilities::UserAbility
       end
     end
 
-    can :show, Team do |t|
+    # Associated with the team (any active member). Used for basic access checks.
+    can :use, Team do |t|
       t.direct_memberships.active.where(user_id: user.id).any? ||
         t.antecedent_memberships.where(user_id: user.id).any?
     end
 
+    # View team details (show page). Developers and admins only.
+    can :show, Team do |t|
+      t.direct_memberships.developers.where(user_id: user.id).any? ||
+        t.antecedent_memberships.developers.where(user_id: user.id).any?
+    end
+
+    # Make changes to the team, e.g. add/remove users, manage subteams, so on.
     can :manage, Team do |t|
       t.direct_memberships.admins.where(user_id: user.id).any? ||
         t.antecedent_memberships.admins.where(user_id: user.id).any?

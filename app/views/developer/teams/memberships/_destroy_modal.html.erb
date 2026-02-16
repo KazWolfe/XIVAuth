@@ -1,0 +1,15 @@
+<%= form_with(url: developer_team_membership_path(@team, @membership.user_id), method: :delete) do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Remove Member</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p class="mb-0">
+      Are you sure you want to remove <strong><%= @membership.user.display_name %></strong> from this team?
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    <%= f.submit "Remove Member", class: "btn btn-danger" %>
+  </div>
+<% end %>

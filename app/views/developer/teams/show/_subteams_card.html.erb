@@ -1,0 +1,37 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="mb-0"><i class="bi bi-diagram-3"></i> Subteams</h3>
+      <% if can? :manage, @team %>
+        <%= link_to new_developer_team_path(parent_id: @team.id), class: "btn btn-primary btn-sm" do %>
+          <i class="bi bi-plus"></i> Create Subteam
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <% visible_subteams = @team.subteams.select { |st| can? :use, st } %>
+    <% if visible_subteams.any? %>
+      <ul class="list-group list-group-flush">
+        <% visible_subteams.each do |subteam| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <% if can? :show, subteam %>
+              <%= link_to subteam.name, developer_team_path(subteam) %>
+            <% else %>
+              <%= subteam.name %>
+            <% end %>
+            <div>
+              <span class="badge bg-secondary"><%= subteam.active_members.count %> members</span>
+              <span class="badge bg-secondary"><%= subteam.client_applications.count %> apps</span>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <div class="text-center text-muted py-3">
+        <p class="mb-0">No subteams created yet.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

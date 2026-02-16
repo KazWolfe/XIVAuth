@@ -14,7 +14,7 @@ class Team < ApplicationRecord
 
   has_many :invite_links, class_name: "Team::InviteLink", dependent: :destroy
 
-  has_many :oauth_applications, class_name: "OAuth::ClientApplication", as: :owner
+  has_many :client_applications, class_name: "ClientApplication", as: :owner
 
   validates :name, presence: true
   validate :validate_subteam_or_has_admin

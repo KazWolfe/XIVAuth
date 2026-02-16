@@ -1,0 +1,107 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <h3 class="mb-0"><i class="bi bi-people"></i> Team Profile</h3>
+  </div>
+  <% if can? :manage, @team %>
+    <div class="card-body">
+      <% if @team.is_special_id? %>
+        <div class="alert alert-warning mb-3">
+          <i class="bi bi-exclamation-triangle"></i> This is a system team and cannot be modified.
+        </div>
+      <% end %>
+      <%= form_for @team, url: developer_team_path(@team), method: :patch do |f| %>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <%= f.label :name, "Team Name", class: "form-label fw-semibold" %>
+              <%= f.text_field :name, class: "form-control", placeholder: "My Awesome Team", required: true, disabled: @team.readonly? %>
+              <div class="form-text">The name of your team as it appears to users.</div>
+            </div>
+
+            <% if @team.parent.present? %>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Parent Team</label>
+                <div class="form-control-plaintext">
+                  <% if can? :show, @team.parent %>
+                    <%= link_to @team.parent.name, developer_team_path(@team.parent) %>
+                  <% else %>
+                    <%= @team.parent.name %>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <%= f.check_box :inherit_parent_memberships, class: "form-check-input", role: "switch", disabled: @team.readonly? %>
+                  <%= f.label :inherit_parent_memberships, "Inherit parent memberships", class: "form-check-label fw-semibold" %>
+                </div>
+                <div class="form-text">
+                  When enabled, members of the parent team are also members of this team.<br>
+                  Admins are always inherited regardless of this setting.
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="team_id">Team ID</label>
+              <div class="input-group" data-controller="utilities--copy-code">
+                <input type="text" class="form-control font-monospace" id="team_id" value="<%= @team.id %>" readonly
+                       data-utilities--copy-code-target="source">
+                <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy team ID"
+                        data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              </div>
+              <div class="form-text">Used to identify your team. This cannot be changed.</div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="card-footer bg-transparent d-flex justify-content-end">
+          <%= f.submit "Save Changes", class: "btn btn-primary px-4", disabled: @team.readonly? %>
+      <% end %>
+      </div>
+  <% else %>
+    <%# Read-only view for developers %>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Team Name</label>
+            <div class="form-control-plaintext"><%= @team.name %></div>
+          </div>
+
+          <% if @team.parent.present? %>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Parent Team</label>
+              <div class="form-control-plaintext">
+                <% if can? :show, @team.parent %>
+                  <%= link_to @team.parent.name, developer_team_path(@team.parent) %>
+                <% else %>
+                  <%= @team.parent.name %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Team ID</label>
+            <div class="input-group" data-controller="utilities--copy-code">
+              <input type="text" class="form-control font-monospace" id="team_id" value="<%= @team.id %>" readonly
+                     data-utilities--copy-code-target="source">
+              <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy team ID"
+                      data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

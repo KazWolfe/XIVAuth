@@ -2,6 +2,9 @@ class Users::RecoveryController < ApplicationController
   helper Users::SessionsHelper
   layout "login/signin"
 
+  RECOVERY_MESSAGE = "Your recovery request was received. If your email is in our system, you should receive a " +
+                     "recovery email shortly."
+
   skip_before_action :authenticate_user!
   prepend_before_action :check_captcha, only: [:create]
 
@@ -22,8 +25,7 @@ class Users::RecoveryController < ApplicationController
     @user = User.find_by(email: permitted_params[:email])
 
     if @user.nil?
-      redirect_to new_user_session_path, notice: "Your recovery request was received. If your email is in our " \
-        "system, you should receive a recovery email shortly."
+      redirect_to new_user_session_path, notice: RECOVERY_MESSAGE
       return
     end
 
@@ -33,9 +35,11 @@ class Users::RecoveryController < ApplicationController
       @user.send_reset_password_instructions
     end
 
-    redirect_to new_user_session_path, notice: "Your recovery request was received. If your email is in our system, " \
-      "you should receive a recovery email shortly."
+    redirect_to new_user_session_path, notice: RECOVERY_MESSAGE
   rescue Postmark::InactiveRecipientError
+    # NOTE: This technically does enable an enumeration attack, but only for users that exist but can't receive emails.
+    # It's better (imo) to explicitly tell the user that we can't reset their account so they don't end up waiting for
+    # an email that never comes.
     flash.now[:error] = render_to_string(partial: "devise/mailer/mta_error")
     render "devise/recovery/new", status: :unprocessable_content
   end

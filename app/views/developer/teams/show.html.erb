@@ -1,7 +1,7 @@
 <% content_for(:page_header) do %>
   <div class="d-flex justify-content-between align-items-center">
     <div>
-      <h1>Edit Team: <%= @team.name %></h1>
+      <h1><%= can?(:manage, @team) ? "Edit Team: " : "" %><%= @team.name %></h1>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><%= link_to "My Teams", developer_teams_path %></li>
@@ -11,11 +11,19 @@
     </div>
     <div>
       <div class="btn-toolbar gap-2">
-        <%= button_to developer_team_path(@team), method: :delete, class: "btn btn-danger #{ 'disabled' if @team.deletion_block_reason }",
-                      disabled: @team.deletion_block_reason.present?,
-                      data: { turbo_stream: true },
-                      title: @team.deletion_block_reason do %>
-          <i class="bi bi-trash"></i> Delete Team
+        <% if @team.direct_memberships.exists?(user: current_user) %>
+          <%= button_to leave_developer_team_path(@team), method: :delete, class: "btn btn-outline-danger",
+                        data: { confirm: "Are you sure you want to leave #{@team.name}?" } do %>
+            <i class="bi bi-box-arrow-right"></i> Leave Team
+          <% end %>
+        <% end %>
+        <% if can? :manage, @team %>
+          <%= button_to developer_team_path(@team), method: :delete, class: "btn btn-danger #{ 'disabled' if @team.deletion_block_reason }",
+                        disabled: @team.deletion_block_reason.present?,
+                        data: { turbo_stream: true },
+                        title: @team.deletion_block_reason do %>
+            <i class="bi bi-trash"></i> Delete Team
+          <% end %>
         <% end %>
       </div>
     </div>
@@ -24,172 +32,18 @@
 
 <div class="row">
   <div class="col-md-12">
-    <div class="card mb-4">
-      <div class="card-header">
-        <h3 class="mb-0"><i class="bi bi-people"></i> Team Profile</h3>
-      </div>
-      <div class="card-body">
-        <% if @team.is_special_id? %>
-          <div class="alert alert-warning mb-3">
-            <i class="bi bi-exclamation-triangle"></i> This is a system team and cannot be modified.
-          </div>
-        <% end %>
-        <%= form_for @team, url: developer_team_path(@team), method: :patch do |f| %>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <%= f.label :name, "Team Name", class: "form-label fw-semibold" %>
-                <%= f.text_field :name, class: "form-control", placeholder: "My Awesome Team", required: true, disabled: @team.readonly? %>
-                <div class="form-text">The name of your team as it appears to users.</div>
-              </div>
-
-              <% if @team.parent.present? %>
-                <div class="mb-3">
-                  <label class="form-label fw-semibold">Parent Team</label>
-                  <div class="form-control-plaintext">
-                    <%= link_to @team.parent.name, developer_team_path(@team.parent) %>
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label fw-semibold">Inheritance</label>
-                  <div class="form-control-plaintext">
-                    <% if @team.inherit_parent_memberships %>
-                      <span class="badge bg-success">Inherits from Parent</span>
-                    <% else %>
-                      <span class="badge bg-secondary">Standalone</span>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label fw-semibold" for="team_id">Team ID</label>
-                <div class="input-group" data-controller="utilities--copy-code">
-                  <input type="text" class="form-control font-monospace" id="team_id" value="<%= @team.id %>" readonly
-                         data-utilities--copy-code-target="source">
-                  <button class="btn btn-outline-secondary" type="button" title="Copy" aria-label="Copy team ID"
-                          data-action="utilities--copy-code#copy" data-utilities--copy-code-target="button">
-                    <i class="bi bi-clipboard"></i>
-                  </button>
-                </div>
-                <div class="form-text">Used to identify your team. This cannot be changed.</div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-      <div class="card-footer bg-transparent d-flex justify-content-end">
-          <%= f.submit "Save Changes", class: "btn btn-primary px-4", disabled: @team.readonly? %>
-        <% end %>
-      </div>
-    </div>
+    <%= render 'developer/teams/show/profile_card' %>
   </div>
 
   <div class="col-md-6">
-    <div class="card mb-4">
-      <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-          <h3 class="mb-0"><i class="bi bi-diagram-3"></i> Subteams</h3>
-          <%= link_to new_developer_team_path(parent_id: @team.id), class: "btn btn-primary btn-sm" do %>
-            <i class="bi bi-plus"></i> Create Subteam
-          <% end %>
-        </div>
-      </div>
-
-      <div class="card-body">
-        <% if @team.subteams.any? %>
-          <ul class="list-group list-group-flush">
-            <% @team.subteams.each do |subteam| %>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <%= link_to subteam.name, developer_team_path(subteam) %>
-                <span class="badge bg-secondary"><%= subteam.active_members.count %> members</span>
-              </li>
-            <% end %>
-          </ul>
-        <% else %>
-          <div class="text-center text-muted py-3">
-            <p class="mb-0">No subteams created yet.</p>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <%= render 'developer/teams/show/apps_card' %>
   </div>
 
   <div class="col-md-6">
-    <div class="card mb-4">
-      <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-          <h3 class="mb-0"><i class="bi bi-link-45deg"></i> Invite Links</h3>
-          <%= link_to new_developer_team_invite_link_path(team_id: @team.id), class: "btn btn-primary btn-sm", data: { turbo_stream: true } do %>
-            <i class="bi bi-plus"></i> Create Link
-          <% end %>
-        </div>
-      </div>
+    <%= render 'developer/teams/show/subteams_card' %>
+  </div>
 
-      <div class="card-body">
-        <% if @team.invite_links.any? %>
-          <div class="table-responsive">
-            <table class="table table-sm mb-0">
-              <thead>
-                <tr>
-                  <th>Invite Key</th>
-                  <th>Role</th>
-                  <th>Uses</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <% @team.invite_links.each do |link| %>
-                  <tr id="invite_link_<%= link.id %>">
-                    <td>
-                      <code class="small"><%= link.invite_key %></code>
-                      <div data-controller="utilities--copy-code" class="d-inline-block">
-                        <input type="hidden" data-utilities--copy-code-target="source"
-                               value="<%= accept_invite_developer_teams_url(link.invite_key) %>">
-                        <button class="btn btn-outline-secondary btn-sm" type="button" title="Copy Invite URL"
-                                aria-label="Copy Invite URL" data-action="utilities--copy-code#copy"
-                                data-utilities--copy-code-target="button">
-                          <i class="bi bi-copy"></i>
-                        </button>
-                      </div>
-                    </td>
-                    <td><span class="badge bg-primary"><%= link.target_role.titleize %></span></td>
-                    <td>
-                      <small class="text-muted">
-                        <%= link.usage_count %> of <%= link.usage_limit || "∞" %>
-                        <% if link.expires_at? %>
-                          <br/>
-                          <% if link.expired? %>
-                            <span class="text-danger">Expired</span>
-                          <% else %>
-                            <span data-controller="utilities--hover-dt" data-utilities--hover-dt-ts-value="<%= link.expires_at.to_i %>">
-                              expires in <%= distance_of_time_in_words_to_now(link.expires_at) %>
-                            </span>
-                          <% end %>
-                        <% end %>
-                      </small>
-                    </td>
-                    <td>
-                      <%= button_to developer_team_invite_link_path(link), method: :delete,
-                                    data: { confirm: "Are you sure?", turbo_stream: true },
-                                    class: "btn btn-sm btn-danger" do %>
-                        <i class="bi bi-trash"></i>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        <% else %>
-          <div class="text-center text-muted py-3">
-            <p class="mb-0">No invite links created yet.</p>
-          </div>
-        <% end %>
-      </div>
-    </div>
+  <div class="col-md-12">
+    <%= render 'developer/teams/show/members_card' %>
   </div>
 </div>

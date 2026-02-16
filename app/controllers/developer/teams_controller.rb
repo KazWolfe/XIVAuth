@@ -3,10 +3,11 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   include Pagy::Method
 
   before_action :load_parent_teams, only: %i[new create]
-  before_action :set_team, only: %i[show edit update destroy regenerate]
+  before_action :set_team, only: %i[show edit update destroy regenerate leave]
+  skip_before_action :check_developer_role, only: %i[index leave]
 
   def index
-    @pagy, @teams = pagy(current_user.associated_teams.order(created_at: :desc), items: 12)
+    @pagy, @teams = pagy(current_user.teams.order(created_at: :desc), items: 12)
 
     respond_to do |format|
       format.html { render :index }
@@ -39,9 +40,35 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   end
 
   def show
+    unless can?(:show, @team)
+      redirect_to developer_teams_path, alert: "You don't have permission to view this team's details."
+      return
+    end
+
+    direct = @team.direct_memberships.includes(:user).to_a
+    inherited = @team.antecedent_memberships.includes(:user, :team).to_a
+
+    role_order = Team::Membership.roles.keys
+    @all_memberships = (direct + inherited).sort_by { |m| role_order.index(m.role) || role_order.size }
+
     respond_to do |format|
       format.html { render :show }
       format.json { render json: @team, as_owner: true }
+    end
+  end
+
+  def leave
+    membership = @team.direct_memberships.find_by(user: current_user)
+
+    if membership.nil?
+      redirect_to developer_teams_path, alert: "You can only leave teams you are a direct member of."
+      return
+    end
+
+    if membership.destroy
+      redirect_to developer_teams_path, notice: "You have left #{@team.name}."
+    else
+      redirect_to developer_teams_path, alert: membership.errors.full_messages.first
     end
   end
 
@@ -80,7 +107,7 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   private def set_team
     @team = Team.find(params[:id])
 
-    authorize! :show, @team
+    authorize! :use, @team
   end
 
   private def load_parent_teams
@@ -94,6 +121,6 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   end
 
   private def update_team_params
-    params.require(:team).permit(:name)
+    params.require(:team).permit(:name, :inherit_parent_memberships)
   end
 end

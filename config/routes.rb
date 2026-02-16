@@ -26,6 +26,9 @@ Rails.application.routes.draw do
     end
 
     resources :teams, controller: "teams" do
+      delete :leave, on: :member
+
+      resources :memberships, controller: "teams/memberships", only: %i[update destroy], param: :user_id
       resources :invite_links, controller: "teams/invite_links", shallow: true, param: :code,
                 shallow_path: "teams", shallow_prefix: "team"
 
