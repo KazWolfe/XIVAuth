@@ -49,7 +49,7 @@
         <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
           name: "Request Dev Access", target: developer_onboarding_path, icon_classes: "bi bi-file-earmark-code"
         } %>
-        <% if current_user.teams.any? %>
+        <% if current_user.team_memberships.any? %>
           <%= render partial: 'layouts/portal/navigation/sidebar_entry', locals: {
             name: "My Teams", target: developer_teams_path, icon_classes: "bi bi-people",
             badge_html: "<span class='badge bg-warning'><span class='bi bi-flask'></i> Beta</span>"

@@ -5,6 +5,7 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   before_action :load_parent_teams, only: %i[new create]
   before_action :set_team, only: %i[show edit update destroy regenerate leave]
   skip_before_action :check_developer_role, only: %i[index leave]
+  before_action :check_team_list_access, only: %i[index]
 
   def index
     @pagy, @teams = pagy(current_user.teams.order(created_at: :desc), items: 12)
@@ -122,5 +123,9 @@ class Developer::TeamsController < Developer::DeveloperPortalController
 
   private def update_team_params
     params.require(:team).permit(:name, :inherit_parent_memberships)
+  end
+
+  private def check_team_list_access
+    check_developer_role unless current_user.team_memberships.any?
   end
 end
