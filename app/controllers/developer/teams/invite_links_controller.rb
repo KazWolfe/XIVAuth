@@ -9,7 +9,7 @@ class Developer::Teams::InviteLinksController < Developer::DeveloperPortalContro
   end
 
   def create
-    authorize! :administer, @team
+    authorize! :manage_users, @team
 
     @invite_link = @team.invite_links.new(
       target_role: filtered_params[:target_role],
@@ -36,7 +36,7 @@ class Developer::Teams::InviteLinksController < Developer::DeveloperPortalContro
       redirect_to root_path, alert: "Team not found."
     end
 
-    authorize! :administer, @team
+    authorize! :manage_users, @team
 
     if @invite_link.destroy
       redirect_to developer_team_path(@team), notice: "Invite link was successfully deleted."

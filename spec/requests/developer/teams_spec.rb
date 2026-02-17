@@ -162,6 +162,39 @@ RSpec.describe "Developer::Teams", type: :request do
     end
   end
 
+  describe "GET /developer/teams/:id (show)" do
+    let!(:team) do
+      team = FactoryBot.build(:team, :no_initial_admin, name: "Show Team")
+      team.direct_memberships.build(user: other_user, role: "admin")
+      team.save!
+      team
+    end
+
+    it "allows developers to view the team" do
+      FactoryBot.create(:team_membership, :developer, team: team, user: user)
+
+      get developer_team_path(team)
+
+      expect(response).to have_http_status(:success)
+    end
+
+    it "allows managers to view the team" do
+      FactoryBot.create(:team_membership, :manager, team: team, user: user)
+
+      get developer_team_path(team)
+
+      expect(response).to have_http_status(:success)
+    end
+
+    it "redirects members who lack show permission" do
+      FactoryBot.create(:team_membership, team: team, user: user)
+
+      get developer_team_path(team)
+
+      expect(response).to redirect_to(developer_teams_path)
+    end
+  end
+
   describe "PATCH /developer/teams/:id (update)" do
     let!(:team) do
       team = FactoryBot.build(:team, :no_initial_admin, name: "Original Name")
@@ -183,6 +216,25 @@ RSpec.describe "Developer::Teams", type: :request do
       patch developer_team_path(team), params: { team: { name: "Updated Name", parent_id: other_team.id } }
 
       expect(team.reload.parent_id).to be_nil
+    end
+
+    it "allows managers to update the team" do
+      manager_team = FactoryBot.create(:team)
+      FactoryBot.create(:team_membership, :manager, team: manager_team, user: user)
+
+      patch developer_team_path(manager_team), params: { team: { name: "Manager Updated" } }
+
+      expect(response).to redirect_to(developer_team_path(manager_team))
+      expect(manager_team.reload.name).to eq("Manager Updated")
+    end
+
+    it "prevents developers from updating the team" do
+      dev_team = FactoryBot.create(:team)
+      FactoryBot.create(:team_membership, :developer, team: dev_team, user: user)
+
+      expect {
+        patch developer_team_path(dev_team), params: { team: { name: "Dev Updated" } }
+      }.to raise_error(CanCan::AccessDenied)
     end
 
     it "prevents non-admins from updating the team" do
@@ -244,12 +296,38 @@ RSpec.describe "Developer::Teams", type: :request do
       expect(Team.exists?(system_team.id)).to be true
     end
 
+    it "prevents managers from deleting the team" do
+      manager_team = FactoryBot.create(:team)
+      FactoryBot.create(:team_membership, :manager, team: manager_team, user: user)
+
+      expect {
+        delete developer_team_path(manager_team)
+      }.to raise_error(CanCan::AccessDenied)
+    end
+
     it "prevents non-admins from deleting the team" do
       sign_in other_user
 
       expect {
         delete developer_team_path(team)
       }.to raise_error(CanCan::AccessDenied)
+    end
+
+    it "prevents a direct admin from deleting their own subteam" do
+      subteam = FactoryBot.create(:team, parent: team)
+      FactoryBot.create(:team_membership, :admin, team: subteam, user: user)
+
+      expect {
+        delete developer_team_path(subteam)
+      }.to raise_error(CanCan::AccessDenied)
+    end
+
+    it "allows a parent admin to delete a child subteam" do
+      subteam = FactoryBot.create(:team, parent: team)
+
+      expect {
+        delete developer_team_path(subteam)
+      }.to change(Team, :count).by(-1)
     end
   end
 end

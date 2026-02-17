@@ -32,11 +32,22 @@ class Abilities::UserAbility
         t.antecedent_memberships.developers.where(user_id: user.id).any?
     end
 
-    # Make changes to the team, e.g. add/remove users, manage subteams, so on.
-    # Managers and admins can administer teams.
-    can :administer, Team do |t|
+    can :create_apps, Team do |t|
+      t.direct_memberships.developers.where(user_id: user.id).any? ||
+        t.antecedent_memberships.developers.where(user_id: user.id).any?
+    end
+
+    # Make changes to the team itself (name, metadata)
+    # Manage users of the team, and child teams.
+    can %i[update manage_users], Team do |t|
       t.direct_memberships.managers.where(user_id: user.id).any? ||
         t.antecedent_memberships.managers.where(user_id: user.id).any?
+    end
+
+    # Only admins can create subteams at present. Just defining this rule for clarity, as it's covered in the
+    # wildcard. NOTE: Also set as part of `load_parent_teams` in TeamsController!
+    can :create_subteam, Team do |t|
+      false
     end
 
     # Full management (wildcard). Only true admins. Covers :destroy and any other unspecified actions.
@@ -45,9 +56,11 @@ class Abilities::UserAbility
         t.antecedent_memberships.admins.where(user_id: user.id).any?
     end
 
-    can :create_apps, Team do |t|
-      t.direct_memberships.developers.where(user_id: user.id).any? ||
-        t.antecedent_memberships.developers.where(user_id: user.id).any?
+    # EDGE CASE: Block admins from deleting a subteam if they're a direct admin of that team.
+    # Logic here is that a subteam shouldn't be able to destroy itself as it was created at a higher level. Teams
+    # further down the tree are fair game, though.
+    cannot :destroy, Team do |t|
+      t.direct_memberships.admins.where(user_id: user.id).any? && t.parent.present?
     end
 
     # PKI certificates: read and revoke own certs.

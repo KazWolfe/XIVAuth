@@ -1,7 +1,7 @@
 <% content_for(:page_header) do %>
   <div class="d-flex justify-content-between align-items-center">
     <div>
-      <h1><%= can?(:administer, @team) ? "Edit Team: " : "" %><%= @team.name %></h1>
+      <h1><%= can?(:update, @team) ? "Edit Team: " : "" %><%= @team.name %></h1>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><%= link_to "My Teams", developer_teams_path %></li>

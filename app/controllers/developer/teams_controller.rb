@@ -74,7 +74,7 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   end
 
   def update
-    authorize! :administer, @team
+    authorize! :update, @team
 
     if @team.readonly?
       flash[:alert] = "This is a system team and cannot be modified."
@@ -112,7 +112,7 @@ class Developer::TeamsController < Developer::DeveloperPortalController
   end
 
   private def load_parent_teams
-    @available_parent_teams = current_user.teams_by_membership_scope(:managers)
+    @available_parent_teams = current_user.teams_by_membership_scope(:admins)
                                           .order(:name)
                                           .distinct
   end

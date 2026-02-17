@@ -44,8 +44,6 @@ class Team::Membership < ApplicationRecord
   end
 
   def ensure_team_has_admin
-    return if team.destroying?
-
     return if team.parent_id.present?
     return unless admin?
     return if team.direct_memberships.admins.where.not(id: id).exists?

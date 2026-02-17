@@ -2,20 +2,13 @@ class Team < ApplicationRecord
   TEAM_DEPTH_LIMIT = 5
   TEAM_SUBTEAM_LIMIT = 5
 
-  # Flag the team as being destroyed so membership callbacks (e.g. ensure_team_has_admin)
-  # know to skip checks. Must be defined before has_many :dependent associations so it runs first.
-  before_destroy { @destroying = true }
-
-  def destroying?
-    !!@destroying
-  end
-
   has_one :profile, class_name: "Team::Profile", dependent: :destroy, required: true, autosave: true
 
   belongs_to :parent, class_name: "Team", optional: true
   has_many :subteams, class_name: "Team", foreign_key: "parent_id", inverse_of: :parent
 
-  has_many :direct_memberships, class_name: "Team::Membership", dependent: :destroy
+  # Note: memberships don't have any callbacks we care about, so just dropping is safe (for now)
+  has_many :direct_memberships, class_name: "Team::Membership", dependent: :delete_all
   has_many :direct_members, through: :direct_memberships, source: :user
 
   accepts_nested_attributes_for :direct_memberships
@@ -176,6 +169,7 @@ class Team < ApplicationRecord
   end
 
   private def validate_subteam_or_has_admin
+    return unless new_record?
     return unless self.parent_id.nil?
 
     # Consider in-memory built memberships (including nested attributes) so validation

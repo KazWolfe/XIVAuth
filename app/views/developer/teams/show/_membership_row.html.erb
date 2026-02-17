@@ -1,4 +1,4 @@
-<% edit_permitted = can?(:administer, @team) && membership.team == @team %>
+<% edit_permitted = can?(:manage_users, @team) && membership.team == @team %>
 <% is_admin = can?(:manage, @team) %>
 <% can_edit_target = is_admin || !membership.role.in?(%w[admin manager]) %>
 

@@ -3,7 +3,7 @@ class Developer::Teams::MembershipsController < Developer::DeveloperPortalContro
   before_action :set_membership
 
   def update
-    authorize! :administer, @team
+    authorize! :manage_users, @team
 
     if manager_restricted? && (target_is_privileged? || privileged_role_requested?)
       return redirect_to developer_team_path(@team), alert: "Managers cannot modify admin or manager memberships."
@@ -24,7 +24,7 @@ class Developer::Teams::MembershipsController < Developer::DeveloperPortalContro
   end
 
   def destroy
-    authorize! :administer, @team
+    authorize! :manage_users, @team
 
     if @membership.user == current_user
       return redirect_to developer_team_path(@team), alert: "You cannot remove yourself from a team."
