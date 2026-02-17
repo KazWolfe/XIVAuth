@@ -26,13 +26,20 @@ class Abilities::UserAbility
         t.antecedent_memberships.where(user_id: user.id).any?
     end
 
-    # View team details (show page). Developers and admins only.
+    # View team details (show page). Developers, managers, and admins only.
     can :show, Team do |t|
       t.direct_memberships.developers.where(user_id: user.id).any? ||
         t.antecedent_memberships.developers.where(user_id: user.id).any?
     end
 
     # Make changes to the team, e.g. add/remove users, manage subteams, so on.
+    # Managers and admins can administer teams.
+    can :administer, Team do |t|
+      t.direct_memberships.managers.where(user_id: user.id).any? ||
+        t.antecedent_memberships.managers.where(user_id: user.id).any?
+    end
+
+    # Full management (wildcard). Only true admins. Covers :destroy and any other unspecified actions.
     can :manage, Team do |t|
       t.direct_memberships.admins.where(user_id: user.id).any? ||
         t.antecedent_memberships.admins.where(user_id: user.id).any?

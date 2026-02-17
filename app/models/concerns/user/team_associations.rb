@@ -5,7 +5,7 @@ module User::TeamAssociations
   # @param scope [Symbol] The membership scope to use (:admins, :developers, :active)
   # @return [ActiveRecord::Relation<Team>]
   def teams_by_membership_scope(scope)
-    ignore_inherit = (scope == :admins)
+    ignore_inherit = scope.in?(%i[admins managers])
 
     # Get teams where user has the specified role
     direct_team_ids = team_memberships.public_send(scope).joins(:team).pluck(:team_id)

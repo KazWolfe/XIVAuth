@@ -3,7 +3,12 @@ class Developer::Teams::MembershipsController < Developer::DeveloperPortalContro
   before_action :set_membership
 
   def update
-    authorize! :manage, @team
+    authorize! :administer, @team
+
+    if manager_restricted? && (target_is_privileged? || privileged_role_requested?)
+      return redirect_to developer_team_path(@team), alert: "Managers cannot modify admin or manager memberships."
+    end
+
     @membership.update(membership_params)
 
     respond_to do |format|
@@ -19,10 +24,14 @@ class Developer::Teams::MembershipsController < Developer::DeveloperPortalContro
   end
 
   def destroy
-    authorize! :manage, @team
+    authorize! :administer, @team
 
     if @membership.user == current_user
       return redirect_to developer_team_path(@team), alert: "You cannot remove yourself from a team."
+    end
+
+    if manager_restricted? && target_is_privileged?
+      return redirect_to developer_team_path(@team), alert: "Managers cannot remove admin or manager members."
     end
 
     # First request: show confirmation modal
@@ -51,8 +60,24 @@ class Developer::Teams::MembershipsController < Developer::DeveloperPortalContro
 
   def membership_params
     params.require(:team_membership).permit(:role).tap do |p|
-      allowed = %w[admin developer member]
+      allowed = if can?(:manage, @team)
+                  %w[admin manager developer member]
+                else
+                  %w[developer member]
+                end
       p[:role] = nil unless allowed.include?(p[:role])
     end
+  end
+
+  def manager_restricted?
+    !can?(:manage, @team)
+  end
+
+  def target_is_privileged?
+    @membership.role.in?(%w[admin manager])
+  end
+
+  def privileged_role_requested?
+    params.dig(:team_membership, :role).in?(%w[admin manager])
   end
 end

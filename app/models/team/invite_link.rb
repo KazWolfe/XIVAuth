@@ -5,7 +5,7 @@ class Team::InviteLink < ApplicationRecord
 
   validates :team, presence: true
   validates :invite_key, presence: true, uniqueness: true
-  validates :target_role, presence: true, inclusion: { in: %w[member developer admin] }
+  validates :target_role, presence: true, inclusion: { in: %w[member developer] }
 
   validates :usage_limit, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validate :validate_expiration

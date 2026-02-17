@@ -1,4 +1,6 @@
-<% edit_permitted = can?(:manage, @team) && membership.team == @team %>
+<% edit_permitted = can?(:administer, @team) && membership.team == @team %>
+<% is_admin = can?(:manage, @team) %>
+<% can_edit_target = is_admin || !membership.role.in?(%w[admin manager]) %>
 
 <tr id="<%= dom_id(membership) %>">
   <td class="align-middle">
@@ -26,12 +28,17 @@
     </div>
   </td>
   <td class="align-middle">
-    <% if edit_permitted %>
+    <% if edit_permitted && can_edit_target %>
+      <% role_options = if is_admin
+                          [["Admin", "admin"], ["Manager", "manager"], ["Developer", "developer"], ["Member", "member"]]
+                        else
+                          [["Developer", "developer"], ["Member", "member"]]
+                        end %>
       <%= form_with(model: membership, url: developer_team_membership_path(@team, membership.user_id),
                     method: :patch, local: true, data: { controller: "form--autosubmit" }) do |f| %>
         <div class="position-relative">
           <%= f.select :role,
-                       [["Admin", "admin"], ["Developer", "developer"], ["Member", "member"]],
+                       role_options,
                        { selected: membership.role },
                        id: "#{dom_id(membership)}_role",
                        class: "form-select form-select-sm w-auto is-validatable #{membership.errors.any? ? 'is-invalid' : (membership.role_previously_changed? ? 'is-valid' : '')}",
@@ -55,7 +62,7 @@
     </small>
   </td>
   <td class="align-middle text-end">
-    <% if edit_permitted %>
+    <% if edit_permitted && can_edit_target %>
       <% unless membership.user == current_user %>
         <%= button_to developer_team_membership_path(@team, membership.user_id), method: :delete,
                       data: { turbo_stream: true },

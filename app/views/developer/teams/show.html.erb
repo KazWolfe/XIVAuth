@@ -1,7 +1,7 @@
 <% content_for(:page_header) do %>
   <div class="d-flex justify-content-between align-items-center">
     <div>
-      <h1><%= can?(:manage, @team) ? "Edit Team: " : "" %><%= @team.name %></h1>
+      <h1><%= can?(:administer, @team) ? "Edit Team: " : "" %><%= @team.name %></h1>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><%= link_to "My Teams", developer_teams_path %></li>
@@ -17,7 +17,7 @@
             <i class="bi bi-box-arrow-right"></i> Leave Team
           <% end %>
         <% end %>
-        <% if can? :manage, @team %>
+        <% if can? :destroy, @team %>
           <%= button_to developer_team_path(@team), method: :delete, class: "btn btn-danger #{ 'disabled' if @team.deletion_block_reason }",
                         disabled: @team.deletion_block_reason.present?,
                         data: { turbo_stream: true },

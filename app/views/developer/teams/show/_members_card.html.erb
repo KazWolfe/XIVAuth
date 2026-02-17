@@ -12,7 +12,7 @@
           <th>User</th>
           <th style="width: 15rem">Role</th>
           <th>Member Since</th>
-          <% if can?(:manage, @team) %>
+          <% if can?(:administer, @team) %>
             <th></th>
           <% end %>
         </tr>
@@ -26,7 +26,7 @@
     </div>
   </div>
 
-  <% if can?(:manage, @team) %>
+  <% if can?(:administer, @team) %>
     <div class="card-header border-top d-flex justify-content-between align-items-center">
       <h5 class="mb-0"><i class="bi bi-link-45deg"></i> Invite Links</h5>
       <%= link_to new_developer_team_invite_link_path(team_id: @team.id), class: "btn btn-primary btn-sm", data: { turbo_stream: true } do %>

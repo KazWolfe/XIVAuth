@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="d-flex justify-content-end gap-2">
-      <% if can? :manage, team %>
+      <% if can? :administer, team %>
         <%= link_to developer_team_path(team), class: 'btn btn-primary' do %>
           <i class="bi bi-pencil-fill"></i> Manage
         <% end %>

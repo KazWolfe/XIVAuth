@@ -1,10 +1,11 @@
 class Team::Membership < ApplicationRecord
-  enum :role, { admin: "admin", developer: "developer", member: "member", invited: "invited", blocked: "blocked" },
+  enum :role, { admin: "admin", manager: "manager", developer: "developer", member: "member", invited: "invited", blocked: "blocked" },
        scopes: false
 
   scope :admins, -> { where(role: [:admin]) }
-  scope :developers, -> { where(role: %i[admin developer]) }
-  scope :active, -> { where(role: %i[admin developer member]) }
+  scope :managers, -> { where(role: %i[admin manager]) }
+  scope :developers, -> { where(role: %i[admin manager developer]) }
+  scope :active, -> { where(role: %i[admin manager developer member]) }
 
   belongs_to :team, class_name: "Team", inverse_of: :direct_memberships
   belongs_to :user, class_name: "User", inverse_of: :team_memberships
@@ -43,6 +44,8 @@ class Team::Membership < ApplicationRecord
   end
 
   def ensure_team_has_admin
+    return if team.destroying?
+
     return if team.parent_id.present?
     return unless admin?
     return if team.direct_memberships.admins.where.not(id: id).exists?

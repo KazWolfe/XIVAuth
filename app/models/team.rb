@@ -2,6 +2,14 @@ class Team < ApplicationRecord
   TEAM_DEPTH_LIMIT = 5
   TEAM_SUBTEAM_LIMIT = 5
 
+  # Flag the team as being destroyed so membership callbacks (e.g. ensure_team_has_admin)
+  # know to skip checks. Must be defined before has_many :dependent associations so it runs first.
+  before_destroy { @destroying = true }
+
+  def destroying?
+    !!@destroying
+  end
+
   has_one :profile, class_name: "Team::Profile", dependent: :destroy, required: true, autosave: true
 
   belongs_to :parent, class_name: "Team", optional: true
@@ -102,16 +110,16 @@ class Team < ApplicationRecord
     self.verified_at.present?
   end
 
-  protected def resolve_antecedent_memberships(admin_only: false, recursing: false)
+  protected def resolve_antecedent_memberships(managers_only: false, recursing: false)
     base = if recursing
-             admin_only ? self.direct_memberships.admins : self.direct_memberships.active
+             managers_only ? self.direct_memberships.managers : self.direct_memberships.active
            else
              Team::Membership.none
            end
 
     if self.parent
-      only_search_admins = admin_only || !self.inherit_parent_memberships
-      antecedents = self.parent.resolve_antecedent_memberships(admin_only: only_search_admins, recursing: true)
+      only_search_managers = managers_only || !self.inherit_parent_memberships
+      antecedents = self.parent.resolve_antecedent_memberships(managers_only: only_search_managers, recursing: true)
 
       antecedents.or(base)
     else
