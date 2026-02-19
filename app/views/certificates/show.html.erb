@@ -80,7 +80,7 @@
           <dt class="col-sm-4">Issuing CA</dt>
           <dd class="col-sm-8">
             <code class="me-2"><%= @certificate.certificate_authority.slug %></code>
-            <%= render "certificates/roots/ca_download_links", ca: @certificate.certificate_authority %>
+            <%= render "certificates/certificate_authorities/ca_download_links", ca: @certificate.certificate_authority %>
           </dd>
 
           <% if @certificate.requesting_application.present? %>

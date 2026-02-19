@@ -33,10 +33,8 @@ class CharacterRegistration < ApplicationRecord
   has_many :pki_issued_certificates, class_name: "PKI::IssuedCertificate",
            as: :subject
 
-  after_create  :broadcast_card_create
   after_update  :broadcast_card_update
   after_update  :revoke_pki_certificates_if_unverified
-  after_destroy :broadcast_card_destroy
   after_destroy :revoke_pki_certificates_on_destroy
 
   scope :verified, -> { where.not(verified_at: nil) }
@@ -121,26 +119,11 @@ class CharacterRegistration < ApplicationRecord
     self.character.lodestone_url(region)
   end
 
-  def broadcast_card_create
-    broadcast_append_to(
-      "UserStream:#{user.id}", :character_registrations,
-      target: "character_registrations",
-      partial: "character_registrations/character_card",
-    )
-  end
-
   def broadcast_card_update
     broadcast_replace_to(
       "UserStream:#{user.id}", :character_registrations,
       target: "character_registration_#{self.id}",
       partial: "character_registrations/character_card"
-    )
-  end
-
-  def broadcast_card_destroy
-    broadcast_remove_to(
-      "UserStream:#{user.id}", :character_registrations,
-      target: "character_registration_#{self.id}"
     )
   end
 

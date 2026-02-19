@@ -2,7 +2,7 @@
   <main role="main">
     <h4 class="text-center mb-4 text-danger">Configuration Error</h4>
 
-    <p>XIVAuth was unable to handle the provided OAuth request. The error encountered is below.</p>
+    <p>Something went wrong while trying to connect. The app you're trying to use may be misconfigured.</p>
 
     <p class="font-monospace">
       <%= (respond_to?(:error_response) ? error_response : @pre_auth.error_response).body[:error_description] %>
@@ -10,13 +10,12 @@
 
     <% if @pre_auth.client %>
       <p>
-        Please contact the developer of <strong><%= @pre_auth.client.application.application.name %></strong> to report
-        this issue or request further assistance.
+        Please contact the developer of <strong><%= @pre_auth.client.application.application.name %></strong> for
+        help.
       </p>
     <% else %>
       <p>
-        Please contact the developer of the app you are trying to use to report this issue or request further
-        assistance.
+        Please contact the developer of the app you're trying to use for help.
       </p>
     <% end %>
 

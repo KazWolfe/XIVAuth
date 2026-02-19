@@ -1,94 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-bs-theme="auto">
 <head>
-  <title><%= yield(:title).presence || 'XIVAuth Error Handler' %></title>
+  <title><%= yield(:title).presence || 'XIVAuth' %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <style>
-      .rails-default-error-page {
-          background-color: #EFEFEF;
-          color: #2E2F30;
-          text-align: center;
-          font-family: arial, sans-serif;
-          margin: 0;
-      }
+  <%= include_gon(nonce: content_security_policy_nonce) %>
 
-      .rails-default-error-page div.dialog {
-          width: 95%;
-          max-width: 33em;
-          margin: 4em auto 0;
-      }
+  <%= stylesheet_link_tag "framework" %>
+  <%= stylesheet_link_tag "icons" %>
+  <%= stylesheet_link_tag "application" %>
 
-      .rails-default-error-page div.dialog > div.content {
-          border: 1px solid #CCC;
-          border-right-color: #999;
-          border-left-color: #999;
-          border-bottom-color: #BBB;
-          border-top: #B00100 solid 4px;
-          border-top-left-radius: 9px;
-          border-top-right-radius: 9px;
-          background-color: white;
-          padding: 7px 12% 0;
-          box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-          text-align: left;
-      }
-
-      .rails-default-error-page h1 {
-          font-size: 100%;
-          color: #730E15;
-          line-height: 1.5em;
-          text-align: center;
-      }
-
-      .rails-default-error-page div.dialog > div.footer {
-          margin: 0 0 1em;
-          padding: 0.25em;
-          background-color: #F7F7F7;
-          border: 1px solid #CCC;
-          border-right-color: #999;
-          border-left-color: #999;
-          border-bottom-color: #999;
-          border-bottom-left-radius: 4px;
-          border-bottom-right-radius: 4px;
-          border-top-color: #DADADA;
-          color: #666;
-          box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-      }
-
-      .rails-default-error-page .diagnostics > p {
-          font-size: 0.875rem;
-          margin: 0 0;
-          color: #666666;
-      }
-
-      .rails-default-error-page a, a:hover, a:focus, a:active {
-          color: inherit;
-      }
-
-      .rails-default-error-page ul {
-          text-align: left;
-      }
-  </style>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true, integrity: true %>
 </head>
-
-<body class="rails-default-error-page">
-<div class="dialog">
-  <%= yield %>
-  <div class="footer">
-    <p>Additional error information is present in the log for developers.</p>
-    <p>If you're a user, why not <%= link_to "go back to safety", root_path %>?</p>
-  </div>
-</div>
-<div class="diagnostics">
-  <p>Environment: <%= (ENV["APP_ENV"] || Rails.env).titleize %></p>
-  <% if commit_hash.present? %>
-    <p>Commit:
-      <a href="https://github.com/XIVAuth/XIVAuth/commit/<%= commit_hash %>"><code><%= commit_hash[..7] %></code></a>
-    </p>
-  <% end %>
-  <% if @trace_type.present? && @trace_id.present? %>
-    <p><%= @trace_type %>: <code><%= @trace_id %></code></p>
-  <% end %>
-</div>
+<body class="d-flex flex-column min-vh-100">
+  <main class="d-flex flex-column flex-grow-1 align-items-center justify-content-center p-3">
+    <div class="error-backdrop full-backdrop"></div>
+    <div style="width: 100%; max-width: 480px;">
+      <div class="card shadow-sm">
+        <div class="card-header text-center pt-4">
+          <a href="/" class="text-decoration-none fw-bold fs-4">XIVAuth</a>
+        </div>
+        <div class="card-body py-0">
+          <%= yield %>
+        </div>
+        <% if (@trace_type.present? && @trace_id.present?) || commit_hash.present? %>
+          <div class="card-footer text-center text-muted very-small py-2 pt-4">
+            <% if @trace_type.present? && @trace_id.present? %>
+              <p class="mb-0"><%= @trace_type %>: <span class="font-monospace"><%= @trace_id %></span></p>
+            <% end %>
+            <% if commit_hash.present? %>
+              <p class="mb-0">
+                Build
+                <a href="https://github.com/XIVAuth/XIVAuth/commit/<%= commit_hash %>" class="text-muted">
+                  <code><%= commit_hash[..7] %></code>
+                </a>
+              </p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </main>
 </body>
 </html>

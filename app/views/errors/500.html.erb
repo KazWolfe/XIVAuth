@@ -1,13 +1,24 @@
-<% content_for :title, "XIVAuth | 500: Oopsy Woopsy!" %>
+<% content_for :title, "XIVAuth — Something Went Wrong" %>
 
-<div class="content">
-  <h1>We're sorry, something went wrong.</h1>
-  <p>The server has encountered an error while attempting to process your request. This can be because:</p>
-  <ul>
-    <li>The server is deciding to have a Bad Day&trade;.</li>
-    <li>The developer did not properly test their <code>[object Object]</code>.</li>
-    <li>Hot local solar storms in your area!</li>
-    <li>Your input contained invaIid data and we trusted you! How could you?</li>
-  </ul>
-  <p>Regardless of the cause, this is our fault. The XIVAuth developers have been informed of this issue.</p>
+<div class="text-center">
+  <p class="display-1 fw-bold text-muted mb-0">500</p>
+  <h1 class="h3 mb-3">Internal Server Error</h1>
+  <p class="text-muted mb-4">
+    The server ran into a problem while trying to fulfill your request. We'll look into it ASAP.
+  </p>
+</div>
+
+<p class="text-muted small mb-1">
+  Possible causes include:
+</p>
+<ul class="text-muted small mb-4">
+  <li>The server decided to have a Bad Day&trade;.</li>
+  <!-- Does anyone else remember Daniel Powter? I don't think I know any other songs by him. -->
+  <li>A developer did not properly test their <code>[object Object]</code>.</li>
+  <li>Hot local solar storms in your area!</li>
+  <li>Your input contained invaIid data and we trusted you! How could you?</li>
+</ul>
+
+<div class="text-center">
+  <%= link_to "Back to Safety", link_to_safety, class: "btn btn-primary" %>
 </div>

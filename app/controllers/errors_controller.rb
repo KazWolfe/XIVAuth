@@ -1,6 +1,7 @@
 class ErrorsController < ActionController::Base
   helper ApplicationHelper
-  before_action :set_trace_id
+  helper ErrorsHelper
+  before_action :set_observability_context
   layout "error"
 
   def show
@@ -33,7 +34,23 @@ class ErrorsController < ActionController::Base
     render "errors/generic", status: @status_code, locals: { status: @status_code }, formats: [:html]
   end
 
-  private def set_trace_id
+  private def set_observability_context
+    sentry_frontend_data = {
+      environment: ENV["APP_ENV"] || Rails.env,
+      dsn: Rails.application.credentials.dig(:sentry, :dsn, :frontend),
+      user: {}
+    }
+
+    if user_signed_in?
+      user_meta = { id: current_user.id, username: current_user.display_name }
+      sentry_frontend_data[:user] = user_meta
+
+      Sentry.set_user(user_meta)
+    end
+
+    gon.push({ app_env: ENV["APP_ENV"] || Rails.env })
+    gon.push({ sentry: sentry_frontend_data })
+
     trace = {
       "Event ID": (Sentry.last_event_id if defined?(Sentry)),
       "Trace ID": get_internal_trace_id,

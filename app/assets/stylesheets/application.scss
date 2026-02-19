@@ -95,3 +95,21 @@ body > .container:not(.toast-container) {
     background-repeat: no-repeat;
   }
 }
+
+.error-backdrop {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: -10;
+
+  top: 0;
+  left: 0;
+
+  [data-bs-theme="dark"] & {
+    background-image: url("/backgrounds/cmists_night.png");
+  }
+
+  [data-bs-theme="light"] & {
+    background-image: url("/backgrounds/cmists_day.png");
+  }
+}

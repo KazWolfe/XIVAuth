@@ -6,21 +6,21 @@
   <main role="main">
     <% if @preflight.errors[:oauth_client].any? %>
       <p>
-        The request submitted by the OAuth client is invalid and cannot be completed.
+        This app sent an invalid request and couldn't connect to XIVAuth.
       </p>
       <ul>
         <% @preflight.errors[:oauth_client].each do |error| %>
           <li class="d-flex align-items-start">
             <i class="bi bi-exclamation-triangle text-warning me-3" aria-hidden="true"></i>
             <div>
-              <span>OAuth client <%= error %></span>
+              <span><%= error %></span>
             </div>
           </li>
         <% end %>
       </ul>
       <p>
-        If you are a developer of this application, please verify your request parameters and try again. If you
-        are not a developer, please contact them for support and include this message.
+        If you're the developer of this app, please check your request parameters and try again. Otherwise,
+        please contact the app's developer for help.
       </p>
     <% elsif @preflight.errors[:user].any? %>
       <p>
@@ -34,7 +34,7 @@
             <%= render partial: "oauth/authorizations/preflight_errors/user_#{error.type}" %>
           <% else %>
             <%= render partial: "oauth/authorizations/preflight_errors/generic",
-                       locals: { error_title: "Precondition failed", error_message: error.message } %>
+                       locals: { error_title: "Can't connect right now", error_message: error.message } %>
           <% end %>
         <% end %>
       </ul>

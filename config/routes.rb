@@ -120,6 +120,7 @@ Rails.application.routes.draw do
 
   if Rails.env.development? || ENV["APP_ENV"].present? && ENV["APP_ENV"] != "production"
     get "/_debug/generate_exception", to: "debug#generate_exception"
+    get "/_debug/teapot", to: "debug#teapot"
   end
 
   use_doorkeeper do

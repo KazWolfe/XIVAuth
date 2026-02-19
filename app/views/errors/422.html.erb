@@ -1,11 +1,10 @@
-<% content_for :title, "XIVAuth | 422: Unprocessable Entity" %>
+<% content_for :title, "XIVAuth — Request Not Accepted" %>
 
-<div class="content">
-  <h1>The change you wanted was rejected.</h1>
-  <p>The change you have requested could not be completed. Possible reasons include:</p>
-  <ul>
-    <li>You are not authorized to modify the resources.</li>
-    <li>You have requested an invalid change to this resource.</li>
-    <li>This resource does not exist.</li>
-  </ul>
+<div class="text-center">
+  <p class="display-1 fw-bold text-muted mb-0">422</p>
+  <h1 class="h3 mb-3">That request couldn't be processed</h1>
+  <p class="text-muted mb-4">
+    Something about your request wasn't quite right. Please check to make sure you submitted everything correctly.
+  </p>
+  <%= link_to "Back to Safety", link_to_safety, class: "btn btn-primary" %>
 </div>

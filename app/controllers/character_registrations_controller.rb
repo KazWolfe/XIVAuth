@@ -22,17 +22,7 @@ class CharacterRegistrationsController < ApplicationController
 
     case @character_registration.process!
     when :success
-      respond_to do |format|
-        format.html do
-          redirect_to character_registrations_path,
-                      notice: "Character registration was successfully created."
-        end
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.append("register_character_modal-content",
-                                                   partial: "layouts/components/remote_modal_close")
-        end
-      end
-
+      redirect_to character_registrations_path, notice: "Character successfully registered."
       record_create_analytics(@character_registration.created_character)
     when :confirm
       respond_to do |format|
@@ -57,7 +47,7 @@ class CharacterRegistrationsController < ApplicationController
     respond_to do |format|
       if @character_registration.update(character_registration_params)
         format.html do
-          redirect_to character_registrations_path, notice: "Character registration was successfully updated."
+          redirect_to character_registrations_path, notice: "Character successfully updated."
         end
       else
         format.html { render :edit, status: :unprocessable_content }
@@ -74,26 +64,7 @@ class CharacterRegistrationsController < ApplicationController
       render and return
     end
 
-    if @character_registration.destroy
-      respond_to do |format|
-        format.html do
-          redirect_to character_registrations_path, notice: "Character registration was successfully destroyed."
-        end
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.append("delete_character_modal-content",
-                                                   partial: "layouts/components/remote_modal_close")
-
-          Turbo::StreamsChannel.broadcast_append_to(
-            "UserStream:#{current_user.id}", :toasts, target: "toasts",
-            partial: "layouts/components/toasts/toast",
-            locals: {
-              title: "XIVAuth System",
-              message: "Character successfully deleted."
-            }
-          )
-        end
-      end
-    end
+    redirect_to character_registrations_path, notice: "Character successfully deleted." if @character_registration.destroy
   end
 
   def refresh
@@ -111,7 +82,7 @@ class CharacterRegistrationsController < ApplicationController
     FFXIV::RefreshCharactersJob.perform_later @character_registration.character
 
     respond_to do |format|
-      format.html { redirect_to character_registrations_path, notice: "Character refresh was successfully enqueued." }
+      format.html { redirect_to character_registrations_path, notice: "Character request was successfully requested." }
     end
   end
 

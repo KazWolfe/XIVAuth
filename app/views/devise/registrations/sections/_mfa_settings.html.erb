@@ -16,11 +16,11 @@
         <% if resource.has_password? %>
           <% if resource.totp_credential.present? %>
             <%= button_to user_totp_credential_path, class: "btn btn-outline-danger", method: :delete, data: { turbo_stream: "remote_modal" } do %>
-              <i class="bi bi-calculator"></i> Remove OTP Code
+              <i class="bi bi-calculator"></i> Remove Authenticator App
             <% end %>
           <% else %>
             <%= button_to new_user_totp_credential_path, class: "btn btn-outline-primary", method: :get, data: { turbo_stream: "remote_modal" } do %>
-              <i class="bi bi-calculator"></i> Add OTP Code
+              <i class="bi bi-calculator"></i> Set Up Authenticator App
             <% end %>
           <% end %>
         <% end %>
@@ -34,8 +34,8 @@
         <div class="pb-2">
           <span class="text-muted small">
             <%= resource.totp_credential.otp_backup_codes.count %> / <%= User::TotpCredential::BACKUP_CODE_COUNT %>
-            OTP backup codes left.
-            <%= link_to "Regenerate?", regenerate_backup_user_totp_credential_path,
+            backup codes remaining.
+            <%= link_to "Regenerate codes", regenerate_backup_user_totp_credential_path,
                         data: { "turbo-stream": true, "turbo-method": :post } %>
           </span>
         </div>
