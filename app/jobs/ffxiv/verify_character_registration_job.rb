@@ -24,22 +24,28 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
   discard_on(FFXIV::LodestoneProfile::LodestoneProfileInvalid) do |job, error|
     logger.error("Got invalid profile while attempting verification", error: error)
     job.report_result("verification_failed_invalid")
+
+    failure_reason = error.respond_to?(:failure_reason) ? error.failure_reason : "unspecified"
+    job.record_verify_metric("error_#{failure_reason}")
   end
 
   discard_on(FFXIV::LodestoneProfile::LodestoneCharacterHidden) do |job, _error|
     logger.warn("Could not verify CR #{job.arguments[0].id} - character was hidden.")
     job.report_result("verification_failed_hiddenchara")
+    job.record_verify_metric("failure_character_hidden")
   end
 
   discard_on(FFXIV::LodestoneProfile::LodestoneProfilePrivate) do |job, _error|
     logger.warn("Could not verify CR #{job.arguments[0].id} - profile was private.")
     job.report_result("verification_failed_privateprofile")
+    job.record_verify_metric("failure_profile_private")
   end
 
   retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS,
 wait: 2.minutes) do |job, _error|
     logger.warn("Could not verify CR #{job.arguments[0].id} - verification key was not found after multiple attempts.")
     job.report_result("verification_failed_codenotfound")
+    job.record_verify_metric("failure_code_not_found")
   end
 
   # @param [CharacterRegistration] registration A character registration to verify
@@ -56,8 +62,10 @@ wait: 2.minutes) do |job, _error|
     lodestone_data.validate
 
     raise FFXIV::LodestoneProfile::LodestoneCharacterHidden if lodestone_data.failure_reason == :hidden_character
-    unless lodestone_data.failure_reason == nil || lodestone_data.failure_reason == :profile_private
-      raise FFXIV::LodestoneProfile::LodestoneProfileInvalid, lodestone_data.errors
+    unless lodestone_data.failure_reason.nil? || lodestone_data.failure_reason == :profile_private
+      raise FFXIV::LodestoneProfile::LodestoneProfileInvalid,
+            failure_reason: lodestone_data.failure_reason,
+            errors: lodestone_data.errors.as_json
     end
 
     # We're here, might as well save the character data we just fetched. Waste not!
@@ -75,6 +83,7 @@ wait: 2.minutes) do |job, _error|
 
       registration.verify!("lodestone_code", clobber: true)
       self.report_result("verification_success")
+      self.record_verify_metric("success")
       return
     end
 
@@ -93,5 +102,17 @@ wait: 2.minutes) do |job, _error|
       locals: { registration: registration, character: registration.character, job: self },
       attributes: { method: :morph }
     )
+  end
+
+  def record_verify_metric(result)
+    return unless defined?(Sentry)
+
+    registration = arguments[0]
+    Sentry.metrics.count("xivauth.character.verify", value: 1, attributes: {
+      "character.lodestone_id": registration.character.lodestone_id,
+      "character.verification_result": result,
+
+      "user.id": registration.user_id
+    })
   end
 end

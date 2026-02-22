@@ -6,7 +6,7 @@ class FFXIV::LodestoneProfile
   class LodestoneProfilePrivate < LodestoneProfileInvalid; end
 
   FREE_TRIAL_LEVEL_CAP = 70
-  FAILURE_REASONS = [ :unspecified, :hidden_character, :profile_private, :not_found, :lodestone_maintenance ]
+  FAILURE_REASONS = %i[unspecified hidden_character profile_private not_found lodestone_maintenance].freeze
 
   attr_accessor :id, :last_parsed, :raw_data, :failure_reason, :flarestone_statuscode
 
