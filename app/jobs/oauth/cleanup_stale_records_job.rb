@@ -31,9 +31,15 @@ class OAuth::CleanupStaleRecordsJob < ApplicationJob
   end
 
   def clean_permissible_policies
-    OAuth::PermissiblePolicy.left_outer_joins(:access_tokens, :access_grants)
-                            .where(oauth_access_tokens: { id: nil }, oauth_access_grants: { id: nil })
-                            .tap { |rel| logger.info("Scheduling #{rel.count} orphaned PermissiblePolicies for deletion.") }
-                            .in_batches(&:delete_all)
+    orphaned = OAuth::PermissiblePolicy.left_outer_joins(:access_tokens, :access_grants)
+                                       .where(oauth_access_tokens: { id: nil }, oauth_access_grants: { id: nil })
+
+    logger.info("Scheduling #{orphaned.count} orphaned PermissiblePolicies for deletion.")
+
+    orphaned.in_batches do |batch|
+      # delete rules first, since we use delete_all and a FK is present.
+      OAuth::PermissibleRule.where(policy_id: batch).delete_all
+      batch.delete_all
+    end
   end
 end
