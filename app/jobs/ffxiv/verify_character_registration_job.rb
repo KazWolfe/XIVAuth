@@ -41,6 +41,12 @@ class FFXIV::VerifyCharacterRegistrationJob < ApplicationJob
     job.record_verify_metric("failure_profile_private")
   end
 
+  discard_on(FFXIV::LodestoneProfile::LodestoneMaintenance) do |job, _error|
+    logger.warn("Could not verify CR #{job.arguments[0].id} - Lodestone is down for maintenance.")
+    job.report_result("verification_failed_maintenance")
+    # no log to Sentry - maint is out of our control.
+  end
+
   retry_on(FFXIV::VerifyCharacterRegistrationJob::VerificationKeyMissingError, attempts: MAX_RETRY_ATTEMPTS,
 wait: 2.minutes) do |job, _error|
     logger.warn("Could not verify CR #{job.arguments[0].id} - verification key was not found after multiple attempts.")
@@ -61,19 +67,22 @@ wait: 2.minutes) do |job, _error|
     lodestone_data = FFXIV::LodestoneProfile.new(character.lodestone_id)
     lodestone_data.validate
 
-    raise FFXIV::LodestoneProfile::LodestoneCharacterHidden if lodestone_data.failure_reason == :hidden_character
-    unless lodestone_data.failure_reason.nil? || lodestone_data.failure_reason == :profile_private
+    # Save the latest data from Lodestone so we at least have a record.
+    # If this errors out, this will handle saving the error code to the model.
+    character.refresh_from_lodestone(lodestone_data)
+    character.save!
+
+    if lodestone_data.failure_reason == :hidden_character
+      raise FFXIV::LodestoneProfile::LodestoneCharacterHidden
+    elsif lodestone_data.failure_reason == :lodestone_maintenance
+      raise FFXIV::LodestoneProfile::LodestoneMaintenance
+    elsif lodestone_data.failure_reason == :profile_private
+      raise FFXIV::LodestoneProfile::LodestoneProfilePrivate
+    elsif lodestone_data.failure_reason.present?
       raise FFXIV::LodestoneProfile::LodestoneProfileInvalid,
             failure_reason: lodestone_data.failure_reason,
             errors: lodestone_data.errors.as_json
     end
-
-    # We're here, might as well save the character data we just fetched. Waste not!
-    character.refresh_from_lodestone(lodestone_data)
-    character.save!
-
-    # Set after updating, since we still get a partial response.
-    raise FFXIV::LodestoneProfile::LodestoneProfilePrivate if lodestone_data.failure_reason == :profile_private
 
     lodestone_data.bio.scan(CharacterRegistration::VERIFICATION_KEY_REGEX).each do |match|
       code = match.delete_prefix(CharacterRegistration::VERIFICATION_KEY_PREFIX)
