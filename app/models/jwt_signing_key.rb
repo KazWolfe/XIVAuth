@@ -7,9 +7,7 @@ class JwtSigningKey < ApplicationRecord
   validates :type, presence: true
 
   validates :private_key, presence: true
-
-  default_scope { order(created_at: :desc) }
-
+  
   scope :active, -> { where(enabled: true).where("expires_at IS NULL or expires_at >= ?", DateTime.now) }
 
   attr_readonly :public_key, :raw_public_key, :raw_private_key, :jwk
