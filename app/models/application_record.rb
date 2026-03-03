@@ -4,8 +4,12 @@ class ApplicationRecord < ActiveRecord::Base
   def self.inherited(child_class)
     super
 
-    if child_class.column_names.include?("created_at")
-      child_class.implicit_order_column = "created_at"
+    begin
+      if child_class.column_names.include?("created_at")
+        child_class.implicit_order_column = "created_at"
+      end
+    rescue
+      # nop - convenience function, we don't care if it fails
     end
   end
 
