@@ -5,7 +5,7 @@ class Admin::ClientApplicationsController < Admin::AdminController
   before_action :set_app, only: %i[show destroy]
 
   def index
-    @pagy, @client_applications = pagy(ClientApplication.order(created_at: :desc))
+    @pagy, @client_applications = pagy(ClientApplication.includes(:profile, owner: :profile).order(created_at: :desc))
   end
 
   def show; end

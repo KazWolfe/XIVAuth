@@ -28,7 +28,7 @@
                 <% if user.developer? %>
                   <i class="bi bi-code-slash" title="Developer Access"></i>
                 <% end %>
-                <% if user.social_identities.count.positive? %>
+                <% if user.social_identities.size.positive? %>
                   <i class="bi bi-globe2" title="External IdP"></i>
                 <% end %>
                 <% unless user.confirmed? %>
@@ -39,10 +39,10 @@
                 <% end %>
               </td>
               <td>
-                <%= user.character_registrations.count %>
+                <%= user.character_registrations.size %>
               </td>
               <td>
-                <%= user.character_registrations.verified.count.positive? ? "Yes" : "No" %>
+                <%= user.has_verified_characters? ? "Yes" : "No" %>
               </td>
             </tr>
           <% end %>

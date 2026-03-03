@@ -33,11 +33,19 @@ class FFXIV::Character < ApplicationRecord
   end
 
   def verified?
-    self.character_registrations.verified.present?
+    if character_registrations.loaded?
+      character_registrations.any?(&:verified?)
+    else
+      character_registrations.verified.exists?
+    end
   end
 
   def verified_owner
-    self.character_registrations.verified.first&.user
+    if character_registrations.loaded?
+      character_registrations.select(&:verified?).first&.user
+    else
+      character_registrations.verified.first&.user
+    end
   end
 
   def refresh_fail_reason

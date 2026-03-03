@@ -5,7 +5,9 @@ class Admin::UsersController < Admin::AdminController
   layout "portal/base"
 
   def index
-    @pagy, @users = pagy(User.order(created_at: :desc))
+    users = User.includes(:profile, :social_identities, :character_registrations)
+                .order(created_at: :desc)
+    @pagy, @users = pagy(users)
   end
 
   def show

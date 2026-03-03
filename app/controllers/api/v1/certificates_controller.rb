@@ -9,7 +9,7 @@ class Api::V1::CertificatesController < Api::V1::ApiController
   before_action(only: %i[revoke]) { doorkeeper_authorize! "certificate:revoke", "certificate:manage" }
 
   def index
-    @certificates = accessible_certificates.order(issued_at: :desc)
+    @certificates = accessible_certificates.includes(subject: :character, requesting_application: {}).order(issued_at: :desc)
     render json: @certificates
   end
 

@@ -4,7 +4,7 @@ class CertificatesController < ApplicationController
   before_action :set_certificate, only: %i[show revoke]
 
   def index
-    @certificates = accessible_certificates.order(issued_at: :desc)
+    @certificates = accessible_certificates.includes(subject: :character, requesting_application: {}).order(issued_at: :desc)
   end
 
   def show

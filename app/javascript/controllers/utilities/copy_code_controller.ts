@@ -5,7 +5,7 @@ export default class CopyCodeController extends Controller {
     static values = { timeout: Number }
 
     // These target helpers are declared for type-safety; prefix unused ones to appease linters.
-    declare readonly _hasSourceTarget: boolean;
+    declare readonly hasSourceTarget: boolean;
     declare readonly sourceTarget: HTMLInputElement | HTMLTextAreaElement;
     declare readonly _sourceTargets: (HTMLInputElement | HTMLTextAreaElement)[];
 
@@ -33,7 +33,10 @@ export default class CopyCodeController extends Controller {
             this.resetTimer = undefined;
         }
 
-        this.sourceTarget.removeEventListener("click", this.selectSource);
+        // navigation may have destroyed the source target; let's be defensive
+        if (this.hasSourceTarget) {
+            this.sourceTarget.removeEventListener("click", this.selectSource);
+        }
     }
 
     private selectSource = (event: Event) => {

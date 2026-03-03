@@ -10,7 +10,7 @@ class Api::V1::CharactersController < Api::V1::ApiController
   before_action :set_character, except: %i[index create]
 
   def index
-    @registrations = @authorized_registrations
+    @registrations = @authorized_registrations.includes(:character)
 
     sp = search_params
     @registrations = @registrations.joins(:character).where(character: sp.to_hash) if sp.present?

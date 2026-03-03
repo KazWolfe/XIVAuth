@@ -102,6 +102,14 @@ class User < ApplicationRecord
     )
   end
 
+  def has_verified_characters?
+    if character_registrations.loaded?
+      character_registrations.any?(&:verified?)  # N+1
+    else
+      character_registrations.verified.exists?
+    end
+  end
+
   # def skip_password_complexity?
   #   false
   # end

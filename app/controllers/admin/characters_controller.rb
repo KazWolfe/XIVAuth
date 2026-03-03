@@ -5,7 +5,7 @@ class Admin::CharactersController < Admin::AdminController
   before_action :set_character, except: %i[index]
 
   def index
-    @pagy, @characters = pagy(FFXIV::Character.order(created_at: :desc))
+    @pagy, @characters = pagy(FFXIV::Character.includes(:ban, :character_registrations).order(created_at: :desc))
   end
 
   def show
