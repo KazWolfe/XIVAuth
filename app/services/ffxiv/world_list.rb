@@ -101,6 +101,7 @@ class FFXIV::WorldList
       when 2, "2" then "NA"
       when 3, "3" then "EU"
       when 4, "4" then "OCE"
+      when 7, "7" then "NA_CLOUD"
       else
         Rails.logger.warn("Unknown XIVAPI region code: #{region_code}")
         region_code.to_s

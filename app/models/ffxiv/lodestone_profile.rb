@@ -97,17 +97,16 @@ class FFXIV::LodestoneProfile
     case result_code
     when "success"
       self.failure_reason = nil
-      # nop
     when "profile_private"
       self.failure_reason = :profile_private
-      # Note: valid, just not fully populated.
+      # note: this is still valid, we just don't have all the data.
     when "not_found"
       self.failure_reason = :not_found
       errors.add(:base, :not_found, message: "could not be found.")
     when "character_hidden"
       self.failure_reason = :hidden_character
       errors.add(:base, :hidden_character, message: "is marked as hidden or private.")
-    when "lodestone_maintenance"
+    when "maintenance"
       self.failure_reason = :lodestone_maintenance
       errors.add(:base, :maintenance, message: "can not be fetched due to maintenance. Please try again later.")
     else
