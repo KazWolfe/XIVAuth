@@ -1,4 +1,5 @@
 class FFXIV::Character < ApplicationRecord
+  self.implicit_order_column = "lodestone_id"
   validates :lodestone_id, presence: true, uniqueness: true
   
   # We don't care about failures on updates, as the existing data is still "valid"
