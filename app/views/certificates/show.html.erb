@@ -11,7 +11,7 @@
     </div>
     <% if @certificate.active? %>
       <%= button_to revoke_certificate_path(@certificate), method: :post, class: "btn btn-danger",
-            data: { turbo_stream: "remote_modal" } do %>
+                    data: { turbo_stream: "remote_modal" } do %>
         <i class="bi bi-shield-x"></i> Revoke
       <% end %>
     <% end %>
@@ -72,10 +72,14 @@
           </dd>
 
           <dt class="col-sm-4">Certificate Fingerprint</dt>
-          <dd class="col-sm-8"><code class="small"><%= raw @certificate.certificate_fingerprint.sub(/^\w+:/, "").scan(/.{4}/).each_slice(8).map { |g| g.join(" ") }.join("<br>") %></code></dd>
+          <dd class="col-sm-8">
+            <code style="white-space: pre"><%= format_fingerprint(@certificate.certificate_fingerprint) %></code>
+          </dd>
 
           <dt class="col-sm-4">Public Key Fingerprint</dt>
-          <dd class="col-sm-8"><code class="small"><%= raw @certificate.public_key_fingerprint.sub(/^\w+:/, "").scan(/.{4}/).each_slice(8).map { |g| g.join(" ") }.join("<br>") %></code></dd>
+          <dd class="col-sm-8">
+            <code style="white-space: pre"><%= format_fingerprint(@certificate.public_key_fingerprint) %></code>
+          </dd>
 
           <dt class="col-sm-4">Issuing CA</dt>
           <dd class="col-sm-8">
