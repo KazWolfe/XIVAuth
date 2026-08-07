@@ -8,8 +8,8 @@ class Users::SessionsController < Devise::SessionsController
   before_action :reset_mfa_attempt!, only: [:new]
   before_action :generate_discoverable_challenge, only: [:new]
 
+  prepend_before_action :check_captcha, only: [:create]
   before_action :evaluate_login_flow, only: [:create]
-  before_action :check_captcha, only: [:create]
 
   # From https://cheeger.com/developer/2018/09/17/enable-two-factor-authentication-for-rails.html
   # This action comes from DeviseController, but because we call `sign_in`

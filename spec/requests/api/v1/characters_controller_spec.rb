@@ -385,5 +385,33 @@ RSpec.describe "Api::V1::CharactersControllers" do
         expect(another_character.content_id).not_to eq("12345678")
       end
     end
+
+    context "PATCH /characters/:lodestone_id when the registration is unverified" do
+      let(:verified_owner) { FactoryBot.create(:user) }
+
+      before do
+        FactoryBot.create(:verified_registration, character:, user: verified_owner)
+        FactoryBot.create(:character_registration, character:, user:)
+        character.update!(content_id: "0wnedbyu")
+      end
+
+      it "returns HTTP 403" do
+        patch api_v1_character_path(lodestone_id: character.lodestone_id),
+              params: { content_id: "attacker" },
+              headers: { Authorization: "Bearer #{oauth_token.token}" },
+              as: :json
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "leaves the shared character record untouched" do
+        expect do
+          patch api_v1_character_path(lodestone_id: character.lodestone_id),
+                params: { content_id: "attacker" },
+                headers: { Authorization: "Bearer #{oauth_token.token}" },
+                as: :json
+        end.not_to(change { character.reload.content_id })
+      end
+    end
   end
 end

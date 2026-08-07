@@ -55,6 +55,11 @@ class Api::V1::CharactersController < Api::V1::ApiController
   def update
     authorize! :update, @registration
 
+    unless @registration.verified?
+      return render json: { errors: ["Character must be verified before it can be modified."] },
+                    status: :forbidden
+    end
+
     @registration.character.update(update_params)
 
     if @registration.save

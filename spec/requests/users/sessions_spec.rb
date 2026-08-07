@@ -106,6 +106,42 @@ RSpec.describe "Users::SessionsController" do
         expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include("CAPTCHA")
       end
+
+      it "does not establish a session" do
+        post user_session_path, params: login_params
+        get edit_user_path
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it "does not stage the MFA challenge for an MFA-enabled user" do
+        # Otherwise the endpoint remains a password-validity oracle behind a cosmetic error.
+        FactoryBot.create(:users_totp_credential, :enabled, user: user)
+
+        post user_session_path, params: login_params
+
+        expect(session["mfa"]).to be_nil
+      end
+    end
+
+    context "with a failed captcha at the MFA step" do
+      # The CAPTCHA gates first-factor attempts only. MFA submissions carry no turnstile
+      # token, so re-checking it there would make MFA impossible to satisfy.
+      let(:totp_secret) { ROTP::Base32.random }
+
+      before do
+        FactoryBot.create(:users_totp_credential, user: user, otp_secret: totp_secret, otp_enabled: true)
+        post user_session_path, params: login_params
+      end
+
+      it "still accepts a valid TOTP code" do
+        expect(session["mfa"]).to be_present
+        allow_any_instance_of(Users::SessionsController).to receive(:cloudflare_turnstile_ok?).and_return(false)
+
+        post user_session_path, params: mfa_params(otp_attempt: ROTP::TOTP.new(totp_secret).now)
+
+        expect(response).to redirect_to(character_registrations_path)
+      end
     end
 
     context "with remember me" do
