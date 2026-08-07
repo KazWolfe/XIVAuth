@@ -114,6 +114,53 @@ RSpec.describe OAuth::PermissiblePolicy do
     end
   end
 
+  # A rule bound to no resource at all. This is how a consent screen records "the user was
+  # offered this resource type and chose nothing" — without it, an empty selection is
+  # indistinguishable from an exhaustive one and the type falls back to implicit allow.
+  context "null-resource rule present" do
+    before do
+      @policy = described_class.create
+      @policy.rules.create(resource_type: FFXIV::Character.polymorphic_name, resource_id: nil, deny: false)
+    end
+
+    describe "#can_access_resource?" do
+      it "blocks access to every resource of that type (implicit deny)" do
+        expect(@policy.can_access_resource?(FactoryBot.create(:ffxiv_character))).to be false
+      end
+
+      it "still respects the fallback parameter" do
+        expect(@policy.can_access_resource?(FactoryBot.create(:ffxiv_character), fallback: true)).to be true
+      end
+    end
+
+    describe "#filter_accessible" do
+      it "excludes every resource of that type" do
+        FactoryBot.create(:ffxiv_character)
+        expect(@policy.filter_accessible(FFXIV::Character.all)).to be_empty
+      end
+
+      it "does not affect resource types the rule does not name" do
+        identity = User::SocialIdentity.create(external_id: "wolf", provider: "test",
+                                               user: FactoryBot.create(:user))
+        expect(@policy.filter_accessible(User::SocialIdentity.all)).to include(identity)
+      end
+
+      it "still admits resources that are explicitly allowed alongside it" do
+        allowed = FactoryBot.create(:ffxiv_character)
+        FactoryBot.create(:ffxiv_character)
+        @policy.rules.create(resource: allowed, deny: false)
+
+        expect(@policy.filter_accessible(FFXIV::Character.all)).to contain_exactly(allowed)
+      end
+    end
+
+    describe "#implicit_deny?" do
+      it "reports implicit deny for that resource type" do
+        expect(@policy.implicit_deny?(resource_type: FFXIV::Character.polymorphic_name)).to be true
+      end
+    end
+  end
+
   context "mixed mode (multiple resource types in a single policy)" do
     before do
       @user_resource = FactoryBot.create(:user)

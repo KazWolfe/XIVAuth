@@ -32,8 +32,10 @@ class OAuth::PermissiblePolicy < ApplicationRecord
   def filter_accessible(relation)
     denied, allowed = partitioned_rules_for(relation.model.polymorphic_name)
 
-    relation = relation.where.not(id: denied) if denied.any?
-    relation = relation.where(id: allowed) if allowed.any?
+    # NOTE: uses empty? intentionally, since a null-record will fail .any?
+    relation = relation.where.not(id: denied) unless denied.empty?
+    relation = relation.where(id: allowed) unless allowed.empty?
+
     relation
   end
 

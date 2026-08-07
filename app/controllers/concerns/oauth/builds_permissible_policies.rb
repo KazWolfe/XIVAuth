@@ -32,6 +32,11 @@ module OAuth::BuildsPermissiblePolicies
       # Remember: deny happens only to the inverse selection
       policy.rules.new(resource: character, deny: share_new_characters)
     end
+
+    # Force creation of a null record if we aren't making any permissibles.
+    if objects.empty? && !share_new_characters
+      policy.rules.new(resource_type: CharacterRegistration.polymorphic_name, resource_id: nil, deny: false)
+    end
   end
 
   def build_identity_policy_rules(policy)
@@ -53,6 +58,11 @@ module OAuth::BuildsPermissiblePolicies
     objects.each do |identity|
       # Remember: deny happens only to the inverse selection
       policy.rules.new(resource: identity, deny: share_new_identities)
+    end
+
+    # Force creation of a null record if we aren't making any permissibles.
+    if objects.empty? && !share_new_identities
+      policy.rules.new(resource_type: User::SocialIdentity.polymorphic_name, resource_id: nil, deny: false)
     end
   end
 end
