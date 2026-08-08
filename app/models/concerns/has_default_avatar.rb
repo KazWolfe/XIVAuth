@@ -15,8 +15,9 @@ module HasDefaultAvatar
     #   style:   Dicebear sprite style (e.g. "initials", "identicon", "shapes").
     #            Defaults to "initials".
     #   **options: Any other Dicebear query parameter (e.g. backgroundType:,
-    #            backgroundColor:, radius:). Array values are comma-joined, as
-    #            Dicebear expects. Proc values are instance_exec'd.
+    #            backgroundColor:, radius:). Array values become repeated query
+    #            params (foo=1&foo=2), as Dicebear expects. Proc values are
+    #            instance_exec'd.
     #
     # See https://www.dicebear.com/styles/ for the parameters each style supports.
     def generate_default_avatar(name, seed: :id, style: "initials", **options)
@@ -24,8 +25,7 @@ module HasDefaultAvatar
         seed_value = seed.respond_to?(:call) ? instance_exec(&seed) : public_send(seed)
 
         params = { seed: seed_value }.merge(options).transform_values do |value|
-          value = instance_exec(&value) if value.respond_to?(:call)
-          value.is_a?(Array) ? value.join(",") : value
+          value.respond_to?(:call) ? instance_exec(&value) : value
         end
 
         "https://api.dicebear.com/10.x/#{style}/png?#{URI.encode_www_form(params)}"

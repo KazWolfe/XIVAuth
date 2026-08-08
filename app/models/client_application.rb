@@ -22,7 +22,7 @@ class ClientApplication < ApplicationRecord
                         }
   generate_default_avatar :icon, seed: :name,
                           backgroundColorFill: "linear",
-                          backgroundColorAngle: "-360,360"
+                          backgroundColorAngle: [-360, 360]
 
   has_upload_attachment :oauth_background, content_types: %w[image/png image/jpeg image/webp],
                         max_size: 5.megabytes,
