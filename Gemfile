@@ -10,7 +10,7 @@ gem "rails", "~> 8.1.0"
 gem "msgpack", "~> 1.8"
 gem "pg", "~> 1.5"
 gem "puma", "~> 8.0"
-gem "redis", "~> 5.2"
+gem "redis", "~> 6.0"
 
 # Platform-specific
 gem "tzinfo-data", platforms: %i[windows jruby]
@@ -25,7 +25,7 @@ gem "turbo-rails"
 gem "gon", "~> 7.0"
 
 # Asset management
-gem "aws-sdk-s3", "~> 1.228", require: false
+gem "aws-sdk-s3", "~> 1.229", require: false
 gem "image_processing", "~> 2.0"
 gem "marcel", "~> 1.0"
 gem "ruby-vips", "~> 2.0"
@@ -67,7 +67,7 @@ gem "omniauth-twitch", "~> 1.2"
 gem "omniauth_openid_connect", "~> 0.8"
 
 # Outbound OAuth2
-gem "doorkeeper", "~> 5.9.0"
+gem "doorkeeper", "~> 5.9.6"
 gem "doorkeeper-device_authorization_grant",
     github: "XIVAuth/doorkeeper-device_authorization_grant",
     ref: "f84062469900890461b1f03d9c37960236413321"
@@ -93,7 +93,7 @@ gem "faraday", "~> 2.9"
 gem "rails_semantic_logger", "~> 5.1"
 
 # Observability (Sentry) - temp for now
-gem "sentry-rails", "~> 6.3"
+gem "sentry-rails", "~> 6.7"
 gem "sentry-ruby", "~> 6.3"
 gem "sentry-sidekiq", "~> 6.3"
 gem "stackprof", "~> 0.2"
