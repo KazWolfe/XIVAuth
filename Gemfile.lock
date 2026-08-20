@@ -467,8 +467,8 @@ GEM
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
-    redis (5.4.1)
-      redis-client (>= 0.22.0)
+    redis (6.0.0)
+      redis-client (= 0.30.1)
     redis-client (0.30.1)
       connection_pool
     redis-prescription (2.6.0)
@@ -568,7 +568,7 @@ GEM
     shrine (3.9.0)
       content_disposition (~> 1.0)
       down (~> 5.1)
-    sidekiq (8.1.6)
+    sidekiq (8.1.7)
       connection_pool (>= 3.0.0)
       json (>= 2.16.0)
       logger (>= 1.7.0)
@@ -717,7 +717,7 @@ DEPENDENCIES
   rails (~> 8.1.0)
   rails_cloudflare_turnstile (~> 0.4)
   rails_semantic_logger (~> 5.1)
-  redis (~> 5.2)
+  redis (~> 6.0)
   rexml (~> 3.4.2)
   rqrcode (~> 3.2)
   rspec-rails (~> 8.0)
@@ -734,7 +734,7 @@ DEPENDENCIES
   sentry-ruby (~> 6.3)
   sentry-sidekiq (~> 6.3)
   shrine (~> 3.9)
-  sidekiq (~> 8.0)
+  sidekiq (~> 8.1)
   sidekiq-cron (~> 2.3)
   sidekiq-throttled (~> 2.0)
   simplecov
