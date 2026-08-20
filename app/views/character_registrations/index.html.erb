@@ -22,4 +22,4 @@
 
 <%== @pagy.series_nav(:bootstrap) if @pagy.last > 1 %>
 
-<%= turbo_stream_from "UserStream:#{current_user.id}", :character_registrations %>
+<%= turbo_stream_from "UserStream:#{current_user.id}", :character_registrations, id: "user-stream-character-registrations" %>

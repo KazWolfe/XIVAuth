@@ -1,5 +1,5 @@
 <%# locals: registration, character, job %>
-<%= turbo_stream_from "VerifyCharacterRegistrationJob:#{job.job_id}" %>
+<%= turbo_stream_from "VerifyCharacterRegistrationJob:#{job.job_id}", id: "verify-character-registration-job-#{job.job_id}-stream" %>
 <div id="character-registration-job:<%= job.job_id %>:content">
   <div class="modal-header">
     <div class="d-block">

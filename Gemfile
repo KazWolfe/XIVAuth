@@ -10,7 +10,7 @@ gem "rails", "~> 8.1.0"
 gem "msgpack", "~> 1.8"
 gem "pg", "~> 1.5"
 gem "puma", "~> 8.0"
-gem "redis", "~> 5.2"
+gem "redis", "~> 5.2" # TODO: Can't be upgraded until Rails 8.2?
 
 # Platform-specific
 gem "tzinfo-data", platforms: %i[windows jruby]
@@ -79,7 +79,7 @@ gem "flipper-ui", "~> 1.3"
 
 # Internal security
 gem "jwt", "~> 3.0"
-gem "jwt-eddsa", "~> 0.9"
+gem "jwt-eddsa", "~> 1.0"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
 gem "rails_cloudflare_turnstile", "~> 0.4"
 

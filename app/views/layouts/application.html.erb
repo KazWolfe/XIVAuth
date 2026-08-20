@@ -41,10 +41,10 @@
   </div>
 <% end %>
 
+<%= turbo_stream_from "UserStream:#{current_user.id}", :toasts, id: "user-stream-toasts" if current_user.present? %>
 <div class="toast-container position-fixed p-3 top-0 end-0" id="toasts">
   <%= render partial: "layouts/components/toasts/flashy_toasts" %>
   <%= render partial: "layouts/components/flashy_modals" %>
-  <%= turbo_stream_from "UserStream:#{current_user.id}", :toasts if current_user.present? %>
 </div>
 </body>
 </html>

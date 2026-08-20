@@ -10,5 +10,9 @@ production:
   adapter: redis
   url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379" } %>/1
   channel_prefix: app_production
+  # The listener thread gets ONE instant retry by default; if it exhausts its budget it exits
+  # permanently (`@thread ||=` never rebuilds it) and every stream subscription hangs unconfirmed
+  # process-wide until a restart. Give it a real backoff window instead.
+  reconnect_attempts: [0, 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 60.0, 60.0, 60.0]
   ssl_params:
     verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>
