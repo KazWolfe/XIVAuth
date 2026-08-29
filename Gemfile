@@ -10,7 +10,7 @@ gem "rails", "~> 8.1.0"
 gem "msgpack", "~> 1.8"
 gem "pg", "~> 1.5"
 gem "puma", "~> 8.0"
-gem "redis", "~> 5.2" # TODO: Can't be upgraded until Rails 8.2?
+gem "redis", "~> 6.0" # TODO: Can't be upgraded until Rails 8.2?
 
 # Platform-specific
 gem "tzinfo-data", platforms: %i[windows jruby]
@@ -45,7 +45,7 @@ gem "postmark-rails", "~> 0.22.1"
 gem "rack-cors", "~> 3.0.0"
 
 # Workers
-gem "sidekiq", "~> 8.0"
+gem "sidekiq", "~> 8.1"
 gem "sidekiq-cron", "~> 2.3"
 gem "sidekiq-throttled", "~> 2.0"
 
@@ -81,7 +81,7 @@ gem "flipper-ui", "~> 1.3"
 gem "jwt", "~> 3.0"
 gem "jwt-eddsa", "~> 1.0"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
-gem "rails_cloudflare_turnstile", "~> 0.4"
+gem "rails_cloudflare_turnstile", "~> 0.5"
 
 # CA certificates
 gem "certificate_authority", "~> 1.1"
